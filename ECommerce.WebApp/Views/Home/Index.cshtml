@@ -1,0 +1,21 @@
+﻿@using ECommerce.Data.Models
+@model ECommerce.Data.Models.Category
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4"></h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="dataTable">asdasd</div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        //Call EmpDetails jsonResult Method
+        $.get("api/Values/getAll", function (data, status) {
+            //Append each row to html table
+            console.log(data.data[0].categoryName);
+        });
+    });
+</script>
