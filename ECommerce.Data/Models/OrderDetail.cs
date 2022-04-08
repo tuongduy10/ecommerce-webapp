@@ -18,9 +18,8 @@ namespace ECommerce.Data.Models
         public string AttributeValue { get; set; }
         public string OptionValue { get; set; }
         public byte? Status { get; set; }
-        public int? DeclinedId { get; set; }
+        public bool? Paid { get; set; }
 
-        public virtual OrderDeclined Declined { get; set; }
         public virtual Order Order { get; set; }
         public virtual Product Product { get; set; }
     }

@@ -13,6 +13,7 @@ namespace ECommerce.Data.Models
             ProductAttributes = new HashSet<ProductAttribute>();
             ProductImages = new HashSet<ProductImage>();
             ProductOptions = new HashSet<ProductOption>();
+            ProductPrices = new HashSet<ProductPrice>();
             ProductUserImages = new HashSet<ProductUserImage>();
             Rates = new HashSet<Rate>();
         }
@@ -30,23 +31,20 @@ namespace ECommerce.Data.Models
         public bool? FreeReturn { get; set; }
         public bool? Legit { get; set; }
         public string Insurance { get; set; }
-        public int? OrderPriceId { get; set; }
-        public int? AvailablePriceId { get; set; }
         public int SubCategoryId { get; set; }
         public int ShopId { get; set; }
         public int BrandId { get; set; }
         public DateTime? ProductImportDate { get; set; }
         public byte? ProductRate { get; set; }
 
-        public virtual AvailablePrice AvailablePrice { get; set; }
         public virtual Brand Brand { get; set; }
-        public virtual OrderPrice OrderPrice { get; set; }
         public virtual Shop Shop { get; set; }
         public virtual SubCategory SubCategory { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<ProductAttribute> ProductAttributes { get; set; }
         public virtual ICollection<ProductImage> ProductImages { get; set; }
         public virtual ICollection<ProductOption> ProductOptions { get; set; }
+        public virtual ICollection<ProductPrice> ProductPrices { get; set; }
         public virtual ICollection<ProductUserImage> ProductUserImages { get; set; }
         public virtual ICollection<Rate> Rates { get; set; }
     }

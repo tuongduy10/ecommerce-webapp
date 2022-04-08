@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using ECommerce.Data.Models;
-using Attribute = ECommerce.Data.Models.Attribute;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 
@@ -22,7 +21,6 @@ namespace ECommerce.Data.Context
         }
 
         public virtual DbSet<Models.Attribute> Attributes { get; set; }
-        public virtual DbSet<AvailablePrice> AvailablePrices { get; set; }
         public virtual DbSet<Bank> Banks { get; set; }
         public virtual DbSet<Blog> Blogs { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
@@ -33,13 +31,14 @@ namespace ECommerce.Data.Context
         public virtual DbSet<Header> Headers { get; set; }
         public virtual DbSet<Option> Options { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
-        public virtual DbSet<OrderDeclined> OrderDeclineds { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
-        public virtual DbSet<OrderPrice> OrderPrices { get; set; }
+        public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<ProductAttribute> ProductAttributes { get; set; }
         public virtual DbSet<ProductImage> ProductImages { get; set; }
         public virtual DbSet<ProductOption> ProductOptions { get; set; }
+        public virtual DbSet<ProductPrice> ProductPrices { get; set; }
+        public virtual DbSet<ProductType> ProductTypes { get; set; }
         public virtual DbSet<ProductUserImage> ProductUserImages { get; set; }
         public virtual DbSet<Rate> Rates { get; set; }
         public virtual DbSet<RatingImage> RatingImages { get; set; }
@@ -70,22 +69,11 @@ namespace ECommerce.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Attribute>(entity =>
+            modelBuilder.Entity<Models.Attribute>(entity =>
             {
                 entity.ToTable("Attribute");
 
                 entity.Property(e => e.AttributeName).HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<AvailablePrice>(entity =>
-            {
-                entity.ToTable("AvailablePrice");
-
-                entity.Property(e => e.AvailablePrice1)
-                    .HasColumnType("decimal(18, 0)")
-                    .HasColumnName("AvailablePrice");
-
-                entity.Property(e => e.AvailablePriceOnSell).HasColumnType("decimal(18, 0)");
             });
 
             modelBuilder.Entity<Bank>(entity =>
@@ -250,26 +238,20 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.Total).HasColumnType("decimal(18, 0)");
 
-                entity.HasOne(d => d.DiscountValueNavigation)
+                entity.HasOne(d => d.Discount)
                     .WithMany(p => p.Orders)
-                    .HasForeignKey(d => d.DiscountValueId)
-                    .HasConstraintName("FK_Order_DiscountValue");
+                    .HasForeignKey(d => d.DiscountId)
+                    .HasConstraintName("FK_Order_Discount");
+
+                entity.HasOne(d => d.PaymentMethod)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.PaymentMethodId)
+                    .HasConstraintName("FK_Order_PaymentMethod");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_Order_User");
-            });
-
-            modelBuilder.Entity<OrderDeclined>(entity =>
-            {
-                entity.HasKey(e => e.DeclineId);
-
-                entity.ToTable("OrderDeclined");
-
-                entity.Property(e => e.DeclineDate).HasColumnType("date");
-
-                entity.Property(e => e.DeclineReason).HasMaxLength(100);
             });
 
             modelBuilder.Entity<OrderDetail>(entity =>
@@ -292,11 +274,6 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.VerifiedDate).HasColumnType("datetime");
 
-                entity.HasOne(d => d.Declined)
-                    .WithMany(p => p.OrderDetails)
-                    .HasForeignKey(d => d.DeclinedId)
-                    .HasConstraintName("FK_OrderDetail_OrderDeclined");
-
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.OrderId)
@@ -310,15 +287,13 @@ namespace ECommerce.Data.Context
                     .HasConstraintName("FK_OrderDetail_Product");
             });
 
-            modelBuilder.Entity<OrderPrice>(entity =>
+            modelBuilder.Entity<PaymentMethod>(entity =>
             {
-                entity.ToTable("OrderPrice");
+                entity.ToTable("PaymentMethod");
 
-                entity.Property(e => e.OrderPrice1)
-                    .HasColumnType("decimal(18, 3)")
-                    .HasColumnName("OrderPrice");
-
-                entity.Property(e => e.OrderPriceOnSell).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.PaymentMethod1)
+                    .HasMaxLength(50)
+                    .HasColumnName("PaymentMethod");
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -337,21 +312,11 @@ namespace ECommerce.Data.Context
                     .IsRequired()
                     .HasMaxLength(100);
 
-                entity.HasOne(d => d.AvailablePrice)
-                    .WithMany(p => p.Products)
-                    .HasForeignKey(d => d.AvailablePriceId)
-                    .HasConstraintName("FK_Product_AvailablePrice");
-
                 entity.HasOne(d => d.Brand)
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.BrandId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Product_Brand");
-
-                entity.HasOne(d => d.OrderPrice)
-                    .WithMany(p => p.Products)
-                    .HasForeignKey(d => d.OrderPriceId)
-                    .HasConstraintName("FK_Product_OrderPrice");
 
                 entity.HasOne(d => d.Shop)
                     .WithMany(p => p.Products)
@@ -422,6 +387,38 @@ namespace ECommerce.Data.Context
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ProductOption_Product");
+            });
+
+            modelBuilder.Entity<ProductPrice>(entity =>
+            {
+                entity.HasKey(e => new { e.ProductId, e.ProductTypeId });
+
+                entity.ToTable("ProductPrice");
+
+                entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.PriceOnSell).HasColumnType("decimal(18, 0)");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.ProductPrices)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ProductPrice_Product");
+
+                entity.HasOne(d => d.ProductNavigation)
+                    .WithMany(p => p.ProductPrices)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ProductPrice_ProductType");
+            });
+
+            modelBuilder.Entity<ProductType>(entity =>
+            {
+                entity.ToTable("ProductType");
+
+                entity.Property(e => e.ProductType1)
+                    .HasMaxLength(50)
+                    .HasColumnName("ProductType");
             });
 
             modelBuilder.Entity<ProductUserImage>(entity =>

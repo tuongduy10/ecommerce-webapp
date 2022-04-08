@@ -22,7 +22,12 @@ namespace ECommerce.WebApp.Controllers
         }
 
         public async Task<IActionResult> Index()
-        {            
+        {
+            return View();
+        }
+
+        public IActionResult Banner()
+        {
             return View();
         }
 
