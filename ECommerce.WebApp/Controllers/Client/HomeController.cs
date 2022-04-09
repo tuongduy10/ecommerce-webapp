@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.Category;
+﻿using ECommerce.Application.Services.Brand;
+using ECommerce.Application.Services.Category;
 using ECommerce.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,11 +15,13 @@ namespace ECommerce.WebApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private ICategoryService _categoryService;
+        private IBrandService _brandService;
 
-        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService)
+        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService, IBrandService brandService)
         {
             _logger = logger;
             _categoryService = categoryService;
+            _brandService = brandService;
         }
 
         public async Task<IActionResult> Index()

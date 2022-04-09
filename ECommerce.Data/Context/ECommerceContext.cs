@@ -266,6 +266,8 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.OptionValue).HasMaxLength(50);
 
+                entity.Property(e => e.PayForAdmin).HasColumnType("decimal(18, 0)");
+
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
 
                 entity.Property(e => e.PriceOnSell).HasColumnType("decimal(18, 0)");

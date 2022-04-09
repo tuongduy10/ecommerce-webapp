@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -12,33 +15,26 @@
 
         <div class="autoplay d-flex">
             <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/tgdd.png"
-                     alt="">
+                <img src="@Configuration["ImagePath:Brand"]tgdd.png" alt="">
             </a>
             <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/gc.png"
-                     alt="">
+                <img src="/images/logo/gc.png" alt="">
             </a>
             <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/toshiba.png"
-                     alt="">
+                <img src="/images/logo/toshiba.png" alt="">
             </a>
             <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/logo.png"
-                     alt="">
+                <img src="/images/logo/logo.png" alt="">
             </a>
             <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/vnal.png"
-                     alt="">
+                <img src="/images/logo/vnal.png" alt="">
             </a>
 
             <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/pl.png"
-                     alt="">
+                <img src="/images/logo/pl.png" alt="">
             </a>
             <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/gc.png"
-                     alt="">
+                <img src="/images/logo/gc.png" alt="">
             </a>
             <a class="bran__logo p-4" href="products.html">
                 <img src="/images/logo/sf.png"
@@ -340,9 +336,9 @@
 <script>
     $(document).ready(function () {
         //Call EmpDetails jsonResult Method
-        $.get("api/Category/getAll", function (data, status) {
+        $.get("api/Brand/getAll", function (data, status) {
             //Append each row to html table
-            console.log(data.data[0].categoryName)
+            console.log(data.data)
         });
     });
 </script>

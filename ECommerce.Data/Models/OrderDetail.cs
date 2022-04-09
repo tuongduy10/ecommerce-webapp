@@ -19,6 +19,7 @@ namespace ECommerce.Data.Models
         public string OptionValue { get; set; }
         public byte? Status { get; set; }
         public bool? Paid { get; set; }
+        public decimal? PayForAdmin { get; set; }
 
         public virtual Order Order { get; set; }
         public virtual Product Product { get; set; }
