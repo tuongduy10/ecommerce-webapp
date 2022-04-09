@@ -1,6 +1,6 @@
 Technologies: 
 	+ .NET Core 5.0
-	+ Enity Framework 5.0
+	+ Enity Framework Core 5.0
 Nuget Packages:
 	1. ECommerceData
 		+ Microft.EntityFrameworkCore.SqlServer (5.0.0).
