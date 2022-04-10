@@ -26,7 +26,8 @@ namespace ECommerce.WebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View();
+            var list = await _brandService.getAll();
+            return View(list);
         }
 
         public IActionResult Banner()

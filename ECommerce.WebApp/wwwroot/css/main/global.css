@@ -23,6 +23,9 @@ ul, ol {
     margin: 0;
     padding: 0
 }
+thead{
+    background-color: #edebec;
+}
 th,tr{
     white-space: nowrap;
 }

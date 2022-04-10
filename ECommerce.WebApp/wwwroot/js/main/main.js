@@ -295,13 +295,13 @@ $('.payment-method').change(function(){
 })
 
 
-$.get("/js/json/provinces-open-api.json", function (data) {
+$.get("assets/js/json/provinces-open-api.json", function (data) {
     // Cities
     var htmlTinhThanh = `<option value="" disabled selected>Tỉnh/Thành...</option>`
     data.forEach(element => {
         htmlTinhThanh += `<option value="` + element.code + `">` + element.name + `</option>`
     });
-    $(".city-select").html(htmlTinhThanh);
+    $(".city-select")[0].innerHTML = htmlTinhThanh;
     // Districts
     $(".city-select").on('change', function () {
         var htmlQuanHuyen = `<option value="" disabled selected>Quận/Huyện...</option>`
@@ -310,7 +310,7 @@ $.get("/js/json/provinces-open-api.json", function (data) {
                 element.districts.forEach(element1 => {
                     htmlQuanHuyen += `<option value="` + element1.code + `">` + element1.name + `</option>`
                 })
-                $(".district-select").html(htmlQuanHuyen);
+                $(".district-select")[0].innerHTML = htmlQuanHuyen
             }
         })
     });

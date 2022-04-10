@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
 }
 
 <div class="custom-container">
@@ -208,137 +209,36 @@
             <div class="bran__list-line my-4"></div>
             <!-- Bran list content -->
             <div class="bran__list-items">
-
                 <h4>A</h4>
                 <div class="d-flex flex-wrap">
-                    <div class="bran__list-item card">
-                        <a href="products.html">
-                            <div class="bran__list-img py-2 px-4">
-                                <img src="/images/logo/sf.png" class="card-img-top" alt="...">
-                            </div>
-                            <div class="card-body text-center p-2 align-items-center justify-content-center">
-                                <h5 class="bran__list-name card-title mb-0">Salvatore Ferragamo</h5>
-                                <h6 class="bran__list-type card-text">Phụ kiện và trang sức</h6>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="bran__list-item card">
-                        <a href="products.html">
-                            <div class="bran__list-img py-2 px-4">
-                                <img src="/images/logo/vnal.png" class="card-img-top" alt="...">
-                            </div>
-                            <div class="card-body text-center p-2 align-items-center justify-content-center">
-                                <h5 class="bran__list-name card-title mb-0">Vietnam Airlines</h5>
-                                <h6 class="bran__list-type card-text">Hãng hàng không</h6>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="bran__list-item card">
-                        <a href="products.html">
-                            <div class="bran__list-img py-2 px-4">
-                                <img src="/images/logo/pl.png" class="card-img-top d-inline-block"
-                                     alt="...">
-                            </div>
-                            <div class="card-body text-center p-2 align-items-center justify-content-center">
-                                <h5 class="bran__list-name card-title mb-0">Phúc Long</h5>
-                                <h6 class="bran__list-type card-text">Dịch vụ ăn uống</h6>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="bran__list-item card">
-                        <a href="products.html">
-                            <div class="bran__list-img py-2 px-4">
-                                <img src="/images/logo/tgdd.png" class="card-img-top d-inline-block"
-                                     alt="...">
-                            </div>
-                            <div class="card-body text-center p-2 align-items-center justify-content-center">
-                                <h5 class="bran__list-name card-title mb-0">Thế giới di động</h5>
-                                <h6 class="bran__list-type card-text">Điện thoại di động</h6>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="bran__list-item card">
-                        <a href="products.html">
-                            <div class="bran__list-img py-2 px-4">
-                                <img src="/images/logo/gc.png" class="card-img-top d-inline-block"
-                                     alt="...">
-                            </div>
-                            <div class="card-body text-center p-2 align-items-center justify-content-center">
-                                <h5 class="bran__list-name card-title mb-0">Gong Cha</h5>
-                                <h6 class="bran__list-type card-text">Hải sản</h6>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="bran__list-item card">
-                        <a href="products.html">
-                            <div class="bran__list-img py-2 px-4">
-                                <img src="/images/logo/victorinox.png" class="card-img-top d-inline-block"
-                                     alt="...">
-                            </div>
-                            <div class="card-body text-center p-2 align-items-center justify-content-center">
-                                <h5 class="bran__list-name card-title mb-0">Victorinox Swiss Army</h5>
-                                <h6 class="bran__list-type card-text">Trang sức và phụ kiện</h6>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="bran__list-item card">
-                        <a href="products.html">
-                            <div class="bran__list-img py-2 px-4">
-                                <img src="/images/logo/toshiba.png" class="card-img-top d-inline-block"
-                                     alt="...">
-                            </div>
-                            <div class="card-body text-center p-2 align-items-center justify-content-center">
-                                <h5 class="bran__list-name card-title mb-0">Toshiba</h5>
-                                <h6 class="bran__list-type card-text">Điện lạnh</h6>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="bran__list-item card">
-                        <a href="products.html">
-                            <div class="bran__list-img py-2 px-4">
-                                <img src="/images/logo/logo.png" class="card-img-top d-inline-block"
-                                     alt="...">
-                            </div>
-                            <div class="card-body text-center p-2 align-items-center justify-content-center">
-                                <h5 class="bran__list-name card-title mb-0">Like Watch</h5>
-                                <h6 class="bran__list-type card-text">Đồng hồ</h6>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="bran__list-item card">
-                        <a href="products.html">
-                            <div class="bran__list-img py-2 px-4">
-                                <img src="/images/logo/healthy-care.jpg"
-                                     class="card-img-top d-inline-block" alt="...">
-                            </div>
-                            <div class="card-body text-center p-2 align-items-center justify-content-center">
-                                <h5 class="bran__list-name card-title mb-0">Healthy Care</h5>
-                                <h6 class="bran__list-type card-text">Sức khỏe</h6>
-                            </div>
-                        </a>
-                    </div>
-
+                    @foreach (var item in Model)
+                    {
+                        <div class="bran__list-item card">
+                            <a href="">
+                                <div class="bran__list-img py-2 px-4">
+                                    <img src="/images/logo/sf.png" class="card-img-top" alt="@item.BrandName">
+                                </div>
+                                <div class="card-body text-center p-2 align-items-center justify-content-center">
+                                    <h5 class="bran__list-name card-title mb-0">@item.BrandName</h5>
+                                    <h6 class="bran__list-type card-text">@item.Category</h6>
+                                </div>
+                            </a>
+                        </div>
+                    }
                     <div class="w-100 text-center d-block">
                         <a class="bran__viewmore d-inline-block" href="">Xem thêm</a>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
 <script>
-    $(document).ready(function () {
-        //Call EmpDetails jsonResult Method
-        $.get("api/Brand/getAll", function (data, status) {
-            //Append each row to html table
-            console.log(data.data)
-        });
-    });
+    //$(document).ready(function () {
+    //    //Call EmpDetails jsonResult Method
+    //    $.get("api/Brand/getAll", function (data, status) {
+    //        //Append each row to html table
+    //        console.log(data.data)
+    //    });
+    //});
 </script>

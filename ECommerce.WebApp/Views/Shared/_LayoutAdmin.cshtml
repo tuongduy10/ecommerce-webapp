@@ -1,0 +1,265 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Quản trị</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+          rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="/css/all.css" rel="stylesheet">
+
+    <!-- Custom styles for this page -->
+    <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <!-- Custom styles for year picker -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
+
+</head>
+<body>
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                <div class="sidebar-brand-text mx-3" style="text-transform: uppercase;">QUẢN TRỊ</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href="index.html">
+                    <i class="fas fa-fw fa-home"></i>
+                    <span>Trang chủ</span>
+                </a>
+            </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+            <!-- Heading -->
+            <div class="sidebar-heading">Quản trị</div>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#orderAdminManage"
+                   aria-expanded="true" aria-controls="orderAdminManage">
+                    <i class="fas fa-fw fa-list"></i>
+                    <span>Quản lý đơn hàng</span>
+                    <span class="position-absolute" style="height: 8px; width: 8px; background-color: red; border-radius: 50%; top: 10px; right: 30px;"></span>
+                </a>
+                <div id="orderAdminManage" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Danh sách đơn hàng</h6>
+                        <a class="collapse-item" href="admin-manageorder.html">
+                            Chờ xác nhận
+                            <span class="position-absolute" style="height: 8px; width: 8px; background-color: red; border-radius: 50%;"></span>
+                        </a>
+                        <a class="collapse-item" href="admin-manageorder.html">Đơn đang giao...</a>
+                        <a class="collapse-item" href="admin-manageorder.html">Đơn hoàn thành</a>
+                        <a class="collapse-item" href="admin-manageorder.html">Đơn hủy</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUser"
+                   aria-expanded="true" aria-controls="collapseUser">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Quản lý người dùng</span>
+                </a>
+                <div id="collapseUser" class="collapse" aria-labelledby="headingUtilities"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="admin-manageuser.html">Danh sách người dùng</a>
+                        <a class="collapse-item" href="admin-managerole.html">Danh sách phân quyền</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStore"
+                   aria-expanded="true" aria-controls="collapseStore">
+                    <i class="fas fa-fw fa-store"></i>
+                    <span>Quản lý bán hàng</span>
+                    <span class="position-absolute" style="height: 8px; width: 8px; background-color: red; border-radius: 50%; top: 10px; right: 30px;"></span>
+                </a>
+                <div id="collapseStore" class="collapse" aria-labelledby="headingUtilities"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+
+                        <h6 class="collapse-header">Cửa hàng</h6>
+                        <a class="collapse-item" href="admin-manageshop.html">Danh sách cửa hàng</a>
+                        <a class="collapse-item" href="admin-manageshop.html">
+                            Duyệt cửa hàng
+                            <span class="position-absolute" style="height: 8px; width: 8px; background-color: red; border-radius: 50%;"></span>
+                        </a>
+
+                        <h6 class="collapse-header">Thương hiệu</h6>
+                        <a class="collapse-item" href="admin-managebrand.html">Danh sách thương hiệu</a>
+                        <a class="collapse-item" href="admin-addbrand.html">Thêm thương hiệu</a>
+
+                        <h6 class="collapse-header">Sản phẩm</h6>
+                        <a href="" class="collapse-item">
+                            Sản phẩm đăng bán
+                            <span class="position-absolute" style="height: 8px; width: 8px; background-color: red; border-radius: 50%;"></span>
+                        </a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#orderSale"
+                   aria-expanded="true" aria-controls="orderSale">
+                    <i class="fas fa-fw fa-tags"></i>
+                    <span>Giảm giá</span>
+                </a>
+                <div id="orderSale" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="">Quản lý mã giảm</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStatistics"
+                   aria-expanded="true" aria-controls="collapseStatistics">
+                    <i class="fas fa-fw fa-chart-bar"></i>
+                    <span>Thống kê</span>
+                </a>
+                <div id="collapseStatistics" class="collapse" aria-labelledby="headingUtilities"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="">Doanh thu</a>
+                        <a class="collapse-item" href="">Sản phẩm</a>
+                        <a class="collapse-item" href="">Người dùng</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInfo"
+                   aria-expanded="true" aria-controls="collapseInfo">
+                    <i class="fas fa-fw fa-info"></i>
+                    <span>Quản lý label</span>
+                </a>
+                <div id="collapseInfo" class="collapse" aria-labelledby="headingUtilities"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="admin-manageheader.html">Header</a>
+                        <a class="collapse-item" href="admin-managefooter.html">Footer</a>
+                        <a class="collapse-item" href="admin-bankinfo.html">Thông tin ngân hàng</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Quản lý bán hàng
+            </div>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+                   aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-fw fa-box"></i>
+                    <span>Quản lý sản phẩm</span>
+                </a>
+                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="seller-manageproduct.html">Danh sách sản phẩm</a>
+                        <a class="collapse-item" href="seller-addproduct.html">Thêm sản phẩm</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#orderManage"
+                   aria-expanded="true" aria-controls="orderManage">
+                    <i class="fas fa-fw fa-list"></i>
+                    <span>Quản lý đơn hàng</span>
+                    <span class="position-absolute" style="height: 8px; width: 8px; background-color: red; border-radius: 50%; top: 10px; right: 30px;"></span>
+
+                </a>
+                <div id="orderManage" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Danh sách đơn hàng</h6>
+                        <a class="collapse-item" href="seller-manageorder.html">
+                            Chờ xác nhận...
+                            <span class="position-absolute" style="height: 8px; width: 8px; background-color: red; border-radius: 50%;"></span>
+                        </a>
+                        <a class="collapse-item" href="">Đơn đang giao...</a>
+                        <a class="collapse-item" href="">Đơn hoàn thành</a>
+                        <a class="collapse-item" href="">Đơn hủy</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#sellerStatistics"
+                   aria-expanded="true" aria-controls="sellerStatistics">
+                    <i class="fas fa-fw fa-chart-bar"></i>
+                    <span>Thống kê</span>
+                </a>
+                <div id="sellerStatistics" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="seller-finance.html">Doanh thu</a>
+                        <a class="collapse-item" href="seller-analysisproducts.html">Sản phẩm</a>
+                    </div>
+                </div>
+            </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+        </ul>
+        <!-- End of Sidebar -->
+            
+        <div class="container-fluid">
+            @RenderBody()
+        </div>
+
+    </div>
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="/js/sb-admin-2.min.js"></script>
+    <!-- Date-picker -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="/vendor/chart.js/Chart.min.js"></script>
+    <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="/js/demo/chart-area-demo.js"></script>
+    <script src="/js/demo/chart-pie-demo.js"></script>
+    <script src="/js/demo/datatables-demo.js"></script>
+
+</body>
+</html>

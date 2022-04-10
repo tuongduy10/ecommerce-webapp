@@ -941,6 +941,14 @@ hr {
 .product__detail-buttons button:hover{
     box-shadow: 0 10px 30px rgb(0 0 0 / 10%);
 }
+.btn-black:hover{
+    background-color: #fff !important;
+    color: #333 !important;
+    transition: 0.5s;
+}
+.product__detail-link:hover{
+    color: var(--blue-dior) !important;
+}
 
 .dot {
     height: 10px;
