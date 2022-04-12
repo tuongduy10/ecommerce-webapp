@@ -16,7 +16,7 @@ namespace ECommerce.WebApp.ViewComponents
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var listBanner = _configurationService.getBanner();
+            var listBanner = await _configurationService.getBanner();
             return View(listBanner);
         }
     }
