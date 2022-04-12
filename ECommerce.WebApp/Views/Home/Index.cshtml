@@ -124,7 +124,7 @@
                                 </a>
                                 @foreach (var category in Model.listCategory)
                                 {
-                                    <a class="order__item">
+                                    <a class="order__item" onclick="getAllBrandInCategory(@category.CategoryId)">
                                         @category.CategoryName<svg xmlns='http://www.w3.org/2000/svg'
                                                                width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#333'
                                                                stroke-width='1' stroke-linecap='round' stroke-linejoin='round'
@@ -226,196 +226,211 @@
     </div>
 </div>
 <script>
-    $(document).ready(function () {
-        $('.getBrandListFromAtoE').click(function () {
-            $.get("api/BrandAPI/getAll", function (data, status) {
-                if (status != "success") {
-                    $('.bran__list-items').empty();
-                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                    return;
-                }
-                if (data.status != "success") {
-                    $('.bran__list-items').empty();
-                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                    return;
-                }
-                if (data.status == "success") {
-                    $('.bran__list-items').empty();
-                    var sortBy = ["A", "B", "C", "D", "E"];
-                    var listBrand = data.data;
-                    renderBrandListOrdered(listBrand, sortBy);
-                }
-            });
-        })
-        $('.getBrandListFromFtoJ').click(function () {
-            $.get("api/BrandAPI/getAll", function (data, status) {
-                if (status != "success") {
-                    $('.bran__list-items').empty();
-                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                    return;
-                }
-                if (data.status != "success") {
-                    $('.bran__list-items').empty();
-                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                    return;
-                }
-                if (data.status == "success") {
-                    $('.bran__list-items').empty();
-                    var sortBy = ["F", "G", "H", "I", "J"];
-                    var listBrand = data.data;
-                    renderBrandListOrdered(listBrand, sortBy);
-                }
-            });
-        })
-        $('.getBrandListFromKtoO').click(function () {
-            $.get("api/BrandAPI/getAll", function (data, status) {
-                if (status != "success") {
-                    $('.bran__list-items').empty();
-                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                    return;
-                }
-                if (data.status != "success") {
-                    $('.bran__list-items').empty();
-                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                    return;
-                }
-                if (data.status == "success") {
-                    $('.bran__list-items').empty();
-                    var sortBy = ["K", "L", "M", "N", "O"];
-                    var listBrand = data.data;
-                    renderBrandListOrdered(listBrand, sortBy);
-                }
-            });
-        })
-        $('.getBrandListFromPtoT').click(function () {
-            $.get("api/BrandAPI/getAll", function (data, status) {
-                if (status != "success") {
-                    $('.bran__list-items').empty();
-                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                    return;
-                }
-                if (data.status != "success") {
-                    $('.bran__list-items').empty();
-                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                    return;
-                }
-                if (data.status == "success") {
-                    $('.bran__list-items').empty();
-                    var sortBy = ["P", "Q", "R", "S", "T"];
-                    var listBrand = data.data;
-                    renderBrandListOrdered(listBrand, sortBy);
-                }
-            });
-        })
-        $('.getBrandListFromUtoZ').click(function () {
-            $.get("api/BrandAPI/getAll", function (data, status) {
-                if (status != "success") {
-                    $('.bran__list-items').empty();
-                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                    return;
-                }
-                if (data.status != "success") {
-                    $('.bran__list-items').empty();
-                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                    return;
-                }
-                if (data.status == "success") {
-                    $('.bran__list-items').empty();
-                    var sortBy = ["U", "V", "W", "X", "Y", "Z"];
-                    var listBrand = data.data;
-                    renderBrandListOrdered(listBrand, sortBy);
-                }
-            });
-        })
-        $('.getAllBrandList').click(function () {
-            $.get("api/BrandAPI/getAll", function (data, status) {
-                if (status != "success") {
-                    $('.bran__list-items').empty();
-                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                    return;
-                }
-                if (data.status != "success") {
-                    $('.bran__list-items').empty();
-                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                    return;
-                }
-                if (data.status == "success") {
-                    $('.bran__list-items').empty();
-                    var listBrand = data.data;
-                    renderAllBrandList(listBrand);
-                }
-            });
-        })
-
-
-        function renderBrandListOrdered(listBrand, sortBy) {
-            var tempList = [];
-            for (var i = 0; i < listBrand.length; i++){
-                tempList.push(listBrand[i].brandName[0]);
+    $('.getBrandListFromAtoE').click(function () {
+        $.get("api/BrandAPI/getAll", function (data, response) {
+            if (response != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
             }
-            var listDist = tempList.filter(function (value, index) { return tempList.indexOf(value) == index });
-            for (var i = 0; i < listDist.length; i++) {
-                for (var j = 0; j < sortBy.length; j++) {
-                    if (sortBy[j] == listDist[i]) {
-                        $('.bran__list-items').append(`<h4>${sortBy[j]}</h4>`)
-                        var data = '';
-                        listBrand.forEach(brand => {
-                            if (sortBy[j] == brand.brandName[0]) {
-                                data += `
-                                    <div class="bran__list-item card">
-                                        <a href="">
-                                            <div class="bran__list-img py-2 px-4">
-                                                <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="card-img-top" alt="${brand.brandName}">
-                                            </div>
-                                            <div class="card-body text-center p-2 align-items-center justify-content-center">
-                                                <h5 class="bran__list-name card-title mb-0">${brand.brandName}</h5>
-                                                <h6 class="bran__list-type card-text">${brand.category}</h6>
-                                            </div>
-                                        </a>
-                                    </div>
-                                `;
-                            }
-                        })
-                        $('.bran__list-items').append(`<div class="d-flex flex-wrap">${data}</div`)
+            if (data.status != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
+            }
+            if (data.status == "success") {
+                $('.bran__list-items').empty();
+                var sortBy = ["A", "B", "C", "D", "E"];
+                var listBrand = data.data;
+                renderBrandListOrdered(listBrand, sortBy);
+            }
+        });
+    })
+    $('.getBrandListFromFtoJ').click(function () {
+        $.get("api/BrandAPI/getAll", function (data, response) {
+            if (response != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
+            }
+            if (data.status != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
+            }
+            if (data.status == "success") {
+                $('.bran__list-items').empty();
+                var sortBy = ["F", "G", "H", "I", "J"];
+                var listBrand = data.data;
+                renderBrandListOrdered(listBrand, sortBy);
+            }
+        });
+    })
+    $('.getBrandListFromKtoO').click(function () {
+        $.get("api/BrandAPI/getAll", function (data, response) {
+            if (response != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
+            }
+            if (data.status != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
+            }
+            if (data.status == "success") {
+                $('.bran__list-items').empty();
+                var sortBy = ["K", "L", "M", "N", "O"];
+                var listBrand = data.data;
+                renderBrandListOrdered(listBrand, sortBy);
+            }
+        });
+    })
+    $('.getBrandListFromPtoT').click(function () {
+        $.get("api/BrandAPI/getAll", function (data, response) {
+            if (response != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
+            }
+            if (data.status != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
+            }
+            if (data.status == "success") {
+                $('.bran__list-items').empty();
+                var sortBy = ["P", "Q", "R", "S", "T"];
+                var listBrand = data.data;
+                renderBrandListOrdered(listBrand, sortBy);
+            }
+        });
+    })
+    $('.getBrandListFromUtoZ').click(function () {
+        $.get("api/BrandAPI/getAll", function (data, response) {
+            if (response != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
+            }
+            if (data.status != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
+            }
+            if (data.status == "success") {
+                $('.bran__list-items').empty();
+                var sortBy = ["U", "V", "W", "X", "Y", "Z"];
+                var listBrand = data.data;
+                renderBrandListOrdered(listBrand, sortBy);
+            }
+        });
+    })
+    $('.getAllBrandList').click(function () {
+        $.get("api/BrandAPI/getAll", function (data, response) {
+            if (response != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
+            }
+            if (data.status != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
+            }
+            if (data.status == "success") {
+                $('.bran__list-items').empty();
+                var listBrand = data.data;
+                renderAllBrandList(listBrand);
+            }
+        });
+    })
 
-                        // Xem thêm
-                        $('.bran__list-items').append(`
-                            <div class="w-100 text-center d-block">
-                                <a class="bran__viewmore d-inline-block" href="">Xem thêm</a>
-                            </div>
-                        `);
-                    }
+    function getAllBrandInCategory(id) {
+        $.get("api/BrandAPI/getAllBrandInCategory", { id: id }, function (data, response) {
+            if (response != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
+            }
+            if (data.status != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
+            }
+            if (data.status == "success") {
+                $('.bran__list-items').empty();
+                var listBrand = data.data;
+                renderAllBrandList(listBrand);
+            }
+        })
+    }
+    function renderBrandListOrdered(listBrand, sortBy) {
+        var tempList = [];
+        for (var i = 0; i < listBrand.length; i++){
+            tempList.push(listBrand[i].brandName[0]);
+        }
+        var listDist = tempList.filter(function (value, index) { return tempList.indexOf(value) == index });
+        for (var i = 0; i < listDist.length; i++) {
+            for (var j = 0; j < sortBy.length; j++) {
+                if (sortBy[j] == listDist[i]) {
+                    $('.bran__list-items').append(`<h4>${sortBy[j]}</h4>`)
+                    var data = '';
+                    listBrand.forEach(brand => {
+                        if (sortBy[j] == brand.brandName[0]) {
+                            data += `
+                                <div class="bran__list-item card">
+                                    <a href="">
+                                        <div class="bran__list-img py-2 px-4">
+                                            <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="card-img-top" alt="${brand.brandName}">
+                                        </div>
+                                        <div class="card-body text-center p-2 align-items-center justify-content-center">
+                                            <h5 class="bran__list-name card-title mb-0">${brand.brandName}</h5>
+                                            <h6 class="bran__list-type card-text">${brand.category}</h6>
+                                        </div>
+                                    </a>
+                                </div>
+                            `;
+                        }
+                    })
+                    $('.bran__list-items').append(`<div class="d-flex flex-wrap">${data}</div`)
                 }
             }
         }
-        function renderAllBrandList(listBrand) {
-            var tempList = [];
-            for (var i = 0; i < listBrand.length; i++) {
-                tempList.push(listBrand[i].brandName[0]);
-            }
-            var listDist = tempList.filter(function (value, index) { return tempList.indexOf(value) == index });
-            for (var i = 0; i < listDist.length; i++) {
-                $('.bran__list-items').append(`<h4>${listDist[i]}</h4>`)
-                var data = '';
-                listBrand.forEach(brand => {
-                    if (listDist[i] == brand.brandName[0]) {
-                        data += `
-                            <div class="bran__list-item card">
-                                <a href="">
-                                    <div class="bran__list-img py-2 px-4">
-                                        <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="card-img-top" alt="${brand.brandName}">
-                                    </div>
-                                    <div class="card-body text-center p-2 align-items-center justify-content-center">
-                                        <h5 class="bran__list-name card-title mb-0">${brand.brandName}</h5>
-                                        <h6 class="bran__list-type card-text">${brand.category}</h6>
-                                    </div>
-                                </a>
-                            </div>
-                        `;
-                    }
-                })
-                $('.bran__list-items').append(`<div class="d-flex flex-wrap">${data}</div`)
-            }
+        // Xem thêm
+        $('.bran__list-items').append(`
+            <div class="w-100 text-center d-block">
+                <a class="bran__viewmore d-inline-block" href="">Xem thêm</a>
+            </div>
+        `);
+    }
+    function renderAllBrandList(listBrand) {
+        var tempList = [];
+        for (var i = 0; i < listBrand.length; i++) {
+            tempList.push(listBrand[i].brandName[0]);
         }
-    });
+        var listDist = tempList.filter(function (value, index) { return tempList.indexOf(value) == index });
+        for (var i = 0; i < listDist.length; i++) {
+            $('.bran__list-items').append(`<h4>${listDist[i]}</h4>`)
+            var data = '';
+            listBrand.forEach(brand => {
+                if (listDist[i] == brand.brandName[0]) {
+                    data += `
+                        <div class="bran__list-item card">
+                            <a href="">
+                                <div class="bran__list-img py-2 px-4">
+                                    <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="card-img-top" alt="${brand.brandName}">
+                                </div>
+                                <div class="card-body text-center p-2 align-items-center justify-content-center">
+                                    <h5 class="bran__list-name card-title mb-0">${brand.brandName}</h5>
+                                    <h6 class="bran__list-type card-text">${brand.category}</h6>
+                                </div>
+                            </a>
+                        </div>
+                    `;
+                }
+            })
+            $('.bran__list-items').append(`<div class="d-flex flex-wrap">${data}</div`)
+        }
+    }
 </script>

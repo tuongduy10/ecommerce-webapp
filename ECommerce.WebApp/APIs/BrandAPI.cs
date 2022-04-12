@@ -23,5 +23,12 @@ namespace ECommerce.WebApp.API
             var list = await _brandService.getAll();
             return Ok(new { status = "success", data = list });
         }
+        [HttpGet("getAllBrandInCategory")]
+        public async Task<IActionResult> getAllBrandInCategory([FromQuery]int id)
+        {
+            var list = await _brandService.getAllBrandInCategory(id);
+            return Ok(new { status = "success", data = list });
+        }
+
     }
 }
