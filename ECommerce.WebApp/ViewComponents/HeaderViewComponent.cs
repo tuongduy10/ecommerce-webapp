@@ -23,6 +23,7 @@ namespace ECommerce.WebApp.ViewComponents
         {
             var _listHeader = await _headerService.getAll();
             var _config = await _configurationService.getConfiguration();
+
             var model = new HeaderViewModel()
             {
                 listHeader = _listHeader,

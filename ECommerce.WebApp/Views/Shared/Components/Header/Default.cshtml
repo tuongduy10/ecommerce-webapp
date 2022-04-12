@@ -1,12 +1,17 @@
-﻿<header class="header">
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+<header class="header">
     <div class="header__top">
         <div class="header__top-content align-items-center d-flex pt-2">
             <!-- Logo -->
             <div class="logo__container text-center px-5 mx-auto">
-                <a href="index.html" class="header__logo">
-                    <img class="logo img-fluid" src="/images/logo/swarovski.png" alt="">
+                <a href="@Url.Action("Index","Home")" class="header__logo">
+                    <img class="logo img-fluid" src="@Configuration["ImagePath:Logo"]@Model.config.LogoPath" alt="">
                 </a>
             </div>
+
+
             <div class="header__top-info">
                 <a href="find-order.html" class="header__top-link">
                     <span class="icon">
@@ -225,8 +230,8 @@
                                     <line x1="6" y1="6" x2="18" y2="18"></line>
                                 </svg>
                             </span>
-                            <a href="">
-                                <img style="max-height: 50px;" src="/images/logo/swarovski.png"
+                            <a href="@Url.Action("Index","Home")">
+                                <img style="max-height: 50px;" src="@Configuration["ImagePath:Logo"]@Model.config.LogoPath"
                                      alt="">
                             </a>
                         </div>
@@ -295,9 +300,9 @@
                             </li>
                         </ul>
                         <div class="nav__mobile-info p-4">
-                            <p><a href="">Phone: 0123456789 (Mr.A)</a></p>
-                            <p><a href="">Mail: mail@gmail.com</a></p>
-                            <p><a href="https://www.facebook.com/mra/">Facebook: Mr.A</a></p>
+                            <p><a href="tel: @Model.config.PhoneNumber">Phone: @Model.config.PhoneNumber</a></p>
+                            <p><a href="mailto: @Model.config.Mail">Mail: @Model.config.Mail</a></p>
+                            <p><a href="@Model.config.FacebookUrl">Facebook: @Model.config.Facebook</a></p>
                         </div>
                     </div>
                 </div>

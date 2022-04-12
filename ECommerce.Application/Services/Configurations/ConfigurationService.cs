@@ -41,6 +41,7 @@ namespace ECommerce.Application.Services.Configurations
                 StartTime = i.StartTime,
                 EndTime = i.EndTime,
                 Facebook = i.Facebook,
+                FacebookUrl = i.FacebookUrl,
                 Mail = i.Mail,
                 PhoneNumber = i.PhoneNumber
             }).FirstAsync();

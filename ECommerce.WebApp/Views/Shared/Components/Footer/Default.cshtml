@@ -1,4 +1,7 @@
-﻿<footer class="footer">
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+<footer class="footer">
     <div class="custom-container">
         <div class="footer__inner">
             <div class="py-4">
@@ -80,8 +83,8 @@
                                 }
                             }
                             <li class="footer__info-link pb-2">
-                                <a target="_blank" rel="noopener noreferrer" href="">
-                                    <i class="fa-solid fa-clock"></i> 08:00 - 22:00
+                                <a>
+                                    <i class="fa-solid fa-clock"></i> @((Model.config.StartTime).ToString().Substring(0,5)) - @((Model.config.EndTime).ToString().Substring(0,5))
                                 </a>
                             </li>
                         </ul>
@@ -95,7 +98,7 @@
             <div class="py-4">
                 <!-- <span class="footer__copyright-info" style="font-weight: bold;"></span> -->
                 <p class="footer__copyright-info">
-                    <i class="far fa-copyright"></i> 2022 - Copyright by 
+                    <i class="far fa-copyright"></i> 2022 - Copyright by @Model.config.WebsiteName
                 </p>
             </div>
         </div>

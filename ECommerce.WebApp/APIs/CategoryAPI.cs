@@ -10,10 +10,10 @@ namespace ECommerce.WebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Category : ControllerBase
+    public class CategoryAPI : ControllerBase
     {
         private ICategoryService _categoryService;
-        public Category(ICategoryService categoryService) 
+        public CategoryAPI(ICategoryService categoryService) 
         {
             _categoryService = categoryService;
         }

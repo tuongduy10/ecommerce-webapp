@@ -10,10 +10,10 @@ namespace ECommerce.WebApp.API
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Brand : ControllerBase
+    public class BrandAPI : ControllerBase
     {
         private IBrandService _brandService;
-        public Brand(IBrandService brandService)
+        public BrandAPI(IBrandService brandService)
         {
             _brandService = brandService;
         }

@@ -17,5 +17,7 @@ namespace ECommerce.Application.Services.Configurations.Dtos
         public string PhoneNumber { get; set; }
         public string Mail { get; set; }
         public string Facebook { get; set; }
+        public string FacebookUrl { get; set; }
+
     }
 }

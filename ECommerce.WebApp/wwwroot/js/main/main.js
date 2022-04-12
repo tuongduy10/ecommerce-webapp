@@ -295,7 +295,7 @@ $('.payment-method').change(function(){
 })
 
 
-$.get("assets/js/json/provinces-open-api.json", function (data) {
+$.get("/js/json/provinces-open-api.json", function (data) {
     // Cities
     var htmlTinhThanh = `<option value="" disabled selected>Tỉnh/Thành...</option>`
     data.forEach(element => {

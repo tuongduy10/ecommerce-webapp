@@ -148,6 +148,10 @@ namespace ECommerce.Data.Context
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
+                entity.Property(e => e.FacebookUrl)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.FaviconPath)
                     .HasMaxLength(100)
                     .IsUnicode(false);

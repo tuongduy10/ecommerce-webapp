@@ -48,7 +48,7 @@
                         </div>
                         <div class="order__item-dropdown_menu">
                             <div class="order__item-dropdown_items">
-                                <a class="order__item d-none">
+                                <a class="order__item d-none getBrandListFromAtoE">
                                     A, B, C, D, E<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
                                                       viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
                                                       stroke-linecap='round' stroke-linejoin='round'
@@ -56,7 +56,7 @@
                                         <polyline points='9 18 15 12 9 6'></polyline>
                                     </svg>
                                 </a>
-                                <a class="order__item">
+                                <a class="order__item getBrandListFromFtoJ">
                                     F, G, H, I, J<svg xmlns='http://www.w3.org/2000/svg'
                                                       width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#333'
                                                       stroke-width='1' stroke-linecap='round' stroke-linejoin='round'
@@ -64,7 +64,7 @@
                                         <polyline points='9 18 15 12 9 6'></polyline>
                                     </svg>
                                 </a>
-                                <a class="order__item">
+                                <a class="order__item getBrandListFromKtoO">
                                     K, L, M, N, O<svg xmlns='http://www.w3.org/2000/svg'
                                                       width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#333'
                                                       stroke-width='1' stroke-linecap='round' stroke-linejoin='round'
@@ -72,7 +72,7 @@
                                         <polyline points='9 18 15 12 9 6'></polyline>
                                     </svg>
                                 </a>
-                                <a class="order__item">
+                                <a class="order__item getBrandListFromPtoT">
                                     P, Q, R, S, T<svg xmlns='http://www.w3.org/2000/svg'
                                                       width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#333'
                                                       stroke-width='1' stroke-linecap='round' stroke-linejoin='round'
@@ -80,7 +80,7 @@
                                         <polyline points='9 18 15 12 9 6'></polyline>
                                     </svg>
                                 </a>
-                                <a class="order__item">
+                                <a class="order__item getBrandListFromUtoZ">
                                     U, V, W, X, Y, Z<svg xmlns='http://www.w3.org/2000/svg'
                                                          width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#333'
                                                          stroke-width='1' stroke-linecap='round' stroke-linejoin='round'
@@ -88,7 +88,7 @@
                                         <polyline points='9 18 15 12 9 6'></polyline>
                                     </svg>
                                 </a>
-                                <a class="order__item">
+                                <a class="order__item getAllBrandList">
                                     Tất cả<svg xmlns='http://www.w3.org/2000/svg' width='24'
                                                height='24' viewBox='0 0 24 24' fill='none' stroke='#333'
                                                stroke-width='1' stroke-linecap='round' stroke-linejoin='round'
@@ -142,7 +142,7 @@
 
             <div class="bran__list-line my-4"></div>
             <!-- Bran list content -->
-            <div class="bran__list-items">
+            <div class="bran__list-items mb-4">
                 @{
                     var list = new List<string>();
                     for (var i = 0; i < Model.listBrand.Count; i++)
@@ -174,21 +174,248 @@
                             }
                         </div>
                     }
-
                 }
-            </div>
-            <div class="w-100 text-center d-block">
-                <a class="bran__viewmore d-inline-block" href="">Xem thêm</a>
+
+                @*@{
+                    var list = new List<string>();
+                    for (var i = 0; i < Model.listBrand.Count; i++)
+                    {
+                        list.Add(@Model.listBrand[i].BrandName.Substring(0, 1));
+                    }
+                    var listDist = list.Distinct().ToArray();
+                    var listAtoE = new List<string>() { "A", "B", "C", "D", "E" };
+                    var listFtoJ = new List<string>() { "F", "G", "H", "I", "J" };
+                    var listKtoO = new List<string>() { "K", "L", "M", "N", "O" };
+                    var listPtoT = new List<string>() { "P", "Q", "R", "S", "T" };
+                    var listUtoZ = new List<string>() { "U", "V", "W", "X", "Y", "Z" };
+
+                    var listOrderBy = listFtoJ;
+
+                    for (var i = 0; i < listDist.Count(); i++)
+                    {
+                        for (var j = 0; j < listOrderBy.Count(); j++)
+                        {
+                            if (listOrderBy[j] == listDist[i])
+                            {
+                                <h4>@listOrderBy[j]</h4>
+                                <div class="d-flex flex-wrap">
+                                    @foreach (var item in Model.listBrand)
+                                    {
+                                        if (listOrderBy[j] == item.BrandName.Substring(0, 1))
+                                        {
+                                            <div class="bran__list-item card">
+                                                <a href="">
+                                                    <div class="bran__list-img py-2 px-4">
+                                                        <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" class="card-img-top" alt="@item.BrandName">
+                                                    </div>
+                                                    <div class="card-body text-center p-2 align-items-center justify-content-center">
+                                                        <h5 class="bran__list-name card-title mb-0">@item.BrandName</h5>
+                                                        <h6 class="bran__list-type card-text">@item.Category</h6>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            }
+                        }
+                    }
+                }*@
             </div>
         </div>
     </div>
 </div>
 <script>
-    //$(document).ready(function () {
-    //    //Call EmpDetails jsonResult Method
-    //    $.get("api/Brand/getAll", function (data, status) {
-    //        //Append each row to html table
-    //        console.log(data.data)
-    //    });
-    //});
+    $(document).ready(function () {
+        $('.getBrandListFromAtoE').click(function () {
+            $.get("api/BrandAPI/getAll", function (data, status) {
+                if (status != "success") {
+                    $('.bran__list-items').empty();
+                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                    return;
+                }
+                if (data.status != "success") {
+                    $('.bran__list-items').empty();
+                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                    return;
+                }
+                if (data.status == "success") {
+                    $('.bran__list-items').empty();
+                    var sortBy = ["A", "B", "C", "D", "E"];
+                    var listBrand = data.data;
+                    renderBrandListOrdered(listBrand, sortBy);
+                }
+            });
+        })
+        $('.getBrandListFromFtoJ').click(function () {
+            $.get("api/BrandAPI/getAll", function (data, status) {
+                if (status != "success") {
+                    $('.bran__list-items').empty();
+                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                    return;
+                }
+                if (data.status != "success") {
+                    $('.bran__list-items').empty();
+                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                    return;
+                }
+                if (data.status == "success") {
+                    $('.bran__list-items').empty();
+                    var sortBy = ["F", "G", "H", "I", "J"];
+                    var listBrand = data.data;
+                    renderBrandListOrdered(listBrand, sortBy);
+                }
+            });
+        })
+        $('.getBrandListFromKtoO').click(function () {
+            $.get("api/BrandAPI/getAll", function (data, status) {
+                if (status != "success") {
+                    $('.bran__list-items').empty();
+                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                    return;
+                }
+                if (data.status != "success") {
+                    $('.bran__list-items').empty();
+                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                    return;
+                }
+                if (data.status == "success") {
+                    $('.bran__list-items').empty();
+                    var sortBy = ["K", "L", "M", "N", "O"];
+                    var listBrand = data.data;
+                    renderBrandListOrdered(listBrand, sortBy);
+                }
+            });
+        })
+        $('.getBrandListFromPtoT').click(function () {
+            $.get("api/BrandAPI/getAll", function (data, status) {
+                if (status != "success") {
+                    $('.bran__list-items').empty();
+                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                    return;
+                }
+                if (data.status != "success") {
+                    $('.bran__list-items').empty();
+                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                    return;
+                }
+                if (data.status == "success") {
+                    $('.bran__list-items').empty();
+                    var sortBy = ["P", "Q", "R", "S", "T"];
+                    var listBrand = data.data;
+                    renderBrandListOrdered(listBrand, sortBy);
+                }
+            });
+        })
+        $('.getBrandListFromUtoZ').click(function () {
+            $.get("api/BrandAPI/getAll", function (data, status) {
+                if (status != "success") {
+                    $('.bran__list-items').empty();
+                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                    return;
+                }
+                if (data.status != "success") {
+                    $('.bran__list-items').empty();
+                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                    return;
+                }
+                if (data.status == "success") {
+                    $('.bran__list-items').empty();
+                    var sortBy = ["U", "V", "W", "X", "Y", "Z"];
+                    var listBrand = data.data;
+                    renderBrandListOrdered(listBrand, sortBy);
+                }
+            });
+        })
+        $('.getAllBrandList').click(function () {
+            $.get("api/BrandAPI/getAll", function (data, status) {
+                if (status != "success") {
+                    $('.bran__list-items').empty();
+                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                    return;
+                }
+                if (data.status != "success") {
+                    $('.bran__list-items').empty();
+                    $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                    return;
+                }
+                if (data.status == "success") {
+                    $('.bran__list-items').empty();
+                    var listBrand = data.data;
+                    renderAllBrandList(listBrand);
+                }
+            });
+        })
+
+
+        function renderBrandListOrdered(listBrand, sortBy) {
+            var tempList = [];
+            for (var i = 0; i < listBrand.length; i++){
+                tempList.push(listBrand[i].brandName[0]);
+            }
+            var listDist = tempList.filter(function (value, index) { return tempList.indexOf(value) == index });
+            for (var i = 0; i < listDist.length; i++) {
+                for (var j = 0; j < sortBy.length; j++) {
+                    if (sortBy[j] == listDist[i]) {
+                        $('.bran__list-items').append(`<h4>${sortBy[j]}</h4>`)
+                        var data = '';
+                        listBrand.forEach(brand => {
+                            if (sortBy[j] == brand.brandName[0]) {
+                                data += `
+                                    <div class="bran__list-item card">
+                                        <a href="">
+                                            <div class="bran__list-img py-2 px-4">
+                                                <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="card-img-top" alt="${brand.brandName}">
+                                            </div>
+                                            <div class="card-body text-center p-2 align-items-center justify-content-center">
+                                                <h5 class="bran__list-name card-title mb-0">${brand.brandName}</h5>
+                                                <h6 class="bran__list-type card-text">${brand.category}</h6>
+                                            </div>
+                                        </a>
+                                    </div>
+                                `;
+                            }
+                        })
+                        $('.bran__list-items').append(`<div class="d-flex flex-wrap">${data}</div`)
+
+                        // Xem thêm
+                        $('.bran__list-items').append(`
+                            <div class="w-100 text-center d-block">
+                                <a class="bran__viewmore d-inline-block" href="">Xem thêm</a>
+                            </div>
+                        `);
+                    }
+                }
+            }
+        }
+        function renderAllBrandList(listBrand) {
+            var tempList = [];
+            for (var i = 0; i < listBrand.length; i++) {
+                tempList.push(listBrand[i].brandName[0]);
+            }
+            var listDist = tempList.filter(function (value, index) { return tempList.indexOf(value) == index });
+            for (var i = 0; i < listDist.length; i++) {
+                $('.bran__list-items').append(`<h4>${listDist[i]}</h4>`)
+                var data = '';
+                listBrand.forEach(brand => {
+                    if (listDist[i] == brand.brandName[0]) {
+                        data += `
+                            <div class="bran__list-item card">
+                                <a href="">
+                                    <div class="bran__list-img py-2 px-4">
+                                        <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="card-img-top" alt="${brand.brandName}">
+                                    </div>
+                                    <div class="card-body text-center p-2 align-items-center justify-content-center">
+                                        <h5 class="bran__list-name card-title mb-0">${brand.brandName}</h5>
+                                        <h6 class="bran__list-type card-text">${brand.category}</h6>
+                                    </div>
+                                </a>
+                            </div>
+                        `;
+                    }
+                })
+                $('.bran__list-items').append(`<div class="d-flex flex-wrap">${data}</div`)
+            }
+        }
+    });
 </script>
