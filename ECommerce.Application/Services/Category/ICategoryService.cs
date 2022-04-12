@@ -13,9 +13,9 @@ namespace ECommerce.Application.Services.Category
         Task<int> Update(CategoryCreateRequest request);
         Task<int> Delete(int CategoryId);
 
-        Task<List<CategoryViewModel>> getAll();
-        Task<List<CategoryViewModel>> getAllBySubCategory(int SubCategoryId, int pageindex, int pagesize);
-        Task<List<CategoryViewModel>> getAllByShop(int ShopId, int pageindex, int pagesize);
-        Task<List<CategoryViewModel>> getAllByBrand(int BrandId, int pageindex, int pagesize);
+        Task<List<CategoryModel>> getAll();
+        Task<List<CategoryModel>> getAllBySubCategory(int SubCategoryId, int pageindex, int pagesize);
+        Task<List<CategoryModel>> getAllByShop(int ShopId, int pageindex, int pagesize);
+        Task<List<CategoryModel>> getAllByBrand(int BrandId, int pageindex, int pagesize);
     }
 }

@@ -1,7 +1,9 @@
 ﻿using ECommerce.Application.Services.Brand;
 using ECommerce.Application.Services.Category;
+using ECommerce.Application.Services.Configurations;
 using ECommerce.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -26,8 +28,16 @@ namespace ECommerce.WebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var list = await _brandService.getAll();
-            return View(list);
+            var _listBrand = await _brandService.getAll();
+            var _listCategory = await _categoryService.getAll();
+
+            var model = new HomeViewModel()
+            {
+                listBrand = _listBrand,
+                listCategory = _listCategory
+            };
+
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

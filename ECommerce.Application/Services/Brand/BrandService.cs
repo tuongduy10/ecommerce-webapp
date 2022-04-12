@@ -27,14 +27,15 @@ namespace ECommerce.Application.Services.Brand
             throw new NotImplementedException();
         }
 
-        public async Task<List<BrandViewModel>> getAll()
+        public async Task<List<BrandModel>> getAll()
         {
             var query = from category in DbContext.Categories
                         join brand in DbContext.Brands on category.CategoryId equals brand.CategoryId
+                        orderby brand.BrandName
                         where brand.Status == true
                         select new { brand, category};
 
-            var list = await query.Select(i => new BrandViewModel()
+            var list = await query.Select(i => new BrandModel()
             {
                 BrandId = i.brand.BrandId,
                 BrandName = i.brand.BrandName,

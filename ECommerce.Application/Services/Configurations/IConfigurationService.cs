@@ -10,5 +10,6 @@ namespace ECommerce.Application.Services.Configurations
     public interface IConfigurationService
     {
         Task<ConfigurationModel> getConfiguration();
+        Task<List<BannerModel>> getBanner();
     }
 }

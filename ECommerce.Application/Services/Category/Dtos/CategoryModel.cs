@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Services.Category.Dtos
 {
-    public class CategoryViewModel
+    public class CategoryModel
     {
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }

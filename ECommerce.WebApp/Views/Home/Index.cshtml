@@ -15,7 +15,7 @@
         </div>
 
         <div class="autoplay d-flex">
-            @foreach (var item in Model)
+            @foreach (var item in Model.listBrand)
             {
                 if (item.Highlights == true)
                 {
@@ -122,38 +122,17 @@
                                         <polyline points='9 18 15 12 9 6'></polyline>
                                     </svg>
                                 </a>
-                                <a class="order__item">
-                                    Điện thoại di động<svg xmlns='http://www.w3.org/2000/svg'
-                                                           width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#333'
-                                                           stroke-width='1' stroke-linecap='round' stroke-linejoin='round'
-                                                           class='feather feather-chevron-right'>
-                                        <polyline points='9 18 15 12 9 6'></polyline>
-                                    </svg>
-                                </a>
-                                <a class="order__item">
-                                    Phụ kiện và trang sức<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
-                                                              viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
-                                                              stroke-linecap='round' stroke-linejoin='round'
-                                                              class='feather feather-chevron-right'>
-                                        <polyline points='9 18 15 12 9 6'></polyline>
-                                    </svg>
-                                </a>
-                                <a class="order__item">
-                                    Hãng hàng không<svg xmlns='http://www.w3.org/2000/svg'
-                                                        width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#333'
-                                                        stroke-width='1' stroke-linecap='round' stroke-linejoin='round'
-                                                        class='feather feather-chevron-right'>
-                                        <polyline points='9 18 15 12 9 6'></polyline>
-                                    </svg>
-                                </a>
-                                <a class="order__item">
-                                    Điện thoại<svg xmlns='http://www.w3.org/2000/svg'
-                                                   width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#333'
-                                                   stroke-width='1' stroke-linecap='round' stroke-linejoin='round'
-                                                   class='feather feather-chevron-right'>
-                                        <polyline points='9 18 15 12 9 6'></polyline>
-                                    </svg>
-                                </a>
+                                @foreach (var category in Model.listCategory)
+                                {
+                                    <a class="order__item">
+                                        @category.CategoryName<svg xmlns='http://www.w3.org/2000/svg'
+                                                               width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#333'
+                                                               stroke-width='1' stroke-linecap='round' stroke-linejoin='round'
+                                                               class='feather feather-chevron-right'>
+                                            <polyline points='9 18 15 12 9 6'></polyline>
+                                        </svg>
+                                    </a>
+                                }
                             </div>
                         </div>
 
@@ -164,26 +143,42 @@
             <div class="bran__list-line my-4"></div>
             <!-- Bran list content -->
             <div class="bran__list-items">
-                <h4>A</h4>
-                <div class="d-flex flex-wrap">
-                    @foreach (var item in Model)
+                @{
+                    var list = new List<string>();
+                    for (var i = 0; i < Model.listBrand.Count; i++)
                     {
-                        <div class="bran__list-item card">
-                            <a href="">
-                                <div class="bran__list-img py-2 px-4">
-                                    <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" class="card-img-top" alt="@item.BrandName">
-                                </div>
-                                <div class="card-body text-center p-2 align-items-center justify-content-center">
-                                    <h5 class="bran__list-name card-title mb-0">@item.BrandName</h5>
-                                    <h6 class="bran__list-type card-text">@item.Category</h6>
-                                </div>
-                            </a>
+                        list.Add(@Model.listBrand[i].BrandName.Substring(0, 1));
+                    }
+                    var listDist = list.Distinct().ToArray();
+
+                    for (var i = 0; i < listDist.Count(); i++)
+                    {
+                        <h4>@listDist[i]</h4>
+                        <div class="d-flex flex-wrap">
+                            @foreach (var item in Model.listBrand)
+                            {
+                                if (listDist[i] == item.BrandName.Substring(0, 1))
+                                {
+                                    <div class="bran__list-item card">
+                                        <a href="">
+                                            <div class="bran__list-img py-2 px-4">
+                                                <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" class="card-img-top" alt="@item.BrandName">
+                                            </div>
+                                            <div class="card-body text-center p-2 align-items-center justify-content-center">
+                                                <h5 class="bran__list-name card-title mb-0">@item.BrandName</h5>
+                                                <h6 class="bran__list-type card-text">@item.Category</h6>
+                                            </div>
+                                        </a>
+                                    </div>
+                                }
+                            }
                         </div>
                     }
-                    <div class="w-100 text-center d-block">
-                        <a class="bran__viewmore d-inline-block" href="">Xem thêm</a>
-                    </div>
-                </div>
+
+                }
+            </div>
+            <div class="w-100 text-center d-block">
+                <a class="bran__viewmore d-inline-block" href="">Xem thêm</a>
             </div>
         </div>
     </div>

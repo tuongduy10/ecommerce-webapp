@@ -26,28 +26,28 @@ namespace ECommerce.Application.Services.Category
             throw new NotImplementedException();
         }
 
-        public async Task<List<CategoryViewModel>> getAll()
+        public async Task<List<CategoryModel>> getAll()
         {
             var list = from c in _DbContext.Categories select c;
 
-            return await list.Select(i => new CategoryViewModel()
+            return await list.Select(i => new CategoryModel()
             {
                 CategoryId = i.CategoryId,
                 CategoryName = i.CategoryName
             }).ToListAsync();
         }
 
-        public async Task<List<CategoryViewModel>> getAllByBrand(int BrandId, int pageindex, int pagesize)
+        public async Task<List<CategoryModel>> getAllByBrand(int BrandId, int pageindex, int pagesize)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<List<CategoryViewModel>> getAllByShop(int ShopId, int pageindex, int pagesize)
+        public async Task<List<CategoryModel>> getAllByShop(int ShopId, int pageindex, int pagesize)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<List<CategoryViewModel>> getAllBySubCategory(int SubCategoryId, int pageindex, int pagesize)
+        public async Task<List<CategoryModel>> getAllBySubCategory(int SubCategoryId, int pageindex, int pagesize)
         {
             throw new NotImplementedException();
         }

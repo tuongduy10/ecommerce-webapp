@@ -12,7 +12,7 @@ namespace ECommerce.Application.Services.Brand
         Task<int> Create(BrandCreateRequest request);
         Task<int> Update(BrandCreateRequest request);
         Task<int> Delete(int BrandId);
-        Task<List<BrandViewModel>> getAll();
+        Task<List<BrandModel>> getAll();
 
     }
 }

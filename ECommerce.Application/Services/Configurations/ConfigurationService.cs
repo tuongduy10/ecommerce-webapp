@@ -16,10 +16,24 @@ namespace ECommerce.Application.Services.Configurations
         {
             _DbContext = DbContext;
         }
+
+        public async Task<List<BannerModel>> getBanner()
+        {
+            var query = from banner in _DbContext.Banners select banner;
+            var result = await query.Select(i => new BannerModel()
+            {
+                BannerId = i.BannerId,
+                BannerPath = i.BannerPath,
+                Status = i.Status
+            }).ToListAsync();
+
+            return result;
+        }
+
         public async Task<ConfigurationModel> getConfiguration()
         {
             var query = from con in _DbContext.Configurations select con;
-            var config = await query.Select(i => new ConfigurationModel()
+            var result = await query.Select(i => new ConfigurationModel()
             {
                 WebsiteName = i.WebsiteName,
                 LogoPath = i.LogoPath,
@@ -31,7 +45,7 @@ namespace ECommerce.Application.Services.Configurations
                 PhoneNumber = i.PhoneNumber
             }).FirstAsync();
 
-            return config;
+            return result;
         }
     }
 }

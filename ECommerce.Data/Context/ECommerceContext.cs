@@ -22,6 +22,7 @@ namespace ECommerce.Data.Context
 
         public virtual DbSet<Models.Attribute> Attributes { get; set; }
         public virtual DbSet<Bank> Banks { get; set; }
+        public virtual DbSet<Banner> Banners { get; set; }
         public virtual DbSet<Blog> Blogs { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
@@ -88,6 +89,15 @@ namespace ECommerce.Data.Context
                 entity.Property(e => e.BankImage).HasColumnType("text");
 
                 entity.Property(e => e.BankName).HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<Banner>(entity =>
+            {
+                entity.ToTable("Banner");
+
+                entity.Property(e => e.BannerPath)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Blog>(entity =>
