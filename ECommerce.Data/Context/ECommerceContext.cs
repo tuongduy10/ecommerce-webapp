@@ -25,7 +25,7 @@ namespace ECommerce.Data.Context
         public virtual DbSet<Blog> Blogs { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
-        public virtual DbSet<Contact> Contacts { get; set; }
+        public virtual DbSet<Configuration> Configurations { get; set; }
         public virtual DbSet<Discount> Discounts { get; set; }
         public virtual DbSet<DiscountType> DiscountTypes { get; set; }
         public virtual DbSet<Header> Headers { get; set; }
@@ -58,7 +58,6 @@ namespace ECommerce.Data.Context
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 IConfigurationRoot configuration = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json")
@@ -131,20 +130,20 @@ namespace ECommerce.Data.Context
                     .HasMaxLength(100);
             });
 
-            modelBuilder.Entity<Contact>(entity =>
+            modelBuilder.Entity<Configuration>(entity =>
             {
-                entity.ToTable("Contact");
+                entity.HasNoKey();
 
-                entity.Property(e => e.Address).HasMaxLength(100);
-
-                entity.Property(e => e.CityCode)
-                    .HasMaxLength(50)
+                entity.Property(e => e.Facebook)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ContactName).HasMaxLength(100);
+                entity.Property(e => e.FaviconPath)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.DistrictCode)
-                    .HasMaxLength(50)
+                entity.Property(e => e.LogoPath)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Mail)
@@ -152,12 +151,10 @@ namespace ECommerce.Data.Context
                     .IsUnicode(false);
 
                 entity.Property(e => e.PhoneNumber)
-                    .HasMaxLength(50)
+                    .HasMaxLength(20)
                     .IsUnicode(false);
 
-                entity.Property(e => e.WardCode)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                entity.Property(e => e.WebsiteName).HasMaxLength(100);
             });
 
             modelBuilder.Entity<Discount>(entity =>
@@ -570,7 +567,11 @@ namespace ECommerce.Data.Context
             {
                 entity.ToTable("Social");
 
-                entity.Property(e => e.SocialName).HasMaxLength(50);
+                entity.Property(e => e.Icon)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SocialName).HasMaxLength(100);
 
                 entity.Property(e => e.SocialUrl)
                     .HasMaxLength(100)

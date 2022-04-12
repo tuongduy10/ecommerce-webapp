@@ -11,10 +11,10 @@ namespace ECommerce.Application.Services.Category
 {
     public class CategoryService : ICategoryService
     {
-        private readonly ECommerceContext DbContext;
+        private readonly ECommerceContext _DbContext;
         public CategoryService(ECommerceContext DbContext)
         {
-            this.DbContext = DbContext;
+            _DbContext = DbContext;
         }
         public async Task<int> Create(CategoryCreateRequest request)
         {
@@ -28,7 +28,7 @@ namespace ECommerce.Application.Services.Category
 
         public async Task<List<CategoryViewModel>> getAll()
         {
-            var list = from c in DbContext.Categories select c;
+            var list = from c in _DbContext.Categories select c;
 
             return await list.Select(i => new CategoryViewModel()
             {

@@ -1,9 +1,11 @@
 using ECommerce.Application.Services.Brand;
 using ECommerce.Application.Services.Category;
+using ECommerce.Application.Services.Configurations;
 using ECommerce.Data.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,9 +33,16 @@ namespace ECommerce.WebApp
                 options.UseSqlServer(Configuration.GetConnectionString("ECommerceDB")));
             services.AddControllersWithViews();
 
-            //Services
+            // Services
+            // Configuration Website
+            services.AddTransient<IConfigurationService, ConfigurationService>();
+            services.AddTransient<IHeaderService, HeaderService>();
+            services.AddTransient<IFooterService, FooterService>();
+
+            // Website Data
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IBrandService, BrandService>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

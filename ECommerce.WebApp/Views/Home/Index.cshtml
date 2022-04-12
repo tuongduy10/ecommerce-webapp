@@ -15,60 +15,15 @@
         </div>
 
         <div class="autoplay d-flex">
-            <a class="bran__logo p-4" href="products.html">
-                <img src="@Configuration["ImagePath:Brand"]tgdd.png" alt="">
-            </a>
-            <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/gc.png" alt="">
-            </a>
-            <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/toshiba.png" alt="">
-            </a>
-            <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/logo.png" alt="">
-            </a>
-            <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/vnal.png" alt="">
-            </a>
-
-            <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/pl.png" alt="">
-            </a>
-            <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/gc.png" alt="">
-            </a>
-            <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/sf.png"
-                     alt="">
-            </a>
-            <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/logo.png"
-                     alt="">
-            </a>
-            <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/vnal.png"
-                     alt="">
-            </a>
-
-            <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/pl.png"
-                     alt="">
-            </a>
-            <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/gc.png"
-                     alt="">
-            </a>
-            <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/tinysquarelogo.jpg" alt="">
-            </a>
-            <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/logo.png"
-                     alt="">
-            </a>
-            <a class="bran__logo p-4" href="products.html">
-                <img src="/images/logo/vnal.png"
-                     alt="">
-            </a>
+            @foreach (var item in Model)
+            {
+                if (item.Highlights == true)
+                {
+                    <a class="bran__logo p-4" href="products.html">
+                        <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" alt="">
+                    </a>
+                }
+            }
         </div>
 
         <div class="w-100 text-center d-block">
@@ -216,7 +171,7 @@
                         <div class="bran__list-item card">
                             <a href="">
                                 <div class="bran__list-img py-2 px-4">
-                                    <img src="/images/logo/sf.png" class="card-img-top" alt="@item.BrandName">
+                                    <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" class="card-img-top" alt="@item.BrandName">
                                 </div>
                                 <div class="card-body text-center p-2 align-items-center justify-content-center">
                                     <h5 class="bran__list-name card-title mb-0">@item.BrandName</h5>

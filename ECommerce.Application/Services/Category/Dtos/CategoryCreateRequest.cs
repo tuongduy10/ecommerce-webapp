@@ -8,5 +8,6 @@ namespace ECommerce.Application.Services.Category.Dtos
 {
     public class CategoryCreateRequest
     {
+        public string CategoryName { get; set; }
     }
 }

@@ -31,6 +31,7 @@ namespace ECommerce.Application.Services.Brand
         {
             var query = from category in DbContext.Categories
                         join brand in DbContext.Brands on category.CategoryId equals brand.CategoryId
+                        where brand.Status == true
                         select new { brand, category};
 
             var list = await query.Select(i => new BrandViewModel()

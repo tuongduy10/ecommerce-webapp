@@ -1,0 +1,398 @@
+﻿<header class="header">
+    <div class="header__top">
+        <div class="header__top-content align-items-center d-flex pt-2">
+            <!-- Logo -->
+            <div class="logo__container text-center px-5 mx-auto">
+                <a href="index.html" class="header__logo">
+                    <img class="logo img-fluid" src="/images/logo/swarovski.png" alt="">
+                </a>
+            </div>
+            <div class="header__top-info">
+                <a href="find-order.html" class="header__top-link">
+                    <span class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                             fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
+                             stroke-linejoin="round" class="feather feather-help-circle">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </span>
+                    <span class="text">
+                        Tra cứu đơn hàng
+                    </span>
+                </a>
+                <a class="header__top-link">
+                    <span class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                             fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
+                             stroke-linejoin="round" class="feather feather-smartphone">
+                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                        </svg>
+                    </span>
+                    <span class="text">
+                        @Model.config.PhoneNumber
+                    </span>
+                </a>
+                <a href="sign-up.html" class="header__top-link">
+                    <span class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                             fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
+                             stroke-linejoin="round" class="feather feather-user">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span class="quality">99</span>
+                    </span>
+                    <span class="text">
+                        Hi, Nguyễn Văn A
+                    </span>
+                </a>
+            </div>
+            <ul class="header__top-action align-items-center">
+                <li>
+                    <a class="header-searchform header__top-link">
+                        <span class="text">
+                            <input type="text" placeholder="Thương hiệu/ Dịch vụ/ Sản phẩm cần tìm">
+                        </span>
+                        <span class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
+                                 stroke-linejoin="round" class="feather feather-search">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="" class="header__top-link">
+                        <span class="icon favorite">
+                            <span class="quality">1</span>
+                            <svg class="" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                 viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                 stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                </path>
+                            </svg>
+                        </span>
+                    </a>
+                </li>
+                <li class="cart-action">
+                    <a href="" class="header__top-link">
+                        <span class="icon cart">
+                            <span class="quality">1</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
+                                 stroke-linejoin="round" class="feather feather-shopping-bag">
+                                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <path d="M16 10a4 4 0 0 1-8 0"></path>
+                            </svg>
+                        </span>
+                    </a>
+                    <div class="minicart-content">
+                        <div class="w-100">
+                            <div class="header-title pb-4 pt-3">Giỏ hàng: 4</div>
+                        </div>
+                        <div class="minicart-products filter--scrollbar px-4">
+                            <div class="minicart-product d-flex py-4">
+                                <div class="minicart__product-image text-center mr-2">
+                                    <img class="h-100 w-auto" src="/images/products/pro1.png" alt="">
+                                </div>
+                                <div class="minicart__product-info d-flex flex-column">
+                                    <div class="name">
+                                        <strong>Samsung Galaxy S20 Ultra 5G</strong>
+                                    </div>
+                                    <div class="detail mb-auto">(Đỏ, M)</div>
+                                    <div class="amount">x2</div>
+                                    <div class="price">10.000.000 ₫</div>
+                                    <div class="total-price">
+                                        20.000.000 ₫
+                                    </div>
+                                </div>
+                                <span class="minicart-remove">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                         viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                         stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="minicart-product d-flex py-4">
+                                <div class="minicart__product-image mr-2">
+                                    <img class="h-100 w-auto" src="/images/products/jacket1.jpg" alt="">
+                                </div>
+                                <div class="minicart__product-info d-flex flex-column">
+                                    <div class="name">
+                                        <strong>Samsung Galaxy S20 Ultra 5G</strong>
+                                    </div>
+                                    <div class="detail mb-auto">(Xanh, L)</div>
+                                    <div class="amount">x2</div>
+                                    <div class="price">20.000.000 ₫</div>
+                                    <div class="total-price">
+                                        40.000.000 ₫
+                                    </div>
+                                </div>
+                                <span class="minicart-remove">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                         viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                         stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="minicart-product d-flex py-4">
+                                <div class="minicart__product-image mr-2">
+                                    <img class="h-100 w-100" src="/images/banner/snidel.jpg" alt="">
+                                </div>
+                                <div class="minicart__product-info d-flex flex-column">
+                                    <div class="name">
+                                        <strong>Samsung Galaxy S20 Ultra 5G</strong>
+                                    </div>
+                                    <div class="detail mb-auto">(Đen, XL)</div>
+                                    <div class="amount">x2</div>
+                                    <div class="price">30.000.000 ₫</div>
+                                    <div class="total-price">
+                                        60.000.000 ₫
+                                    </div>
+                                </div>
+                                <span class="minicart-remove">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                         viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                         stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="minicart-product d-flex py-4">
+                                <div class="minicart__product-image mr-2">
+                                    <img class="h-100 w-auto" src="/images/products/jacket1.jpg" alt="">
+                                </div>
+                                <div class="minicart__product-info d-flex flex-column">
+                                    <div class="name">
+                                        <strong>Samsung Galaxy S20 Ultra 5G</strong>
+                                    </div>
+                                    <div class="detail mb-auto">(Xanh, L)</div>
+                                    <div class="amount">x2</div>
+                                    <div class="price">20.000.000 ₫</div>
+                                    <div class="total-price">
+                                        40.000.000 ₫
+                                    </div>
+                                </div>
+                                <span class="minicart-remove">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                         viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                         stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="minicart-totals px-4 pb-3">
+                            <div class="d-flex justify-content-between pt-3 pb-4">
+                                <div>Tạm tính</div>
+                                <div class="total-price"><strong>120.000.000 ₫</strong></div>
+                            </div>
+                            <div class="text-center d-block">
+                                <a class="minicart-checkout d-inline-block w-100 py-3 mb-4" href="">THANH TOÁN</a>
+                                <a href=""><u>Xem/Chỉnh sửa</u></a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="header__inner">
+        <div class="custom-container">
+            <!-- Navigation -->
+            <!-- Navigation in mobile -->
+            <nav class="nav__mobile">
+                <div class="nav__mobile-list d-flex flex-column nav-close" id="nav__mobile-list-open">
+                    <div class="nav__mobile-logo d-flex p-4">
+                        <div class="w-100 text-center" style="position: relative;">
+                            <span id="nav__mobile-list-close" style="left: 0; position: absolute;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                     fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
+                                     stroke-linejoin="round" class="feather feather-x">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </span>
+                            <a href="">
+                                <img style="max-height: 50px;" src="/images/logo/swarovski.png"
+                                     alt="">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="nav__list-mobile-wrapper py-4 pl-4">
+                        <div class="nav__list-mobile h-100" style="overflow:hidden;overflow-y:scroll;">
+                            @foreach (var header in Model.listHeader)
+                            {
+                                <div class="nav__link-mobile pb-4">
+                                    <a href="@header.HeaderUrl">@header.HeaderName</a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="nav__mobile-footer w-100">
+                        <ul class="nav__mobile-account p-4">
+                            <li class="pb-4">
+                                <a href="find-order.html" class="d-flex w-100">
+                                    <span class="icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                             fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
+                                             stroke-linejoin="round" class="feather feather-help-circle">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                        </svg>
+                                    </span>
+                                    <span class="text">
+                                        Tra cứu đơn hàng
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="pb-4">
+                                <a href="/sign-up.html" class="d-flex w-100">
+                                    <span class="icon">
+                                        <span class="quality">1</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                             viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                             stroke-linecap="round" stroke-linejoin="round"
+                                             class="feather feather-user">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                    </span>
+                                    <span class="text">
+                                        Hi, Nguyễn Văn A
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="/sign-up.html" class="d-flex w-100">
+                                    <span class="icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                             viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                             stroke-linecap="round" stroke-linejoin="round"
+                                             class="feather feather-log-out">
+                                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                            <polyline points="16 17 21 12 16 7"></polyline>
+                                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                                        </svg>
+                                    </span>
+                                    <span class="text">
+                                        Đăng xuất
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="nav__mobile-info p-4">
+                            <p><a href="">Phone: 0123456789 (Mr.A)</a></p>
+                            <p><a href="">Mail: mail@gmail.com</a></p>
+                            <p><a href="https://www.facebook.com/mra/">Facebook: Mr.A</a></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav__mobile-action d-flex justify-content-between py-2">
+                    <label for="nav__mobile-menu" class="overlay d-none" id="nav__overlay"
+                           style="margin: 0;"></label>
+                    <label for="nav__mobile-menu" class="nav__menubar mb-0" id="nav__menubar-open">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                             fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
+                             stroke-linejoin="round" class="feather feather-menu">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </label>
+
+                    <a class="header__mobile-searchicon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                             fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
+                             stroke-linejoin="round" class="feather feather-search">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </a>
+
+                    <a class="profile-mobile">
+                        <span class="quality">1</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                             fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
+                             stroke-linejoin="round" class="feather feather-user">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </a>
+
+                    <a class="favorite-mobile">
+                        <span class="quality">1</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                             fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
+                             stroke-linejoin="round" class="feather feather-heart">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
+                        </svg>
+                    </a>
+
+                    <a class="cart-mobile">
+                        <span class="quality">1</span>
+                        <svg classs="cart-mobile" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                             viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
+                             stroke-linejoin="round" class="feather feather-shopping-bag">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <path d="M16 10a4 4 0 0 1-8 0"></path>
+                        </svg>
+                    </a>
+                </div>
+                <div class="searchform__wrapper py-2 d-none">
+                    <div class="searchform input-group rounded w-100">
+                        <input type="search" id="search-input" class="form-control"
+                               placeholder="Thương hiệu, dịch vụ, sản phẩm bạn muốn tìm ?" aria-label="Search"
+                               aria-describedby="search-addon" />
+                    </div>
+                    <div class="searchresult d-none">
+                        <p>
+                            <a href="">Thế giới di động (Điện thoại di động)</a>
+                        </p>
+                        <p>
+                            <a href="">FPT Shop (Điện thoại di động)</a>
+                        </p>
+                        <p>
+                            <a href="">Samsung Galaxy S20 Ultra</a>
+                        </p>
+                        <p>
+                            <a href="">Geforce RTX 3080TI Asus</a>
+                        </p>
+                        <div class="text-center w-100">
+                            <a class="search-viewmore">Xem thêm</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div class="search__overlay d-none"></div>
+            <!-- Navigation in pc -->
+            <nav class="nav__pc">
+                <ul class="nav__pc-items nav__default d-flex">
+                    @foreach (var header in Model.listHeader)
+                    {
+                        <li class="nav__link">
+                            <a href="@header.HeaderUrl" class="py-3">@header.HeaderName</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+
+    </div>
+</header>
+

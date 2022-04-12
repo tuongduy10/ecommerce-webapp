@@ -1,0 +1,103 @@
+﻿<footer class="footer">
+    <div class="custom-container">
+        <div class="footer__inner">
+            <div class="py-4">
+                <div class="d-flex flex-wrap justify-content-between">
+                    <div class="footer__info">
+                        <span class="footer__info-title">
+                            <p>Công ty</p>
+                        </span>
+                        <ul class="footer__info-list">
+                            @foreach (var item in Model.listBlog)
+                            {
+                                if (item.BlogPosition == 1)
+                                {
+                                    <li class="footer__info-link pb-2">
+                                        <a href="">@item.BlogTitle</a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <div class="footer__info">
+                        <span class="footer__info-title">
+                            <p>Chính sách hỗ trợ</p>
+                        </span>
+                        <ul class="footer__info-list">
+                            @foreach (var item in Model.listBlog)
+                            {
+                                if (item.BlogPosition == 2)
+                                {
+                                    <li class="footer__info-link pb-2">
+                                        <a href="">@item.BlogTitle</a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <div class="footer__info">
+                        <span class="footer__info-title">
+                            <p>Tìm chúng tôi trên</p>
+                        </span>
+                        <ul class="footer__info-list">
+                            @foreach (var item in Model.listSocial)
+                            {
+                                if (item.Position == 1)
+                                {
+                                    var url = "";
+                                    if (item.SocialUrl != "")
+                                    {
+                                        url = item.SocialUrl;
+                                    }
+                                    <li class="footer__info-link pb-2">
+                                        <a target="_blank" rel="noopener noreferrer" href="@url">
+                                            <i class="@item.Icon"></i> @item.SocialName
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <div class="footer__info">
+                        <span class="footer__info-title">
+                            <p>Thông tin liên hệ</p>
+                        </span>
+                        <ul class="footer__info-list">
+                            @foreach (var item in Model.listSocial)
+                            {
+                                if (item.Position == 2)
+                                {
+                                    var url = "";
+                                    if (item.SocialUrl != "")
+                                    {
+                                        url = item.SocialUrl;
+                                    }
+                                    <li class="footer__info-link pb-2">
+                                        <a target="_blank" rel="noopener noreferrer" href="@url">
+                                            <i class="@item.Icon"></i> @item.SocialName
+                                        </a>
+                                    </li>
+                                }
+                            }
+                            <li class="footer__info-link pb-2">
+                                <a target="_blank" rel="noopener noreferrer" href="">
+                                    <i class="fa-solid fa-clock"></i> 08:00 - 22:00
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer__copyright">
+        <div class="custom-container">
+            <div class="py-4">
+                <!-- <span class="footer__copyright-info" style="font-weight: bold;"></span> -->
+                <p class="footer__copyright-info">
+                    <i class="far fa-copyright"></i> 2022 - Copyright by 
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>

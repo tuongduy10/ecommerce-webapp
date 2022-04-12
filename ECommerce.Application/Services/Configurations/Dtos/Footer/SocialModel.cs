@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-#nullable disable
-
-namespace ECommerce.Data.Models
+namespace ECommerce.Application.Services.Configurations.Dtos.Footer
 {
-    public partial class Social
+    public class SocialModel
     {
         public int SocialId { get; set; }
         public byte? Position { get; set; }
