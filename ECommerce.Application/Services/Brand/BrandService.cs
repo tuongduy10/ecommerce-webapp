@@ -49,7 +49,6 @@ namespace ECommerce.Application.Services.Brand
 
             return list;
         }
-
         public async Task<List<BrandModel>> getAllBrandInCategory(int CategoryId)
         {
             var query = from category in DbContext.Categories

@@ -1,11 +1,11 @@
-﻿using ECommerce.Application.Services.Category.Dtos;
+﻿using ECommerce.Application.Services.SubCategory.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerce.Application.Services.Category
+namespace ECommerce.Application.Services.SubCategory
 {
     public interface ISubCategoryService
     {

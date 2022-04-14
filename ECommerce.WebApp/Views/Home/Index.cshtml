@@ -2,7 +2,6 @@
 @inject IConfiguration Configuration
 
 @{
-    ViewData["Title"] = "Home Page";
     Layout = "~/Views/Shared/_LayoutClient.cshtml";
 }
 
@@ -19,7 +18,7 @@
             {
                 if (item.Highlights == true)
                 {
-                    <a class="bran__logo p-4" href="products.html">
+                    <a class="bran__logo p-4" style="cursor: pointer;">
                         <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" alt="">
                     </a>
                 }
@@ -27,7 +26,7 @@
         </div>
 
         <div class="w-100 text-center d-block">
-            <a class="bran__viewmore d-inline-block" href="products.html">Xem thêm</a>
+            <a class="bran__viewmore d-inline-block" style="cursor: pointer;" href="@Url.Action("HighlightsBrands", "Brand")">Xem thêm</a>
         </div>
     </div>
     <!-- Bran list -->
@@ -114,7 +113,7 @@
                         </div>
                         <div class="order__item-dropdown_menu">
                             <div class="order__item-dropdown_items">
-                                <a class="order__item d-none">
+                                <a class="order__item d-none" onclick="getAllBrandList()">
                                     Tất cả<svg xmlns='http://www.w3.org/2000/svg'
                                                width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#333'
                                                stroke-width='1' stroke-linecap='round' stroke-linejoin='round'
@@ -150,46 +149,13 @@
                         list.Add(@Model.listBrand[i].BrandName.Substring(0, 1));
                     }
                     var listDist = list.Distinct().ToArray();
-
-                    for (var i = 0; i < listDist.Count(); i++)
-                    {
-                        <h4>@listDist[i]</h4>
-                        <div class="d-flex flex-wrap">
-                            @foreach (var item in Model.listBrand)
-                            {
-                                if (listDist[i] == item.BrandName.Substring(0, 1))
-                                {
-                                    <div class="bran__list-item card">
-                                        <a href="">
-                                            <div class="bran__list-img py-2 px-4">
-                                                <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" class="card-img-top" alt="@item.BrandName">
-                                            </div>
-                                            <div class="card-body text-center p-2 align-items-center justify-content-center">
-                                                <h5 class="bran__list-name card-title mb-0">@item.BrandName</h5>
-                                                <h6 class="bran__list-type card-text">@item.Category</h6>
-                                            </div>
-                                        </a>
-                                    </div>
-                                }
-                            }
-                        </div>
-                    }
-                }
-
-                @*@{
-                    var list = new List<string>();
-                    for (var i = 0; i < Model.listBrand.Count; i++)
-                    {
-                        list.Add(@Model.listBrand[i].BrandName.Substring(0, 1));
-                    }
-                    var listDist = list.Distinct().ToArray();
                     var listAtoE = new List<string>() { "A", "B", "C", "D", "E" };
                     var listFtoJ = new List<string>() { "F", "G", "H", "I", "J" };
                     var listKtoO = new List<string>() { "K", "L", "M", "N", "O" };
                     var listPtoT = new List<string>() { "P", "Q", "R", "S", "T" };
                     var listUtoZ = new List<string>() { "U", "V", "W", "X", "Y", "Z" };
 
-                    var listOrderBy = listFtoJ;
+                    var listOrderBy = listAtoE; // Default list display
 
                     for (var i = 0; i < listDist.Count(); i++)
                     {
@@ -197,14 +163,20 @@
                         {
                             if (listOrderBy[j] == listDist[i])
                             {
+                                var count = 0;
                                 <h4>@listOrderBy[j]</h4>
                                 <div class="d-flex flex-wrap">
                                     @foreach (var item in Model.listBrand)
                                     {
                                         if (listOrderBy[j] == item.BrandName.Substring(0, 1))
                                         {
+                                            count++;
+                                            if (count > 10) // 10 brands for each row
+                                            {
+                                                continue;
+                                            }
                                             <div class="bran__list-item card">
-                                                <a href="">
+                                                <a href="@Url.Action("ProductInBrand","Product", new { id = item.BrandId})">
                                                     <div class="bran__list-img py-2 px-4">
                                                         <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" class="card-img-top" alt="@item.BrandName">
                                                     </div>
@@ -220,132 +192,44 @@
                             }
                         }
                     }
-                }*@
+                }
+                <div class="w-100 text-center d-block">
+                    <a class="bran__viewmore d-inline-block" style="cursor: pointer">Xem thêm</a>
+                </div>
             </div>
         </div>
     </div>
 </div>
 <script>
+    // Events
     $('.getBrandListFromAtoE').click(function () {
-        $.get("api/BrandAPI/getAll", function (data, response) {
-            if (response != "success") {
-                $('.bran__list-items').empty();
-                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                return;
-            }
-            if (data.status != "success") {
-                $('.bran__list-items').empty();
-                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                return;
-            }
-            if (data.status == "success") {
-                $('.bran__list-items').empty();
-                var sortBy = ["A", "B", "C", "D", "E"];
-                var listBrand = data.data;
-                renderBrandListOrdered(listBrand, sortBy);
-            }
-        });
+        var sortBy = ["A", "B", "C", "D", "E"];
+        getBrandListOrdered(sortBy);
     })
     $('.getBrandListFromFtoJ').click(function () {
-        $.get("api/BrandAPI/getAll", function (data, response) {
-            if (response != "success") {
-                $('.bran__list-items').empty();
-                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                return;
-            }
-            if (data.status != "success") {
-                $('.bran__list-items').empty();
-                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                return;
-            }
-            if (data.status == "success") {
-                $('.bran__list-items').empty();
-                var sortBy = ["F", "G", "H", "I", "J"];
-                var listBrand = data.data;
-                renderBrandListOrdered(listBrand, sortBy);
-            }
-        });
+        var sortBy = ["F", "G", "H", "I", "J"];
+        getBrandListOrdered(sortBy);
     })
     $('.getBrandListFromKtoO').click(function () {
-        $.get("api/BrandAPI/getAll", function (data, response) {
-            if (response != "success") {
-                $('.bran__list-items').empty();
-                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                return;
-            }
-            if (data.status != "success") {
-                $('.bran__list-items').empty();
-                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                return;
-            }
-            if (data.status == "success") {
-                $('.bran__list-items').empty();
-                var sortBy = ["K", "L", "M", "N", "O"];
-                var listBrand = data.data;
-                renderBrandListOrdered(listBrand, sortBy);
-            }
-        });
+        var sortBy = ["K", "L", "M", "N", "O"];
+        getBrandListOrdered(sortBy);
     })
     $('.getBrandListFromPtoT').click(function () {
-        $.get("api/BrandAPI/getAll", function (data, response) {
-            if (response != "success") {
-                $('.bran__list-items').empty();
-                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                return;
-            }
-            if (data.status != "success") {
-                $('.bran__list-items').empty();
-                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                return;
-            }
-            if (data.status == "success") {
-                $('.bran__list-items').empty();
-                var sortBy = ["P", "Q", "R", "S", "T"];
-                var listBrand = data.data;
-                renderBrandListOrdered(listBrand, sortBy);
-            }
-        });
+        var sortBy = ["P", "Q", "R", "S", "T"];
+        getBrandListOrdered(sortBy);
     })
     $('.getBrandListFromUtoZ').click(function () {
-        $.get("api/BrandAPI/getAll", function (data, response) {
-            if (response != "success") {
-                $('.bran__list-items').empty();
-                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                return;
-            }
-            if (data.status != "success") {
-                $('.bran__list-items').empty();
-                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                return;
-            }
-            if (data.status == "success") {
-                $('.bran__list-items').empty();
-                var sortBy = ["U", "V", "W", "X", "Y", "Z"];
-                var listBrand = data.data;
-                renderBrandListOrdered(listBrand, sortBy);
-            }
-        });
+        var sortBy = ["U", "V", "W", "X", "Y", "Z"];
+        getBrandListOrdered(sortBy);
     })
     $('.getAllBrandList').click(function () {
-        $.get("api/BrandAPI/getAll", function (data, response) {
-            if (response != "success") {
-                $('.bran__list-items').empty();
-                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                return;
-            }
-            if (data.status != "success") {
-                $('.bran__list-items').empty();
-                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                return;
-            }
-            if (data.status == "success") {
-                $('.bran__list-items').empty();
-                var listBrand = data.data;
-                renderAllBrandList(listBrand);
-            }
-        });
+        getAllBrandList();
+    })
+    $(document).on('click', '.bran__viewmore', function () { // View more 
+        getAllBrandList();
     })
 
+    // Call API functions
     function getAllBrandInCategory(id) {
         $.get("api/BrandAPI/getAllBrandInCategory", { id: id }, function (data, response) {
             if (response != "success") {
@@ -361,16 +245,85 @@
             if (data.status == "success") {
                 $('.bran__list-items').empty();
                 var listBrand = data.data;
-                renderAllBrandList(listBrand);
+                renderBrandList(listBrand);
             }
         })
+    }
+    function getBrandListOrdered(sortBy) {
+        $.get("api/BrandAPI/getAll", function (data, response) {
+            if (response != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
+            }
+            if (data.status != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
+            }
+            if (data.status == "success") {
+                $('.bran__list-items').empty();
+                var listBrand = data.data; // array brand
+                renderBrandListOrdered(listBrand, sortBy);
+            }
+        });
+    }
+    function getAllBrandList() {
+        $.get("api/BrandAPI/getAll", function (data, response) {
+            if (response != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
+            }
+            if (data.status != "success") {
+                $('.bran__list-items').empty();
+                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
+                return;
+            }
+            if (data.status == "success") {
+                $('.bran__list-items').empty();
+                var listBrand = data.data;
+                renderBrandList(listBrand);
+            }
+        });
+    }
+
+    // Render data to html funtions
+    function renderBrandList(listBrand) {
+        var tempList = [];
+        for (var i = 0; i < listBrand.length; i++) {
+            tempList.push(listBrand[i].brandName[0]);
+        }
+        var listDist = tempList.filter(function (value, index) { return tempList.indexOf(value) == index });
+        for (var i = 0; i < listDist.length; i++) {
+            $('.bran__list-items').append(`<h4>${listDist[i]}</h4>`)
+            var data = '';
+            listBrand.forEach(brand => {
+                if (listDist[i] == brand.brandName[0]) {
+                    data += `
+                        <div class="bran__list-item card">
+                            <a href="">
+                                <div class="bran__list-img py-2 px-4">
+                                    <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="card-img-top" alt="${brand.brandName}">
+                                </div>
+                                <div class="card-body text-center p-2 align-items-center justify-content-center">
+                                    <h5 class="bran__list-name card-title mb-0">${brand.brandName}</h5>
+                                    <h6 class="bran__list-type card-text">${brand.category}</h6>
+                                </div>
+                            </a>
+                        </div>
+                    `;
+                }
+            })
+            $('.bran__list-items').append(`<div class="d-flex flex-wrap">${data}</div`)
+        }
     }
     function renderBrandListOrdered(listBrand, sortBy) {
         var tempList = [];
         for (var i = 0; i < listBrand.length; i++){
-            tempList.push(listBrand[i].brandName[0]);
+            tempList.push(listBrand[i].brandName[0]); // array of first letter of brandname
         }
-        var listDist = tempList.filter(function (value, index) { return tempList.indexOf(value) == index });
+        var listDist = tempList.filter(function (value, index) { return tempList.indexOf(value) == index }); // distincted array array of first letter of brandname
         for (var i = 0; i < listDist.length; i++) {
             for (var j = 0; j < sortBy.length; j++) {
                 if (sortBy[j] == listDist[i]) {
@@ -400,37 +353,8 @@
         // Xem thêm
         $('.bran__list-items').append(`
             <div class="w-100 text-center d-block">
-                <a class="bran__viewmore d-inline-block" href="">Xem thêm</a>
+                <a class="bran__viewmore d-inline-block" style="cursor: pointer">Xem thêm</a>
             </div>
         `);
-    }
-    function renderAllBrandList(listBrand) {
-        var tempList = [];
-        for (var i = 0; i < listBrand.length; i++) {
-            tempList.push(listBrand[i].brandName[0]);
-        }
-        var listDist = tempList.filter(function (value, index) { return tempList.indexOf(value) == index });
-        for (var i = 0; i < listDist.length; i++) {
-            $('.bran__list-items').append(`<h4>${listDist[i]}</h4>`)
-            var data = '';
-            listBrand.forEach(brand => {
-                if (listDist[i] == brand.brandName[0]) {
-                    data += `
-                        <div class="bran__list-item card">
-                            <a href="">
-                                <div class="bran__list-img py-2 px-4">
-                                    <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="card-img-top" alt="${brand.brandName}">
-                                </div>
-                                <div class="card-body text-center p-2 align-items-center justify-content-center">
-                                    <h5 class="bran__list-name card-title mb-0">${brand.brandName}</h5>
-                                    <h6 class="bran__list-type card-text">${brand.category}</h6>
-                                </div>
-                            </a>
-                        </div>
-                    `;
-                }
-            })
-            $('.bran__list-items').append(`<div class="d-flex flex-wrap">${data}</div`)
-        }
     }
 </script>

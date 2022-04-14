@@ -12,8 +12,8 @@ namespace ECommerce.WebApp.Controllers
     [ApiController]
     public class CategoryAPI : ControllerBase
     {
-        private ICategoryService _categoryService;
-        public CategoryAPI(ICategoryService categoryService) 
+        private ISubCategoryService _categoryService;
+        public CategoryAPI(ISubCategoryService categoryService) 
         {
             _categoryService = categoryService;
         }

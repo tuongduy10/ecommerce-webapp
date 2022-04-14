@@ -418,9 +418,9 @@ namespace ECommerce.Data.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ProductPrice_Product");
 
-                entity.HasOne(d => d.ProductNavigation)
+                entity.HasOne(d => d.ProductType)
                     .WithMany(p => p.ProductPrices)
-                    .HasForeignKey(d => d.ProductId)
+                    .HasForeignKey(d => d.ProductTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ProductPrice_ProductType");
             });
@@ -502,8 +502,6 @@ namespace ECommerce.Data.Context
             modelBuilder.Entity<Shop>(entity =>
             {
                 entity.ToTable("Shop");
-
-                entity.Property(e => e.ShopId).ValueGeneratedNever();
 
                 entity.Property(e => e.ShopAddress).HasMaxLength(100);
 

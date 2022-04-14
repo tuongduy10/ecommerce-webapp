@@ -1,4 +1,4 @@
-﻿using ECommerce.Application.Services.Category.Dtos;
+﻿using ECommerce.Application.Services.SubCategory.Dtos;
 using ECommerce.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerce.Application.Services.Category
+namespace ECommerce.Application.Services.SubCategory
 {
     public class SubCategoryService : ISubCategoryService
     {
@@ -30,12 +30,14 @@ namespace ECommerce.Application.Services.Category
         }
         public async Task<List<SubCategoryModel>> getAll()
         {
-            var list = from c in _DbContext.Categories select c;
+            var list = from c in _DbContext.SubCategories 
+                       select c;
 
             return await list.Select(i => new SubCategoryModel()
             {
+                SubCategoryId = i.SubCategoryId,
+                SubCategoryName = i.SubCategoryName,
                 CategoryId = i.CategoryId,
-                CategoryName = i.CategoryName
             }).ToListAsync();
         }
     }

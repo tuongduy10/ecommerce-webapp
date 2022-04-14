@@ -17,6 +17,5 @@ namespace ECommerce.Data.Models
         public string Mail { get; set; }
         public string Facebook { get; set; }
         public string FacebookUrl { get; set; }
-
     }
 }

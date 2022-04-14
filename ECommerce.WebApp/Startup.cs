@@ -1,6 +1,7 @@
 using ECommerce.Application.Services.Brand;
 using ECommerce.Application.Services.Category;
 using ECommerce.Application.Services.Configurations;
+using ECommerce.Application.Services.Product;
 using ECommerce.Data.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,9 +41,10 @@ namespace ECommerce.WebApp
             services.AddTransient<IFooterService, FooterService>();
 
             // Website Data
-            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<ISubCategoryService, SubCategoryService>();
             services.AddTransient<IBrandService, BrandService>();
-            
+            services.AddTransient<IProductService, ProductService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

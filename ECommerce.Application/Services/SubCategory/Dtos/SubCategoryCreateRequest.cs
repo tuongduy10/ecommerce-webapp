@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerce.Application.Services.Category.Dtos
+namespace ECommerce.Application.Services.SubCategory.Dtos
 {
     public class SubCategoryCreateRequest
     {
-        public string CategoryName { get; set; }
+        public string SubCategoryName { get; set; }
+        public int CategoryId { get; set; }
     }
 }

@@ -136,20 +136,22 @@ $('.filter-close').click(function(){
     $('body').css('overflow', 'auto')
     $('.product__filter-dropdown-menu').removeClass('filter-open')
 })
-$('.add-to-wishlist').hover(
-    function(){
-        $(this).attr('fill','true')
-    },
-    function(){
-        $(this).attr('fill','none')
-    }
-)
-$('.add-to-wishlist').click(function(){
-    if($(this).hasClass('fill')) {
-        $(this).removeClass('fill')
+if ($(window).width() > 768) {
+    $('.product-heart').hover(
+        function () {
+            $(this).find('.add-to-wishlist').attr('fill', 'true')
+        },
+        function () {
+            $(this).find('.add-to-wishlist').attr('fill', 'none')
+        }
+    )
+}
+$('.product-heart').click(function () {
+    if ($(this).find('.add-to-wishlist').hasClass('fill')) {
+        $(this).find('.add-to-wishlist').removeClass('fill')
         return
     }
-    $(this).addClass('fill')
+    $(this).find('.add-to-wishlist').addClass('fill')
 })
 // $('.options-wrapper select').on('click',function(){
 //     if(!$(this).siblings('svg').hasClass('svg-up')){
