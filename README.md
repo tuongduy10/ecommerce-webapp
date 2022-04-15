@@ -33,7 +33,7 @@ In ECommerce.WebApp too:
 
 ## Models
 
-Set "ECommerce.Data" as start up project before generating or updating models.
+Set "ECommerce.Data" as a start up project before generating or updating models.
  
 Generate model classes from database:
 
