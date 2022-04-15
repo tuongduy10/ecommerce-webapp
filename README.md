@@ -31,9 +31,6 @@ In ECommerce.WebApp too:
 
 `Microft.VisualStudio.Web.CodeGeneration.Design (5.0.0)`
 
-**Note: Remember to set "ECommerce.WebApp" as start up project after installing Nuget Packages !**
-
-
 ## Models
 
 Set "ECommerce.Data" as start up project before generating or updating models.
