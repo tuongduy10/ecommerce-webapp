@@ -24,7 +24,7 @@ namespace ECommerce.Application.Services.Category
         {
             throw new NotImplementedException();
         }
-        public async Task<int> Update(CategoryCreateRequest request)
+        public async Task<int> Update(CategoryModel request)
         {
             throw new NotImplementedException();
         }

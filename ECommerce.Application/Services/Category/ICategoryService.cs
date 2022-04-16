@@ -10,7 +10,7 @@ namespace ECommerce.Application.Services.Category
     public interface ICategoryService
     {
         Task<int> Create(CategoryCreateRequest request);
-        Task<int> Update(CategoryCreateRequest request);
+        Task<int> Update(CategoryModel request);
         Task<int> Delete(int CategoryId);
         Task<List<CategoryModel>> getAll();
 
