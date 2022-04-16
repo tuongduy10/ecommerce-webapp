@@ -32,3 +32,4 @@ Config ECommerceContext:
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("ECommerceDB"));
         }
     }
+	//ngok
