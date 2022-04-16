@@ -1,4 +1,6 @@
-﻿<!-- Main contain -->
+﻿
+
+<!-- Main contain -->
 <div class="custom-container">
     <div class="content__wrapper products__content-wrapper">
         <div class="content__inner w-100">
@@ -520,8 +522,16 @@
                         </div>
                     </div>
                     <div class="product__grid-wrapper">
-                        <p class="product__grid-title text-center">Đồng hồ</p>
-                        <div class="product__grid-inner w-100 d-flex flex-wrap">
+
+
+                        <!-- Product in Subscategory -->
+                        @foreach (var subcategory in Model.listSubCategory)
+                        {
+                            <p class="product__grid-title text-center">@subcategory.SubCategoryName</p>
+                        }
+                    <div class="product__grid-inner w-100 d-flex flex-wrap">
+                        @foreach (var product in Model.listProduct)
+                        {
                             <div class="product product-3">
                                 <a class="product-img" href="product-detail.html">
                                     <img src="assets/images/products/black.jpg" alt="">
@@ -548,8 +558,7 @@
                                             Shop Demo 01
                                         </div>
                                         <div class="product-name mb-0">
-                                            Omega Speedmaster Moonwatch Professional, 42
-                                            mm
+                                            @product.ProductName
                                         </div>
                                         <div class="product-name">(Tạm hết đến ngày 09/04/2022)</div>
                                         <div class="product-subprice">200.020.000 đ</div>
@@ -560,74 +569,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="product product-3">
-                                <a class="product-img" href="product-detail.html">
-                                    <img src="assets/images/products/watch3.jpg" alt="">
-                                </a>
-                                <div class="product-label d-flex">
-                                    <span class="label-sales"> -10%</span>
-                                    <a class="product-heart" style="cursor: pointer;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             viewBox="0 0 24 24" fill="none" stroke="#333"
-                                             stroke-width="1" stroke-linecap="round"
-                                             stroke-linejoin="round"
-                                             class="add-to-wishlist feather feather-heart">
-                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                                            </path>
-                                        </svg>
-                                    </a>
-                                </div>
-                                <hr style="width: 50%; margin: 0 auto;">
-                                <div class="product__info text-center">
-                                    <div class="product__info-detail">
-                                        <div class="product-brand">
-                                            Shop Demo 01
-                                        </div>
-                                        <div class="product-name mb-0">Samsung Galaxy S21 Ultra 5G</div>
-                                        <div class="product-name">(Hàng có sẵn)</div>
-                                        <div class="product-subprice">200.020.000 đ</div>
-                                        <div class="product-price">190.030.000 đ</div>
-                                        <div class="product-btn">
-                                            <a href="">Xem nhanh</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="product product-3">
-                                <a class="product-img" href="/product-detail.html">
-                                    <img src="assets/images/products/watch4.jpg" alt="">
-                                </a>
-                                <div class="product-label d-flex">
-                                    <span class="label-new">Mới</span>
-                                    <span class="label-new">Hot</span>
-                                    <a class="product-heart" style="cursor: pointer;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             viewBox="0 0 24 24" fill="none" stroke="#333"
-                                             stroke-width="1" stroke-linecap="round"
-                                             stroke-linejoin="round"
-                                             class="add-to-wishlist feather feather-heart">
-                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                                            </path>
-                                        </svg>
-                                    </a>
-                                </div>
-                                <hr style="width: 50%; margin: 0 auto;">
-                                <div class="product__info">
-                                    <div class="product__info-detail text-center">
-                                        <div class="product-brand align-items-center">
-                                            Shop Demo 01
-                                        </div>
-                                        <div class="product-name mb-0">Samsung Galaxy S21 Ultra 5G</div>
-                                        <div class="product-name">(Hàng sắp về)</div>
-                                        <div class="product-subprice">200.020.000 đ</div>
-                                        <div class="product-price">190.030.000 đ</div>
-                                        <div class="product-btn text-center">
-                                            <a href="">Xem nhanh</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        }
+                    </div>
+
+                        <!-- Product in Subscategory -->
                         <p class="product__grid-title text-center">Quần áo</p>
                         <div class="product__grid-inner w-100 d-flex flex-wrap">
                             <div class="product product-3">
@@ -736,6 +681,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                     <div class="filter__control-bottom">
                         <!-- Number / total -->

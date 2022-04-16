@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ECommerce.WebApp.Models
+namespace ECommerce.WebApp.Models.Components
 {
     public class HeaderViewModel
     {

@@ -1,5 +1,5 @@
 ﻿using ECommerce.Application.Services.Configurations;
-using ECommerce.WebApp.Models;
+using ECommerce.WebApp.Models.Components;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;

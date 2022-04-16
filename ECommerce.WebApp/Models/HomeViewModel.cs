@@ -11,6 +11,6 @@ namespace ECommerce.WebApp.Models
     public class HomeViewModel
     {
         public List<BrandModel> listBrand { get; set; }
-        public List<SubCategoryModel> listCategory { get; set; }
+        public List<CategoryModel> listCategory { get; set; }
     }
 }

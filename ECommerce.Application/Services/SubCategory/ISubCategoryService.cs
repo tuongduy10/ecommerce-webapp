@@ -13,6 +13,6 @@ namespace ECommerce.Application.Services.SubCategory
         Task<int> Update(SubCategoryCreateRequest request);
         Task<int> Delete(int CategoryId);
         Task<List<SubCategoryModel>> getAll();
-
+        Task<List<SubCategoryModel>> getSubCategoryInBrand(int BrandId);
     }
 }

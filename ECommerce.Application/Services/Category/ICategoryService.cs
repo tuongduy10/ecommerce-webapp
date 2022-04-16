@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Services.Category
 {
-    public interface ISubCategoryService
+    public interface ICategoryService
     {
-        Task<int> Create(SubCategoryCreateRequest request);
-        Task<int> Update(SubCategoryCreateRequest request);
+        Task<int> Create(CategoryCreateRequest request);
+        Task<int> Update(CategoryCreateRequest request);
         Task<int> Delete(int CategoryId);
-        Task<List<SubCategoryModel>> getAll();
+        Task<List<CategoryModel>> getAll();
 
     }
 }
