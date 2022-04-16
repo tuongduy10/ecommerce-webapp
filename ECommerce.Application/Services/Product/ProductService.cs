@@ -27,7 +27,7 @@ namespace ECommerce.Application.Services.Product
                         join subcategory in _DbContext.SubCategories on product.SubCategoryId equals subcategory.SubCategoryId
                         where type.ProductTypeId == price.ProductTypeId &&
                                 type.ProductTypeId == 2 &&
-                                brand.BrandId == 1
+                                brand.BrandId == BrandId
                         select new { product, price, brand, shop, subcategory };
 
             var list = await query.Select(i => new ProductInBrandModel()
@@ -44,9 +44,8 @@ namespace ECommerce.Application.Services.Product
                 ProductImages = _DbContext.ProductImages.Where(img => img.ProductId == i.product.ProductId).Select(i => i.ProductImagePath).ToList(),
 
                 Brand = i.brand.BrandName,
-
                 Shop = i.shop.ShopName,
-                SubCategory = i.subcategory.SubCategoryName,
+                SubCategoryId = i.subcategory.SubCategoryId,
 
             }).ToListAsync();
 

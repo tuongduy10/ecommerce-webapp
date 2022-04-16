@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Services.Category
 {
-    public class SubCategoryService : ISubCategoryService
+    public class CategoryService : ICategoryService
     {
         private readonly ECommerceContext _DbContext;
-        public SubCategoryService(ECommerceContext DbContext)
+        public CategoryService(ECommerceContext DbContext)
         {
             _DbContext = DbContext;
         }
-        public async Task<int> Create(SubCategoryCreateRequest request)
+        public async Task<int> Create(CategoryCreateRequest request)
         {
             throw new NotImplementedException();
         }
@@ -24,15 +24,15 @@ namespace ECommerce.Application.Services.Category
         {
             throw new NotImplementedException();
         }
-        public async Task<int> Update(SubCategoryCreateRequest request)
+        public async Task<int> Update(CategoryCreateRequest request)
         {
             throw new NotImplementedException();
         }
-        public async Task<List<SubCategoryModel>> getAll()
+        public async Task<List<CategoryModel>> getAll()
         {
             var list = from c in _DbContext.Categories select c;
 
-            return await list.Select(i => new SubCategoryModel()
+            return await list.Select(i => new CategoryModel()
             {
                 CategoryId = i.CategoryId,
                 CategoryName = i.CategoryName

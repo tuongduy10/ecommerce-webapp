@@ -176,7 +176,7 @@
                                                 continue;
                                             }
                                             <div class="bran__list-item card">
-                                                <a href="@Url.Action("ProductInBrand","Product", new { id = item.BrandId})">
+                                                <a href="@Url.Action("ProductInBrand","Product", new { BrandId = item.BrandId})">
                                                     <div class="bran__list-img py-2 px-4">
                                                         <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" class="card-img-top" alt="@item.BrandName">
                                                     </div>
@@ -302,7 +302,7 @@
                 if (listDist[i] == brand.brandName[0]) {
                     data += `
                         <div class="bran__list-item card">
-                            <a href="">
+                            <a href="/Product/ProductInBrand?BrandId=${brand.brandId}">
                                 <div class="bran__list-img py-2 px-4">
                                     <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="card-img-top" alt="${brand.brandName}">
                                 </div>
@@ -333,7 +333,7 @@
                         if (sortBy[j] == brand.brandName[0]) {
                             data += `
                                 <div class="bran__list-item card">
-                                    <a href="">
+                                    <a href="/Product/ProductInBrand?BrandId=${brand.brandId}">
                                         <div class="bran__list-img py-2 px-4">
                                             <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="card-img-top" alt="${brand.brandName}">
                                         </div>

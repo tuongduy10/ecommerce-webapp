@@ -1,4 +1,5 @@
 using ECommerce.Application.Services.Brand;
+using ECommerce.Application.Services.SubCategory;
 using ECommerce.Application.Services.Category;
 using ECommerce.Application.Services.Configurations;
 using ECommerce.Application.Services.Product;
@@ -41,9 +42,10 @@ namespace ECommerce.WebApp
             services.AddTransient<IFooterService, FooterService>();
 
             // Website Data
-            services.AddTransient<ISubCategoryService, SubCategoryService>();
-            services.AddTransient<IBrandService, BrandService>();
             services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<ISubCategoryService, SubCategoryService>();
+            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<IBrandService, BrandService>();
 
         }
 

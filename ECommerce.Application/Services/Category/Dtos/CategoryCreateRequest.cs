@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Services.Category.Dtos
 {
-    public class SubCategoryCreateRequest
+    public class CategoryCreateRequest
     {
         public string CategoryName { get; set; }
     }
