@@ -9,7 +9,6 @@
     <Folder Include="Services\AvailablePrice\" />
     <Folder Include="Services\Bank\" />
     <Folder Include="Services\Banner\" />
-    <Folder Include="Services\Blog\" />
     <Folder Include="Services\Discount\" />
     <Folder Include="Services\DiscountType\" />
     <Folder Include="Services\Header\" />
@@ -19,19 +18,13 @@
     <Folder Include="Services\SubCategoryAttribute\" />
     <Folder Include="Services\Social\" />
     <Folder Include="Services\ShopBrand\" />
-    <Folder Include="Services\ShopBank\" />
     <Folder Include="Services\Shop\" />
-    <Folder Include="Services\RoleFunction\" />
-    <Folder Include="Services\Role\" />
     <Folder Include="Services\RatingImage\" />
     <Folder Include="Services\Rate\" />
-    <Folder Include="Services\ProductUserImage\" />
     <Folder Include="Services\ProductType\" />
     <Folder Include="Services\ProductPrice\" />
     <Folder Include="Services\ProductOption\" />
-    <Folder Include="Services\ProductImage\" />
     <Folder Include="Services\ProductAttribute\" />
-    <Folder Include="Services\PaymentMethod\" />
     <Folder Include="Services\Option\" />
   </ItemGroup>
 

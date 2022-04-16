@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Services.Blog.Dtos
 {
-    public class BlogCreateRequest
+    public class BlogModel
     {
+        public int BlogId { get; set; }
         public byte? BlogPosition { get; set; }
         public string BlogTitle { get; set; }
         public string BlogContent { get; set; }
         public byte? Status { get; set; }
-
     }
 }

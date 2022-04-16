@@ -72,7 +72,7 @@ namespace ECommerce.Application.Services.Brand
             return list;
         }
 
-        public Task<int> Update(BrandCreateRequest request)
+        public Task<int> Update(BrandModel request)
         {
             throw new NotImplementedException();
         }

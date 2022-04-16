@@ -10,7 +10,7 @@ namespace ECommerce.Application.Services.Brand
     public interface IBrandService
     {
         Task<int> Create(BrandCreateRequest request);
-        Task<int> Update(BrandCreateRequest request);
+        Task<int> Update(BrandModel request);
         Task<int> Delete(int BrandId);
         Task<List<BrandModel>> getAll();
         Task<List<BrandModel>> getAllBrandInCategory(int CategoryId);
