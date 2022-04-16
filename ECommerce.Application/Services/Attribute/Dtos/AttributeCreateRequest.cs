@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Services.Attribute.Dtos
 {
-    class AttributeCreateRequest
+    public class AttributeCreateRequest
     {
         public string AttributeName { get; set; }
 
