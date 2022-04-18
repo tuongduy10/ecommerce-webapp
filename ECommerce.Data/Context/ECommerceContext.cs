@@ -317,7 +317,7 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.ProductAddedDate).HasColumnType("date");
 
-                entity.Property(e => e.ProductDescription).HasColumnType("text");
+                entity.Property(e => e.ProductDescription).HasColumnType("ntext");
 
                 entity.Property(e => e.ProductImportDate).HasColumnType("date");
 
@@ -429,7 +429,7 @@ namespace ECommerce.Data.Context
             {
                 entity.ToTable("ProductType");
 
-                entity.Property(e => e.ProductType1)
+                entity.Property(e => e.ProductTypeName)
                     .HasMaxLength(50)
                     .HasColumnName("ProductType");
             });

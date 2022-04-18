@@ -27,11 +27,10 @@ namespace ECommerce.Application.Services.Product.Dtos
         public string Brand { get; set; }
         public DateTime? ProductImportDate { get; set; }
         public byte? ProductRate { get; set; }
-        public List<ProductAttribute> ProductAttributes { get; set; }
-        public List<ProductImage> ProductImages { get; set; }
-        public List<ProductOption> ProductOptions { get; set; }
-        public List<ProductPrice> ProductPrices { get; set; }
-        public List<ProductUserImage> ProductUserImages { get; set; }
-        public List<Rate> Rates { get; set; }
+        public List<string> ProductAttributes { get; set; }
+        public List<string> ProductImages { get; set; }
+        public List<string> ProductOptions { get; set; }
+        public List<double> ProductPrices { get; set; }
+        public List<string> ProductUserImages { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.Product;
+﻿using ECommerce.Application.Services.Brand;
+using ECommerce.Application.Services.Product;
 using ECommerce.Application.Services.SubCategory;
 using ECommerce.WebApp.Models.Products;
 using Microsoft.AspNetCore.Mvc;
@@ -14,19 +15,24 @@ namespace ECommerce.WebApp.Controllers.Client
     {
         private readonly IProductService _productService;
         private readonly ISubCategoryService _subCategoryService;
-        public ProductController(IProductService productService, ISubCategoryService subCategoryService)
+        private readonly IBrandService _brandService;
+        public ProductController(IProductService productService, ISubCategoryService subCategoryService, IBrandService brandService)
         {
             _productService = productService;
             _subCategoryService = subCategoryService;
+            _brandService = brandService;
         }
         public async Task<IActionResult> ProductInBrand(int BrandId)
         {
             var listProduct = await _productService.getProductsInBrand(BrandId);
             var listSubCategory = await _subCategoryService.getSubCategoryInBrand(BrandId);
+            var brand = await _brandService.getBrandById(BrandId);
+
             var model = new ProductInBrandViewModel()
             {
                 listProduct = listProduct,
-                listSubCategory = listSubCategory
+                listSubCategory = listSubCategory,
+                brand = brand
             };
 
             return View(model);

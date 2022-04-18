@@ -25,5 +25,11 @@ namespace ECommerce.WebApp.Controllers.Client
             var list = await _brandService.getAll();
             return View(list);
         }
+
+        public async Task<IActionResult> AllBrands()
+        {
+            var list = await _brandService.getAll();
+            return View(list);
+        }
     }
 }

@@ -1,13 +1,13 @@
-﻿
-
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 <!-- Main contain -->
 <div class="custom-container">
     <div class="content__wrapper products__content-wrapper">
         <div class="content__inner w-100">
             <ul class="web__directional">
-                <li><a href="index.html">Trang chủ</a></li>
-                <li><a href="">Thương hiệu</a></li>
-                <li><a href="">Thế giới di động</a></li>
+                <li><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
+                <li><a href="@Url.Action("AllBrands","Brand")">Thương hiệu</a></li>
+                <li><a href="@Url.Action("ProductInBrand","Product", new { BrandId = Model.brand.BrandId})">@Model.brand.BrandName</a></li>
             </ul>
             <div class="products__content d-flex">
                 <div class="products__menu">
@@ -267,10 +267,10 @@
                             <div class="product__filter-dropdown-menu">
                                 <div class="product__filter-header text-center p-4">
                                     <div class="w-100 px-4">
-                                        <img style="max-height: 55px; max-width: 100%;" class="" src="assets/images/logo/healthy-care.jpg" alt="">
+                                        <img style="max-height: 55px; max-width: 100%;" class="" src="@Configuration["ImagePath:Brand"]@Model.brand.BrandImagePath" alt="">
                                     </div>
 
-                                    <p class="mb-0">Thế giới di động</p>
+                                    <p class="mb-0">@Model.brand.BrandName</p>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                          viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
                                          stroke-linecap="round" stroke-linejoin="round"
@@ -522,165 +522,110 @@
                         </div>
                     </div>
                     <div class="product__grid-wrapper">
-
                         <!-- Product in Subscategory -->
                         @foreach (var subcategory in Model.listSubCategory)
                         {
                             <p class="product__grid-title text-center">@subcategory.SubCategoryName</p>
-                        }
-                    <div class="product__grid-inner w-100 d-flex flex-wrap">
-                        @foreach (var product in Model.listProduct)
-                        {
-                            <div class="product product-3">
-                                <a class="product-img" href="product-detail.html">
-                                    <img src="assets/images/products/black.jpg" alt="">
-                                </a>
-                                <div class="product-label d-flex justify-content-end align-items-center w-100" style="background-color: #fff; padding: 3px 0;">
-                                    <span class="label-sales">-10%</span>
-                                    <span class="label-new">Mới</span>
-                                    <span class="label-hot">Hot</span>
-                                    <a class="product-heart" style="cursor: pointer;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             viewBox="0 0 24 24" fill="none" stroke="#333"
-                                             stroke-width="1" stroke-linecap="round"
-                                             stroke-linejoin="round"
-                                             class="add-to-wishlist feather feather-heart">
-                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                                            </path>
-                                        </svg>
-                                    </a>
-                                </div>
-                                <hr style="width: 50%; margin: 0 auto;">
-                                <div class="product__info">
-                                    <div class="product__info-detail text-center">
-                                        <div class="product-brand align-items-center">
-                                            Shop Demo 01
-                                        </div>
-                                        <div class="product-name mb-0">
-                                            @product.ProductName
-                                        </div>
-                                        <div class="product-name">(Tạm hết đến ngày 09/04/2022)</div>
-                                        <div class="product-subprice">200.020.000 đ</div>
-                                        <div class="product-price">180.030.000 đ</div>
-                                        <div class="product-btn">
-                                            <a href="">Xem nhanh</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </div>
+                            <div class="product__grid-inner w-100 d-flex flex-wrap">
+                                @foreach (var product in Model.listProduct)
+                                {
+                                    if (product.SubCategoryId == subcategory.SubCategoryId)
+                                    {
+                                        <div class="product product-3">
+                                            <a class="product-img" href="product-detail.html">
+                                                <img src="@Configuration["ImagePath:Product"]@product.ProductImages" alt="">
+                                            </a>
+                                            <div class="product-label d-flex justify-content-end align-items-center w-100" style="background-color: #fff; padding: 3px 0;">
+                                                @if (@product.DiscountPercent != null)
+                                                {
+                                                    <span class="label-sales">-@product.DiscountPercent%</span>
+                                                }
+                                                @if (@product.New == true)
+                                                {
+                                                    <span class="label-new">Mới</span>
+                                                }
+                                                @if (@product.Highlights == true)
+                                                {
+                                                    <span class="label-hot">Hot</span>
+                                                }
 
-                        <!-- Product in Subscategory -->
-                        <p class="product__grid-title text-center">Quần áo</p>
-                        <div class="product__grid-inner w-100 d-flex flex-wrap">
-                            <div class="product product-3">
-                                <a class="product-img" href="product-detail.html">
-                                    <img src="assets/images/products/jacket1.jpg" alt="">
-                                </a>
-                                <div class="product-label d-flex">
-                                    <span class="label-sales"> -10%</span>
-                                    <span class="label-new">Mới</span>
-                                    <span class="label-new">Hot</span>
-                                    <a class="product-heart" style="cursor: pointer;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             viewBox="0 0 24 24" fill="none" stroke="#333"
-                                             stroke-width="1" stroke-linecap="round"
-                                             stroke-linejoin="round"
-                                             class="add-to-wishlist feather feather-heart">
-                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                                            </path>
-                                        </svg>
-                                    </a>
-                                </div>
-                                <hr style="width: 50%; margin: 0 auto;">
-                                <div class="product__info">
-                                    <div class="product__info-detail text-center">
-                                        <div class="product-brand align-items-center">
-                                            Shop Demo 01
-                                        </div>
-                                        <div class="product-name mb-0">
-                                            Omega Speedmaster Moonwatch Professional, 42
-                                            mm
-                                        </div>
-                                        <div class="product-name">(Hàng sắp về)</div>
-                                        <div class="product-subprice">200.020.000 đ</div>
-                                        <div class="product-price">180.030.000 đ</div>
-                                        <div class="product-btn">
-                                            <a href="">Xem nhanh</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="product product-3">
-                                <a class="product-img" href="/product-detail.html">
-                                    <img src="assets/images/products/jacket2.jpg" alt="">
-                                </a>
-                                <div class="product-label d-flex">
-                                    <span class="label-sales"> -10%</span>
-                                    <a class="product-heart" style="cursor: pointer;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             viewBox="0 0 24 24" fill="none" stroke="#333"
-                                             stroke-width="1" stroke-linecap="round"
-                                             stroke-linejoin="round"
-                                             class="add-to-wishlist feather feather-heart">
-                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                                            </path>
-                                        </svg>
-                                    </a>
-                                </div>
-                                <hr style="width: 50%; margin: 0 auto;">
-                                <div class="product__info text-center">
-                                    <div class="product__info-detail">
-                                        <div class="product-brand">
-                                            Shop Demo 01
-                                        </div>
-                                        <div class="product-name mb-0">Samsung Galaxy S21 Ultra 5G</div>
-                                        <div class="product-name">(Hàng có sẵn)</div>
-                                        <div class="product-subprice">200.020.000 đ</div>
-                                        <div class="product-price">190.030.000 đ</div>
-                                        <div class="product-btn">
-                                            <a href="">Xem nhanh</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="product product-3">
-                                <a class="product-img" href="/product-detail.html">
-                                    <img src="assets/images/products/jacket4.jpg" alt="">
-                                </a>
-                                <div class="product-label d-flex">
-                                    <span class="label-new">Mới</span>
-                                    <span class="label-new">Hot</span>
-                                    <a class="product-heart" style="cursor: pointer;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             viewBox="0 0 24 24" fill="none" stroke="#333"
-                                             stroke-width="1" stroke-linecap="round"
-                                             stroke-linejoin="round"
-                                             class="add-to-wishlist feather feather-heart">
-                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                                            </path>
-                                        </svg>
-                                    </a>
-                                </div>
-                                <hr style="width: 50%; margin: 0 auto;">
-                                <div class="product__info">
-                                    <div class="product__info-detail text-center">
-                                        <div class="product-brand align-items-center">
-                                            Shop Demo 01
-                                        </div>
-                                        <div class="product-name mb-0">Samsung Galaxy S21 Ultra 5G</div>
-                                        <div class="product-name">(Hàng sắp về)</div>
-                                        <div class="product-subprice">200.020.000 đ</div>
-                                        <div class="product-price">190.030.000 đ</div>
-                                        <div class="product-btn text-center">
-                                            <a href="">Xem nhanh</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                                <!--Add to wishlist-->
+                                                <a class="product-heart" style="cursor: pointer;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="#333"
+                                                         stroke-width="1" stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         class="add-to-wishlist feather feather-heart">
+                                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                                        </path>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                            <hr style="width: 50%; margin: 0 auto;">
+                                            <div class="product__info">
+                                                <div class="product__info-detail text-center">
+                                                    <div class="product-brand align-items-center">
+                                                        @product.Brand
+                                                    </div>
+                                                    <div class="product-name mb-0">
+                                                        @product.ProductName
+                                                    </div>
+                                                    @if (product.ProductImportDate != null)
+                                                    {
+                                                        <div class="product-name">
+                                                            Tạm hết đến @product.ProductImportDate.ToString("dd/MM/yyyy")
+                                                        </div>
+                                                    }
+                                                    @if (product.ProductImportDate == null)
+                                                    {
+                                                        if (product.Type.Count == 1)
+                                                        {
+                                                            <div class="product-name">
+                                                                @product.Type[0].ProductTypeName
+                                                            </div>
+                                                        }
 
+                                                        if (product.Type.Count == 2)
+                                                        {
+                                                            @foreach (var type in product.Type)
+                                                            {
+                                                                if (type.ProductTypeId == 1)
+                                                                {
+                                                                    <div class="product-name">
+                                                                        @type.ProductTypeName
+                                                                    </div>
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    @if (product.Price.Count == 2)
+                                                    {
+                                                        @foreach (var price in product.Price)
+                                                        {
+                                                            if (price.ProductTypeId == 2)
+                                                            {
+                                                                <div class="product-subprice">@String.Format("{0:0,0} ₫", price.Price)</div>
+                                                                <div class="product-price">@String.Format("{0:0,0} ₫", price.PriceOnSell)</div>
+                                                            }
+                                                        }
+                                                    }
+
+                                                    @if (product.Price.Count == 1)
+                                                    {
+                                                        <div class="product-subprice">@String.Format("{0:0,0} ₫", product.Price[0].Price)</div>
+                                                        <div class="product-price">@String.Format("{0:0,0} ₫", product.Price[0].PriceOnSell)</div>
+                                                    }
+                                                    <div class="product-btn">
+                                                        <a href="">Xem nhanh</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        }
                     </div>
                     <div class="filter__control-bottom">
                         <!-- Number / total -->

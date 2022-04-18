@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.Product.Dtos;
+﻿using ECommerce.Application.Services.Brand.Dtos;
+using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.SubCategory.Dtos;
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,6 @@ namespace ECommerce.WebApp.Models.Products
     {
         public List<SubCategoryModel> listSubCategory { get; set; }
         public List<ProductInBrandModel> listProduct { get; set; }
+        public BrandModel brand { get; set; }
     }
 }

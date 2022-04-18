@@ -20,33 +20,51 @@ namespace ECommerce.Application.Services.Product
         public async Task<List<ProductInBrandModel>> getProductsInBrand(int BrandId)
         {
             var query = from product in _DbContext.Products
-                        from type in _DbContext.ProductTypes
                         join brand in _DbContext.Brands on product.BrandId equals brand.BrandId
-                        join price in _DbContext.ProductPrices on product.ProductId equals price.ProductId
                         join shop in _DbContext.Shops on product.ShopId equals shop.ShopId
-                        join subcategory in _DbContext.SubCategories on product.SubCategoryId equals subcategory.SubCategoryId
-                        where type.ProductTypeId == price.ProductTypeId &&
-                                type.ProductTypeId == 2 &&
-                                brand.BrandId == BrandId
-                        select new { product, price, brand, shop, subcategory };
+                        where brand.BrandId == BrandId
+                        select new { 
+                            id = product.ProductId, 
+                            name = product.ProductName,
+                            discount = product.DiscountPercent,
+                            status = product.Status,
+                            highlights = product.Highlights,
+                            newPro = product.New,
+                            importDate = product.ProductImportDate,
+                            subcategory = product.SubCategoryId,
+
+                            brandName = brand.BrandName, 
+                            shopName = shop.ShopName, 
+                        };
 
             var list = await query.Select(i => new ProductInBrandModel()
             {
-                ProductId = i.product.ProductId,
-                ProductName = i.product.ProductName,
-                DiscountPercent = i.product.DiscountPercent,
-                Status = i.product.Status,
-                Highlights = i.product.Highlights,
-                New = i.product.New,
-                ProductImportDate = i.product.ProductImportDate,
-                ProductPrices = i.price.Price,
+                ProductId = i.id,
+                ProductName = i.name,
+                DiscountPercent = i.discount,
+                Status = i.status,
+                Highlights = i.highlights,
+                New = i.newPro,
+                ProductImportDate = i.importDate,
+                SubCategoryId = i.subcategory,
 
-                ProductImages = _DbContext.ProductImages.Where(img => img.ProductId == i.product.ProductId).Select(i => i.ProductImagePath).ToList(),
+                Type = (
+                    from product in _DbContext.Products
+                    from price in _DbContext.ProductPrices
+                    from type in _DbContext.ProductTypes
+                    where product.ProductId == i.id &&
+                          price.ProductTypeId == type.ProductTypeId && price.ProductId == product.ProductId
+                    select new { id = type.ProductTypeId, name = type.ProductTypeName }
+                ).Select(t => new Dtos.Type() { 
+                    ProductTypeId = t.id,
+                    ProductTypeName = t.name
+                }).ToList(),
 
-                Brand = i.brand.BrandName,
-                Shop = i.shop.ShopName,
-                SubCategoryId = i.subcategory.SubCategoryId,
+                Price = _DbContext.ProductPrices.Where(price => price.ProductId == i.id).ToList(),
+                ProductImages = _DbContext.ProductImages.Where(img => img.ProductId == i.id).Select(i => i.ProductImagePath).FirstOrDefault(),
 
+                Brand = i.brandName,
+                Shop = i.shopName,
             }).ToListAsync();
 
             return list;

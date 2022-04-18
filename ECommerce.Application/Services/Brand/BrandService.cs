@@ -72,6 +72,29 @@ namespace ECommerce.Application.Services.Brand
             return list;
         }
 
+        public async Task<BrandModel> getBrandById(int BrandId)
+        {
+            var query = from category in DbContext.Categories
+                        join brand in DbContext.Brands on category.CategoryId equals brand.CategoryId
+                        orderby brand.BrandName
+                        where brand.Status == true && brand.BrandId == BrandId
+                        select new { brand, category };
+
+            var result = await query.Select(i => new BrandModel()
+            {
+                BrandId = i.brand.BrandId,
+                BrandName = i.brand.BrandName,
+                BrandImagePath = i.brand.BrandImagePath,
+                Status = i.brand.Status,
+                CreatedDate = i.brand.CreatedDate,
+                Highlights = i.brand.Highlights,
+                New = i.brand.New,
+                Category = i.category.CategoryName
+            }).SingleOrDefaultAsync();
+
+            return result;
+        }
+
         public Task<int> Update(BrandModel request)
         {
             throw new NotImplementedException();

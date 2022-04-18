@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Dtos\" />
     <Folder Include="Services\AvailablePrice\" />
     <Folder Include="Services\Bank\" />
     <Folder Include="Services\Banner\" />
