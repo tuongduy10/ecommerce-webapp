@@ -11,18 +11,17 @@ namespace ECommerce.Application.Dtos
     {
         public int PageIndex { get; set; }
         public int TotalPage { get; set; }
-        public PaginatedList(List<T> source, int count, int index, int size)
+        public PaginatedList(List<T> source, int count, int pageindex, int pagesize)
         {
-            PageIndex = index;
-            TotalPage = (int)Math.Ceiling(count / (double)size);
+            PageIndex = pageindex;
+            TotalPage = (int)Math.Ceiling(count / (double)pagesize);
             AddRange(source);
         }
-        public static PaginatedList<T> Create(IQueryable<T> source, int index, int size)
+        public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageindex, int pagesize)
         {
-            var count = source.Count();
-            var items = source.Skip((index - 1) * size).Take(size).ToList();
-
-            return new PaginatedList<T>(items, count, index, size);
+            var count = await source.CountAsync();
+            var items = await source.Skip((pageindex - 1) * pagesize).Take(pagesize).ToListAsync();
+            return new PaginatedList<T>(items, count, pageindex, pagesize);
         }
     }
 }

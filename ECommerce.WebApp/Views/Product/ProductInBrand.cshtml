@@ -481,43 +481,142 @@
                         <div class="filter__number">
                             <div class="text">Hiển thị: </div>
                             <div class="number">
-                                <span>999</span>
+                                <span>@Model.listProduct.CurrentRecord</span>
                                 /
-                                <span class="totalItems">1000</span>
+                                <span class="totalItems">@Model.listProduct.TotalRecord</span>
                             </div>
                         </div>
+                        
                         <!-- Pagination -->
                         <div class="filter__pagination">
                             <ul class="pagination">
-                                <li class="pagination-item pagination-item__page previous" data-page="1">
-                                    <a class="pagination-link pagination-item__page" style="height: 24px;">
-                                        <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
-                                             viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
-                                             stroke-linecap='round' stroke-linejoin='round'
-                                             class='feather feather-chevron-left'>
-                                            <polyline points='15 18 9 12 15 6'></polyline>
-                                        </svg>
-                                    </a>
-                                </li>
-                                <li class="pagination-item pagination-item__page" data-page="1">
-                                    <a class="pagination-link">1</a>
-                                </li>
-                                <li class="pagination-item pagination-item__page active" data-page="2">
-                                    <a class="pagination-link">2</a>
-                                </li>
-                                <li class="pagination-item pagination-item__page" data-page="3">
-                                    <a class="pagination-link">3</a>
-                                </li>
-                                <li class="pagination-item pagination-item__page next" data-page="3">
-                                    <a class="pagination-link" style="height: 24px;">
-                                        <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
-                                             viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
-                                             stroke-linecap='round' stroke-linejoin='round'
-                                             class='feather feather-chevron-right'>
-                                            <polyline points='9 18 15 12 9 6'></polyline>
-                                        </svg>
-                                    </a>
-                                </li>
+                                @{
+                                    var firstIndex = 1;
+                                    var lastIndex = Model.listProduct.TotalPage;
+                                    var currentIndex = Model.listProduct.CurrentPage;
+                                    var prevIndex = currentIndex - 1;
+                                    var nextIndex = currentIndex + 1;
+                                }
+                                @if (Model.listProduct.TotalPage == 2)
+                                {
+                                    @if (currentIndex == 1)
+                                    {
+                                        <li class="pagination-item pagination-item__page active">
+                                            <a class="pagination-link">1</a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = 2 })`" class="pagination-item pagination-item__page">
+                                            <a class="pagination-link">2</a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = 2 })`" class="pagination-item pagination-item__page next">
+                                            <a class="pagination-link" style="height: 24px;">
+                                                <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
+                                                     viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
+                                                     stroke-linecap='round' stroke-linejoin='round'
+                                                     class='feather feather-chevron-right'>
+                                                    <polyline points='9 18 15 12 9 6'></polyline>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (currentIndex == 2)
+                                    {
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = 1 })`" class="pagination-item pagination-item__page previous">
+                                            <a class="pagination-link pagination-item__page" style="height: 24px;">
+                                                <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
+                                                     viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
+                                                     stroke-linecap='round' stroke-linejoin='round'
+                                                     class='feather feather-chevron-left'>
+                                                    <polyline points='15 18 9 12 15 6'></polyline>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = 1 })`" class="pagination-item pagination-item__page">
+                                            <a class="pagination-link">1</a>
+                                        </li>
+                                        <li class="pagination-item pagination-item__page active">
+                                            <a class="pagination-link">2</a>
+                                        </li>
+                                    }
+                                }
+                                @if (Model.listProduct.TotalPage > 2)
+                                {
+                                    if (currentIndex == firstIndex)
+                                    {
+                                        <li class="pagination-item pagination-item__page active">
+                                            <a class="pagination-link">@currentIndex</a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = nextIndex })`" class="pagination-item pagination-item__page">
+                                            <a class="pagination-link">@nextIndex</a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = nextIndex+1 })`" class="pagination-item pagination-item__page">
+                                            <a class="pagination-link">@(nextIndex+1)</a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = nextIndex+1 })`" class="pagination-item pagination-item__page next">
+                                            <a class="pagination-link" style="height: 24px;">
+                                                <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
+                                                     viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
+                                                     stroke-linecap='round' stroke-linejoin='round'
+                                                     class='feather feather-chevron-right'>
+                                                    <polyline points='9 18 15 12 9 6'></polyline>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                    }
+                                    else if (currentIndex == lastIndex)
+                                    {
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = (lastIndex - 1) })`" class="pagination-item pagination-item__page previous">
+                                            <a class="pagination-link pagination-item__page" style="height: 24px;">
+                                                <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
+                                                     viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
+                                                     stroke-linecap='round' stroke-linejoin='round'
+                                                     class='feather feather-chevron-left'>
+                                                    <polyline points='15 18 9 12 15 6'></polyline>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = (lastIndex - 2) })`" class="pagination-item pagination-item__page">
+                                            <a class="pagination-link">@(lastIndex - 2)</a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = (lastIndex - 1) })`" class="pagination-item pagination-item__page">
+                                            <a class="pagination-link">@(lastIndex - 1)</a>
+                                        </li>
+                                        <li class="pagination-item pagination-item__page active">
+                                            <a class="pagination-link">@lastIndex</a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = prevIndex })`" class="pagination-item pagination-item__page previous">
+                                            <a class="pagination-link pagination-item__page" style="height: 24px;">
+                                                <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
+                                                     viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
+                                                     stroke-linecap='round' stroke-linejoin='round'
+                                                     class='feather feather-chevron-left'>
+                                                    <polyline points='15 18 9 12 15 6'></polyline>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = prevIndex })`" class="pagination-item pagination-item__page">
+                                            <a class="pagination-link">@prevIndex</a>
+                                        </li>
+                                        <li class="pagination-item pagination-item__page active">
+                                            <a class="pagination-link">@currentIndex</a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = nextIndex })`" class="pagination-item pagination-item__page">
+                                            <a class="pagination-link">@nextIndex</a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = nextIndex })`" class="pagination-item pagination-item__page next">
+                                            <a class="pagination-link" style="height: 24px;">
+                                                <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
+                                                     viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
+                                                     stroke-linecap='round' stroke-linejoin='round'
+                                                     class='feather feather-chevron-right'>
+                                                    <polyline points='9 18 15 12 9 6'></polyline>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                    }
+                                }
                             </ul>
                         </div>
                     </div>
@@ -527,7 +626,7 @@
                         {
                             <p class="product__grid-title text-center">@subcategory.SubCategoryName</p>
                             <div class="product__grid-inner w-100 d-flex flex-wrap">
-                                @foreach (var product in Model.listProduct)
+                                @foreach (var product in Model.listProduct.Items)
                                 {
                                     if (product.SubCategoryId == subcategory.SubCategoryId)
                                     {
@@ -627,48 +726,141 @@
                             </div>
                         }
                     </div>
+                    
                     <div class="filter__control-bottom">
                         <!-- Number / total -->
                         <div class="filter__number">
                             <div class="text">Hiển thị: </div>
                             <div class="number">
-                                <span>999</span>
+                                <span>@Model.listProduct.CurrentRecord</span>
                                 /
-                                <span class="totalItems">1000</span>
+                                <span class="totalItems">@Model.listProduct.TotalRecord</span>
                             </div>
                         </div>
+
                         <!-- Pagination -->
                         <div class="filter__pagination">
                             <ul class="pagination">
-                                <li class="pagination-item pagination-item__page previous" data-page="1">
-                                    <a class="pagination-link pagination-item__page" style="height: 24px;">
-                                        <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
-                                             viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
-                                             stroke-linecap='round' stroke-linejoin='round'
-                                             class='feather feather-chevron-left'>
-                                            <polyline points='15 18 9 12 15 6'></polyline>
-                                        </svg>
-                                    </a>
-                                </li>
-                                <li class="pagination-item pagination-item__page" data-page="1">
-                                    <a class="pagination-link">1</a>
-                                </li>
-                                <li class="pagination-item pagination-item__page active" data-page="2">
-                                    <a class="pagination-link">2</a>
-                                </li>
-                                <li class="pagination-item pagination-item__page" data-page="3">
-                                    <a class="pagination-link">3</a>
-                                </li>
-                                <li class="pagination-item pagination-item__page next" data-page="3">
-                                    <a class="pagination-link" style="height: 24px;">
-                                        <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
-                                             viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
-                                             stroke-linecap='round' stroke-linejoin='round'
-                                             class='feather feather-chevron-right'>
-                                            <polyline points='9 18 15 12 9 6'></polyline>
-                                        </svg>
-                                    </a>
-                                </li>
+                                @if (Model.listProduct.TotalPage == 2)
+                                {
+                                    @if (currentIndex == 1)
+                                    {
+                                        <li class="pagination-item pagination-item__page active">
+                                            <a class="pagination-link">1</a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = 2 })`" class="pagination-item pagination-item__page">
+                                            <a class="pagination-link">2</a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = 2 })`" class="pagination-item pagination-item__page next">
+                                            <a class="pagination-link" style="height: 24px;">
+                                                <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
+                                                     viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
+                                                     stroke-linecap='round' stroke-linejoin='round'
+                                                     class='feather feather-chevron-right'>
+                                                    <polyline points='9 18 15 12 9 6'></polyline>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (currentIndex == 2)
+                                    {
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = 1 })`" class="pagination-item pagination-item__page previous">
+                                            <a class="pagination-link pagination-item__page" style="height: 24px;">
+                                                <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
+                                                     viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
+                                                     stroke-linecap='round' stroke-linejoin='round'
+                                                     class='feather feather-chevron-left'>
+                                                    <polyline points='15 18 9 12 15 6'></polyline>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = 1 })`" class="pagination-item pagination-item__page">
+                                            <a class="pagination-link">1</a>
+                                        </li>
+                                        <li class="pagination-item pagination-item__page active">
+                                            <a class="pagination-link">2</a>
+                                        </li>
+                                    }
+                                }
+                                @if (Model.listProduct.TotalPage > 2)
+                                {
+                                    if (currentIndex == firstIndex)
+                                    {
+                                        <li class="pagination-item pagination-item__page active">
+                                            <a class="pagination-link">@currentIndex</a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = nextIndex })`" class="pagination-item pagination-item__page">
+                                            <a class="pagination-link">@nextIndex</a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = nextIndex+1 })`" class="pagination-item pagination-item__page">
+                                            <a class="pagination-link">@(nextIndex+1)</a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = nextIndex+1 })`" class="pagination-item pagination-item__page next">
+                                            <a class="pagination-link" style="height: 24px;">
+                                                <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
+                                                     viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
+                                                     stroke-linecap='round' stroke-linejoin='round'
+                                                     class='feather feather-chevron-right'>
+                                                    <polyline points='9 18 15 12 9 6'></polyline>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                    }
+                                    else if (currentIndex == lastIndex)
+                                    {
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = (lastIndex - 1) })`" class="pagination-item pagination-item__page previous">
+                                            <a class="pagination-link pagination-item__page" style="height: 24px;">
+                                                <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
+                                                     viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
+                                                     stroke-linecap='round' stroke-linejoin='round'
+                                                     class='feather feather-chevron-left'>
+                                                    <polyline points='15 18 9 12 15 6'></polyline>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = (lastIndex - 2) })`" class="pagination-item pagination-item__page">
+                                            <a class="pagination-link">@(lastIndex - 2)</a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = (lastIndex - 1) })`" class="pagination-item pagination-item__page">
+                                            <a class="pagination-link">@(lastIndex - 1)</a>
+                                        </li>
+                                        <li class="pagination-item pagination-item__page active">
+                                            <a class="pagination-link">@lastIndex</a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = prevIndex })`" class="pagination-item pagination-item__page previous">
+                                            <a class="pagination-link pagination-item__page" style="height: 24px;">
+                                                <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
+                                                     viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
+                                                     stroke-linecap='round' stroke-linejoin='round'
+                                                     class='feather feather-chevron-left'>
+                                                    <polyline points='15 18 9 12 15 6'></polyline>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = prevIndex })`" class="pagination-item pagination-item__page">
+                                            <a class="pagination-link">@prevIndex</a>
+                                        </li>
+                                        <li class="pagination-item pagination-item__page active">
+                                            <a class="pagination-link">@currentIndex</a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = nextIndex })`" class="pagination-item pagination-item__page">
+                                            <a class="pagination-link">@nextIndex</a>
+                                        </li>
+                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = nextIndex })`" class="pagination-item pagination-item__page next">
+                                            <a class="pagination-link" style="height: 24px;">
+                                                <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
+                                                     viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
+                                                     stroke-linecap='round' stroke-linejoin='round'
+                                                     class='feather feather-chevron-right'>
+                                                    <polyline points='9 18 15 12 9 6'></polyline>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                    }
+                                }
                             </ul>
                         </div>
                     </div>

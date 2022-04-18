@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.Brand.Dtos;
+﻿using ECommerce.Application.Dtos;
+using ECommerce.Application.Services.Brand.Dtos;
 using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.SubCategory.Dtos;
 using System;
@@ -11,7 +12,7 @@ namespace ECommerce.WebApp.Models.Products
     public class ProductInBrandViewModel
     {
         public List<SubCategoryModel> listSubCategory { get; set; }
-        public List<ProductInBrandModel> listProduct { get; set; }
+        public PageResult<ProductInBrandModel> listProduct { get; set; }
         public BrandModel brand { get; set; }
     }
 }

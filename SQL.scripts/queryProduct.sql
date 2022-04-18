@@ -5,7 +5,7 @@ WHERE brand.BrandId = 1 and
 	  shop.ShopId = product.ShopId and
 	  subcategory.SubCategoryId = product.SubCategoryId and 
 	  producttype.ProductTypeId = price.ProductTypeId and price.ProductId = Product.ProductId and
-	  producttype.ProductTypeId = price.ProductTypeId and price.ProductId = product.ProductId
+	  producttype.ProductTypeId = price.ProductTypeId and price.ProductId = product.ProductId order by product.SubCategoryId
 
 SELECT producttype.ProductType
 FROM Product product, ProductPrice price, ProductType producttype

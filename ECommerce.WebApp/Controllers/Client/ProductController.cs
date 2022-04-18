@@ -22,9 +22,10 @@ namespace ECommerce.WebApp.Controllers.Client
             _subCategoryService = subCategoryService;
             _brandService = brandService;
         }
-        public async Task<IActionResult> ProductInBrand(int BrandId)
+        public async Task<IActionResult> ProductInBrand(int BrandId, int pageIndex = 1)
         {
-            var listProduct = await _productService.getProductsInBrand(BrandId);
+            int itemsInPage = 5;
+            var listProduct = await _productService.getProductPaginated(BrandId, pageIndex, itemsInPage);
             var listSubCategory = await _subCategoryService.getSubCategoryInBrand(BrandId);
             var brand = await _brandService.getBrandById(BrandId);
 
