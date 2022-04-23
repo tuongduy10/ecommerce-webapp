@@ -18,9 +18,9 @@ namespace ECommerce.Application.Services.Product
         {
             _DbContext = DbContext;
         }
-
         public async Task<PageResult<ProductInBrandModel>> getProductPaginated(int BrandId, int pageindex, int pagesize)
         {
+            // Query get products with brand, shop, subcategoryid
             var query = from product in _DbContext.Products
                         join brand in _DbContext.Brands on product.BrandId equals brand.BrandId
                         join shop in _DbContext.Shops on product.ShopId equals shop.ShopId
@@ -40,7 +40,7 @@ namespace ECommerce.Application.Services.Product
                             brandName = brand.BrandName,
                             shopName = shop.ShopName,
                         };
-
+            // Excute query to list
             var list = query.AsQueryable().Select(i => new ProductInBrandModel()
             {
                 ProductId = i.id,
@@ -86,7 +86,6 @@ namespace ECommerce.Application.Services.Product
 
             return result;
         }
-
         public async Task<List<ProductInBrandModel>> getProductsInBrand(int BrandId, int pageindex, int pagesize)
         {
             var query = from product in _DbContext.Products
