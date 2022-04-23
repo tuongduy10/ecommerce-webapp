@@ -1434,10 +1434,11 @@ hr {
 .login-form input:focus{
     box-shadow: 0 10px 30px rgb(0 0 0 / 10%);
 }
-.login button{
+.login button {
     cursor: pointer;
     color: #fff;
     background-color: #4d4d4d;
+    border: 1px solid #4d4d4d;
     padding: 0.5rem 1rem;
 }
 

@@ -38,7 +38,6 @@ namespace ECommerce.WebApp.Controllers.Client
 
             return View(model);
         }
-
         public async Task<IActionResult> ProductAvaliable()
         {
             return View();

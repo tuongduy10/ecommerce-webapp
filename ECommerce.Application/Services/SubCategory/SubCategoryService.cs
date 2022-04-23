@@ -47,8 +47,8 @@ namespace ECommerce.Application.Services.SubCategory
                         where subc.CategoryId == brand.CategoryId && brand.BrandId == BrandId
                         select subc;
 
-            var checkProduct = _DbContext.Products.Where(i => i.SubCategoryId == 1).Count();
-            var HasProducts = checkProduct > 0 ? true : false;
+            //var checkProduct = _DbContext.Products.Where(i => i.SubCategoryId == 1).Count();
+            //var HasProducts = checkProduct > 0 ? true : false;
 
             var list = await query.Select(i => new SubCategoryModel() {
                 SubCategoryId = i.SubCategoryId,

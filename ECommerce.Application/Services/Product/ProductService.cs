@@ -143,5 +143,10 @@ namespace ECommerce.Application.Services.Product
 
             return result;
         }
+    
+        public async Task<PageResult<ProductInBrandModel>> getProductBySubCategoryPaginated(int BrandId, int SubCategoryId, int pageindex, int pagesize)
+        {
+            return null;
+        }
     }
 }
