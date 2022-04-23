@@ -24,7 +24,7 @@ namespace ECommerce.WebApp.Controllers.Client
         }
         public async Task<IActionResult> ProductInBrand(int BrandId, int pageIndex = 1)
         {
-            int itemsInPage = 5;
+            int itemsInPage = 30;
             var listProduct = await _productService.getProductPaginated(BrandId, pageIndex, itemsInPage);
             var listSubCategory = await _subCategoryService.getSubCategoryInBrand(BrandId);
             var brand = await _brandService.getBrandById(BrandId);

@@ -501,13 +501,13 @@
                                 {
                                     @if (currentIndex == 1)
                                     {
-                                        <li class="pagination-item pagination-item__page active">
+                                        <li value="1" class="pagination-item pagination-item__page active">
                                             <a class="pagination-link">1</a>
                                         </li>
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = 2 })`" class="pagination-item pagination-item__page">
+                                        <li value="2" class="pagination-item pagination-item__page">
                                             <a class="pagination-link">2</a>
                                         </li>
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = 2 })`" class="pagination-item pagination-item__page next">
+                                        <li value="1" class="pagination-item pagination-item__page next">
                                             <a class="pagination-link" style="height: 24px;">
                                                 <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
                                                      viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
@@ -520,7 +520,7 @@
                                     }
                                     @if (currentIndex == 2)
                                     {
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = 1 })`" class="pagination-item pagination-item__page previous">
+                                        <li value="2" class="pagination-item pagination-item__page previous">
                                             <a class="pagination-link pagination-item__page" style="height: 24px;">
                                                 <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
                                                      viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
@@ -530,10 +530,10 @@
                                                 </svg>
                                             </a>
                                         </li>
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = 1 })`" class="pagination-item pagination-item__page">
+                                        <li value="1" class="pagination-item pagination-item__page">
                                             <a class="pagination-link">1</a>
                                         </li>
-                                        <li class="pagination-item pagination-item__page active">
+                                        <li value="2" class="pagination-item pagination-item__page active">
                                             <a class="pagination-link">2</a>
                                         </li>
                                     }
@@ -542,16 +542,16 @@
                                 {
                                     if (currentIndex == firstIndex)
                                     {
-                                        <li class="pagination-item pagination-item__page active">
+                                        <li value="@currentIndex" class="pagination-item pagination-item__page active">
                                             <a class="pagination-link">@currentIndex</a>
                                         </li>
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = nextIndex })`" class="pagination-item pagination-item__page">
+                                        <li value="@nextIndex" class="pagination-item pagination-item__page">
                                             <a class="pagination-link">@nextIndex</a>
                                         </li>
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = nextIndex+1 })`" class="pagination-item pagination-item__page">
+                                        <li value="@(nextIndex+1)" class="pagination-item pagination-item__page">
                                             <a class="pagination-link">@(nextIndex+1)</a>
                                         </li>
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = nextIndex+1 })`" class="pagination-item pagination-item__page next">
+                                        <li value="@nextIndex" class="pagination-item pagination-item__page next">
                                             <a class="pagination-link" style="height: 24px;">
                                                 <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
                                                      viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
@@ -564,7 +564,7 @@
                                     }
                                     else if (currentIndex == lastIndex)
                                     {
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = (lastIndex - 1) })`" class="pagination-item pagination-item__page previous">
+                                        <li value="@(lastIndex - 1)" class="pagination-item pagination-item__page previous">
                                             <a class="pagination-link pagination-item__page" style="height: 24px;">
                                                 <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
                                                      viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
@@ -574,10 +574,10 @@
                                                 </svg>
                                             </a>
                                         </li>
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = (lastIndex - 2) })`" class="pagination-item pagination-item__page">
+                                        <li value="@(lastIndex - 2)" class="pagination-item pagination-item__page">
                                             <a class="pagination-link">@(lastIndex - 2)</a>
                                         </li>
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = (lastIndex - 1) })`" class="pagination-item pagination-item__page">
+                                        <li value="@(lastIndex - 1)" class="pagination-item pagination-item__page">
                                             <a class="pagination-link">@(lastIndex - 1)</a>
                                         </li>
                                         <li class="pagination-item pagination-item__page active">
@@ -586,7 +586,7 @@
                                     }
                                     else
                                     {
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = prevIndex })`" class="pagination-item pagination-item__page previous">
+                                        <li value="@prevIndex" class="pagination-item pagination-item__page previous">
                                             <a class="pagination-link pagination-item__page" style="height: 24px;">
                                                 <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
                                                      viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
@@ -596,16 +596,16 @@
                                                 </svg>
                                             </a>
                                         </li>
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = prevIndex })`" class="pagination-item pagination-item__page">
+                                        <li value="@prevIndex" class="pagination-item pagination-item__page">
                                             <a class="pagination-link">@prevIndex</a>
                                         </li>
                                         <li class="pagination-item pagination-item__page active">
                                             <a class="pagination-link">@currentIndex</a>
                                         </li>
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = nextIndex })`" class="pagination-item pagination-item__page">
+                                        <li value="@nextIndex" class="pagination-item pagination-item__page">
                                             <a class="pagination-link">@nextIndex</a>
                                         </li>
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = nextIndex })`" class="pagination-item pagination-item__page next">
+                                        <li value="@nextIndex" class="pagination-item pagination-item__page next">
                                             <a class="pagination-link" style="height: 24px;">
                                                 <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
                                                      viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
@@ -633,15 +633,15 @@
                                             <img src="@Configuration["ImagePath:Product"]@product.ProductImages" alt="">
                                         </a>
                                         <div class="product-label d-flex justify-content-end align-items-center w-100" style="background-color: #fff; padding: 3px 0;">
-                                            @if (@product.DiscountPercent != null)
+                                            @if (product.DiscountPercent != null)
                                             {
                                                 <span class="label-sales">-@product.DiscountPercent%</span>
                                             }
-                                            @if (@product.New == true)
+                                            @if (product.New == true)
                                             {
                                                 <span class="label-new">Mới</span>
                                             }
-                                            @if (@product.Highlights == true)
+                                            @if (product.Highlights == true)
                                             {
                                                 <span class="label-hot">Hot</span>
                                             }
@@ -662,7 +662,7 @@
                                         <div class="product__info">
                                             <div class="product__info-detail text-center">
                                                 <div class="product-brand align-items-center">
-                                                    @product.Brand
+                                                    @product.Shop
                                                 </div>
                                                 <div class="product-name mb-0">
                                                     @product.ProductName
@@ -702,16 +702,32 @@
                                                     {
                                                         if (price.ProductTypeId == 2)
                                                         {
-                                                            <div class="product-subprice">@String.Format("{0:0,0} ₫", price.Price)</div>
-                                                            <div class="product-price">@String.Format("{0:0,0} ₫", price.PriceOnSell)</div>
+                                                            if (price.PriceOnSell == null)
+                                                            {
+                                                                <div class="product-subprice"></div>
+                                                                <div class="product-price">@String.Format("{0:0,0} ₫", price.Price)</div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="product-subprice">@String.Format("{0:0,0} ₫", price.Price)</div>
+                                                                <div class="product-price">@String.Format("{0:0,0} ₫", price.PriceOnSell)</div>
+                                                            }
                                                         }
                                                     }
                                                 }
 
                                                 @if (product.Price.Count == 1)
                                                 {
-                                                    <div class="product-subprice">@String.Format("{0:0,0} ₫", product.Price[0].Price)</div>
-                                                    <div class="product-price">@String.Format("{0:0,0} ₫", product.Price[0].PriceOnSell)</div>
+                                                    if (product.Price[0].PriceOnSell == null)
+                                                    {
+                                                        <div class="product-subprice"></div>
+                                                        <div class="product-price">@String.Format("{0:0,0} ₫", product.Price[0].Price)</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="product-subprice">@String.Format("{0:0,0} ₫", product.Price[0].Price)</div>
+                                                        <div class="product-price">@String.Format("{0:0,0} ₫", product.Price[0].PriceOnSell)</div>
+                                                    }
                                                 }
                                                 <div class="product-btn">
                                                     <a href="">Xem nhanh</a>
@@ -808,7 +824,7 @@
                                     }
                                     else if (currentIndex == lastIndex)
                                     {
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = (lastIndex - 1) })`" class="pagination-item pagination-item__page previous">
+                                        <li value="@(lastIndex - 1)" class="pagination-item pagination-item__page previous">
                                             <a class="pagination-link pagination-item__page" style="height: 24px;">
                                                 <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
                                                      viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
@@ -818,10 +834,10 @@
                                                 </svg>
                                             </a>
                                         </li>
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = (lastIndex - 2) })`" class="pagination-item pagination-item__page">
+                                        <li value="@(lastIndex - 2)" class="pagination-item pagination-item__page">
                                             <a class="pagination-link">@(lastIndex - 2)</a>
                                         </li>
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = (lastIndex - 1) })`" class="pagination-item pagination-item__page">
+                                        <li value="@(lastIndex - 1)" class="pagination-item pagination-item__page">
                                             <a class="pagination-link">@(lastIndex - 1)</a>
                                         </li>
                                         <li class="pagination-item pagination-item__page active">
@@ -830,7 +846,7 @@
                                     }
                                     else
                                     {
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand", "Product", new { @BrandId = Model.brand.BrandId, @pageIndex = prevIndex })`" class="pagination-item pagination-item__page previous">
+                                        <li value="@prevIndex" class="pagination-item pagination-item__page previous">
                                             <a class="pagination-link pagination-item__page" style="height: 24px;">
                                                 <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
                                                      viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
@@ -840,16 +856,16 @@
                                                 </svg>
                                             </a>
                                         </li>
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = prevIndex })`" class="pagination-item pagination-item__page">
+                                        <li value="@prevIndex" class="pagination-item pagination-item__page">
                                             <a class="pagination-link">@prevIndex</a>
                                         </li>
                                         <li class="pagination-item pagination-item__page active">
                                             <a class="pagination-link">@currentIndex</a>
                                         </li>
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = nextIndex })`" class="pagination-item pagination-item__page">
+                                        <li value="@nextIndex" class="pagination-item pagination-item__page">
                                             <a class="pagination-link">@nextIndex</a>
                                         </li>
-                                        <li onclick="window.location.href=`@Url.Action("ProductInBrand","Product", new { @BrandId = Model.brand.BrandId, @pageIndex = nextIndex })`" class="pagination-item pagination-item__page next">
+                                        <li value="@nextIndex" class="pagination-item pagination-item__page next">
                                             <a class="pagination-link" style="height: 24px;">
                                                 <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
                                                      viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
@@ -880,10 +896,15 @@
     })
 
     function getProductInList(BrandId, pageIndex) {
+        console.log(pageIndex)
         $.get('/api/ProductAPI/getProductInBrand', {
             BrandId: BrandId,
             pageIndex: pageIndex
         }, function (data, response) {
+            var currentRecord = data.data.listProduct.currentRecord
+            var totalRecord = data.data.listProduct.totalRecord
+            var listProduct = data.data.listProduct.items
+
             if (response != "success") {
                 return;
             }
@@ -891,9 +912,40 @@
                 return;
             }
             if (data.status == "success" && response == "success") {
+                renderCurrentRecord(currentRecord, totalRecord);
                 renderPagination(@Model.listProduct.TotalPage, pageIndex);
+                renderProduct(listProduct);
             }
         })
+    }
+
+    // Append product
+    function renderProduct(listProduct) {
+        $('.product__grid-inner').empty();
+        console.log(listProduct);
+        if (listProduct.length > 0) {
+            listProduct.forEach(product => {
+                var html = htmlProduct(
+                    product.productImages,
+                    product.discountPercent,
+                    product.new,
+                    product.highlights,
+                    product.shop,
+                    product.productName,
+                    product.productImportDate,
+                    product.type,
+                    product.price,
+                );
+                $('.product__grid-inner').append(html);
+            })
+        }
+
+    }
+
+    // Append current product/total
+    function renderCurrentRecord(currentRecord, totalRecord) {
+        $('.filter__number .number').empty();
+        $('.filter__number .number').append(htmlCurrentRecord(currentRecord, totalRecord));
     }
 
     // Append pagination
@@ -934,6 +986,153 @@
         }
 
         return;
+    }
+
+    // Html product
+    function htmlProduct(
+        image,
+        discountPercent,
+        newProduct,
+        highlights,
+        shop,
+        name,
+        importDate,
+        type,
+        price,
+    ) {
+        var htmlDiscountPercent = ``;
+        if (discountPercent !== null) {
+            htmlDiscountPercent = `
+                <span class="label-sales">-${discountPercent}%</span>
+            `;
+        }
+        var htmlNew = ``;
+        if (newProduct == true) {
+            htmlNew = `
+                <span class="label-new">Mới</span>
+            `;
+        }
+        var htmlHighlights = ``;
+        if (highlights == true) {
+            htmlHighlights = `
+                <span class="label-new">Hot</span>
+            `;
+        }
+        var htmlImportDate = ``;
+        var date = new Date(importDate);
+        if (importDate !== null) {
+            htmlImportDate = `
+                <div class="product-name">
+                    Tạm hết đến ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}
+                </div>
+            `;
+        } else {
+            if (type.length == 1) {
+                htmlImportDate = `
+                    <div class="product-name">
+                        ${type[0].productTypeName}
+                    </div>
+                `;
+            }
+            if (type.length == 2) {
+                type.forEach(item => {
+                    if (item.productTypeId == 1) {
+                        htmlImportDate = `
+                            <div class="product-name">
+                                ${item.productTypeName}
+                            </div>
+                        `;
+                    }
+                })
+            }
+        }
+        var htmlPrice = ``;
+        if (price.length == 2) {
+            price.forEach(item => {
+                if (item.productTypeId == 2) {
+                    if (item.priceOnSell == null) {
+                        htmlPrice = `
+                            <div class="product-subprice" style="visibility: hidden;">${(item.price).toLocaleString()} ₫</div>
+                            <div class="product-price">${(item.price).toLocaleString()} ₫</div>
+                        `;
+                    }
+                    else {
+                        htmlPrice = `
+                            <div class="product-subprice">${(item.price).toLocaleString()} ₫</div>
+                            <div class="product-price">${(item.priceOnSell).toLocaleString()} ₫</div>
+                        `;
+                    }
+                }
+            })
+        }
+        if (price.length == 1) {
+            if (price[0].priceOnSell == null)
+            {
+                htmlPrice = `
+                    <div class="product-subprice" style="visibility: hidden;">${(price[0].price).toLocaleString()} ₫</div>
+                    <div class="product-price">${(price[0].price).toLocaleString()} ₫</div>
+                `;
+            }
+            else
+            {
+                htmlPrice = `
+                    <div class="product-subprice">${(price[0].price).toLocaleString()} ₫</div>
+                    <div class="product-price">${(price[0].priceOnSell).toLocaleString()} ₫</div>
+                `;
+            }
+        }
+
+        var html = `
+            <div class="product product-3">
+                <a class="product-img" href="product-detail.html">
+                    <img src="@Configuration["ImagePath:Product"]${image}" alt="">
+                </a>
+                <div class="product-label d-flex justify-content-end align-items-center w-100" style="background-color: #fff; padding: 3px 0;">
+                    ${htmlDiscountPercent}
+                    ${htmlNew}
+                    ${htmlHighlights}
+
+                    <!--Add to wishlist-->
+                    <a class="product-heart" style="cursor: pointer;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none" stroke="#333"
+                                stroke-width="1" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="add-to-wishlist feather feather-heart">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
+                        </svg>
+                    </a>
+                </div>
+                <hr style="width: 50%; margin: 0 auto;">
+                <div class="product__info">
+                    <div class="product__info-detail text-center">
+                        <div class="product-brand align-items-center">
+                            ${shop}
+                        </div>
+                        <div class="product-name mb-0">
+                            ${name}
+                        </div>
+                        ${htmlImportDate}
+                        ${htmlPrice}
+                        <div class="product-btn">
+                            <a href="">Xem nhanh</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        return html;
+    }
+
+    // Html current record
+    function htmlCurrentRecord(currentRecord, totalRecord){
+        var html = `
+            <span>${currentRecord}</span>
+            /
+            <span class="totalItems">${totalRecord}</span>
+        `
+        return html;
     }
 
     // Html pagination
