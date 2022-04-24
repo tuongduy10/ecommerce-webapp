@@ -11,5 +11,6 @@ namespace ECommerce.Application.Services.FilterProduct.Dtos
         public int OptionId { get; set; }
         public string OptionName { get; set; }
         public List<ProductOption> listProductOption { get; set; }
+        public int TotalProductRecord { get; set; }
     }
 }

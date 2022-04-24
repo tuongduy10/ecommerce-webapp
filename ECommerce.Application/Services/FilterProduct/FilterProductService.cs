@@ -36,7 +36,9 @@ namespace ECommerce.Application.Services.FilterProduct
                 ).Select(lo => new Option() { 
                     OptionId = lo.OptionId,
                     OptionName = lo.OptionName,
-                    listProductOption = _DbContext.ProductOptions.Where(lop => lop.OptionId == lo.OptionId).Select(lop => new ProductOption() { 
+                    listProductOption = _DbContext.ProductOptions.Where(lop => lop.OptionId == lo.OptionId)
+                    .Select(lop => new ProductOption() { 
+                        ProductOptionId = lop.ProductOptionId,
                         OptionId = lop.OptionId,
                         ProductId = lop.ProductId,
                         Value = lop.Value

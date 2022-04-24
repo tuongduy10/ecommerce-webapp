@@ -11,7 +11,6 @@ namespace ECommerce.Data.Models
         public int ProductId { get; set; }
         public int OptionId { get; set; }
         public string Value { get; set; }
-
         public virtual Option Product { get; set; }
         public virtual Product ProductNavigation { get; set; }
     }

@@ -809,23 +809,27 @@
                 height: calc(43px + (54 - 43) * ((100vw - 375px)/ (1920 - 375)));
                 margin-top: 0.78125vw;
             }
-                .product-btn a{
-                    transform: scale(1);
-                    opacity: 1;
-                    transition: all .5s ease;
+                .product-btn a {
+                    transform: scale(.7);
+                    opacity: 0;
+                    /* transition: all .5s ease; */
 
                     background: #fff;
                     color: var(--blue-dior);
                     border: 1px solid #383838;
-
                     display: inline-block;
                     font-size: .9375vw;
                     line-height: 1;
                     padding: 0.75521vw 2.8125vw;
                     border: 1px solid #383838;
                 }
-                .product-btn:hover a{
+
+                .product:hover .product-btn a,
+                .product-btn:hover a {
                     box-shadow: 0 10px 30px rgb(0 0 0 / 10%);
+                    transform: scale(1);
+                    opacity: 1;
+                    transition: all .5s ease;
                 }
 
 @media only screen and  (max-width: 1200px){

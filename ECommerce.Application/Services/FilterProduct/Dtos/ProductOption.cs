@@ -8,6 +8,7 @@ namespace ECommerce.Application.Services.FilterProduct.Dtos
 {
     public class ProductOption
     {
+        public int ProductOptionId { get; set; }
         public int ProductId { get; set; }
         public int OptionId { get; set; }
         public string Value { get; set; }

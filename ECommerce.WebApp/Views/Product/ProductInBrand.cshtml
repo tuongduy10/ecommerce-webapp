@@ -664,38 +664,37 @@
                                                 <div class="product-brand align-items-center">
                                                     @product.Shop
                                                 </div>
-                                                <div class="product-name mb-0">
+                                                <div class="product-name">
                                                     @product.ProductName
                                                 </div>
-                                                @if (product.ProductImportDate != null)
-                                                {
-                                                    <div class="product-name">
-                                                        Tạm hết đến @product.ProductImportDate.ToString("dd/MM/yyyy")
-                                                    </div>
-                                                }
-                                                @if (product.ProductImportDate == null)
-                                                {
-                                                    if (product.Type.Count == 1)
+                                                @*@if (product.ProductImportDate != null)
                                                     {
                                                         <div class="product-name">
-                                                            @product.Type[0].ProductTypeName
+                                                            Tạm hết đến @product.ProductImportDate.ToString("dd/MM/yyyy")
                                                         </div>
                                                     }
-
-                                                    if (product.Type.Count == 2)
+                                                    @if (product.ProductImportDate == null)
                                                     {
-                                                        @foreach (var type in product.Type)
+                                                        if (product.Type.Count == 1)
                                                         {
-                                                            if (type.ProductTypeId == 1)
+                                                            <div class="product-name">
+                                                                @product.Type[0].ProductTypeName
+                                                            </div>
+                                                        }
+
+                                                        if (product.Type.Count == 2)
+                                                        {
+                                                            @foreach (var type in product.Type)
                                                             {
-                                                                <div class="product-name">
-                                                                    @type.ProductTypeName
-                                                                </div>
+                                                                if (type.ProductTypeId == 1)
+                                                                {
+                                                                    <div class="product-name">
+                                                                        @type.ProductTypeName
+                                                                    </div>
+                                                                }
                                                             }
                                                         }
-                                                    }
-                                                }
-
+                                                    }*@
                                                 @if (product.Price.Count == 2)
                                                 {
                                                     @foreach (var price in product.Price)
@@ -704,13 +703,13 @@
                                                         {
                                                             if (price.PriceOnSell == null)
                                                             {
-                                                                <div class="product-subprice"></div>
                                                                 <div class="product-price">@String.Format("{0:0,0} ₫", price.Price)</div>
+                                                                <div class="product-subprice" style="visibility: hidden">@String.Format("{0:0,0} ₫", price.Price)</div>
                                                             }
                                                             else
                                                             {
-                                                                <div class="product-subprice">@String.Format("{0:0,0} ₫", price.Price)</div>
                                                                 <div class="product-price">@String.Format("{0:0,0} ₫", price.PriceOnSell)</div>
+                                                                <div class="product-subprice">@String.Format("{0:0,0} ₫", price.Price)</div>
                                                             }
                                                         }
                                                     }
@@ -720,13 +719,13 @@
                                                 {
                                                     if (product.Price[0].PriceOnSell == null)
                                                     {
-                                                        <div class="product-subprice"></div>
                                                         <div class="product-price">@String.Format("{0:0,0} ₫", product.Price[0].Price)</div>
+                                                        <div class="product-subprice" style="visibility: hidden">@String.Format("{0:0,0} ₫", product.Price[0].Price)</div>
                                                     }
                                                     else
                                                     {
-                                                        <div class="product-subprice">@String.Format("{0:0,0} ₫", product.Price[0].Price)</div>
                                                         <div class="product-price">@String.Format("{0:0,0} ₫", product.Price[0].PriceOnSell)</div>
+                                                        <div class="product-subprice">@String.Format("{0:0,0} ₫", product.Price[0].Price)</div>
                                                     }
                                                 }
                                                 <div class="product-btn">
