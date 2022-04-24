@@ -15,7 +15,7 @@
                         @foreach (var filter in Model.listFilterModel)
                         {
                             <div class="filter__block">
-                                <h3 class="filter__title">
+                                <h3 class="filter__title" onclick="getProductBySubCategory(@Model.brand.BrandId,@filter.SubCategoryId, 1)">
                                     @filter.SubCategoryName <svg xmlns='http://www.w3.org/2000/svg' width='24'
                                                  height='24' viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
                                                  stroke-linecap='round' stroke-linejoin='round'
@@ -752,15 +752,16 @@
         getProductInList(@Model.brand.BrandId, pageIndex);
     })
 
-    function getProductInList(BrandId, pageIndex) {
-        console.log(pageIndex)
-        $.get('/api/ProductAPI/getProductInBrand', {
+    function getProductBySubCategory(BrandId, SubCategoryId, pageIndex) {
+        $.get('/api/ProductAPI/getProductBySubCategory', {
             BrandId: BrandId,
+            SubCategoryId: SubCategoryId,
             pageIndex: pageIndex
         }, function (data, response) {
             var currentRecord = data.data.listProduct.currentRecord
             var totalRecord = data.data.listProduct.totalRecord
             var listProduct = data.data.listProduct.items
+            var totalPage = data.data.listProduct.totalPage
 
             if (response != "success") {
                 return;
@@ -770,7 +771,31 @@
             }
             if (data.status == "success" && response == "success") {
                 renderCurrentRecord(currentRecord, totalRecord);
-                renderPagination(@Model.listProduct.TotalPage, pageIndex);
+                renderPagination(totalPage, pageIndex);
+                renderProduct(listProduct);
+            }
+        })
+    }
+
+    function getProductInList(BrandId, pageIndex) {
+        $.get('/api/ProductAPI/getProductInBrand', {
+            BrandId: BrandId,
+            pageIndex: pageIndex
+        }, function (data, response) {
+            var currentRecord = data.data.listProduct.currentRecord
+            var totalRecord = data.data.listProduct.totalRecord
+            var listProduct = data.data.listProduct.items
+            var totalPage = data.data.listProduct.totalPage
+            console.log(totalPage)
+            if (response != "success") {
+                return;
+            }
+            if (data.status != "success") {
+                return;
+            }
+            if (data.status == "success" && response == "success") {
+                renderCurrentRecord(currentRecord, totalRecord);
+                renderPagination(totalPage, pageIndex);
                 renderProduct(listProduct);
             }
         })
@@ -779,7 +804,6 @@
     // Append product
     function renderProduct(listProduct) {
         $('.product__grid-inner').empty();
-        console.log(listProduct);
         if (listProduct.length > 0) {
             listProduct.forEach(product => {
                 var html = htmlProduct(
@@ -796,7 +820,6 @@
                 $('.product__grid-inner').append(html);
             })
         }
-
     }
 
     // Append current product/total
@@ -1118,4 +1141,5 @@
         `
         return html;
     }
+
 </script>
