@@ -7,11 +7,10 @@ namespace ECommerce.Data.Models
 {
     public partial class ProductOption
     {
-        public int ProductOptionId { get; set; }
         public int ProductId { get; set; }
-        public int OptionId { get; set; }
-        public string Value { get; set; }
-        public virtual Option Product { get; set; }
-        public virtual Product ProductNavigation { get; set; }
+        public int OptionValueId { get; set; }
+
+        public virtual OptionValue OptionValue { get; set; }
+        public virtual Product Product { get; set; }
     }
 }

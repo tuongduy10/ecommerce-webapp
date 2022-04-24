@@ -31,6 +31,7 @@ namespace ECommerce.Data.Context
         public virtual DbSet<DiscountType> DiscountTypes { get; set; }
         public virtual DbSet<Header> Headers { get; set; }
         public virtual DbSet<Option> Options { get; set; }
+        public virtual DbSet<OptionValue> OptionValues { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
@@ -222,6 +223,19 @@ namespace ECommerce.Data.Context
                     .HasMaxLength(50);
             });
 
+            modelBuilder.Entity<OptionValue>(entity =>
+            {
+                entity.ToTable("OptionValue");
+
+                entity.Property(e => e.OptionValueName).HasMaxLength(50);
+
+                entity.HasOne(d => d.Option)
+                    .WithMany(p => p.OptionValues)
+                    .HasForeignKey(d => d.OptionId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OptionValue_Option");
+            });
+
             modelBuilder.Entity<Order>(entity =>
             {
                 entity.ToTable("Order");
@@ -384,21 +398,18 @@ namespace ECommerce.Data.Context
 
             modelBuilder.Entity<ProductOption>(entity =>
             {
-                entity.HasKey(e => new { e.ProductOptionId, e.ProductId, e.OptionId });
+                entity.HasKey(e => new { e.ProductId, e.OptionValueId })
+                    .HasName("PK_ProductOption_1");
 
                 entity.ToTable("ProductOption");
 
-                entity.Property(e => e.ProductOptionId).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Value).HasMaxLength(50);
+                entity.HasOne(d => d.OptionValue)
+                    .WithMany(p => p.ProductOptions)
+                    .HasForeignKey(d => d.OptionValueId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ProductOption_OptionValue");
 
                 entity.HasOne(d => d.Product)
-                    .WithMany(p => p.ProductOptions)
-                    .HasForeignKey(d => d.ProductId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ProductOption_Option");
-
-                entity.HasOne(d => d.ProductNavigation)
                     .WithMany(p => p.ProductOptions)
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
@@ -432,9 +443,7 @@ namespace ECommerce.Data.Context
             {
                 entity.ToTable("ProductType");
 
-                entity.Property(e => e.ProductTypeName)
-                    .HasMaxLength(50)
-                    .HasColumnName("ProductTypeName");
+                entity.Property(e => e.ProductTypeName).HasMaxLength(50);
             });
 
             modelBuilder.Entity<ProductUserImage>(entity =>

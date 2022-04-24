@@ -37,7 +37,7 @@ namespace ECommerce.WebApp
             services.AddControllersWithViews();
 
             // Services
-            // Configuration Website
+            // Website Configuration
             services.AddTransient<IConfigurationService, ConfigurationService>();
             services.AddTransient<IHeaderService, HeaderService>();
             services.AddTransient<IFooterService, FooterService>();

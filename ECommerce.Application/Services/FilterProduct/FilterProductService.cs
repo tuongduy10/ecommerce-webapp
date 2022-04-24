@@ -36,13 +36,16 @@ namespace ECommerce.Application.Services.FilterProduct
                 ).Select(lo => new Option() { 
                     OptionId = lo.OptionId,
                     OptionName = lo.OptionName,
-                    listProductOption = _DbContext.ProductOptions.Where(lop => lop.OptionId == lo.OptionId)
-                    .Select(lop => new ProductOption() { 
-                        ProductOptionId = lop.ProductOptionId,
-                        OptionId = lop.OptionId,
-                        ProductId = lop.ProductId,
-                        Value = lop.Value
-                    }).ToList()
+                    listOptionValue = (
+                        from option in _DbContext.Options
+                        from optionvalue in _DbContext.OptionValues
+                        where optionvalue.OptionId == option.OptionId && option.OptionId == lo.OptionId
+                        select optionvalue
+                    ).Select(lop => new OptionValue() { 
+                        OptionValueId = lop.OptionValueId,
+                        OptionValueName = lop.OptionValueName,
+                        TotalRecord = _DbContext.ProductOptions.Where(ov => ov.OptionValueId == lop.OptionValueId).Select(ov => ov.ProductId).Count(),
+                    }).ToList(),
                 }).ToList(),
             }).ToListAsync();
 

@@ -9,14 +9,14 @@ namespace ECommerce.Data.Models
     {
         public Option()
         {
-            ProductOptions = new HashSet<ProductOption>();
+            OptionValues = new HashSet<OptionValue>();
             SubCategoryOptions = new HashSet<SubCategoryOption>();
         }
 
         public int OptionId { get; set; }
         public string OptionName { get; set; }
 
-        public virtual ICollection<ProductOption> ProductOptions { get; set; }
+        public virtual ICollection<OptionValue> OptionValues { get; set; }
         public virtual ICollection<SubCategoryOption> SubCategoryOptions { get; set; }
     }
 }

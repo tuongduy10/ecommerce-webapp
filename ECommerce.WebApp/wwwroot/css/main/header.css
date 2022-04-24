@@ -216,14 +216,15 @@
                     .minicart-totals .total-price{
                         font-size: 1.04167vw;
                     }
-                    .minicart-checkout{
+                    .minicart-checkout {
                         border: 1px solid #333;
+                        background-color: #4d4d4d;
+                        color: #fff;
                     }
-                    .minicart-totals a:hover{
+/*                    .minicart-totals a:hover{
                         color: var(--blue-dior);
                         border-color: var(--blue-dior);
-                    }
-
+                    }*/
             .action__icon{
                 max-height: calc(10px + (24 - 10) * ((100vw - 375px)/ (1920 - 375)));
                 max-width: calc(10px + (24 - 10) * ((100vw - 375px)/ (1920 - 375)));
@@ -263,8 +264,8 @@
                 .profile-mobile span,
                 .cart span,
                 .favorite span{
-                    width: calc(4px + (24 - 10) * ((100vw - 375px)/ (1920 - 375)));;
-                    height: calc(4px + (24 - 10) * ((100vw - 375px)/ (1920 - 375)));;
+                    width: calc(4px + (24 - 10) * ((100vw - 375px)/ (1920 - 375)));
+                    height: calc(4px + (24 - 10) * ((100vw - 375px)/ (1920 - 375)));
                     font-size: 0.75rem;
                     line-height: 1;
                 }

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Services.FilterProduct.Dtos
 {
-    public class SubCategoryModel
+    public class OptionValue
     {
-        public int SubCategoryId { get; set; }
-        public string SubCategoryName { get; set; }
-        public int CategoryId { get; set; }
+        public int OptionValueId { get; set; }
+        public string OptionValueName { get; set; }
+        public int TotalRecord { get; set; }
     }
 }

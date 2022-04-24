@@ -810,10 +810,9 @@
                 margin-top: 0.78125vw;
             }
                 .product-btn a {
-                    transform: scale(.7);
-                    opacity: 0;
-                    /* transition: all .5s ease; */
-
+                    transform: scale(1);
+                    opacity: 1;
+                    transition: all .5s ease;
                     background: #fff;
                     color: var(--blue-dior);
                     border: 1px solid #383838;
@@ -824,12 +823,8 @@
                     border: 1px solid #383838;
                 }
 
-                .product:hover .product-btn a,
                 .product-btn:hover a {
                     box-shadow: 0 10px 30px rgb(0 0 0 / 10%);
-                    transform: scale(1);
-                    opacity: 1;
-                    transition: all .5s ease;
                 }
 
 @media only screen and  (max-width: 1200px){
