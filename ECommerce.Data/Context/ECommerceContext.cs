@@ -55,6 +55,7 @@ namespace ECommerce.Data.Context
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
 
+        // Get connection string from appsettings.json
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -383,9 +384,11 @@ namespace ECommerce.Data.Context
 
             modelBuilder.Entity<ProductOption>(entity =>
             {
-                entity.HasKey(e => new { e.ProductId, e.OptionId });
+                entity.HasKey(e => new { e.ProductOptionId, e.ProductId, e.OptionId });
 
                 entity.ToTable("ProductOption");
+
+                entity.Property(e => e.ProductOptionId).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Value).HasMaxLength(50);
 
@@ -431,7 +434,7 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.ProductTypeName)
                     .HasMaxLength(50)
-                    .HasColumnName("ProductType");
+                    .HasColumnName("ProductTypeName");
             });
 
             modelBuilder.Entity<ProductUserImage>(entity =>

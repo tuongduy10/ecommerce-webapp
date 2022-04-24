@@ -7,6 +7,7 @@ namespace ECommerce.Data.Models
 {
     public partial class ProductOption
     {
+        public int ProductOptionId { get; set; }
         public int ProductId { get; set; }
         public int OptionId { get; set; }
         public string Value { get; set; }

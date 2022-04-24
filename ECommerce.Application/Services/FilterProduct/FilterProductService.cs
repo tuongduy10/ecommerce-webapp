@@ -23,15 +23,15 @@ namespace ECommerce.Application.Services.FilterProduct
                         where subc.CategoryId == brand.CategoryId && brand.BrandId == brandId
                         select subc;
 
-            var result = await query.Select(i => new FilterModel()
+            var list = await query.Select(i => new FilterModel()
             {
                 SubCategoryId = i.SubCategoryId,
                 SubCategoryName = i.SubCategoryName,
                 CategoryId = i.CategoryId,
                 listOption = (
                     from option in _DbContext.Options
-                    from subcopt in _DbContext.SubCategories
-                    where option.OptionId == subcopt.SubCategoryId && subcopt.SubCategoryId == i.SubCategoryId
+                    from subcopt in _DbContext.SubCategoryOptions
+                    where option.OptionId == subcopt.OptionId && subcopt.SubCategoryId == i.SubCategoryId
                     select option
                 ).Select(lo => new Option() { 
                     OptionId = lo.OptionId,
@@ -44,7 +44,7 @@ namespace ECommerce.Application.Services.FilterProduct
                 }).ToList(),
             }).ToListAsync();
 
-            return null;
+            return list;
         }
     }
 }
