@@ -69,7 +69,7 @@
                             </div>
                             <div class="order__item-dropdown_menu">
                                 <div class="order__item-dropdown_items">
-                                    <a class="order__item d-none">
+                                    <a class="order__item d-none" onclick="getProductInList(@Model.brand.BrandId, 1)">
                                         Tất cả<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
                                                    viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
                                                    stroke-linecap='round' stroke-linejoin='round'
@@ -752,53 +752,44 @@
         getProductInList(@Model.brand.BrandId, pageIndex);
     })
 
+    // Call API
     function getProductBySubCategory(BrandId, SubCategoryId, pageIndex) {
-        $.get('/api/ProductAPI/getProductBySubCategory', {
+        var request = {
             BrandId: BrandId,
             SubCategoryId: SubCategoryId,
-            pageIndex: pageIndex
-        }, function (data, response) {
-            var currentRecord = data.data.listProduct.currentRecord
-            var totalRecord = data.data.listProduct.totalRecord
-            var listProduct = data.data.listProduct.items
-            var totalPage = data.data.listProduct.totalPage
+            PageIndex: pageIndex
+        }
 
-            if (response != "success") {
-                return;
-            }
-            if (data.status != "success") {
-                return;
-            }
-            if (data.status == "success" && response == "success") {
-                renderCurrentRecord(currentRecord, totalRecord);
-                renderPagination(totalPage, pageIndex);
-                renderProduct(listProduct);
-            }
-        })
+        apiGetProduct(request);
+    }
+    function getProductInList(BrandId, pageIndex) {
+        var request = {
+            BrandId: BrandId,
+            PageIndex: pageIndex
+        }
+
+        apiGetProduct(request);
     }
 
-    function getProductInList(BrandId, pageIndex) {
-        $.get('/api/ProductAPI/getProductInBrand', {
-            BrandId: BrandId,
-            pageIndex: pageIndex
-        }, function (data, response) {
-            var currentRecord = data.data.listProduct.currentRecord
-            var totalRecord = data.data.listProduct.totalRecord
-            var listProduct = data.data.listProduct.items
-            var totalPage = data.data.listProduct.totalPage
-            console.log(totalPage)
-            if (response != "success") {
-                return;
-            }
-            if (data.status != "success") {
-                return;
-            }
-            if (data.status == "success" && response == "success") {
+    // API methods
+    function apiGetProduct(request) {
+        $.ajax({
+            url: '/api/ProductAPI/getProductInBrand',
+            data: JSON.stringify(request),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            type: 'POST',
+            success: function (data) {
+                var currentRecord = data.data.listProduct.currentRecord;
+                var totalRecord = data.data.listProduct.totalRecord;
+                var listProduct = data.data.listProduct.items;
+                var totalPage = data.data.listProduct.totalPage;
+
                 renderCurrentRecord(currentRecord, totalRecord);
-                renderPagination(totalPage, pageIndex);
+                renderPagination(totalPage, request.PageIndex);
                 renderProduct(listProduct);
             }
-        })
+        });
     }
 
     // Append product
@@ -821,13 +812,11 @@
             })
         }
     }
-
     // Append current product/total
     function renderCurrentRecord(currentRecord, totalRecord) {
         $('.filter__number .number').empty();
         $('.filter__number .number').append(htmlCurrentRecord(currentRecord, totalRecord));
     }
-
     // Append pagination
     function renderPagination(pagesize, pageindex) {
         var firstIndex = 1;
@@ -1004,7 +993,6 @@
         `;
         return html;
     }
-
     // Html current record
     function htmlCurrentRecord(currentRecord, totalRecord){
         var html = `
@@ -1014,7 +1002,6 @@
         `
         return html;
     }
-
     // Html pagination
     function htmlPagination2AtFirstIndex() {
         var html = `

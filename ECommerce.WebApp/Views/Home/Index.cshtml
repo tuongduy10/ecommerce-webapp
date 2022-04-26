@@ -175,7 +175,7 @@
                                                 continue;
                                             }
                                             <div class="bran__list-item card">
-                                                <a href="@Url.Action("ProductInBrand","Product", new { @BrandId = item.BrandId })">
+                                                <a href="@Url.Action("ProductInBrand","Product", new { @BrandId = item.BrandId, @PageIndex = 1})">
                                                     <div class="bran__list-img py-2 px-4">
                                                         <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" class="card-img-top" alt="@item.BrandName">
                                                     </div>
@@ -301,7 +301,7 @@
                 if (listDist[i] == brand.brandName[0]) {
                     data += `
                         <div class="bran__list-item card">
-                            <a href="/Product/ProductInBrand?BrandId=${brand.brandId}">
+                            <a href="/Product/ProductInBrand?BrandId=${brand.brandId}&PageIndex=1">
                                 <div class="bran__list-img py-2 px-4">
                                     <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="card-img-top" alt="${brand.brandName}">
                                 </div>
@@ -332,7 +332,7 @@
                         if (sortBy[j] == brand.brandName[0]) {
                             data += `
                                 <div class="bran__list-item card">
-                                    <a href="/Product/ProductInBrand?BrandId=${brand.brandId}">
+                                    <a href="/Product/ProductInBrand?BrandId=${brand.brandId}&PageIndex=1">
                                         <div class="bran__list-img py-2 px-4">
                                             <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="card-img-top" alt="${brand.brandName}">
                                         </div>

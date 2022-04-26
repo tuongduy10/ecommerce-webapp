@@ -1,6 +1,7 @@
 ﻿using ECommerce.Application.Services.Brand;
 using ECommerce.Application.Services.FilterProduct;
 using ECommerce.Application.Services.Product;
+using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.SubCategory;
 using ECommerce.WebApp.Models.Products;
 using Microsoft.AspNetCore.Mvc;
@@ -25,13 +26,12 @@ namespace ECommerce.WebApp.Controllers.Client
             _brandService = brandService;
             _filterService = filterService;
         }
-        public async Task<IActionResult> ProductInBrand(int BrandId, int pageIndex = 1)
+        public async Task<IActionResult> ProductInBrand(ProductGetRequest request)
         {
-            int itemsInPage = 30;
-            var listProduct = await _productService.getProductPaginated(BrandId, pageIndex, itemsInPage);
-            var listSubCategory = await _subCategoryService.getSubCategoryInBrand(BrandId);
-            var brand = await _brandService.getBrandById(BrandId);
-            var filter = await _filterService.listFilterModel(BrandId);
+            var listProduct = await _productService.getProductPaginated(request);
+            var listSubCategory = await _subCategoryService.getSubCategoryInBrand(request.BrandId);
+            var brand = await _brandService.getBrandById(request.BrandId);
+            var filter = await _filterService.listFilterModel(request.BrandId);
 
             var model = new ProductInBrandViewModel()
             {
@@ -43,6 +43,7 @@ namespace ECommerce.WebApp.Controllers.Client
 
             return View(model);
         }
+
         public async Task<IActionResult> ProductAvaliable()
         {
             return View();
