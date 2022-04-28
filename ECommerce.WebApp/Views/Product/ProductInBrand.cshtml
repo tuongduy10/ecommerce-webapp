@@ -15,7 +15,7 @@
                         @foreach (var filter in Model.listFilterModel)
                         {
                             <div class="filter__block">
-                                <h3 class="filter__title" onclick="getProductBySubCategory(@Model.brand.BrandId,@filter.SubCategoryId, 1)">
+                                <h3 class="filter__title" onclick="getProductBySubCategory(@Model.brand.BrandId,@filter.SubCategoryId,'@filter.SubCategoryName',1)">
                                     @filter.SubCategoryName <svg xmlns='http://www.w3.org/2000/svg' width='24'
                                                  height='24' viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
                                                  stroke-linecap='round' stroke-linejoin='round'
@@ -37,7 +37,7 @@
                                                         {
                                                             <li class="filter__sub-item">
                                                                 <div class="checkbox d-flex align-items-center">
-                                                                    <input id="check__sub-item_@productOption.OptionValueId" class="checkboxFilter" type="checkbox">
+                                                                    <input id="check__sub-item_@productOption.OptionValueId" class="checkboxFilter" type="checkbox" value="@productOption.OptionValueId">
                                                                     <label for="check__sub-item_@productOption.OptionValueId" class="d-flex align-items-center mb-0">
                                                                         <div class="sub-item-cate">@productOption.OptionValueName</div><span class="sub-item-cate">(@productOption.TotalRecord)</span>
                                                                     </label>
@@ -520,7 +520,7 @@
                                         <div class="product__info">
                                             <div class="product__info-detail text-center">
                                                 <div class="product-brand align-items-center">
-                                                    @product.Shop
+                                                    @product.ShopName
                                                 </div>
                                                 <div class="product-name mb-0">
                                                     @product.ProductName
@@ -743,38 +743,73 @@
     </div>
 </div>
 <script>
+    var SubCategoryIdRequest = '';
+    var listOptionValueIdRequest = [];
+
     // Events
     $(document).on('click', '.pagination-item', function () {
         var pageIndex = parseInt($(this).attr("value"));
         if ($(this).hasClass('active')) {
             return;
         }
-        getProductInList(@Model.brand.BrandId, pageIndex);
+        // Current BrandId
+        if (SubCategoryIdRequest == '') {
+            getProductInList(@Model.brand.BrandId, pageIndex);
+        }
+        // Current SubCategoryId
+        if (SubCategoryIdRequest != '') {
+            //getProductBySubCategory(@Model.brand.BrandId, SubCategoryIdRequest, pageIndex)
+        }
+    })
+    $('.checkboxFilter').click(function () {
+        if ($(this).is(":checked")) {
+            listOptionValueIdRequest.push($(this).val());
+        }
+        if (!$(this).is(":checked")) {
+            listOptionValueIdRequest.splice($.inArray($(this).val(), listOptionValueIdRequest), 1);
+        }
+        getProductByOptionValue(@Model.brand.BrandId, listOptionValueIdRequest, 1);
     })
 
     // Call API
-    function getProductBySubCategory(BrandId, SubCategoryId, pageIndex) {
+    function getProductBySubCategory(BrandId, SubCategoryId, SubCategoryName, pageIndex) {
+        var url = '/api/ProductAPI/getProductInBrand';
         var request = {
             BrandId: BrandId,
             SubCategoryId: SubCategoryId,
             PageIndex: pageIndex
         }
+        apiGetProduct(url, request, SubCategoryName);
 
-        apiGetProduct(request);
+        SubCategoryIdRequest = SubCategoryId;
     }
     function getProductInList(BrandId, pageIndex) {
+        var url = '/api/ProductAPI/getProductInBrand'
         var request = {
             BrandId: BrandId,
             PageIndex: pageIndex
         }
+        apiGetProduct(url, request, "Tất cả sản phẩm");
 
-        apiGetProduct(request);
+        SubCategoryIdRequest = '';
+        listOptionValueIdRequest = [];
+    }
+    function getProductByOptionValue(BrandId, listOptionValueId, pageIndex) {
+        var url = '/api/ProductAPI/getProductByOptionValue'
+        var request = {
+            BrandId: BrandId,
+            listOptionValueId: listOptionValueId,
+            PageIndex: pageIndex
+        }
+        apiGetProduct(url, request, '');
+
+        SubCategoryIdRequest = '';
     }
 
     // API methods
-    function apiGetProduct(request) {
+    function apiGetProduct(url, request, title) {
         $.ajax({
-            url: '/api/ProductAPI/getProductInBrand',
+            url: url,
             data: JSON.stringify(request),
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
@@ -787,13 +822,14 @@
 
                 renderCurrentRecord(currentRecord, totalRecord);
                 renderPagination(totalPage, request.PageIndex);
-                renderProduct(listProduct);
+                renderProduct(listProduct, title);
             }
         });
     }
 
     // Append product
-    function renderProduct(listProduct) {
+    function renderProduct(listProduct, title) {
+        $('.product__grid-title').html(title);
         $('.product__grid-inner').empty();
         if (listProduct.length > 0) {
             listProduct.forEach(product => {
@@ -802,7 +838,7 @@
                     product.discountPercent,
                     product.new,
                     product.highlights,
-                    product.shop,
+                    product.shopName,
                     product.productName,
                     product.productImportDate,
                     product.type,

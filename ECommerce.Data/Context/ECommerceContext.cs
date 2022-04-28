@@ -38,7 +38,7 @@ namespace ECommerce.Data.Context
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<ProductAttribute> ProductAttributes { get; set; }
         public virtual DbSet<ProductImage> ProductImages { get; set; }
-        public virtual DbSet<ProductOption> ProductOptions { get; set; }
+        public virtual DbSet<ProductOptionValue> ProductOptionValues { get; set; }
         public virtual DbSet<ProductPrice> ProductPrices { get; set; }
         public virtual DbSet<ProductType> ProductTypes { get; set; }
         public virtual DbSet<ProductUserImage> ProductUserImages { get; set; }
@@ -396,24 +396,23 @@ namespace ECommerce.Data.Context
                     .HasConstraintName("FK_ProductImage_Product");
             });
 
-            modelBuilder.Entity<ProductOption>(entity =>
+            modelBuilder.Entity<ProductOptionValue>(entity =>
             {
-                entity.HasKey(e => new { e.ProductId, e.OptionValueId })
-                    .HasName("PK_ProductOption_1");
+                entity.HasKey(e => new { e.ProductId, e.OptionValueId });
 
-                entity.ToTable("ProductOption");
+                entity.ToTable("ProductOptionValue");
 
                 entity.HasOne(d => d.OptionValue)
-                    .WithMany(p => p.ProductOptions)
+                    .WithMany(p => p.ProductOptionValues)
                     .HasForeignKey(d => d.OptionValueId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ProductOption_OptionValue");
+                    .HasConstraintName("FK_ProductOptionValue_OptionValue");
 
                 entity.HasOne(d => d.Product)
-                    .WithMany(p => p.ProductOptions)
+                    .WithMany(p => p.ProductOptionValues)
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ProductOption_Product");
+                    .HasConstraintName("FK_ProductOptionValue_Product");
             });
 
             modelBuilder.Entity<ProductPrice>(entity =>

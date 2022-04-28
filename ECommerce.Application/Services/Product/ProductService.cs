@@ -24,12 +24,13 @@ namespace ECommerce.Application.Services.Product
             int SubCategoryId = request.SubCategoryId;
             int pageindex = request.PageIndex;
             int pagesize = request.PageSize;
+            List<int> listOptionValueId = request.listOptionValueId;
 
             var query = (from product in _DbContext.Products
-                        join brand in _DbContext.Brands on product.BrandId equals brand.BrandId
-                        join shop in _DbContext.Shops on product.ShopId equals shop.ShopId
-                        orderby product.SubCategoryId
-                        select new { product, brand, shop }).AsQueryable();
+                         join brand in _DbContext.Brands on product.BrandId equals brand.BrandId
+                         join shop in _DbContext.Shops on product.ShopId equals shop.ShopId
+                         orderby product.SubCategoryId
+                         select new { product, brand, shop }).AsQueryable();
 
             var queryAble = query;
             // Query get products by brandid
@@ -42,6 +43,7 @@ namespace ECommerce.Application.Services.Product
             {
                 queryAble = query.Where(q => q.product.BrandId == BrandId && q.product.SubCategoryId == SubCategoryId);
             }
+
             // Excute query to list
             var list = queryAble.Select(i => new ProductInBrandModel()
             {
@@ -53,7 +55,6 @@ namespace ECommerce.Application.Services.Product
                 New = i.product.New,
                 ProductImportDate = i.product.ProductImportDate,
                 SubCategoryId = i.product.SubCategoryId,
-
                 Type = (
                     from product in _DbContext.Products
                     from price in _DbContext.ProductPrices
@@ -66,12 +67,69 @@ namespace ECommerce.Application.Services.Product
                     ProductTypeId = t.id,
                     ProductTypeName = t.name
                 }).ToList(),
-
                 Price = _DbContext.ProductPrices.Where(price => price.ProductId == i.product.ProductId).ToList(),
                 ProductImages = _DbContext.ProductImages.Where(img => img.ProductId == i.product.ProductId).Select(i => i.ProductImagePath).FirstOrDefault(),
+                BrandName = i.brand.BrandName,
+                ShopName = i.shop.ShopName,
+            });
 
-                Brand = i.brand.BrandName,
-                Shop = i.shop.ShopName,
+            var record = await list.CountAsync();
+            var data = await PaginatedList<ProductInBrandModel>.CreateAsync(list, pageindex, pagesize);
+            var result = new PageResult<ProductInBrandModel>()
+            {
+                Items = data,
+                CurrentRecord = (pageindex * pagesize) <= record ? (pageindex * pagesize) : record,
+                TotalRecord = record,
+                CurrentPage = pageindex,
+                TotalPage = (int)Math.Ceiling(record / (double)pagesize)
+            };
+
+            return result;
+        }
+        public async Task<PageResult<ProductInBrandModel>> getProductByOptionValuePaginated(ProductGetRequest request)
+        {
+            int BrandId = request.BrandId;
+            int SubCategoryId = request.SubCategoryId;
+            int pageindex = request.PageIndex;
+            int pagesize = request.PageSize;
+            List<int> listOptionValueId = request.listOptionValueId;
+
+            var query = (from product in _DbContext.Products
+                         join brand in _DbContext.Brands on product.BrandId equals brand.BrandId
+                         join shop in _DbContext.Shops on product.ShopId equals shop.ShopId
+                         join product_optval in _DbContext.ProductOptionValues on product.ProductId equals product_optval.ProductId
+                         orderby product.SubCategoryId
+                         select new { product, brand, shop, product_optval }).AsQueryable();
+
+            var queryAble = query.Where(i => listOptionValueId.Any(l => l == i.product_optval.OptionValueId));
+
+            // Excute query to list
+            var list = queryAble.Select(i => new ProductInBrandModel()
+            {
+                ProductId = i.product.ProductId,
+                ProductName = i.product.ProductName,
+                DiscountPercent = i.product.DiscountPercent,
+                Status = i.product.Status,
+                Highlights = i.product.Highlights,
+                New = i.product.New,
+                ProductImportDate = i.product.ProductImportDate,
+                SubCategoryId = i.product.SubCategoryId,
+                Type = (
+                    from product in _DbContext.Products
+                    from price in _DbContext.ProductPrices
+                    from type in _DbContext.ProductTypes
+                    where product.ProductId == i.product.ProductId &&
+                          price.ProductTypeId == type.ProductTypeId && price.ProductId == product.ProductId
+                    select new { id = type.ProductTypeId, name = type.ProductTypeName }
+                ).Select(t => new Dtos.Type()
+                {
+                    ProductTypeId = t.id,
+                    ProductTypeName = t.name
+                }).ToList(),
+                Price = _DbContext.ProductPrices.Where(price => price.ProductId == i.product.ProductId).ToList(),
+                ProductImages = _DbContext.ProductImages.Where(img => img.ProductId == i.product.ProductId).Select(i => i.ProductImagePath).FirstOrDefault(),
+                BrandName = i.brand.BrandName,
+                ShopName = i.shop.ShopName,
             });
 
             var record = await list.CountAsync();

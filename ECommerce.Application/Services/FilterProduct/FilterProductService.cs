@@ -44,12 +44,12 @@ namespace ECommerce.Application.Services.FilterProduct
                     ).Select(lop => new OptionValue() { 
                         OptionValueId = lop.OptionValueId,
                         OptionValueName = lop.OptionValueName,
-                        TotalRecord = _DbContext.ProductOptions.Where(ov => ov.OptionValueId == lop.OptionValueId).Select(ov => ov.ProductId).Count(),
+                        TotalRecord = _DbContext.ProductOptionValues.Where(ov => ov.OptionValueId == lop.OptionValueId).Select(ov => ov.ProductId).Count(),
                     }).ToList(),
                 }).ToList(),
             }).ToListAsync();
 
-            return list;
+            return list; 
         }
     }
 }

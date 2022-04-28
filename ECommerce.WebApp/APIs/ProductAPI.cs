@@ -47,5 +47,24 @@ namespace ECommerce.WebApp.APIs
 
             return Ok(new { status = "success", data = model });
         }
+
+        [HttpPost("getProductByOptionValue")]
+        public async Task<IActionResult> getProductByOptionValue([FromBody] ProductGetRequest request)
+        {
+            var listProduct = await _productService.getProductByOptionValuePaginated(request);
+            var listSubCategory = await _subCategoryService.getSubCategoryInBrand(request.BrandId);
+            var brand = await _brandService.getBrandById(request.BrandId);
+            var filter = await _filterService.listFilterModel(request.BrandId);
+
+            var model = new ProductInBrandViewModel()
+            {
+                listProduct = listProduct,
+                listSubCategory = listSubCategory,
+                brand = brand,
+                listFilterModel = filter,
+            };
+
+            return Ok(new { status = "success", data = model });
+        }
     }
 }

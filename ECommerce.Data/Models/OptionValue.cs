@@ -9,7 +9,7 @@ namespace ECommerce.Data.Models
     {
         public OptionValue()
         {
-            ProductOptions = new HashSet<ProductOption>();
+            ProductOptionValues = new HashSet<ProductOptionValue>();
         }
 
         public int OptionValueId { get; set; }
@@ -17,6 +17,6 @@ namespace ECommerce.Data.Models
         public int OptionId { get; set; }
 
         public virtual Option Option { get; set; }
-        public virtual ICollection<ProductOption> ProductOptions { get; set; }
+        public virtual ICollection<ProductOptionValue> ProductOptionValues { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace ECommerce.Data.Models
             OrderDetails = new HashSet<OrderDetail>();
             ProductAttributes = new HashSet<ProductAttribute>();
             ProductImages = new HashSet<ProductImage>();
-            ProductOptions = new HashSet<ProductOption>();
+            ProductOptionValues = new HashSet<ProductOptionValue>();
             ProductPrices = new HashSet<ProductPrice>();
             ProductUserImages = new HashSet<ProductUserImage>();
             Rates = new HashSet<Rate>();
@@ -43,7 +43,7 @@ namespace ECommerce.Data.Models
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<ProductAttribute> ProductAttributes { get; set; }
         public virtual ICollection<ProductImage> ProductImages { get; set; }
-        public virtual ICollection<ProductOption> ProductOptions { get; set; }
+        public virtual ICollection<ProductOptionValue> ProductOptionValues { get; set; }
         public virtual ICollection<ProductPrice> ProductPrices { get; set; }
         public virtual ICollection<ProductUserImage> ProductUserImages { get; set; }
         public virtual ICollection<Rate> Rates { get; set; }

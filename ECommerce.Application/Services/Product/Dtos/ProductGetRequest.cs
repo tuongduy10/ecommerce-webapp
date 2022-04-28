@@ -11,6 +11,6 @@ namespace ECommerce.Application.Services.Product.Dtos
     {
         public int BrandId { get; set; }
         public int SubCategoryId { get; set; }
-        public List<int> OptionId { get; set; }
+        public List<int> listOptionValueId { get; set; }
     }
 }

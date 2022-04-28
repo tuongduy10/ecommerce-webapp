@@ -9,6 +9,6 @@ namespace ECommerce.Application.Dtos
     public class PageRequest
     {
         public int PageIndex { get; set; }
-        public int PageSize = 30;
+        public int PageSize = 5;
     }
 }
