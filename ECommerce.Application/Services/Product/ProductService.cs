@@ -101,7 +101,7 @@ namespace ECommerce.Application.Services.Product
                          orderby product.SubCategoryId
                          select new { product, brand, shop, product_optval }).AsQueryable();
 
-            var queryAble = query.Where(i => listOptionValueId.Any(l => l == i.product_optval.OptionValueId));
+            var queryAble = query.Where(i => i.product.BrandId == BrandId).Where(i => listOptionValueId.Any(l => l == i.product_optval.OptionValueId));
 
             // Excute query to list
             var list = queryAble.Select(i => new ProductInBrandModel()

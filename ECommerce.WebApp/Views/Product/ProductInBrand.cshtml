@@ -744,6 +744,7 @@
 </div>
 <script>
     var SubCategoryIdRequest = '';
+    var SubCategoryNameRequest = '';
     var listOptionValueIdRequest = [];
 
     // Events
@@ -758,7 +759,7 @@
         }
         // Current SubCategoryId
         if (SubCategoryIdRequest != '') {
-            //getProductBySubCategory(@Model.brand.BrandId, SubCategoryIdRequest, pageIndex)
+            getProductBySubCategory(@Model.brand.BrandId, SubCategoryIdRequest, SubCategoryNameRequest, pageIndex)
         }
     })
     $('.checkboxFilter').click(function () {
@@ -767,6 +768,10 @@
         }
         if (!$(this).is(":checked")) {
             listOptionValueIdRequest.splice($.inArray($(this).val(), listOptionValueIdRequest), 1);
+        }
+        if (listOptionValueIdRequest.length == 0) {
+            getProductBySubCategory(@Model.brand.BrandId, SubCategoryIdRequest, SubCategoryNameRequest, 1);
+            return;
         }
         getProductByOptionValue(@Model.brand.BrandId, listOptionValueIdRequest, 1);
     })
@@ -782,6 +787,7 @@
         apiGetProduct(url, request, SubCategoryName);
 
         SubCategoryIdRequest = SubCategoryId;
+        SubCategoryNameRequest = SubCategoryName;
     }
     function getProductInList(BrandId, pageIndex) {
         var url = '/api/ProductAPI/getProductInBrand'
@@ -802,8 +808,6 @@
             PageIndex: pageIndex
         }
         apiGetProduct(url, request, '');
-
-        SubCategoryIdRequest = '';
     }
 
     // API methods
