@@ -1,4 +1,4 @@
-﻿using ECommerce.Application.Dtos;
+﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.Brand.Dtos;
 using ECommerce.Application.Services.FilterProduct.Dtos;
 using ECommerce.Application.Services.Product.Dtos;

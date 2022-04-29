@@ -17,6 +17,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ECommerce.Application.Services.FilterProduct;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using ECommerce.Application.Services.User;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ECommerce.WebApp
 {
@@ -36,6 +42,10 @@ namespace ECommerce.WebApp
                 options.UseSqlServer(Configuration.GetConnectionString("ECommerceDB")));
             services.AddControllersWithViews();
 
+            services
+                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie();
+
             // Services
             // Website Configuration
             services.AddTransient<IConfigurationService, ConfigurationService>();
@@ -49,6 +59,23 @@ namespace ECommerce.WebApp
             services.AddTransient<IBrandService, BrandService>();
 
             services.AddTransient<IFilterProductService, FilterProductService>();
+
+            // User
+            services.AddTransient<IUserService, UserService>();
+
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>{
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey:Key"])),
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,12 +91,16 @@ namespace ECommerce.WebApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseAuthentication();
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCookiePolicy();
 
             app.UseEndpoints(endpoints =>
             {

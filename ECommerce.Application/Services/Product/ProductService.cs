@@ -1,4 +1,4 @@
-﻿using ECommerce.Application.Dtos;
+﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Data.Context;
 using ECommerce.Data.Models;
@@ -83,7 +83,7 @@ namespace ECommerce.Application.Services.Product
                 ProductImages = _DbContext.ProductImages.Where(img => img.ProductId == i.product.ProductId).Select(i => i.ProductImagePath).FirstOrDefault(),
                 BrandName = i.brand.BrandName,
                 ShopName = i.shop.ShopName,
-            });
+            }); 
 
             var record = await list.CountAsync();
             var data = await PaginatedList<ProductInBrandModel>.CreateAsync(list, pageindex, pagesize);

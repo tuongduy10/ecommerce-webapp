@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerce.Application.Dtos
+namespace ECommerce.Application.Common
 {
     public class PageResult<T>
     {

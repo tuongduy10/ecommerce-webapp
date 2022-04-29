@@ -1,4 +1,4 @@
-﻿using ECommerce.Application.Dtos;
+﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.Product.Dtos;
 using System;
 using System.Collections.Generic;

@@ -24,7 +24,6 @@
     <Compile Remove="Services\SubCategoryAttribute\**" />
     <Compile Remove="Services\SubCategoryOption\**" />
     <Compile Remove="Services\UserRole\**" />
-    <Compile Remove="Services\User\**" />
     <EmbeddedResource Remove="Services\AvailablePrice\**" />
     <EmbeddedResource Remove="Services\Bank\**" />
     <EmbeddedResource Remove="Services\Banner\**" />
@@ -44,7 +43,6 @@
     <EmbeddedResource Remove="Services\SubCategoryAttribute\**" />
     <EmbeddedResource Remove="Services\SubCategoryOption\**" />
     <EmbeddedResource Remove="Services\UserRole\**" />
-    <EmbeddedResource Remove="Services\User\**" />
     <None Remove="Services\AvailablePrice\**" />
     <None Remove="Services\Bank\**" />
     <None Remove="Services\Banner\**" />
@@ -64,7 +62,6 @@
     <None Remove="Services\SubCategoryAttribute\**" />
     <None Remove="Services\SubCategoryOption\**" />
     <None Remove="Services\UserRole\**" />
-    <None Remove="Services\User\**" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,7 +8,7 @@ namespace ECommerce.WebApp.Controllers.Client
 {
     public class AccountController : Controller
     {
-        public IActionResult Index()
+        public async Task<IActionResult> SignIn()
         {
             return View();
         }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerce.Application.Dtos
+namespace ECommerce.Application.Common
 {
     public class PaginatedList<T> : List<T>
     {

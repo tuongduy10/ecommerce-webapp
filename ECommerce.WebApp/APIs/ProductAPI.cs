@@ -4,11 +4,13 @@ using ECommerce.Application.Services.Product;
 using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.SubCategory;
 using ECommerce.WebApp.Models.Products;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.APIs
@@ -29,9 +31,13 @@ namespace ECommerce.WebApp.APIs
             _filterService = filterService;
         }
 
+        
         [HttpPost("getProductInBrand")]
+        [Authorize]
         public async Task<IActionResult> getProductInBrand([FromBody] ProductGetRequest request)
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
             var listProduct = await _productService.getProductPaginated(request);
             var listSubCategory = await _subCategoryService.getSubCategoryInBrand(request.BrandId);
             var brand = await _brandService.getBrandById(request.BrandId);
