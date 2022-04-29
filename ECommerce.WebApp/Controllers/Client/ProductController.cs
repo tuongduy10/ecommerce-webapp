@@ -43,24 +43,7 @@ namespace ECommerce.WebApp.Controllers.Client
 
             return View(model);
         }
-        public async Task<IActionResult> ProductByOptionValue(ProductGetRequest request)
-        {
-            var listProduct = await _productService.getProductByOptionValuePaginated(request);
-            var listSubCategory = await _subCategoryService.getSubCategoryInBrand(request.BrandId);
-            var brand = await _brandService.getBrandById(request.BrandId);
-            var filter = await _filterService.listFilterModel(request.BrandId);
-
-            var model = new ProductInBrandViewModel()
-            {
-                listProduct = listProduct,
-                listSubCategory = listSubCategory,
-                brand = brand,
-                listFilterModel = filter,
-            };
-
-            return View(model);
-        }
-
+        
         public async Task<IActionResult> ProductAvaliable()
         {
             return View();

@@ -761,6 +761,10 @@
         if (SubCategoryIdRequest != '') {
             getProductBySubCategory(@Model.brand.BrandId, SubCategoryIdRequest, SubCategoryNameRequest, pageIndex)
         }
+        // Current OptionValueIds
+        if (listOptionValueIdRequest.length > 0) {
+            getProductByOptionValue(@Model.brand.BrandId, listOptionValueIdRequest, pageIndex);
+        }
     })
     $('.checkboxFilter').click(function () {
         if ($(this).is(":checked")) {
@@ -778,42 +782,39 @@
 
     // Call API
     function getProductBySubCategory(BrandId, SubCategoryId, SubCategoryName, pageIndex) {
-        var url = '/api/ProductAPI/getProductInBrand';
         var request = {
             BrandId: BrandId,
             SubCategoryId: SubCategoryId,
             PageIndex: pageIndex
         }
-        apiGetProduct(url, request, SubCategoryName);
+        apiGetProduct(request, SubCategoryName);
 
         SubCategoryIdRequest = SubCategoryId;
         SubCategoryNameRequest = SubCategoryName;
     }
     function getProductInList(BrandId, pageIndex) {
-        var url = '/api/ProductAPI/getProductInBrand'
         var request = {
             BrandId: BrandId,
             PageIndex: pageIndex
         }
-        apiGetProduct(url, request, "Tất cả sản phẩm");
+        apiGetProduct(request, "Tất cả sản phẩm");
 
         SubCategoryIdRequest = '';
         listOptionValueIdRequest = [];
     }
     function getProductByOptionValue(BrandId, listOptionValueId, pageIndex) {
-        var url = '/api/ProductAPI/getProductByOptionValue'
         var request = {
             BrandId: BrandId,
             listOptionValueId: listOptionValueId,
             PageIndex: pageIndex
         }
-        apiGetProduct(url, request, '');
+        apiGetProduct(request, SubCategoryNameRequest);
     }
 
     // API methods
-    function apiGetProduct(url, request, title) {
+    function apiGetProduct(request, title) {
         $.ajax({
-            url: url,
+            url: '/api/ProductAPI/getProductInBrand',
             data: JSON.stringify(request),
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',

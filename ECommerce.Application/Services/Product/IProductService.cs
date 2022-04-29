@@ -11,6 +11,5 @@ namespace ECommerce.Application.Services.Product
     public interface IProductService
     {
         Task<PageResult<ProductInBrandModel>> getProductPaginated(ProductGetRequest request);
-        Task<PageResult<ProductInBrandModel>> getProductByOptionValuePaginated(ProductGetRequest request);
     }
 }
