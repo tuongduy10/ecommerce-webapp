@@ -33,7 +33,6 @@ namespace ECommerce.WebApp.APIs
 
         
         [HttpPost("getProductInBrand")]
-        [Authorize]
         public async Task<IActionResult> getProductInBrand([FromBody] ProductGetRequest request)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;

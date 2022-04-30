@@ -25,6 +25,7 @@ namespace ECommerce.Application.Services.Product
             int SubCategoryId = request.SubCategoryId;
             int pageindex = request.PageIndex;
             int pagesize = request.PageSize;
+            string orderBy = request.OrderBy;
             List<int> listOptionValueId = request.listOptionValueId;
 
             // Query
@@ -38,22 +39,28 @@ namespace ECommerce.Application.Services.Product
             // Query get products by brandid
             if (BrandId > 0 && SubCategoryId == 0)
             {
-                queryAble = query.Where(q => q.product.BrandId == BrandId);
+                if (orderBy == "Newest") queryAble = query.Where(q => q.product.BrandId == BrandId && q.product.New == true);
+                if (orderBy == "Discount") queryAble = query.Where(q => q.product.BrandId == BrandId && q.product.DiscountPercent > 0);
+                if (orderBy == null) queryAble = query.Where(q => q.product.BrandId == BrandId);
             }
             // Query get products by brandid and subcategoryid
             if (BrandId > 0 && SubCategoryId > 0)
             {
-                queryAble = query.Where(q => q.product.BrandId == BrandId && q.product.SubCategoryId == SubCategoryId);
+                if (orderBy == "Newest") queryAble = query.Where(q => q.product.BrandId == BrandId && q.product.SubCategoryId == SubCategoryId && q.product.New == true);
+                if (orderBy == "Discount") queryAble = query.Where(q => q.product.BrandId == BrandId && q.product.SubCategoryId == SubCategoryId && q.product.DiscountPercent > 0);
+                if (orderBy == null) queryAble = query.Where(q => q.product.BrandId == BrandId && q.product.SubCategoryId == SubCategoryId);
             }
             // Query get products by optionvalue
             if (BrandId > 0 && listOptionValueId != null)
-            {
+            { 
                 var listProductId = await _DbContext.ProductOptionValues
                                             .Where(i => listOptionValueId.Any(l => l == i.OptionValueId))
                                             .Select(i => i.ProductId)
                                             .Distinct()
                                             .ToListAsync();
-                queryAble = query.Where(i => listProductId.Any(l => l == i.product.ProductId));
+                if (orderBy == "Newest") queryAble = query.Where(q => listProductId.Any(l => l == q.product.ProductId) && q.product.New == true);
+                if (orderBy == "Discount") queryAble = query.Where(q => listProductId.Any(l => l == q.product.ProductId) && q.product.DiscountPercent > 0);
+                if (orderBy == null) queryAble = query.Where(q => listProductId.Any(l => l == q.product.ProductId));
             }
 
             // Select from query
@@ -79,11 +86,12 @@ namespace ECommerce.Application.Services.Product
                     ProductTypeId = t.id,
                     ProductTypeName = t.name
                 }).ToList(),
+                
                 Price = _DbContext.ProductPrices.Where(price => price.ProductId == i.product.ProductId).ToList(),
                 ProductImages = _DbContext.ProductImages.Where(img => img.ProductId == i.product.ProductId).Select(i => i.ProductImagePath).FirstOrDefault(),
                 BrandName = i.brand.BrandName,
                 ShopName = i.shop.ShopName,
-            }); 
+            });
 
             var record = await list.CountAsync();
             var data = await PaginatedList<ProductInBrandModel>.CreateAsync(list, pageindex, pagesize);

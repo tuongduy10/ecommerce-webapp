@@ -39,7 +39,8 @@
                                                                 <div class="checkbox d-flex align-items-center">
                                                                     <input id="check__sub-item_@productOption.OptionValueId" class="checkboxFilter" type="checkbox" value="@productOption.OptionValueId">
                                                                     <label for="check__sub-item_@productOption.OptionValueId" class="d-flex align-items-center mb-0">
-                                                                        <div class="sub-item-cate">@productOption.OptionValueName</div><span class="sub-item-cate">(@productOption.TotalRecord)</span>
+                                                                        <div class="sub-item-cate">@productOption.OptionValueName</div>
+                                                                        <span class="sub-item-cate">(@productOption.TotalRecord)</span>
                                                                     </label>
                                                                 </div>
                                                             </li>
@@ -69,7 +70,7 @@
                             </div>
                             <div class="order__item-dropdown_menu">
                                 <div class="order__item-dropdown_items">
-                                    <a class="order__item d-none" onclick="getProductInList(@Model.brand.BrandId, 1)">
+                                    <a class="order__item d-none" onclick="getProduct(@Model.brand.BrandId, 1)">
                                         Tất cả<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
                                                    viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
                                                    stroke-linecap='round' stroke-linejoin='round'
@@ -77,7 +78,7 @@
                                             <polyline points='9 18 15 12 9 6'></polyline>
                                         </svg>
                                     </a>
-                                    <a class="order__item">
+                                    <a class="order__item orderby-newest">
                                         Mẫu mới nhất<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
                                                          viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
                                                          stroke-linecap='round' stroke-linejoin='round'
@@ -85,7 +86,7 @@
                                             <polyline points='9 18 15 12 9 6'></polyline>
                                         </svg>
                                     </a>
-                                    <a class="order__item">
+                                    <a class="order__item orderby-ascending">
                                         Giá thấp - cao<svg xmlns='http://www.w3.org/2000/svg'
                                                            width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#333'
                                                            stroke-width='1' stroke-linecap='round' stroke-linejoin='round'
@@ -93,7 +94,7 @@
                                             <polyline points='9 18 15 12 9 6'></polyline>
                                         </svg>
                                     </a>
-                                    <a class="order__item">
+                                    <a class="order__item orderby-descending">
                                         Giá cao - thấp<svg xmlns='http://www.w3.org/2000/svg'
                                                            width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#333'
                                                            stroke-width='1' stroke-linecap='round' stroke-linejoin='round'
@@ -101,7 +102,7 @@
                                             <polyline points='9 18 15 12 9 6'></polyline>
                                         </svg>
                                     </a>
-                                    <a class="order__item">
+                                    <a class="order__item orderby-discount">
                                         Đang giảm giá %<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
                                                             viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
                                                             stroke-linecap='round' stroke-linejoin='round'
@@ -127,7 +128,6 @@
                                     <div class="w-100 px-4">
                                         <img style="max-height: 55px; max-width: 100%;" class="" src="@Configuration["ImagePath:Brand"]@Model.brand.BrandImagePath" alt="">
                                     </div>
-
                                     <p class="mb-0">@Model.brand.BrandName</p>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                          viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
@@ -139,198 +139,49 @@
                                 </div>
                                 <div class="filter__menu-wrapper">
                                     <div class="filter__menu-items">
-                                        <div class="filter__block-mobile">
-                                            <p class="filter__item-title mb-0 d-flex justify-content-between align-items-center">
-                                                Đồng Hồ
-                                                <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
-                                                     viewBox='0 0 24 24' fill='none' stroke='#333'
-                                                     stroke-width='1' stroke-linecap='round'
-                                                     stroke-linejoin='round'
-                                                     class='feather feather-chevron-right'>
-                                                    <polyline points='9 18 15 12 9 6'></polyline>
-                                                </svg>
-                                            </p>
-                                            <ul class="filter__items-mobile">
-                                                <li class="filter__item-mobile">
-                                                    <p class="mb-0">
-                                                        <i class="fas fa-caret-down"></i> Loại dây
-                                                    </p>
-                                                    <ul class="filter__sub-items-mobile">
-                                                        <li>
-                                                            <input id="checkbox__mobile-daykimloai"
-                                                                   type="checkbox"> <label class="mb-0"
-                                                                                           for="checkbox__mobile-daykimloai">Dây kim loại</label>
-                                                        </li>
-                                                        <li>
-                                                            <input id="checkbox__mobile-dayda" type="checkbox">
-                                                            <label class="mb-0" for="checkbox__mobile-dayda">Dây da</label>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                                <li class="filter__item-mobile">
-                                                    <p class="mb-0">
-                                                        <i class="fas fa-caret-down"></i> Kích thước
-                                                    </p>
-                                                    <ul class="filter__sub-items-mobile">
-                                                        <li>
-                                                            <input id="checkbox__mobile-44" type="checkbox">
-                                                            <label class="mb-0"
-                                                                   for="checkbox__mobile-44">44</label>
-                                                        </li>
-                                                        <li>
-                                                            <input id="checkbox__mobile-42" type="checkbox">
-                                                            <label class="mb-0"
-                                                                   for="checkbox__mobile-42">42</label>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="filter__block-mobile">
-                                            <p class="filter__item-title mb-0 d-flex justify-content-between align-items-center">
-                                                Điện thoại
-                                                <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
-                                                     viewBox='0 0 24 24' fill='none' stroke='#333'
-                                                     stroke-width='1' stroke-linecap='round'
-                                                     stroke-linejoin='round'
-                                                     class='feather feather-chevron-right'>
-                                                    <polyline points='9 18 15 12 9 6'></polyline>
-                                                </svg>
-                                            </p>
-                                            <ul class="filter__items-mobile">
-                                                <li class="filter__item-mobile">
-                                                    <p class="mb-0"><i class="fas fa-caret-down"></i> Iphone</p>
-                                                    <ul class="filter__sub-items-mobile">
-                                                        <li>
-                                                            <input id="checkbox__mobile-13series"
-                                                                   type="checkbox">
-                                                            <label class="mb-0"
-                                                                   for="checkbox__mobile-13series">
-                                                                13
-                                                                Series
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <input id="checkbox__mobile-12series"
-                                                                   type="checkbox">
-                                                            <label class="mb-0"
-                                                                   for="checkbox__mobile-12series">
-                                                                12
-                                                                Series
-                                                            </label>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                                <li class="filter__item-mobile">
-                                                    <p class="mb-0">
-                                                        <i class="fas fa-caret-down"></i> Samsung
-                                                    </p>
-                                                    <ul class="filter__sub-items-mobile">
-                                                        <li>
-                                                            <input id="checkbox__mobile-sss" type="checkbox">
-                                                            <label class="mb-0" for="checkbox__mobile-sss">
-                                                                S
-                                                                Series
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <input id="checkbox__mobile-ssnote" type="checkbox">
-                                                            <label class="mb-0"
-                                                                   for="checkbox__mobile-ssnote">
-                                                                Note
-                                                                Series
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <input id="checkbox__mobile-ssa" type="checkbox">
-                                                            <label class="mb-0" for="checkbox__mobile-ssa">
-                                                                A
-                                                                Series
-                                                            </label>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="filter__block-mobile">
-                                            <p class="filter__item-title mb-0 d-flex justify-content-between align-items-center">
-                                                Sạc dự phòng
-                                                <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
-                                                     viewBox='0 0 24 24' fill='none' stroke='#333'
-                                                     stroke-width='1' stroke-linecap='round'
-                                                     stroke-linejoin='round'
-                                                     class='feather feather-chevron-right'>
-                                                    <polyline points='9 18 15 12 9 6'></polyline>
-                                                </svg>
-                                            </p>
-                                            <ul class="filter__items-mobile">
-                                                <li class="filter__item-mobile">
-                                                    <p class="mb-0"><i class="fas fa-caret-down"></i> </p>
-                                                    <ul class="filter__sub-items-mobile">
-                                                        <li>
-                                                            <input id="checkbox__mobile-70000mah"
-                                                                   type="checkbox">
-                                                            <label class="mb-0"
-                                                                   for="checkbox__mobile-70000mah">
-                                                                70000
-                                                                mah
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <input id="checkbox__mobile-60000mah"
-                                                                   type="checkbox">
-                                                            <label class="mb-0"
-                                                                   for="checkbox__mobile-60000mah">
-                                                                60000
-                                                                mah
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <input id="checkbox__mobile-50000mah"
-                                                                   type="checkbox">
-                                                            <label class="mb-0"
-                                                                   for="checkbox__mobile-50000mah">
-                                                                50000
-                                                                mah
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <input id="checkbox__mobile-30000mah"
-                                                                   type="checkbox">
-                                                            <label class="mb-0"
-                                                                   for="checkbox__mobile-30000mah">
-                                                                30000
-                                                                mah
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <input id="checkbox__mobile-20000mah"
-                                                                   type="checkbox">
-                                                            <label class="mb-0"
-                                                                   for="checkbox__mobile-20000mah">
-                                                                20000
-                                                                mah
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <input id="checkbox__mobile-10000mah"
-                                                                   type="checkbox">
-                                                            <label class="mb-0"
-                                                                   for="checkbox__mobile-10000mah">
-                                                                10000
-                                                                mah
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <input id="checkbox__mobile-5000mah"
-                                                                   type="checkbox">
-                                                            <label class="mb-0"
-                                                                   for="checkbox__mobile-5000mah">5000 mah</label>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        @foreach (var filter in Model.listFilterModel)
+                                        {
+                                            <div class="filter__block-mobile">
+                                                <p class="filter__item-title mb-0 d-flex justify-content-between align-items-center" onclick="getProductBySubCategory(@Model.brand.BrandId,@filter.SubCategoryId,'@filter.SubCategoryName',1)">
+                                                    @filter.SubCategoryName
+                                                    <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
+                                                         viewBox='0 0 24 24' fill='none' stroke='#333'
+                                                         stroke-width='1' stroke-linecap='round'
+                                                         stroke-linejoin='round'
+                                                         class='feather feather-chevron-right'>
+                                                        <polyline points='9 18 15 12 9 6'></polyline>
+                                                    </svg>
+                                                </p>
+                                                <ul class="filter__items-mobile">
+                                                    @foreach (var option in filter.listOption)
+                                                    {
+                                                        if (option.listOptionValue.Count > 0)
+                                                        {
+                                                            <li class="filter__item-mobile">
+                                                                <p class="mb-0">
+                                                                    <i class="fas fa-caret-down"></i> @option.OptionName
+                                                                </p>
+                                                                <ul class="filter__sub-items-mobile">
+                                                                    @foreach (var productOption in option.listOptionValue)
+                                                                    {
+                                                                        if (productOption.TotalRecord > 0)
+                                                                        {
+                                                                            <li class="d-flex align-items-center">
+                                                                                <input class="checkboxFilter mr-2" id="checkbox__mobile-@productOption.OptionValueId" type="checkbox" value="@productOption.OptionValueId">
+                                                                                <label for="checkbox__mobile-@productOption.OptionValueId" class="d-flex align-items-center mb-0">
+                                                                                    <div class="mr-1">@productOption.OptionValueName</div>
+                                                                                    <span>(@productOption.TotalRecord)</span>
+                                                                                </label>
+                                                                            </li>
+                                                                        }
+                                                                    }
+                                                                </ul>
+                                                            </li>
+                                                        }
+                                                    }
+                                                </ul>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -746,6 +597,7 @@
     var SubCategoryIdRequest = '';
     var SubCategoryNameRequest = '';
     var listOptionValueIdRequest = [];
+    var orderRequest = '';
 
     // Events
     $(document).on('click', '.pagination-item', function () {
@@ -753,17 +605,22 @@
         if ($(this).hasClass('active')) {
             return;
         }
+
+        // Current Order
+        if (orderRequest != '') {
+            orderBy(orderRequest, pageIndex); return;
+        }
         // Current BrandId
         if (SubCategoryIdRequest == '') {
-            getProductInList(@Model.brand.BrandId, pageIndex);
+            getProduct(@Model.brand.BrandId, pageIndex); return;
         }
         // Current SubCategoryId
         if (SubCategoryIdRequest != '') {
-            getProductBySubCategory(@Model.brand.BrandId, SubCategoryIdRequest, SubCategoryNameRequest, pageIndex)
+            getProductBySubCategory(@Model.brand.BrandId, SubCategoryIdRequest, SubCategoryNameRequest, pageIndex); return;
         }
         // Current OptionValueIds
         if (listOptionValueIdRequest.length > 0) {
-            getProductByOptionValue(@Model.brand.BrandId, listOptionValueIdRequest, pageIndex);
+            getProductByOptionValue(@Model.brand.BrandId, listOptionValueIdRequest, pageIndex); return;
         }
     })
     $('.checkboxFilter').click(function () {
@@ -779,8 +636,39 @@
         }
         getProductByOptionValue(@Model.brand.BrandId, listOptionValueIdRequest, 1);
     })
+    $('.orderby-newest').click(function () {
+        var order = "Newest";
+        orderBy(order, 1);
+        orderRequest = order;
+    });
+    $('.orderby-ascending').click(function () {
+        var order = "Ascending";
+        orderBy(order, 1);
+        orderRequest = order;
+    });
+    $('.orderby-descending').click(function () {
+        var order = "Descending";
+        orderBy(order, 1);
+        orderRequest = order;
+    });
+    $('.orderby-discount').click(function () {
+        var order = "Discount";
+        orderBy(order, 1);
+        orderRequest = order;
+    });
 
     // Call API
+    function getProduct(BrandId, pageIndex) {
+        var request = {
+            BrandId: BrandId,
+            PageIndex: pageIndex
+        }
+        apiGetProduct(request, "Tất cả sản phẩm");
+
+        SubCategoryIdRequest = '';
+        orderRequest = '';
+        listOptionValueIdRequest = [];
+    }
     function getProductBySubCategory(BrandId, SubCategoryId, SubCategoryName, pageIndex) {
         var request = {
             BrandId: BrandId,
@@ -791,16 +679,7 @@
 
         SubCategoryIdRequest = SubCategoryId;
         SubCategoryNameRequest = SubCategoryName;
-    }
-    function getProductInList(BrandId, pageIndex) {
-        var request = {
-            BrandId: BrandId,
-            PageIndex: pageIndex
-        }
-        apiGetProduct(request, "Tất cả sản phẩm");
-
-        SubCategoryIdRequest = '';
-        listOptionValueIdRequest = [];
+        orderRequest = '';
     }
     function getProductByOptionValue(BrandId, listOptionValueId, pageIndex) {
         var request = {
@@ -809,7 +688,56 @@
             PageIndex: pageIndex
         }
         apiGetProduct(request, SubCategoryNameRequest);
+        orderRequest = '';
     }
+
+    function orderBy(order, pageIndex) {
+        // Current BrandId
+        if (SubCategoryIdRequest == '') {
+            orderProduct(@Model.brand.BrandId, pageIndex, order);
+        }
+        // Current SubCategoryId
+        if (SubCategoryIdRequest != '') {
+            orderBySubCategory(@Model.brand.BrandId, SubCategoryIdRequest, SubCategoryNameRequest, pageIndex, order)
+        }
+        // Current OptionValueIds
+        if (listOptionValueIdRequest.length > 0) {
+            orderByOPtionValue(@Model.brand.BrandId, listOptionValueIdRequest, pageIndex, order);
+        }
+    }
+    function orderProduct(BrandId, pageIndex, order) {
+        var request = {
+            BrandId: BrandId,
+            PageIndex: pageIndex,
+            OrderBy: order
+        }
+        apiGetProduct(request, "Tất cả sản phẩm");
+
+        SubCategoryIdRequest = '';
+        listOptionValueIdRequest = [];
+    }
+    function orderBySubCategory(BrandId, SubCategoryId, SubCategoryName, pageIndex, order) {
+        var request = {
+            BrandId: BrandId,
+            SubCategoryId: SubCategoryId,
+            PageIndex: pageIndex,
+            OrderBy: order
+        }
+        apiGetProduct(request, SubCategoryName);
+
+        SubCategoryIdRequest = SubCategoryId;
+        SubCategoryNameRequest = SubCategoryName;
+    }
+    function orderByOPtionValue(BrandId, listOptionValueId, pageIndex, order) {
+        var request = {
+            BrandId: BrandId,
+            listOptionValueId: listOptionValueId,
+            PageIndex: pageIndex,
+            OrderBy: order
+        }
+        apiGetProduct(request, SubCategoryNameRequest);
+    }
+
 
     // API methods
     function apiGetProduct(request, title) {
