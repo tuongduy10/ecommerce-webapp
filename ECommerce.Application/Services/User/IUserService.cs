@@ -10,6 +10,6 @@ namespace ECommerce.Application.Services.User
 {
     public interface IUserService
     {
-        Task<ApiResult<string>> SignIn(SignInRequest request);
+        Task<ApiResponse> SignIn(SignInRequest request);
     }
 }

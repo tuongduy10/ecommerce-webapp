@@ -21,6 +21,7 @@ namespace ECommerce.Application.Services.Product.Dtos
         public DateTime? ProductImportDate { get; set; }
         public string ProductImages { get; set; }
         public List<ProductPrice> Price { get; set; }
+        //public decimal? Pricetemp { get; set; }
         public List<Type> Type { get; set; }
     }
 }

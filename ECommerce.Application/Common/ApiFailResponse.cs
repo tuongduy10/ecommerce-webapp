@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Common
 {
-    public class ApiSuccessResult<T> : ApiResult<T>
+    public class ApiFailResponse : ApiResponse
     {
-        public ApiSuccessResult(string message, T resultObj)
+        public ApiFailResponse(string message)
         {
-            IsSuccessed = true;
+            isSucceed = false;
             Message = message;
-            ResultObj = resultObj;
         }
     }
 }

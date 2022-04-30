@@ -44,8 +44,14 @@ namespace ECommerce.WebApp
 
             services
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie();
+                .AddCookie(option => {
+                    option.LoginPath = "/Account/SignIn";
+                    option.Cookie.Name = "HitichiCookie";
+                    option.ExpireTimeSpan = TimeSpan.FromDays(30);
+                    option.Cookie.MaxAge = option.ExpireTimeSpan;
+                });
 
+            services.AddMvc();
             // Services
             // Website Configuration
             services.AddTransient<IConfigurationService, ConfigurationService>();
@@ -57,25 +63,24 @@ namespace ECommerce.WebApp
             services.AddTransient<ISubCategoryService, SubCategoryService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IBrandService, BrandService>();
-
             services.AddTransient<IFilterProductService, FilterProductService>();
 
             // User
             services.AddTransient<IUserService, UserService>();
 
-            services
-                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>{
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
+            //services
+            //    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //    .AddJwtBearer(options =>{
+            //        options.TokenValidationParameters = new TokenValidationParameters
+            //        {
+            //            ValidateIssuer = false,
+            //            ValidateAudience = false,
 
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey:Key"])),
-                        ClockSkew = TimeSpan.Zero
-                    };
-                });
+            //            ValidateIssuerSigningKey = true,
+            //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey:Key"])),
+            //            ClockSkew = TimeSpan.Zero
+            //        };
+            //    });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

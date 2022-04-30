@@ -30,8 +30,6 @@ namespace ECommerce.WebApp.APIs
             _brandService = brandService;
             _filterService = filterService;
         }
-
-        
         [HttpPost("getProductInBrand")]
         public async Task<IActionResult> getProductInBrand([FromBody] ProductGetRequest request)
         {

@@ -25,12 +25,6 @@ namespace ECommerce.WebApp.ViewComponents
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            //string token = Request.Cookies["token"];
-            //if (token != null)
-            //{
-            //    string info = GetName(token);
-            //}
-
             var _listHeader = await _headerService.getAll();
             var _config = await _configurationService.getConfiguration();
 
@@ -42,20 +36,5 @@ namespace ECommerce.WebApp.ViewComponents
 
             return View(model);
         }
-        //protected string GetName(string token)
-        //{
-        //    string secret = _config["SecretKey:Key"];
-        //    var key = Encoding.UTF8.GetBytes(secret);
-        //    var handler = new JwtSecurityTokenHandler();
-        //    var validations = new TokenValidationParameters
-        //    {
-        //        ValidateIssuerSigningKey = true,
-        //        IssuerSigningKey = new SymmetricSecurityKey(key),
-        //        ValidateIssuer = false,
-        //        ValidateAudience = false,
-        //    };
-        //    var claims = handler.ValidateToken(token, validations, out var tokenSecure);
-        //    return claims.Identity.Name;
-        //}
     }
 }

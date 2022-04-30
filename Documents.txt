@@ -1,0 +1,9 @@
+JWT:
+	https://www.youtube.com/watch?v=AQwS4-5YV4o
+
+Cookie Authentication:
+	https://www.youtube.com/watch?v=kFwdiZ6Z1J0
+	https://www.tektutorialshub.com/asp-net-core/user-registration-login-using-cookie-authentication-asp-net-core/
+
+Handle error status code (including cookie authentication with login requirement for unauthorized action):
+	https://stackoverflow.com/questions/40217623/redirect-to-login-when-unauthorized-in-asp-net-core

@@ -57,11 +57,12 @@
             UserPhone: $('#clientPhoneNumber').val(),
             Password: $('#clientPassword').val(),
         }
-        apiSignIn(request);
+        var url = '@ViewData["ReturnUrl"]';
+        apiSignIn(request, url);
     }
 
     // API methods
-    function apiSignIn(request) {
+    function apiSignIn(request, returnUrl) {
         $.ajax({
             url: '/api/AccountAPI/SignIn',
             data: JSON.stringify(request),
@@ -70,10 +71,11 @@
             type: 'POST',
             success: function (data) {
                 alert("Đăng nhập thành công");
+                window.location.href = returnUrl;
                 return;
             },
             error: function (data) {
-                console.log("error");
+                alert("Đăng nhập thất bại");
                 return;
             }
         });

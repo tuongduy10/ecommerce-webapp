@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.User.Dtos;
+using ECommerce.Data.Models;
 using ECommerce.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,31 +26,35 @@ namespace ECommerce.Application.Services.User
             _config = config;
             _DbContext = DbContext;
         }
-        public async Task<ApiResult<string>> SignIn(SignInRequest request)
+        public async Task<ApiResponse> SignIn(SignInRequest request)
         {
             var user = await _DbContext.Users.Where(i => i.UserPhone == request.UserPhone).FirstAsync();
-            if (user == null) return new ApiFailResult<string>("Tài khoản không tồn tại");
+            if (user == null) return new ApiFailResponse("Tài khoản không tồn tại");
 
-            var result = await _DbContext.Users.Where(i => i.UserPhone == request.UserPhone && i.Password == request.Password).FirstAsync();
-            if (result == null) return new ApiFailResult<string>("Đăng nhập không thành công");
+            var result = await _DbContext.Users
+                .Where(i => i.UserPhone == request.UserPhone && i.Password == request.Password)
+                .FirstOrDefaultAsync();
+            if (result == null) return new ApiFailResponse("Đăng nhập không thành công");
+
+            return new ApiSucceedResponse("Đăng nhập thành công", result);
 
             // Jwt Security
-            var jwtTokenHandler = new JwtSecurityTokenHandler();
-            var secretKey = Encoding.UTF8.GetBytes(_config["SecretKey:Key"]);
-            var tokenDescription = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[] {
-                    new Claim(ClaimTypes.Name, result.UserFullName),
-                    new Claim("UserId", result.UserId.ToString()),
-                    new Claim("UserPhone", result.UserPhone),
-                    new Claim("TokenId", Guid.NewGuid().ToString())
-                }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha512Signature)
-            };
-            var token = jwtTokenHandler.CreateToken(tokenDescription);
+            //var jwtTokenHandler = new JwtSecurityTokenHandler();
+            //var secretKey = Encoding.UTF8.GetBytes(_config["SecretKey:Key"]);
+            //var tokenDescription = new SecurityTokenDescriptor
+            //{
+            //    Subject = new ClaimsIdentity(new[] {
+            //        new Claim(ClaimTypes.Name, result.UserFullName),
+            //        new Claim("UserId", result.UserId.ToString()),
+            //        new Claim("UserPhone", result.UserPhone),
+            //        new Claim("TokenId", Guid.NewGuid().ToString())
+            //    }),
+            //    Expires = DateTime.UtcNow.AddSeconds(10),
+            //    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha512Signature)
+            //};
+            //var token = jwtTokenHandler.CreateToken(tokenDescription);
 
-            return new ApiSuccessResult<string>("Đăng nhập thành công", jwtTokenHandler.WriteToken(token));
+            //return new ApiSuccessResult<string>("Đăng nhập thành công", jwtTokenHandler.WriteToken(token));
         }
     }
 }

@@ -230,7 +230,7 @@
 
     // Call API functions
     function getAllBrandInCategory(id) {
-        $.get("api/BrandAPI/getAllBrandInCategory", { id: id }, function (data, response) {
+        $.get("/api/BrandAPI/getAllBrandInCategory", { id: id }, function (data, response) {
             if (response != "success") {
                 $('.bran__list-items').empty();
                 $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
@@ -249,7 +249,7 @@
         })
     }
     function getBrandListOrdered(sortBy) {
-        $.get("api/BrandAPI/getAll", function (data, response) {
+        $.get("/api/BrandAPI/getAll", function (data, response) {
             if (response != "success") {
                 $('.bran__list-items').empty();
                 $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
@@ -268,7 +268,7 @@
         });
     }
     function getAllBrandList() {
-        $.get("api/BrandAPI/getAll", function (data, response) {
+        $.get("/api/BrandAPI/getAll", function (data, response) {
             if (response != "success") {
                 $('.bran__list-items').empty();
                 $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);

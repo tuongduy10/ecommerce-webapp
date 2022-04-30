@@ -39,33 +39,39 @@
                         @Model.config.PhoneNumber
                     </span>
                 </a>
-                @*<a href="@Url.Action("SignIn","Account")" class="header__top-link">
-                    <span class="icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                             fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
-                             stroke-linejoin="round" class="feather feather-user">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                        <span class="quality">99</span>
-                    </span>
-                    <span class="text">
-                        Hi, Nguyễn Văn A
-                    </span>
-                </a>*@
-                <a href="@Url.Action("SignIn","Account")" class="header__top-link">
-                    <span class="icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                             fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
-                             stroke-linejoin="round" class="feather feather-user">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </span>
-                    <span class="text">
-                        Tài khoản của tôi
-                    </span>
-                </a>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a href="@Url.Action("SignOut","Account")" class="header__top-link">
+                        <span class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
+                                 stroke-linejoin="round" class="feather feather-user">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <span class="quality">99</span>
+                        </span>
+                        <span class="text">
+                            Hi, @User.Identity.Name
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a href="@Url.Action("SignIn","Account", new { CurrentUrl = "/Home/Index" })" class="header__top-link">
+                        <span class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
+                                 stroke-linejoin="round" class="feather feather-user">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </span>
+                        <span class="text">
+                            Tài khoản của tôi
+                        </span>
+                    </a>
+                }                
             </div>
             <ul class="header__top-action align-items-center">
                 <li>
@@ -243,8 +249,7 @@
                                 </svg>
                             </span>
                             <a href="@Url.Action("Index","Home")">
-                                <img style="max-height: 50px;" src="@Configuration["ImagePath:Logo"]@Model.config.LogoPath"
-                                     alt="">
+                                <img style="max-height: 50px;" src="@Configuration["ImagePath:Logo"]@Model.config.LogoPath" alt="">
                             </a>
                         </div>
                     </div>
@@ -409,7 +414,6 @@
                 </ul>
             </nav>
         </div>
-
     </div>
 </header>
 

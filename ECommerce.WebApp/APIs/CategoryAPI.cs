@@ -1,4 +1,5 @@
 ﻿using ECommerce.Application.Services.Category;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,7 +18,6 @@ namespace ECommerce.WebApp.Controllers
         {
             _categoryService = categoryService;
         }
-
         [HttpGet("getAll")]
         public async Task<IActionResult> getAll()
         {

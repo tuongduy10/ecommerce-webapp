@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Common
 {
-    public class ApiResult<T>
+    public class ApiResponse
     {
-        public bool IsSuccessed { get; set; }
+        public bool isSucceed { get; set; }
         public string Message { get; set; }
-        public T ResultObj { get; set; }
+        public Object ObjectData { get; set; }
     }
 }
