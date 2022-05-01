@@ -3,6 +3,8 @@
 ## Technologies:
 `.Net Core 5.0`
 `Entity Framework 5.0`
+`Cookie Authentication`
+`Firebase Authentication`
 
 ## Nuget Packages
 
