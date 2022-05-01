@@ -1,0 +1,159 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
+    Layout = "~/Views/Shared/_LayoutClientNoBanner.cshtml";
+}
+
+<!-- Main content -->
+<div class="custom-container py-4">
+    <div class="signup__wrapper">
+        <ul class="web__directional">
+            <li><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+            <li><a href="@Url.Action("SignUp","Account")">Đăng ký tài khoản</a></li>
+        </ul>
+        <div class="signup__inner mx-auto p-4">
+            <div class="d-flex flex-column">
+                <h3 class="text-center">Tạo tài khoản mới</h3>
+                <input class="mb-2 w-100" type="text" id="number" placeholder="Số điện thoại">
+                <div class="mb-2" id="recaptcha-container"></div>
+                <button class="btn-black" onclick="phoneAuth()" style="border: 1px solid #4d4d4d;">Xác minh</button>
+            </div>
+            <div class="signup-verifycode d-flex pt-2 justify-content-between">
+                @*<input type="text" id="verificationCode" placeholder="Nhập mã OTP">
+                <button type="button" onclick="codeverify()">Tiếp theo</button>*@
+            </div>
+            <div class="signup-information d-flex flex-column pt-2">
+                @*<div class="signup-block">
+                    <div class="signup-info"><strong>THÔNG TIN CÁ NHÂN</strong></div>
+                    <input class="mb-2 w-100" type="text" placeholder="Họ tên">
+                    <input class="mb-2 w-100" type="text" placeholder="Địa chỉ">
+                    <input class="mb-2 w-100" type="email" placeholder="Email">
+
+                    <div class="location mb-2">
+                        <select name="" id="" class="city-select w-100">
+                            <option value="" disabled selected>Tỉnh/Thành...</option>
+                        </select>
+                    </div>
+                    <div class="location mb-2">
+                        <select name="" id="" class="district-select w-100">
+                            <option value="" disabled selected>Quận/Huyện...</option>
+                        </select>
+                    </div>
+                    <div class="location mb-2">
+                        <select name="" id="" class="ward-select w-100">
+                            <option value="" disabled selected>Phường/Xã...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="signup-block">
+                    <div class="signup-info"><strong>THÔNG TIN ĐĂNG NHẬP</strong></div>
+                    <input class="mb-2 w-100" type="password" placeholder="Nhập mật khẩu">
+                    <input class="mb-2 w-100" type="password" placeholder="Nhập lại mật khẩu">
+                    <button class="w-100 btn-black" type="button" onclick="" style="border: 1px solid #4d4d4d;">Tạo tài khoản</button>
+                </div>*@
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/6.0.2/firebase.js"></script>
+<script>
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyAfm5iGMdqzyywA8SIgeb3yVxagAvXx37k",
+        authDomain: "webdemo-36ffd.firebaseapp.com",
+        projectId: "webdemo-36ffd",
+        storageBucket: "webdemo-36ffd.appspot.com",
+        messagingSenderId: "990883187347",
+        appId: "1:990883187347:web:322028298811b48a5adb66",
+        measurementId: "G-GDXSSSDVE9"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    window.onload = function () {
+        render();
+    };
+    function render() {
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
+        recaptchaVerifier.render();
+    }
+    function phoneAuth() {
+        //get the number
+        var number = document.getElementById('number').value;
+        var scnum = '+84' + number
+        //phone number authentication function of firebase
+        //it takes two parameter first one is number,,,second one is recaptcha
+        firebase.auth().signInWithPhoneNumber(scnum, window.recaptchaVerifier)
+            .then(function (confirmationResult) {
+                //s is in lowercase
+                window.confirmationResult = confirmationResult;
+                coderesult = confirmationResult;
+                alert("Message sent");
+                renderFormVerifyCode();
+            }).catch(function (error) {
+                alert(error.message);
+            });
+    }
+    function codeverify() {
+        var code = document.getElementById('verificationCode').value;
+        coderesult.confirm(code)
+            .then(function (result) {
+                alert("Successfully registered");
+                var user = result.user;
+                console.log(user);
+                renderFormInformation();
+            }).catch(function (error) {
+                alert(error.message);
+            });
+    }
+
+    function renderFormVerifyCode() {
+        $('.signup-verifycode').append(htmlFormVerifyCode());
+    }
+    function renderFormInformation() {
+        $('.signup-information').append(htmlFormInformation());
+    }
+
+    function htmlFormVerifyCode() {
+        var html = `
+            <input type="text" id="verificationCode" placeholder="Nhập mã OTP">
+            <button class="verifycode" onclick="codeverify()">Tiếp theo</button>
+        `;
+        return html;
+    }
+    function htmlFormInformation() {
+        var html = `
+            <div class="signup-block">
+                <div class="signup-info"><strong>THÔNG TIN CÁ NHÂN</strong></div>
+                <input class="mb-2 w-100" type="text" placeholder="Họ tên">
+                <input class="mb-2 w-100" type="text" placeholder="Địa chỉ">
+                <input class="mb-2 w-100" type="email" placeholder="Email">
+
+                <div class="location mb-2">
+                    <select name="" id="" class="city-select w-100">
+                        <option value="" disabled selected>Tỉnh/Thành...</option>
+                    </select>
+                </div>
+                <div class="location mb-2">
+                    <select name="" id="" class="district-select w-100">
+                        <option value="" disabled selected>Quận/Huyện...</option>
+                    </select>
+                </div>
+                <div class="location mb-2">
+                    <select name="" id="" class="ward-select w-100">
+                        <option value="" disabled selected>Phường/Xã...</option>
+                    </select>
+                </div>
+            </div>
+            <div class="signup-block">
+                <div class="signup-info"><strong>THÔNG TIN ĐĂNG NHẬP</strong></div>
+                <input class="mb-2 w-100" type="password" placeholder="Nhập mật khẩu">
+                <input class="mb-2 w-100" type="password" placeholder="Nhập lại mật khẩu">
+                <button class="w-100 btn-black" type="button" onclick="" style="border: 1px solid #4d4d4d;">Tạo tài khoản</button>
+            </div>
+        `;
+
+        return html;
+    }
+</script>

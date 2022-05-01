@@ -7,3 +7,6 @@ Cookie Authentication:
 
 Handle error status code (including cookie authentication with login requirement for unauthorized action):
 	https://stackoverflow.com/questions/40217623/redirect-to-login-when-unauthorized-in-asp-net-core
+
+Login with Firebase:
+	https://github.com/proyectojavier/TestChallengerCore (demo repo)
