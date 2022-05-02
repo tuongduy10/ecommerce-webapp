@@ -940,6 +940,13 @@ hr {
 .product__detail-buttons button:hover{
     box-shadow: 0 10px 30px rgb(0 0 0 / 10%);
 }
+.btn-black {
+    background-color: #4d4d4d;
+    border: 1px solid #4d4d4d;
+    color: #fff;
+    padding: 5px 10px;
+    cursor: pointer;
+}
 .btn-black:hover{
     background-color: #fff !important;
     color: #333 !important;

@@ -70,12 +70,12 @@
             contentType: 'application/json; charset=utf-8',
             type: 'POST',
             success: function (data) {
-                alert("Đăng nhập thành công");
+                alert(data.message);
                 window.location.href = returnUrl;
                 return;
             },
             error: function (data) {
-                alert("Đăng nhập thất bại");
+                alert(data.message);
                 return;
             }
         });

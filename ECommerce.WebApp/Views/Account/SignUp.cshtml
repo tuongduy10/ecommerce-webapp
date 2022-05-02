@@ -94,9 +94,11 @@
             type: 'POST',
             success: function (data) {
                 phoneAuth(PhoneNumber);
+                return;
             },
             error: function (data) {
-               alert(data.responseJSON.message);
+                alert(data.responseJSON.message);
+                return;
             }
         });
     }
@@ -190,12 +192,11 @@
             contentType: 'application/json; charset=utf-8',
             type: 'POST',
             success: function (data) {
-                alert("Tạo tài khoản thành công");
+                alert(data.responseJSON.message);
                 window.location.href = "/Account/SignIn";
                 return;
             },
             error: function (data) {
-                console.log(data);
                 alert(data.responseJSON.message);
                 return;
             }

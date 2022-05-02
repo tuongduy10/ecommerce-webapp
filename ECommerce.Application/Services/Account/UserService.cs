@@ -27,7 +27,7 @@ namespace ECommerce.Application.Services.Account
             _DbContext = DbContext;
         }
 
-        public async Task<bool> checkUserPhoneNumber(string PhoneNumber)
+        public async Task<ApiResponse> CheckUserPhoneNumber(string PhoneNumber)
         {
             var phonenumber = PhoneNumber;
             if (phonenumber.Contains("+84"))
@@ -42,10 +42,10 @@ namespace ECommerce.Application.Services.Account
             var result = await _DbContext.Users.Where(i => i.UserPhone == phonenumber).FirstOrDefaultAsync();
             if (result != null)
             {
-                return false;
+                return new ApiFailResponse("Số điện thoại đã tồn tại");
             }
 
-            return true;
+            return new ApiSuccessResponse("Có thể tạo tài khoản với số điện thoại này");
         }
 
         public async Task<ApiResponse> SignIn(SignInRequest request)
@@ -60,13 +60,13 @@ namespace ECommerce.Application.Services.Account
                 }
             }
 
-            var user = await _DbContext.Users.Where(i => i.UserPhone == phonenumber).FirstOrDefaultAsync();
-            if (user == null) return new ApiFailResponse("Tài khoản không tồn tại");
+            //var user = await _DbContext.Users.Where(i => i.UserPhone == phonenumber).FirstOrDefaultAsync();
+            //if (user == null) return new ApiFailResponse("Tài khoản không tồn tại");
 
             var result = await _DbContext.Users
                 .Where(i => i.UserPhone == phonenumber && i.Password == request.Password)
                 .FirstOrDefaultAsync();
-            if (result == null) return new ApiFailResponse("Đăng nhập không thành công");
+            if (result == null) return new ApiFailResponse("Mật khẩu hoặc tài khoản không đúng");
 
             return new ApiSuccessResponse("Đăng nhập thành công", result);
 
@@ -131,7 +131,80 @@ namespace ECommerce.Application.Services.Account
             await _DbContext.Users.AddAsync(user);
             await _DbContext.SaveChangesAsync();
             
-            return new ApiSuccessResponse("Tạo tài khoản thành công", user);
+            return new ApiSuccessResponse("Tạo tài khoản thành công");
+        }
+
+        public async Task<UserGetModel> UserProfile(int id)
+        {
+            var user = await _DbContext.Users
+                                .Where(i => i.UserId == id)
+                                .Select(i => new UserGetModel { 
+                                    UserId = i.UserId,
+                                    UserFullName = i.UserFullName,
+                                    UserJoinDate = i.UserJoinDate,
+                                    UserMail = i.UserMail,
+                                    UserAddress = i.UserAddress,
+                                    UserWardCode = i.UserWardCode,
+                                    UserDistrictCode = i.UserDistrictCode,
+                                    UserCityCode = i.UserCityCode,
+                                    UserPhone = i.UserPhone,
+                                    Status = i.Status
+                                }).FirstOrDefaultAsync();
+
+            return user;
+        }
+
+        public async Task<ApiResponse> UpdateUserProfile(UserUpdateRequest request)
+        {
+            var id = request.UserId;
+            var fullname = request.UserFullName;
+            var mail = request.UserMail;
+            var address = request.UserAddress;
+            var district = request.UserDistrictCode;
+            var ward = request.UserWardCode;
+            var city = request.UserCityCode;
+
+            var user = await _DbContext.Users
+                                .Where(i => i.UserId == id)
+                                .FirstOrDefaultAsync();
+            if (user != null)
+            {
+                user.UserFullName = fullname;
+                user.UserMail = mail;
+                user.UserAddress = address;
+                user.UserWardCode = ward;
+                user.UserDistrictCode = district;
+                user.UserCityCode = city;
+                await _DbContext.SaveChangesAsync();
+
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            
+            return new ApiFailResponse("Cập nhật không thành công");
+        }
+
+        public async Task<ApiResponse> UpdateUserPhoneNumber(int UserId, string PhoneNumber)
+        {
+            var phonenumber = PhoneNumber;
+            if (phonenumber.Contains("+84"))
+            {
+                phonenumber = phonenumber.Replace("+84", "");
+                if (!phonenumber.StartsWith("0"))
+                {
+                    phonenumber = "0" + phonenumber;
+                }
+            }
+            var user = await _DbContext.Users
+                                .Where(i => i.UserId == UserId)
+                                .FirstOrDefaultAsync();
+            if (user != null)
+            {
+                user.UserPhone = phonenumber;
+                await _DbContext.SaveChangesAsync();
+                return new ApiSuccessResponse("Cập nhật số điện thoại thành công");
+            }
+
+            return new ApiFailResponse("Cập nhật số điện thoại không thành công");
         }
     }
 }

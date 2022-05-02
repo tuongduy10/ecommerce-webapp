@@ -13,6 +13,11 @@ namespace ECommerce.WebApp.Controllers.Client
 {
     public class AccountController : Controller
     {
+        private IUserService _userService;
+        public AccountController(IUserService userService)
+        {
+            _userService = userService;
+        }
         public async Task<IActionResult> SignIn(string CurrentUrl = "/")
         {
             ViewData["ReturnUrl"] = CurrentUrl;
@@ -30,10 +35,16 @@ namespace ECommerce.WebApp.Controllers.Client
             return RedirectToAction("SignIn", "Account");
         }
         [Authorize]
-        public async Task<IActionResult> Profile()
+        public async Task<IActionResult> UserProfile()
         {
             var id = User.Claims.FirstOrDefault(i => i.Type == "UserId").Value;
-            return View(); // chưa có view
+            var user = await _userService.UserProfile(Int32.Parse(id));
+            return View(user);
+        }
+        [Authorize]
+        public async Task<IActionResult> UpdateUserPhoneNumber()
+        {
+            return View();
         }
     }
 }

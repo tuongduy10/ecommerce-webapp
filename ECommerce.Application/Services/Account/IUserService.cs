@@ -12,6 +12,9 @@ namespace ECommerce.Application.Services.Account
     {
         Task<ApiResponse> SignIn(SignInRequest request);
         Task<ApiResponse> SignUp(SignUpRequest request);
-        Task<bool> checkUserPhoneNumber(string PhoneNumber);
+        Task<UserGetModel> UserProfile(int id);
+        Task<ApiResponse> CheckUserPhoneNumber(string PhoneNumber);
+        Task<ApiResponse> UpdateUserProfile(UserUpdateRequest request);
+        Task<ApiResponse> UpdateUserPhoneNumber(int UserId, string PhoneNumber);
     }
 }

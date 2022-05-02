@@ -41,7 +41,7 @@
                 </a>
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <a href="@Url.Action("SignOut","Account")" class="header__top-link">
+                    <a href="@Url.Action("UserProfile","Account")" class="header__top-link">
                         <span class="icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                  fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
@@ -281,40 +281,62 @@
                                     </span>
                                 </a>
                             </li>
-                            <li class="pb-4">
-                                <a href="/sign-up.html" class="d-flex w-100">
-                                    <span class="icon">
-                                        <span class="quality">1</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
-                                             stroke-linecap="round" stroke-linejoin="round"
-                                             class="feather feather-user">
-                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                            <circle cx="12" cy="7" r="4"></circle>
-                                        </svg>
-                                    </span>
-                                    <span class="text">
-                                        Hi, Nguyễn Văn A
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="/sign-up.html" class="d-flex w-100">
-                                    <span class="icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
-                                             stroke-linecap="round" stroke-linejoin="round"
-                                             class="feather feather-log-out">
-                                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                                            <polyline points="16 17 21 12 16 7"></polyline>
-                                            <line x1="21" y1="12" x2="9" y2="12"></line>
-                                        </svg>
-                                    </span>
-                                    <span class="text">
-                                        Đăng xuất
-                                    </span>
-                                </a>
-                            </li>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <li class="pb-4">
+                                    <a href="@Url.Action("UserProfile","Account")" class="d-flex w-100">
+                                        <span class="icon">
+                                            <span class="quality">1</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                 class="feather feather-user">
+                                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                <circle cx="12" cy="7" r="4"></circle>
+                                            </svg>
+                                        </span>
+                                        <span class="text">
+                                            Hi, @User.Identity.Name
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="@Url.Action("SignOut","Account")" class="d-flex w-100">
+                                        <span class="icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                 class="feather feather-log-out">
+                                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                                <polyline points="16 17 21 12 16 7"></polyline>
+                                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                                            </svg>
+                                        </span>
+                                        <span class="text">
+                                            Đăng xuất
+                                        </span>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="pb-4">
+                                    <a href="@Url.Action("SignIn","Account")" class="d-flex w-100">
+                                        <span class="icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                 class="feather feather-user">
+                                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                <circle cx="12" cy="7" r="4"></circle>
+                                            </svg>
+                                        </span>
+                                        <span class="text">
+                                            Tài khoản của tôi
+                                        </span>
+                                    </a>
+                                </li>
+                            }
                         </ul>
                         <div class="nav__mobile-info p-4">
                             <p><a href="tel: @Model.config.PhoneNumber">Phone: @Model.config.PhoneNumber</a></p>
@@ -336,6 +358,7 @@
                         </svg>
                     </label>
 
+                    <!-- Search -->
                     <a class="header__mobile-searchicon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                              fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
@@ -345,16 +368,32 @@
                         </svg>
                     </a>
 
-                    <a class="profile-mobile">
-                        <span class="quality">1</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                             fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
-                             stroke-linejoin="round" class="feather feather-user">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </a>
+                    <!-- User -->
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a href="@Url.Action("UserProfile","Account")" class="profile-mobile">
+                            <span class="quality">1</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
+                                 stroke-linejoin="round" class="feather feather-user">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("SignIn","Account")" class="profile-mobile">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
+                                 stroke-linejoin="round" class="feather feather-user">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </a>
+                    }
 
+                    <!-- Wishlist -->
                     <a class="favorite-mobile">
                         <span class="quality">1</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -365,6 +404,7 @@
                         </svg>
                     </a>
 
+                    <!-- Cart -->
                     <a class="cart-mobile">
                         <span class="quality">1</span>
                         <svg classs="cart-mobile" xmlns="http://www.w3.org/2000/svg" width="24" height="24"

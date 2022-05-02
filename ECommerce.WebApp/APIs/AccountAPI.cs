@@ -2,6 +2,7 @@
 using ECommerce.Application.Services.Account.Dtos;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -45,7 +46,7 @@ namespace ECommerce.WebApp.APIs
             var claims = new List<Claim>
             {
                 new Claim("TokenId", Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Sid, userid),
+                new Claim("UserId", userid),
                 new Claim(ClaimTypes.Name, username),
             };
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -61,17 +62,30 @@ namespace ECommerce.WebApp.APIs
             var result = await _userService.SignUp(request);
             if (!result.isSucceed)
             {
-                return BadRequest(new { status = "error", message = result.Message});
+                return BadRequest(result);
             }
-            return Ok(new { status = "success", message = "Tạo tài khoản thành công" });
+            return Ok(result);
         }
+
+        [Authorize]
         [HttpPost("CheckUserPhoneNumber")]
         public async Task<IActionResult> CheckUserPhoneNumber([FromBody] string PhoneNumber)
         {
-            var result = await _userService.checkUserPhoneNumber(PhoneNumber);
-            if (result == false) return BadRequest(new { status = "error", message = "Số điện thoại đã tồn tại" });
+            var result = await _userService.CheckUserPhoneNumber(PhoneNumber);
+            if (!result.isSucceed) return BadRequest(result);
             
-            return Ok(new { status = "success", message = "Có thể tại tài khoản với số điện thoại này" });
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpPost("UpdateUserPhoneNumber")]
+        public async Task<IActionResult> UpdateUserPhoneNumber([FromBody] string PhoneNumber)
+        {
+            var id = User.Claims.FirstOrDefault(i => i.Type == "UserId").Value;
+            var result = await _userService.UpdateUserPhoneNumber(Int32.Parse(id), PhoneNumber);
+            if (!result.isSucceed) return BadRequest(result);
+
+            return Ok(result);
         }
     }
 }
