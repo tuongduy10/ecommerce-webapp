@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Common
 {
-    public class ApiSucceedResponse : ApiResponse
+    public class ApiSuccessResponse : ApiResponse
     {
-        public ApiSucceedResponse(string message, Object objData)
+        public ApiSuccessResponse(string message, Object objData)
         {
             isSucceed = true;
             Message = message;

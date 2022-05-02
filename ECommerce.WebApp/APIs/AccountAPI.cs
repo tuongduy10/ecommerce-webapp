@@ -1,5 +1,5 @@
-﻿using ECommerce.Application.Services.User;
-using ECommerce.Application.Services.User.Dtos;
+﻿using ECommerce.Application.Services.Account;
+using ECommerce.Application.Services.Account.Dtos;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -54,6 +54,24 @@ namespace ECommerce.WebApp.APIs
             HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, props).Wait();
 
             return Ok(result);
+        }
+        [HttpPost("SignUp")]
+        public async Task<IActionResult> SignUp([FromBody] SignUpRequest request)
+        {
+            var result = await _userService.SignUp(request);
+            if (!result.isSucceed)
+            {
+                return BadRequest(new { status = "error", message = result.Message});
+            }
+            return Ok(new { status = "success", message = "Tạo tài khoản thành công" });
+        }
+        [HttpPost("CheckUserPhoneNumber")]
+        public async Task<IActionResult> CheckUserPhoneNumber([FromBody] string PhoneNumber)
+        {
+            var result = await _userService.checkUserPhoneNumber(PhoneNumber);
+            if (result == false) return BadRequest(new { status = "error", message = "Số điện thoại đã tồn tại" });
+            
+            return Ok(new { status = "success", message = "Có thể tại tài khoản với số điện thoại này" });
         }
     }
 }

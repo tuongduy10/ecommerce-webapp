@@ -17,7 +17,7 @@
                 <h3 class="text-center">Tạo tài khoản mới</h3>
                 <input class="mb-2 w-100" type="text" id="number" placeholder="Số điện thoại">
                 <div class="mb-2" id="recaptcha-container"></div>
-                <button class="btn-black" onclick="phoneAuth()" style="border: 1px solid #4d4d4d;">Xác minh</button>
+                <button class="btn-black" onclick="checkPhoneNumber()" style="border: 1px solid #4d4d4d;">Xác minh</button>
             </div>
             <div class="signup-verifycode d-flex pt-2 justify-content-between">
                 @*<input type="text" id="verificationCode" placeholder="Nhập mã OTP">
@@ -26,31 +26,31 @@
             <div class="signup-information d-flex flex-column pt-2">
                 @*<div class="signup-block">
                     <div class="signup-info"><strong>THÔNG TIN CÁ NHÂN</strong></div>
-                    <input class="mb-2 w-100" type="text" placeholder="Họ tên">
-                    <input class="mb-2 w-100" type="text" placeholder="Địa chỉ">
-                    <input class="mb-2 w-100" type="email" placeholder="Email">
+                    <input class="user-name mb-2 w-100" type="text" placeholder="Họ tên" autocomplete="off">
+                    <input class="user-email mb-2 w-100" type="email" placeholder="Email" autocomplete="off">
+                    <input class="user-address mb-2 w-100" type="text" placeholder="Địa chỉ" autocomplete="off">
 
                     <div class="location mb-2">
-                        <select name="" id="" class="city-select w-100">
+                        <select name="" id="" class="user-citycode city-select w-100">
                             <option value="" disabled selected>Tỉnh/Thành...</option>
                         </select>
                     </div>
                     <div class="location mb-2">
-                        <select name="" id="" class="district-select w-100">
+                        <select name="" id="" class="user-districtcode district-select w-100">
                             <option value="" disabled selected>Quận/Huyện...</option>
                         </select>
                     </div>
                     <div class="location mb-2">
-                        <select name="" id="" class="ward-select w-100">
+                        <select name="" id="" class="user-wardcode ward-select w-100">
                             <option value="" disabled selected>Phường/Xã...</option>
                         </select>
                     </div>
                 </div>
                 <div class="signup-block">
                     <div class="signup-info"><strong>THÔNG TIN ĐĂNG NHẬP</strong></div>
-                    <input class="mb-2 w-100" type="password" placeholder="Nhập mật khẩu">
-                    <input class="mb-2 w-100" type="password" placeholder="Nhập lại mật khẩu">
-                    <button class="w-100 btn-black" type="button" onclick="" style="border: 1px solid #4d4d4d;">Tạo tài khoản</button>
+                    <input class="user-password mb-2 w-100" type="password" placeholder="Nhập mật khẩu">
+                    <input class="user-repassword mb-2 w-100" type="password" placeholder="Nhập lại mật khẩu">
+                    <button class="w-100 btn-black" onclick="signup()" style="border: 1px solid #4d4d4d;">Tạo tài khoản</button>
                 </div>*@
             </div>
         </div>
@@ -78,10 +78,45 @@
         window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
         recaptchaVerifier.render();
     }
-    function phoneAuth() {
-        //get the number
-        var number = document.getElementById('number').value;
-        var scnum = '+84' + number
+
+    function checkPhoneNumber() {
+        var PhoneNumber = document.getElementById('number').value;
+
+        if (!PhoneNumber.includes('+84')) {
+            PhoneNumber = '+84' + PhoneNumber;
+        } 
+
+        $.ajax({
+            url: '/api/AccountAPI/CheckUserPhoneNumber',
+            data: JSON.stringify(PhoneNumber),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            type: 'POST',
+            success: function (data) {
+                phoneAuth(PhoneNumber);
+            },
+            error: function (data) {
+               alert(data.responseJSON.message);
+            }
+        });
+    }
+    
+    function signup() {
+        var request = {
+            UserPhone: $('#number').val(),
+            UserFullName: $('.user-name').val(),
+            UserMail: $('.user-email').val(),
+            UserAddress: $('.user-address').val(),
+            UserWardCode: $('.user-wardcode').val(),
+            UserDistrictCode: $('.user-districtcode').val(),
+            UserCityCode: $('.user-citycode').val(),
+            Password: $('.user-password').val(),
+            RePassword: $('.user-repassword').val()
+        };
+        apiSignUp(request);
+    }
+
+    function phoneAuth(scnum) {
         //phone number authentication function of firebase
         //it takes two parameter first one is number,,,second one is recaptcha
         firebase.auth().signInWithPhoneNumber(scnum, window.recaptchaVerifier)
@@ -89,7 +124,6 @@
                 //s is in lowercase
                 window.confirmationResult = confirmationResult;
                 coderesult = confirmationResult;
-                alert("Message sent");
                 renderFormVerifyCode();
             }).catch(function (error) {
                 alert(error.message);
@@ -99,13 +133,73 @@
         var code = document.getElementById('verificationCode').value;
         coderesult.confirm(code)
             .then(function (result) {
-                alert("Successfully registered");
-                var user = result.user;
-                console.log(user);
+                //var user = result.user;
+                //console.log(user);
                 renderFormInformation();
             }).catch(function (error) {
-                alert(error.message);
+                console.log(error.message);
             });
+    }
+
+    // API
+    function provincesData() {
+        $.get("/js/json/provinces-open-api.json", function (data) {
+            // Cities
+            var htmlTinhThanh = `<option value="" disabled selected>Tỉnh/Thành...</option>`
+            data.forEach(element => {
+                htmlTinhThanh += `<option value="` + element.codename + `">` + element.name + `</option>`
+            });
+            $(".city-select")[0].innerHTML = htmlTinhThanh;
+            // Districts
+            $(".city-select").on('change', function () {
+                var htmlQuanHuyen = `<option value="" disabled selected>Quận/Huyện...</option>`
+                data.forEach(element => {
+                    if (element.codename == this.value) {
+                        element.districts.forEach(element1 => {
+                            htmlQuanHuyen += `<option value="` + element1.codename + `">` + element1.name + `</option>`
+                        })
+                        $(".district-select")[0].innerHTML = htmlQuanHuyen
+                    }
+                })
+            });
+            // Wards
+            $(".district-select").on('change', function () {
+                var valueTinhThanh = $(".city-select")[0].value
+                var valueQuanHuyen = this.value
+                var htmlPhuongXa = `<option value="" disabled selected>Phường/Xã...</option>`
+                data.forEach(element => {
+                    if (element.codename == valueTinhThanh) {
+                        element.districts.forEach(element1 => {
+                            if (element1.codename == valueQuanHuyen) {
+                                element1.wards.forEach(element2 => {
+                                    htmlPhuongXa += `<option value="` + element2.codename + `">` + element2.name + `</option>`
+                                })
+                                $(".ward-select")[0].innerHTML = htmlPhuongXa
+                            }
+                        })
+                    }
+                })
+            });
+        })
+    }
+    function apiSignUp(request) {
+        $.ajax({
+            url: '/api/AccountAPI/SignUp',
+            data: JSON.stringify(request),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            type: 'POST',
+            success: function (data) {
+                alert("Tạo tài khoản thành công");
+                window.location.href = "/Account/SignIn";
+                return;
+            },
+            error: function (data) {
+                console.log(data);
+                alert(data.responseJSON.message);
+                return;
+            }
+        });
     }
 
     function renderFormVerifyCode() {
@@ -113,6 +207,7 @@
     }
     function renderFormInformation() {
         $('.signup-information').append(htmlFormInformation());
+        provincesData();
     }
 
     function htmlFormVerifyCode() {
@@ -126,31 +221,31 @@
         var html = `
             <div class="signup-block">
                 <div class="signup-info"><strong>THÔNG TIN CÁ NHÂN</strong></div>
-                <input class="mb-2 w-100" type="text" placeholder="Họ tên">
-                <input class="mb-2 w-100" type="text" placeholder="Địa chỉ">
-                <input class="mb-2 w-100" type="email" placeholder="Email">
+                <input class="user-name mb-2 w-100" type="text" placeholder="Họ tên" autocomplete="off">
+                <input class="user-email mb-2 w-100" type="email" placeholder="Email" autocomplete="off">
+                <input class="user-address mb-2 w-100" type="text" placeholder="Địa chỉ" autocomplete="off">
 
                 <div class="location mb-2">
-                    <select name="" id="" class="city-select w-100">
+                    <select name="" id="" class="user-citycode city-select w-100">
                         <option value="" disabled selected>Tỉnh/Thành...</option>
                     </select>
                 </div>
                 <div class="location mb-2">
-                    <select name="" id="" class="district-select w-100">
+                    <select name="" id="" class="user-districtcode district-select w-100">
                         <option value="" disabled selected>Quận/Huyện...</option>
                     </select>
                 </div>
                 <div class="location mb-2">
-                    <select name="" id="" class="ward-select w-100">
+                    <select name="" id="" class="user-wardcode ward-select w-100">
                         <option value="" disabled selected>Phường/Xã...</option>
                     </select>
                 </div>
             </div>
             <div class="signup-block">
                 <div class="signup-info"><strong>THÔNG TIN ĐĂNG NHẬP</strong></div>
-                <input class="mb-2 w-100" type="password" placeholder="Nhập mật khẩu">
-                <input class="mb-2 w-100" type="password" placeholder="Nhập lại mật khẩu">
-                <button class="w-100 btn-black" type="button" onclick="" style="border: 1px solid #4d4d4d;">Tạo tài khoản</button>
+                <input class="user-password mb-2 w-100" type="password" placeholder="Nhập mật khẩu">
+                <input class="user-repassword mb-2 w-100" type="password" placeholder="Nhập lại mật khẩu">
+                <button class="w-100 btn-black" onclick="signup()" style="border: 1px solid #4d4d4d;">Tạo tài khoản</button>
             </div>
         `;
 

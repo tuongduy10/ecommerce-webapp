@@ -20,7 +20,7 @@ using ECommerce.Application.Services.FilterProduct;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using ECommerce.Application.Services.User;
+using ECommerce.Application.Services.Account;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
