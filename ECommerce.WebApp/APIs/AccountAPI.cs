@@ -66,7 +66,6 @@ namespace ECommerce.WebApp.APIs
             }
             return Ok(result);
         }
-
         [Authorize]
         [HttpPost("CheckUserPhoneNumber")]
         public async Task<IActionResult> CheckUserPhoneNumber([FromBody] string PhoneNumber)
@@ -76,13 +75,23 @@ namespace ECommerce.WebApp.APIs
             
             return Ok(result);
         }
-
         [Authorize]
         [HttpPost("UpdateUserPhoneNumber")]
         public async Task<IActionResult> UpdateUserPhoneNumber([FromBody] string PhoneNumber)
         {
             var id = User.Claims.FirstOrDefault(i => i.Type == "UserId").Value;
             var result = await _userService.UpdateUserPhoneNumber(Int32.Parse(id), PhoneNumber);
+            if (!result.isSucceed) return BadRequest(result);
+
+            return Ok(result);
+        }
+        [Authorize]
+        [HttpPost("UpdateUserProfile")]
+        public async Task<IActionResult> UpdateUserProfile([FromBody] UserUpdateRequest request)
+        {
+            var id = User.Claims.FirstOrDefault(i => i.Type == "UserId").Value;
+            request.UserId = Int32.Parse(id);
+            var result = await _userService.UpdateUserProfile(request);
             if (!result.isSucceed) return BadRequest(result);
 
             return Ok(result);

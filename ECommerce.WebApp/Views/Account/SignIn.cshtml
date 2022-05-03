@@ -75,7 +75,8 @@
                 return;
             },
             error: function (data) {
-                alert(data.message);
+                console.log(data);
+                alert(data.responseJSON.message);
                 return;
             }
         });

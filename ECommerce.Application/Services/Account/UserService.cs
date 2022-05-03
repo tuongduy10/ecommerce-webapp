@@ -67,6 +67,7 @@ namespace ECommerce.Application.Services.Account
                 .Where(i => i.UserPhone == phonenumber && i.Password == request.Password)
                 .FirstOrDefaultAsync();
             if (result == null) return new ApiFailResponse("Mật khẩu hoặc tài khoản không đúng");
+            if (result.Status == false) return new ApiFailResponse("Tài khoản đã bị khóa");
 
             return new ApiSuccessResponse("Đăng nhập thành công", result);
 
@@ -163,6 +164,8 @@ namespace ECommerce.Application.Services.Account
             var district = request.UserDistrictCode;
             var ward = request.UserWardCode;
             var city = request.UserCityCode;
+
+            if (fullname == "") return new ApiFailResponse("Họ tên không thể để trống");
 
             var user = await _DbContext.Users
                                 .Where(i => i.UserId == id)
