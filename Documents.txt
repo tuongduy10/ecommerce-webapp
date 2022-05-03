@@ -10,3 +10,7 @@ Handle error status code (including cookie authentication with login requirement
 
 Login with Firebase:
 	https://github.com/proyectojavier/TestChallengerCore (demo repo)
+
+Authorize role with CookieAuthentication:
+	https://xuanthulab.net/asp-net-razor-su-dung-thuoc-tinh-authorize-chung-thuc-quyen-truy-cap-theo-role.html (Role)
+	https://benfoster.io/blog/asp-net-identity-role-claims/ (Permission)

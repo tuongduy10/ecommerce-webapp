@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.ViewComponents
 {
-    public class UserProfileMenuViewComponent : ViewComponent
+    public class AdminTopbarViewComponent : ViewComponent
     {
         public async Task<IViewComponentResult> InvokeAsync()
         {

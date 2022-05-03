@@ -45,6 +45,7 @@ namespace ECommerce.WebApp
             services
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(option => {
+                    option.AccessDeniedPath = "/Account/SignIn";
                     option.LoginPath = "/Account/SignIn";
                     option.Cookie.Name = "HitichiCookie";
                     option.ExpireTimeSpan = TimeSpan.FromDays(30);
@@ -113,7 +114,12 @@ namespace ECommerce.WebApp
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "admin",
+                    pattern: "{controller=Admin}/{action=Index}/{id?}");
+            });
         }
     }
 }

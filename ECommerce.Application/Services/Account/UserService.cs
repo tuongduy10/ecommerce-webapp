@@ -60,16 +60,33 @@ namespace ECommerce.Application.Services.Account
                 }
             }
 
-            //var user = await _DbContext.Users.Where(i => i.UserPhone == phonenumber).FirstOrDefaultAsync();
-            //if (user == null) return new ApiFailResponse("Tài khoản không tồn tại");
-
             var result = await _DbContext.Users
                 .Where(i => i.UserPhone == phonenumber && i.Password == request.Password)
                 .FirstOrDefaultAsync();
+            
             if (result == null) return new ApiFailResponse("Mật khẩu hoặc tài khoản không đúng");
             if (result.Status == false) return new ApiFailResponse("Tài khoản đã bị khóa");
 
-            return new ApiSuccessResponse("Đăng nhập thành công", result);
+            var roles = (
+                from role in _DbContext.Roles
+                from userrole in _DbContext.UserRoles
+                where role.RoleId == userrole.RoleId && userrole.UserId == result.UserId
+                select role.RoleName
+            ).Distinct().ToList();
+
+            UserGetModel user = new UserGetModel();
+            user.UserId = result.UserId;
+            user.UserMail = result.UserMail;
+            user.UserFullName = result.UserFullName;
+            user.UserAddress = result.UserAddress;
+            user.UserWardCode = result.UserWardCode;
+            user.UserDistrictCode = result.UserDistrictCode;
+            user.UserCityCode = result.UserCityCode;
+            user.UserPhone = result.UserPhone;
+            user.UserRoles = roles;
+            user.Status = result.Status;
+
+            return new ApiSuccessResponse("Đăng nhập thành công", user);
 
             // Jwt Security
             //var jwtTokenHandler = new JwtSecurityTokenHandler();

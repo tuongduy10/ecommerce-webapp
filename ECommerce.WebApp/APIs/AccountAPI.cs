@@ -41,6 +41,7 @@ namespace ECommerce.WebApp.APIs
             var user = result.ObjectData.GetType();
             var username = user.GetProperty("UserFullName").GetValue(result.ObjectData, null).ToString();
             var userid = user.GetProperty("UserId").GetValue(result.ObjectData, null).ToString();
+            var userroles = user.GetProperty("UserRoles").GetValue(result.ObjectData, null) as List<string>;
 
             // Store data to cookie
             var claims = new List<Claim>
@@ -49,6 +50,11 @@ namespace ECommerce.WebApp.APIs
                 new Claim("UserId", userid),
                 new Claim(ClaimTypes.Name, username),
             };
+            foreach (var item in userroles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, item));
+            }
+
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             var props = new AuthenticationProperties();

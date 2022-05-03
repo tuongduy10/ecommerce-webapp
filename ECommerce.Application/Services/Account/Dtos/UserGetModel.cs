@@ -17,6 +17,7 @@ namespace ECommerce.Application.Services.Account.Dtos
         public string UserDistrictCode { get; set; }
         public string UserCityCode { get; set; }
         public string UserPhone { get; set; }
+        public List<string> UserRoles { get; set; }
         public bool Status { get; set; }
     }
 }
