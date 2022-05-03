@@ -96,5 +96,16 @@ namespace ECommerce.WebApp.APIs
 
             return Ok(result);
         }
+        [Authorize]
+        [HttpPost("UpdateUserPassword")]
+        public async Task<IActionResult> UpdateUserPassword([FromBody] UpdatePasswordRequest request)
+        {
+            var id = User.Claims.FirstOrDefault(i => i.Type == "UserId").Value;
+            request.UserId = Int32.Parse(id);
+            var result = await _userService.UpdateUserPassword(request);
+            if (!result.isSucceed) return BadRequest(result);
+
+            return Ok(result);
+        }
     }
 }

@@ -209,5 +209,24 @@ namespace ECommerce.Application.Services.Account
 
             return new ApiFailResponse("Cập nhật số điện thoại không thành công");
         }
+        public async Task<ApiResponse> UpdateUserPassword(UpdatePasswordRequest request)
+        {
+            var id = request.UserId;
+            var curentPassword = request.CurrentPassword;
+            var newPassword = request.NewPassword;
+            var rePassword = request.RePassword;
+
+            var user = await _DbContext.Users
+                                .Where(i => i.UserId == id && i.Password == curentPassword)
+                                .FirstOrDefaultAsync();
+
+            if (user == null) return new ApiFailResponse("Mật khẩu không chính xác");
+            if (newPassword != rePassword) return new ApiFailResponse("Mật khẩu không trùng");
+
+            user.Password = rePassword;
+            await _DbContext.SaveChangesAsync();
+
+            return new ApiSuccessResponse("Cập nhật mật khẩu thành công");
+        }
     }
 }

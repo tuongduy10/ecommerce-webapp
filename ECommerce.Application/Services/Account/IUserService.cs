@@ -16,5 +16,6 @@ namespace ECommerce.Application.Services.Account
         Task<ApiResponse> CheckUserPhoneNumber(string PhoneNumber);
         Task<ApiResponse> UpdateUserProfile(UserUpdateRequest request);
         Task<ApiResponse> UpdateUserPhoneNumber(int UserId, string PhoneNumber);
+        Task<ApiResponse> UpdateUserPassword(UpdatePasswordRequest request);
     }
 }

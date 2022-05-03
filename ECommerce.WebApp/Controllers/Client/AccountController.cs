@@ -46,5 +46,10 @@ namespace ECommerce.WebApp.Controllers.Client
         {
             return View();
         }
+        [Authorize]
+        public async Task<IActionResult> UpdateUserPassword()
+        {
+            return View();
+        }
     }
 }
