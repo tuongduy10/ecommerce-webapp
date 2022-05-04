@@ -41,13 +41,12 @@ namespace ECommerce.WebApp
             services.AddDbContext<ECommerceContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("ECommerceDB")));
             services.AddControllersWithViews();
-
             services
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(option => {
                     option.AccessDeniedPath = "/Account/SignIn";
                     option.LoginPath = "/Account/SignIn";
-                    option.Cookie.Name = "HitichiCookie";
+                    option.Cookie.Name = "HihichiCookie";
                     option.ExpireTimeSpan = TimeSpan.FromDays(30);
                     option.Cookie.MaxAge = option.ExpireTimeSpan;
                 });

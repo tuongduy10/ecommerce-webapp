@@ -54,7 +54,6 @@ namespace ECommerce.WebApp.APIs
             {
                 claims.Add(new Claim(ClaimTypes.Role, item));
             }
-
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             var props = new AuthenticationProperties();

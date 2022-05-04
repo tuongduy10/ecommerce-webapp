@@ -14,5 +14,9 @@ namespace ECommerce.WebApp.Controllers.Admin
         {
             return View();
         }
+        public async Task<IActionResult> SignIn()
+        {
+            return View();
+        }
     }
 }
