@@ -11,7 +11,7 @@ namespace ECommerce.Application.Services.Configurations
     {
         Task<int> UpdateBlog(BlogUpdateRequest request);
         Task<int> UpdateSocial(SocialUpdateRequest request);
-        Task<List<SocialModel>> getAllSocial();
-        Task<List<BlogModel>> getAllBlog();
+        Task<List<SocialModel>> getAllSocial(); //1 cột 4 social
+        Task<List<BlogModel>> getAllBlog(); // 2 cột, 8 blog
     }
 }

@@ -1,0 +1,109 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Quản lý Blog</h6>
+    </div>
+    <div class="card-body">
+        <div class="font-weight-bold mb-2">Công ty</div>
+        <div class="table-responsive">
+            <table class="table table-bordered order-table" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Tên Blog</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.listBlog)
+                    {
+                        if (item.BlogPosition == 1)
+                        {
+                            <tr>
+                                <td>@item.BlogId</td>
+                                <td>@item.BlogTitle</td>
+                                <td class="text-center">
+                                    <a href="@item.BlogId" style="color: var(--blue-dior);">Chi tiết</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="font-weight-bold mb-2">Chính sách hỗ trợ</div>
+        <div class="table-responsive">
+            <table class="table table-bordered order-table" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Tên Blog</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.listBlog)
+                    {
+                        if (item.BlogPosition == 2)
+                        {
+                            <tr>
+                                <td>@item.BlogId</td>
+                                <td>@item.BlogTitle</td>
+                                <td class="text-center">
+                                    <a href="@item.BlogId" style="color: var(--blue-dior);">Chi tiết</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="font-weight-bold mb-2">Mạng xã hội</div>
+        <div>
+            @foreach (var item in Model.listSocial)
+            {
+                if (item.Position == 1)
+                {
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">@item.SocialName</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" placeholder="Link" value="@item.SocialUrl">
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="font-weight-bold mb-2">Thông tin liên hệ</div>
+        <div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Zalo</label>
+                <div class="col-sm-10">
+                    <input class="form-control" placeholder="Link" value="0123456789">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Mail</label>
+                <div class="col-sm-10">
+                    <input class="form-control" placeholder="Link" value="mail@gmail.com">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Địa chỉ</label>
+                <div class="col-sm-10 d-flex">
+                    <input class="form-control mr-2" placeholder="Link" value="Số 01 lê lợi, phường 04, quận tân bình, thành phố hồ chí minh">
+                    <textarea name="" id="" cols="200" rows="5"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.258289316707!2d106.71245271480088!3d10.791518992311309!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317528adacc0e6fd%3A0xe9a768947103ac16!2zMiBWb8yDIER1eSBOaW5oLCBQaMaw4budbmcgMjIsIELDrG5oIFRo4bqhbmgsIFRow6BuaCBwaOG7kSBI4buTIENow60gTWluaA!5e0!3m2!1svi!2s!4v1648353958643!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button class="btn-primary btn">Cập nhật</button>
+        </div>
+    </div>
+</div>
