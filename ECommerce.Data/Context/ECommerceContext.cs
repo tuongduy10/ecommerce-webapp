@@ -56,7 +56,6 @@ namespace ECommerce.Data.Context
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
 
-        // Get connection string from appsettings.json
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -145,6 +144,10 @@ namespace ECommerce.Data.Context
             modelBuilder.Entity<Configuration>(entity =>
             {
                 entity.HasNoKey();
+
+                entity.Property(e => e.Address).HasMaxLength(500);
+
+                entity.Property(e => e.AddressUrl).HasMaxLength(500);
 
                 entity.Property(e => e.Facebook)
                     .HasMaxLength(100)
