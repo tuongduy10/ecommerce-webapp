@@ -54,13 +54,29 @@ namespace ECommerce.WebApp.APIs
             {
                 claims.Add(new Claim(ClaimTypes.Role, item));
             }
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-            var props = new AuthenticationProperties();
-            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, props).Wait();
-
+            //var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            //var principal = new ClaimsPrincipal(identity);
+            //var props = new AuthenticationProperties();
+            //HttpContext.SignInAsync("ClientAuth", principal, props).Wait();
+            //if (userroles.Contains("Admin"))
+            //{
+            //    HttpContext.SignInAsync("AdminAuth", principal, props).Wait();
+            //}
+            claimUserIdentity(claims, "ClientAuth");
+            if (userroles.Contains("Admin"))
+            {
+                claimUserIdentity(claims, "AdminAuth");
+            }
             return Ok(result);
         }
+        private void claimUserIdentity(List<Claim> claims, string scheme)
+        {
+            var identity = new ClaimsIdentity(claims, scheme);
+            var principal = new ClaimsPrincipal(identity);
+            var props = new AuthenticationProperties();
+            HttpContext.SignInAsync(scheme, principal, props).Wait();
+        }
+
         [HttpPost("SignUp")]
         public async Task<IActionResult> SignUp([FromBody] SignUpRequest request)
         {

@@ -1,0 +1,146 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Quản lý thương hiệu</h6>
+    </div>
+    <div class="card-body">
+        <div class="mb-2">
+            <div class="form-group">
+                <label>Tên thương hiệu</label>
+                <input class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Danh mục</label>
+                <select class="form-control" aria-label="Default select example">
+                    <option selected disabled>Chọn danh mục</option>
+                    @foreach (var item in Model.listCategory)
+                    {
+                        <option value="@item.CategoryId">@item.CategoryName</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Ảnh thương hiệu</label>
+                <div class="border" style="height: 100px; width: 100px;">
+                    <label class="mb-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                           for="pic-size" style="cursor: pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                             height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="#ddd" stroke-width="1" stroke-linecap="round"
+                             stroke-linejoin="round"
+                             class="feather feather-plus-circle">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="16"></line>
+                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                        </svg>
+                    </label>
+                    <input type="file" class="form-control-file image-uploaded"
+                           id="pic-size" hidden>
+                    <div class="image-wrapper w-100 h-100 position-relative d-none align-items-center justify-content-center">
+                        <img class="mw-100 mh-100"
+                             src="../assets/images/products/pro1.png" alt="">
+                        <span class="position-absolute remove-upload"
+                              style="right: 0; top: 0; cursor: pointer;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                 height="18" viewBox="0 0 24 24" fill="none"
+                                 stroke="red" stroke-width="1" stroke-linecap="round"
+                                 stroke-linejoin="round" class="feather feather-x">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary">Lưu</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered order-table" id="dataTable" width="100%"
+                   cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Ảnh</th>
+                        <th>Thương hiệu</th>
+                        <th>Danh mục</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.listBrand)
+                    {
+                        <tr>
+                            <td style="max-width: 300px;">
+                                <div class="d-flex align-items-center justify-content-between border p-1" style="height: 100px; width: 100px;">
+                                    <img class="mw-100 mh-100 mx-auto" src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" alt="">
+                                </div>
+                            </td>
+                            <td>@item.BrandName</td>
+                            <td>@item.Category</td>
+                                @if (item.Status == true)
+                                {
+                                    <td>Đang hoạt động</td>
+                                }
+                                @if (item.Status == false)
+                                {
+                                    <td>Đang ẩn</td>
+                                }
+                            <td class="text-center">
+                                @if (item.Status == true)
+                                {
+                                    <a class="btn btn-dark">Ẩn</a>
+                                }
+                                @if (item.Status == false)
+                                {
+                                    <a class="btn btn-success">Hiển thị</a>
+                                }
+                                <a class="btn btn-primary">Chi tiết</a>
+                                <a class="btn btn-danger">Xóa</a>
+                            </td>
+                        </tr>
+                     }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+
+</script>
+
+<script type="text/javascript">
+    $('.image-uploaded').change(function () {
+        // Set image src
+        let src = window.URL.createObjectURL(this.files[0]);
+        $(this).siblings('.image-wrapper').children('img').attr('src', src);
+
+        // hide label
+        $(this).siblings('label').removeClass('d-flex');
+        $(this).siblings('label').addClass('d-none');
+        // display image
+        $(this).siblings('.image-wrapper').removeClass('d-none');
+        $(this).siblings('.image-wrapper').addClass('d-flex');
+    })
+    $('.remove-upload').click(function () {
+        // Remove Image
+        $(this).siblings('img').attr('src', '');
+
+        // Hide image wrapper
+        $(this).parent().removeClass('d-flex');
+        $(this).parent().addClass('d-none');
+        // Display label
+        $(this).parent().siblings('label').removeClass('d-none');
+        $(this).parent().siblings('label').addClass('d-flex');
+    })
+    $('.form-check-input').change(function () {
+        $('.form-check-input').siblings('input').addClass('d-none');
+        if ($(this).is(':checked')) {
+            $(this).siblings('input').removeClass('d-none');
+        }
+    })
+</script>

@@ -25,15 +25,21 @@ namespace ECommerce.WebApp.Controllers.Client
         }
         public async Task<IActionResult> SignUp()
         {
+            var identity = User;
             return View();
         }
+
         [Authorize]
         public async Task<IActionResult> SignOut()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
+            await HttpContext.SignOutAsync("ClientAuth");
+            if (User.IsInRole("Admin"))
+            {
+                await HttpContext.SignOutAsync("AdminAuth");
+            }
             return RedirectToAction("SignIn", "Account");
         }
+
         [Authorize]
         public async Task<IActionResult> UserProfile()
         {
@@ -41,13 +47,20 @@ namespace ECommerce.WebApp.Controllers.Client
             var user = await _userService.UserProfile(Int32.Parse(id));
             return View(user);
         }
+
         [Authorize]
         public async Task<IActionResult> UpdateUserPhoneNumber()
         {
             return View();
         }
+
         [Authorize]
         public async Task<IActionResult> UpdateUserPassword()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> AccessDenied()
         {
             return View();
         }

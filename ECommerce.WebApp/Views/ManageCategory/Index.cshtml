@@ -1,0 +1,42 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Quản lý nhóm danh mục</h6>
+    </div>
+    <div class="card-body">
+        <div class="form-inline mb-4">
+            <div class="form-group">
+                <label>Danh mục</label>
+            </div>
+            <div class="form-group mx-sm-3">
+                <input class="form-control">
+            </div>
+            <button class="btn btn-primary">Thêm</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered order-table" id="dataTable" width="100%"
+                   cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Danh mục</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.CategoryName</td>
+                            <td class="text-center">
+                                <a class="btn btn-primary" href="admin-categorydetail.html">Chi tiết</a>
+                                <a class="btn btn-danger">Xóa</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

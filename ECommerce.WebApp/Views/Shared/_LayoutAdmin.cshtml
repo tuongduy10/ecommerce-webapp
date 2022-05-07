@@ -129,12 +129,10 @@
                      data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
 
-                        <h6 class="collapse-header">Cửa hàng</h6>
                         <a class="collapse-item" href="admin-manageshop.html">Danh sách cửa hàng</a>
+                        <a class="collapse-item" href="@Url.Action("Index","ManageBrand")">Danh sách thương hiệu</a>
+                        <a class="collapse-item" href="@Url.Action("Index","ManageCategory")">Danh sách danh mục</a>
 
-                        <h6 class="collapse-header">Thương hiệu</h6>
-                        <a class="collapse-item" href="admin-managebrand.html">Danh sách thương hiệu</a>
-                        <a class="collapse-item" href="admin-addbrand.html">Thêm thương hiệu</a>
                     </div>
                 </div>
             </li>
@@ -178,8 +176,8 @@
                      data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="admin-manageheader.html">Header</a>
-                        <a class="collapse-item" href="@Url.Action("ManageFooter", "Configuration")">Footer</a>
-                        <a class="collapse-item" href="@Url.Action("ManageBank", "Configuration")">Thông tin ngân hàng</a>
+                        <a class="collapse-item" href="@Url.Action("ManageFooter", "ManageConfiguration")">Footer</a>
+                        <a class="collapse-item" href="@Url.Action("ManageBank", "ManageConfiguration")">Thông tin ngân hàng</a>
                     </div>
                 </div>
             </li>
@@ -279,13 +277,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
 
     <!-- Page level plugins -->
-    <script src="/vendor/chart.js/Chart.min.js"></script>
+    @*<script src="/vendor/chart.js/Chart.min.js"></script>*@
     <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
     <!-- Page level custom scripts -->
-    <script src="/js/demo/chart-area-demo.js"></script>
-    <script src="/js/demo/chart-pie-demo.js"></script>
+    @*<script src="/js/demo/chart-area-demo.js"></script>
+    <script src="/js/demo/chart-pie-demo.js"></script>*@
     <script src="/js/demo/datatables-demo.js"></script>
 </body>
 </html>

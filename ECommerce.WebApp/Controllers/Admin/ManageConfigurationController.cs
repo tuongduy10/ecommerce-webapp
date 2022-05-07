@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.Controllers.Admin
 {
-    public class ConfigurationController : Controller
+    public class ManageConfigurationController : Controller
     {
         private IFooterService _footerService;
         private IConfigurationService _configurationService;
         private IBankService _bankService;
-        public ConfigurationController(IFooterService footerService, IConfigurationService configurationService, IBankService bankService)
+        public ManageConfigurationController(IFooterService footerService, IConfigurationService configurationService, IBankService bankService)
         {
             _footerService = footerService;
             _configurationService = configurationService;

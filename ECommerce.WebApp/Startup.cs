@@ -43,11 +43,18 @@ namespace ECommerce.WebApp
                 options.UseSqlServer(Configuration.GetConnectionString("ECommerceDB")));
             services.AddControllersWithViews();
             services
-                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(option => {
-                    option.AccessDeniedPath = "/Account/SignIn";
+                .AddAuthentication(option => option.DefaultAuthenticateScheme = "ClientAuth")
+                .AddCookie("ClientAuth", option => {
+                    option.AccessDeniedPath = "/Account/AccessDenied";
                     option.LoginPath = "/Account/SignIn";
-                    option.Cookie.Name = "HihichiCookie";
+                    option.Cookie.Name = "clientadmin";
+                    option.ExpireTimeSpan = TimeSpan.FromDays(30);
+                    option.Cookie.MaxAge = option.ExpireTimeSpan;
+                })
+                .AddCookie("AdminAuth", option => {
+                    option.AccessDeniedPath = "/Account/AccessDenied";
+                    option.LoginPath = "/Admin/SignIn";
+                    option.Cookie.Name = "admincookie";
                     option.ExpireTimeSpan = TimeSpan.FromDays(30);
                     option.Cookie.MaxAge = option.ExpireTimeSpan;
                 });
