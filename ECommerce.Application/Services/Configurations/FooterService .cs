@@ -71,9 +71,18 @@ namespace ECommerce.Application.Services.Configurations
             return new ApiFailResponse("Cập nhật không thành công");
         }
 
-        public async Task<int> UpdateSocial(SocialUpdateRequest request)
+        public async Task<ApiResponse> UpdateSocial(SocialUpdateRequest request)
         {
-            throw new NotImplementedException();
+            var social = await _DbContext.Socials.Where(i => i.SocialId == request.SocialId).FirstOrDefaultAsync();
+            if (social != null)
+            {
+                social.Icon = request.Icon;
+                social.SocialName = request.SocialName;
+                social.SocialUrl = request.SocialUrl;
+                _DbContext.SaveChangesAsync().Wait();
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            return new ApiFailResponse("Cập nhật không thành công");
         }
         public async Task<BlogModel> getBlogDetail(int BlogId)
         {

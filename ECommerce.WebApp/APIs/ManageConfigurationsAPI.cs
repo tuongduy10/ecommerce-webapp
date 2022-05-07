@@ -28,5 +28,15 @@ namespace ECommerce.WebApp.APIs
             }
             return Ok(result);
         }
+        [HttpPost("UpdateSocial")]
+        public async Task<IActionResult> UpdateSocial(SocialUpdateRequest request)
+        {
+            var result = await _footerService.UpdateSocial(request);
+            if (!result.isSucceed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
     }
 }

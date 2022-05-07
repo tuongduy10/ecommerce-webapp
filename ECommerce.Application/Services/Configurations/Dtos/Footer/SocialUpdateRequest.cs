@@ -9,7 +9,6 @@ namespace ECommerce.Application.Services.Configurations.Dtos.Footer
     public class SocialUpdateRequest
     {
         public int SocialId { get; set; }
-        public byte? Position { get; set; }
         public string Icon { get; set; }
         public string SocialName { get; set; }
         public string SocialUrl { get; set; }
