@@ -45,16 +45,5 @@ namespace ECommerce.WebApp.Controllers.Admin
             var listBank = await _bankService.getListBank();
             return View(listBank);
         }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteBank(int bankId)
-        {
-            var result = await _bankService.deleteBank(bankId);
-            if (result.isSucceed)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
     } 
 }

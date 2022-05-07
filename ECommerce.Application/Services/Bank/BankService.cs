@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.Bank.Dtos;
+using ECommerce.Data.Models;
 using ECommerce.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +19,28 @@ namespace ECommerce.Application.Services.Bank
         public BankService(ECommerceContext DbContext)
         {
             _DbContext = DbContext;
+        }
+
+        public async Task<ApiResponse> addBank(BankAddRequest request)
+        {
+            var BankName = request.BankName;
+            var BankAccountName = request.BankAccountName;
+            var BankAccountNumber = request.BankAccountNumber;
+            var BankImage = request.BankImage;
+
+            if (BankName == null) return new ApiFailResponse("Tên ngân hàng không được để trống");
+            if (BankAccountName == null) return new ApiFailResponse("Tên tài khoản không được để trống");
+            if (BankAccountNumber == null) return new ApiFailResponse("Số tài khoản không được để trống");
+
+            Data.Models.Bank bank = new Data.Models.Bank();
+            bank.BankAccountName = BankAccountName;
+            bank.BankAccountNumber = BankAccountNumber;
+            bank.BankImage = BankImage;
+            bank.BankName = BankName;
+
+            await _DbContext.Banks.AddAsync(bank);
+            await _DbContext.SaveChangesAsync();
+            return new ApiSuccessResponse("Thêm thành công", bank.BankId);
         }
 
         public async Task<ApiResponse> deleteBank(int bankId)
@@ -43,6 +66,11 @@ namespace ECommerce.Application.Services.Bank
                 BankName = i.BankName
             }).ToListAsync();
             return listBank;
+        }
+
+        public Task<ApiResponse> updateBank(BankUpdateRequest request)
+        {
+            throw new NotImplementedException();
         }
     }
 }

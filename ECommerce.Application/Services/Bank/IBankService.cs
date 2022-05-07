@@ -12,5 +12,7 @@ namespace ECommerce.Application.Services.Bank
     {
         Task<List<BankGetModel>> getListBank();
         Task<ApiResponse> deleteBank(int bankId);
+        Task<ApiResponse> updateBank(BankUpdateRequest request);
+        Task<ApiResponse> addBank(BankAddRequest request);
     }
 }
