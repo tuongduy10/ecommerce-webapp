@@ -82,6 +82,8 @@ namespace ECommerce.Application.Services.Configurations
                 _DbContext.SaveChangesAsync().Wait();
                 return new ApiSuccessResponse("Cập nhật thành công");
             }
+            _DbContext.Socials.Remove(social);
+
             return new ApiFailResponse("Cập nhật không thành công");
         }
         public async Task<BlogModel> getBlogDetail(int BlogId)

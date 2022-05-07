@@ -168,7 +168,6 @@
     </div>
 </div>
 <script>
-
     function updateSocial(id){
         var request = {
             SocialId = id,
@@ -178,19 +177,6 @@
         };
         apiUpdateSocial(request);
     }
-
-    function apiUpdateBlog(request){
-        $.ajax({
-            url: '/api/ManageConfigurationsAPI/UpdateBlog',
-            data: JSON.stringify(request),
-            dataType: 'json',
-            contentType: 'application/json; charset=utf-8',
-            type: 'POST',
-            success: function (data) {
-                
-            }
-        });
-    }
     function apiUpdateSocial(request) {
         $.ajax({
             url: '/api/ManageConfigurationsAPI/UpdateSocial',
@@ -199,6 +185,9 @@
             contentType: 'application/json; charset=utf-8',
             type: 'POST',
             success: function (data) {
+
+            },
+            error: function(data){
 
             }
         });
