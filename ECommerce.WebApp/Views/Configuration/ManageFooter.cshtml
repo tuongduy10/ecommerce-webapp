@@ -26,7 +26,7 @@
                                 <td>@Model.listBlog[i].BlogPosition</td>
                                 <td>@Model.listBlog[i].BlogTitle</td>
                                 <td class="text-center">
-                                    <a href="@Url.Action("BlogDetail", "Configuration", new{ BlogId = Model.listBlog[i].BlogId})" style="color: var(--blue-dior);">Chi tiết</a>
+                                    <a href="@Url.Action("BlogDetail", "Configuration", new { BlogId = Model.listBlog[i].BlogId})" style="color: var(--blue-dior);">Chi tiết</a>
                                 </td>
                             </tr>
                         }
@@ -54,7 +54,7 @@
                                 <td>@Model.listBlog[i].BlogPosition</td>
                                 <td>@Model.listBlog[i].BlogTitle</td>
                                 <td class="text-center">
-                                    <a href="@Url.Action("BlogDetail", "Configuration", new{ BlogId = Model.listBlog[i].BlogId})" style="color: var(--blue-dior);">Chi tiết</a>
+                                    <a href="@Url.Action("BlogDetail", "Configuration", new { BlogId = Model.listBlog[i].BlogId})" style="color: var(--blue-dior);">Chi tiết</a>
                                 </td>
                             </tr>
                         }
@@ -68,7 +68,8 @@
             <table class="table table-bordered order-table" width="100%" cellspacing="0">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th>Cột</th>
+                        <th>Icon</th>
                         <th>Mạng xã hội</th>
                         <th>Đường dẫn</th>
                         <th></th>
@@ -80,13 +81,18 @@
                         if (item.Position == 1)
                         {
                             <tr>
-                                <td>3</td>
-                                <td>@item.SocialName</td>
+                                <td>@item.Position</td>
                                 <td>
-                                    <input class="form-control" placeholder="Link" value="@item.SocialUrl">
+                                    <input class="social_icon-@item.SocialId form-control" placeholder="Link" value="@item.SocialIcon">
+                                </td>
+                                <td>
+                                    <input class="social_name-@item.SocialId form-control" placeholder="Link" value="@item.SocialName">
+                                </td>
+                                <td>
+                                    <input class="social_url-@item.SocialId form-control" placeholder="Link" value="@item.SocialUrl">
                                 </td>
                                 <td class="text-center">
-                                    <button class = "btn btn-primary">Cập nhật</button>
+                                    <button class="btn btn-primary" onclick="updateSocial(@item.SocialId)">Cập nhật</button>
                                 </td>
                             </tr>
                         }
@@ -113,19 +119,24 @@
                             if (item.Position == 2)
                             {
                                 <tr>
-                                    <td>4</td>
-                                    <td>@item.SocialName</td>
+                                    <td>@item.Position</td>
                                     <td>
-                                        <input class="form-control" placeholder="Link" value="@item.SocialUrl">
+                                        <input class="social_icon-@item.SocialId form-control" placeholder="Link" value="@item.SocialIcon">
+                                    </td>
+                                    <td>
+                                        <input class="social_name-@item.SocialId form-control" placeholder="Link" value="@item.SocialName">
+                                    </td>
+                                    <td>
+                                        <input class="social_url-@item.SocialId form-control" placeholder="Link" value="@item.SocialUrl">
                                     </td>
                                     <td class="text-center">
-                                        <button class = "btn btn-primary">Cập nhật</button>
+                                        <button class="btn btn-primary" onclick="updateSocial(@item.SocialId)">Cập nhật</button>
                                     </td>
                                 </tr>
                             }
                         }
                         <tr>
-                            <td>4</td>
+                            <td>2</td>
                             <td>Địa chỉ</td>
                             <td>
                                 <div class="d-flex">
@@ -138,7 +149,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>4</td>
+                            <td>2</td>
                             <td>Thời gian làm việc</td>
                             <td>
                                 <div class="d-flex">
@@ -158,19 +169,37 @@
 </div>
 <script>
 
-    function updateBlog(request){
-        
+    function updateSocial(id){
+        var request = {
+            SocialId = id,
+            Icon = $(`.social_icon-${id}`).val(),
+            SocialName = $(`.social_name-${id}`).val(),
+            SocialUrl = $(`.social_url-${id}`).val(),
+        };
+        apiUpdateSocial(request);
     }
 
-    function apiUpdateBlog(){
+    function apiUpdateBlog(request){
         $.ajax({
-            url: '/api/API/',
+            url: '/api/ManageConfigurationsAPI/UpdateBlog',
             data: JSON.stringify(request),
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             type: 'POST',
             success: function (data) {
                 
+            }
+        });
+    }
+    function apiUpdateSocial(request) {
+        $.ajax({
+            url: '/api/ManageConfigurationsAPI/UpdateSocial',
+            data: JSON.stringify(request),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            type: 'POST',
+            success: function (data) {
+
             }
         });
     }
