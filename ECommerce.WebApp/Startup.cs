@@ -23,6 +23,7 @@ using Microsoft.IdentityModel.Tokens;
 using ECommerce.Application.Services.Account;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using ECommerce.Application.Services.Bank;
 
 namespace ECommerce.WebApp
 {
@@ -64,6 +65,7 @@ namespace ECommerce.WebApp
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IBrandService, BrandService>();
             services.AddTransient<IFilterProductService, FilterProductService>();
+            services.AddTransient<IBankService, BankService>();
 
             // User
             services.AddTransient<IUserService, UserService>();

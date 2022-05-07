@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Compile Remove="Services\AvailablePrice\**" />
-    <Compile Remove="Services\Bank\**" />
     <Compile Remove="Services\Banner\**" />
     <Compile Remove="Services\DiscountType\**" />
     <Compile Remove="Services\Discount\**" />
@@ -25,7 +24,6 @@
     <Compile Remove="Services\SubCategoryOption\**" />
     <Compile Remove="Services\UserRole\**" />
     <EmbeddedResource Remove="Services\AvailablePrice\**" />
-    <EmbeddedResource Remove="Services\Bank\**" />
     <EmbeddedResource Remove="Services\Banner\**" />
     <EmbeddedResource Remove="Services\DiscountType\**" />
     <EmbeddedResource Remove="Services\Discount\**" />
@@ -44,7 +42,6 @@
     <EmbeddedResource Remove="Services\SubCategoryOption\**" />
     <EmbeddedResource Remove="Services\UserRole\**" />
     <None Remove="Services\AvailablePrice\**" />
-    <None Remove="Services\Bank\**" />
     <None Remove="Services\Banner\**" />
     <None Remove="Services\DiscountType\**" />
     <None Remove="Services\Discount\**" />

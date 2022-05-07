@@ -85,7 +85,9 @@ namespace ECommerce.Data.Context
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.BankAccountNumber).HasColumnType("decimal(20, 0)");
+                entity.Property(e => e.BankAccountNumber)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.BankImage).HasColumnType("text");
 

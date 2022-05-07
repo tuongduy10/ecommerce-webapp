@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.Configurations;
+﻿using ECommerce.Application.Services.Bank;
+using ECommerce.Application.Services.Configurations;
 using ECommerce.WebApp.Models.Configurations.Footer;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,10 +13,12 @@ namespace ECommerce.WebApp.Controllers.Admin
     {
         private IFooterService _footerService;
         private IConfigurationService _configurationService;
-        public ConfigurationController(IFooterService footerService, IConfigurationService configurationService)
+        private IBankService _bankService;
+        public ConfigurationController(IFooterService footerService, IConfigurationService configurationService, IBankService bankService)
         {
             _footerService = footerService;
             _configurationService = configurationService;
+            _bankService = bankService;
         }
         public async Task<IActionResult> ManageFooter()
         {
@@ -36,5 +39,22 @@ namespace ECommerce.WebApp.Controllers.Admin
             var blog = await _footerService.getBlogDetail(BlogId);
             return View(blog);
         }
-    }
+
+        public async Task<IActionResult> ManageBank()
+        {
+            var listBank = await _bankService.getListBank();
+            return View(listBank);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteBank(int bankId)
+        {
+            var result = await _bankService.deleteBank(bankId);
+            if (result.isSucceed)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+    } 
 }
