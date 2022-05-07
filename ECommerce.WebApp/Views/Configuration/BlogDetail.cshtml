@@ -1,0 +1,23 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Chi tiết Blog</h6>
+    </div>
+    <div class="card-body">
+        <div class="form-group mb-2">
+            <label class="mr-2">Tiêu đề</label>
+            <input class="form-control" value="@Model.BlogTitle">
+        </div> 
+                            
+        <div class="form-group mb-2">
+            <label>Nội dung</label>
+            <textarea class="w-100" name="" id="" cols="30" rows="10">@Model.BlogContent</textarea>
+        </div>
+
+        <div class="text-center mt-4">
+            <button class="btn-primary btn">Cập nhật</button>
+        </div>
+    </div>
+</div>

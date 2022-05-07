@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.Configurations.Dtos;
+﻿using ECommerce.Application.Common;
+using ECommerce.Application.Services.Configurations.Dtos;
 using ECommerce.Application.Services.Configurations.Dtos.Footer;
 using ECommerce.Data.Context;
 using Microsoft.EntityFrameworkCore;
@@ -53,14 +54,40 @@ namespace ECommerce.Application.Services.Configurations
             return list;
         }
 
-        public async Task<int> UpdateBlog(BlogUpdateRequest request)
+        public async Task<ApiResponse> UpdateBlog(BlogUpdateRequest request)
         {
-            throw new NotImplementedException();
+            var blog = await _DbContext.Blogs
+                                .Where(i => i.BlogId == request.BlogId)
+                                .FirstOrDefaultAsync();
+            if (blog != null)
+            {
+                blog.BlogContent = request.BlogContent;
+                blog.BlogTitle = request.BlogTitle;
+                blog.BlogPosition = request.BlogPosition;
+                blog.Status = request.Status;
+                _DbContext.SaveChangesAsync().Wait();
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            return new ApiFailResponse("Cập nhật không thành công");
         }
 
         public async Task<int> UpdateSocial(SocialUpdateRequest request)
         {
             throw new NotImplementedException();
+        }
+        public async Task<BlogModel> getBlogDetail(int BlogId)
+        {
+            var blog = await _DbContext.Blogs
+                                .Where(i => i.BlogId == BlogId)
+                                .Select(i => new BlogModel()
+                                {
+                                    BlogId = i.BlogId,
+                                    BlogContent = i.BlogContent,
+                                    BlogPosition = i.BlogPosition,
+                                    BlogTitle = i.BlogTitle,
+                                })
+                                .FirstOrDefaultAsync();
+            return blog;
         }
     }
 }

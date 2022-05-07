@@ -43,7 +43,9 @@ namespace ECommerce.Application.Services.Configurations
                 Facebook = i.Facebook,
                 FacebookUrl = i.FacebookUrl,
                 Mail = i.Mail,
-                PhoneNumber = i.PhoneNumber
+                PhoneNumber = i.PhoneNumber,
+                Address = i.Address,
+                AddressUrl = i.AddressUrl,
             }).FirstAsync();
 
             return result;

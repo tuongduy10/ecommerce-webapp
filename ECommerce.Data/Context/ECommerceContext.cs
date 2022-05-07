@@ -145,6 +145,10 @@ namespace ECommerce.Data.Context
             {
                 entity.HasNoKey();
 
+                entity.Property(e => e.Address).HasMaxLength(500);
+
+                entity.Property(e => e.AddressUrl).HasMaxLength(500);
+
                 entity.Property(e => e.Facebook)
                     .HasMaxLength(100)
                     .IsUnicode(false);

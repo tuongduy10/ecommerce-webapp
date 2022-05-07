@@ -1,0 +1,177 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Quản lý Blog</h6>
+    </div>
+    <div class="card-body">
+        <div class="font-weight-bold mb-2">Công ty</div>
+        <div class="table-responsive">
+            <table class="table table-bordered order-table" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Cột</th>
+                        <th>Tên Blog</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(int i = 0; i < Model.listBlog.Count; i++)
+                    {
+                        if (Model.listBlog[i].BlogPosition == 1)
+                        {
+                            <tr>
+                                <td>@Model.listBlog[i].BlogPosition</td>
+                                <td>@Model.listBlog[i].BlogTitle</td>
+                                <td class="text-center">
+                                    <a href="@Url.Action("BlogDetail", "Configuration", new{ BlogId = Model.listBlog[i].BlogId})" style="color: var(--blue-dior);">Chi tiết</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="font-weight-bold mb-2">Chính sách hỗ trợ</div>
+        <div class="table-responsive">
+            <table class="table table-bordered order-table" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Cột</th>
+                        <th>Tên Blog</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(int i = 0; i < Model.listBlog.Count; i++)
+                    {
+                        if (Model.listBlog[i].BlogPosition == 2)
+                        {
+                            <tr>
+                                <td>@Model.listBlog[i].BlogPosition</td>
+                                <td>@Model.listBlog[i].BlogTitle</td>
+                                <td class="text-center">
+                                    <a href="@Url.Action("BlogDetail", "Configuration", new{ BlogId = Model.listBlog[i].BlogId})" style="color: var(--blue-dior);">Chi tiết</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="font-weight-bold mb-2">Mạng xã hội</div>
+        <div class="table-responsive">
+            <table class="table table-bordered order-table" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Mạng xã hội</th>
+                        <th>Đường dẫn</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.listSocial)
+                    {
+                        if (item.Position == 1)
+                        {
+                            <tr>
+                                <td>3</td>
+                                <td>@item.SocialName</td>
+                                <td>
+                                    <input class="form-control" placeholder="Link" value="@item.SocialUrl">
+                                </td>
+                                <td class="text-center">
+                                    <button class = "btn btn-primary">Cập nhật</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="font-weight-bold mb-2">Thông tin liên hệ</div>
+        <div>
+            <div class="table-responsive">
+                <table class="table table-bordered order-table" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Cột</th>
+                            <th>Tiêu đề</th>
+                            <th>Nội dung</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.listSocial)
+                        {
+                            if (item.Position == 2)
+                            {
+                                <tr>
+                                    <td>4</td>
+                                    <td>@item.SocialName</td>
+                                    <td>
+                                        <input class="form-control" placeholder="Link" value="@item.SocialUrl">
+                                    </td>
+                                    <td class="text-center">
+                                        <button class = "btn btn-primary">Cập nhật</button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        <tr>
+                            <td>4</td>
+                            <td>Địa chỉ</td>
+                            <td>
+                                <div class="d-flex">
+                                    <input class="form-control mr-2" placeholder="Địa chỉ" value="@Model.config.Address">
+                                    <input class="form-control" placeholder="Đường dẫn" value="@Model.config.AddressUrl">
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <button class = "btn btn-primary">Cập nhật</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Thời gian làm việc</td>
+                            <td>
+                                <div class="d-flex">
+                                    <input class="form-control mr-2" value="" type="time">
+                                    <input class="form-control" value="" type="time">
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <button class = "btn btn-primary">Cập nhật</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function updateBlog(request){
+        
+    }
+
+    function apiUpdateBlog(){
+        $.ajax({
+            url: '/api/API/',
+            data: JSON.stringify(request),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            type: 'POST',
+            success: function (data) {
+                
+            }
+        });
+    }
+</script>

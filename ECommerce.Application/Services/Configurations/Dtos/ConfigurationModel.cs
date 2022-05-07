@@ -18,6 +18,8 @@ namespace ECommerce.Application.Services.Configurations.Dtos
         public string Mail { get; set; }
         public string Facebook { get; set; }
         public string FacebookUrl { get; set; }
+        public string Address { get; set; }
+        public string AddressUrl { get; set; }
 
     }
 }
