@@ -5,6 +5,7 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">Quản lý Blog</h6>
+        <a class="btn btn-success" href="@Url.Action("AddBlog","ManageConfiguration")">Thêm blog</a>
     </div>
     <div class="card-body">
         <div class="font-weight-bold mb-2">Công ty</div>
@@ -26,7 +27,7 @@
                                 <td>@Model.listBlog[i].BlogPosition</td>
                                 <td>@Model.listBlog[i].BlogTitle</td>
                                 <td class="text-center">
-                                    <a href="@Url.Action("BlogDetail", "Configuration", new { BlogId = Model.listBlog[i].BlogId})" style="color: var(--blue-dior);">Chi tiết</a>
+                                    <a href="@Url.Action("BlogDetail", "ManageConfiguration", new { BlogId = Model.listBlog[i].BlogId})" style="color: var(--blue-dior);">Chi tiết</a>
                                 </td>
                             </tr>
                         }
@@ -54,7 +55,7 @@
                                 <td>@Model.listBlog[i].BlogPosition</td>
                                 <td>@Model.listBlog[i].BlogTitle</td>
                                 <td class="text-center">
-                                    <a href="@Url.Action("BlogDetail", "Configuration", new { BlogId = Model.listBlog[i].BlogId})" style="color: var(--blue-dior);">Chi tiết</a>
+                                    <a href="@Url.Action("BlogDetail", "ManageConfiguration", new { BlogId = Model.listBlog[i].BlogId})" style="color: var(--blue-dior);">Chi tiết</a>
                                 </td>
                             </tr>
                         }
@@ -142,12 +143,12 @@
                             <td>Địa chỉ</td>
                             <td>
                                 <div class="d-flex">
-                                    <input class="form-control mr-2" placeholder="Địa chỉ" value="@Model.config.Address">
-                                    <input class="form-control" placeholder="Đường dẫn" value="@Model.config.AddressUrl">
+                                    <input class="form-control mr-2 config-address" placeholder="Địa chỉ" value="@Model.config.Address">
+                                    <input class="form-control config-addressurl" placeholder="Đường dẫn" value="@Model.config.AddressUrl">
                                 </div>
                             </td>
                             <td class="text-center">
-                                <button class="btn btn-primary">Cập nhật</button>
+                                <button class="btn btn-primary" onclick="updateAddress()">Cập nhật</button>
                             </td>
                         </tr>
                         <tr>
@@ -156,12 +157,12 @@
                             <td>Thời gian làm việc</td>
                             <td>
                                 <div class="d-flex">
-                                    <input class="form-control mr-2" value="" type="time">
-                                    <input class="form-control" value="" type="time">
+                                    <input class="form-control mr-2 config-starttime" value="@Model.config.StartTime" type="time">
+                                    <input class="form-control config-endtime" value="@Model.config.EndTime" type="time">
                                 </div>
                             </td>
                             <td class="text-center">
-                                <button class="btn btn-primary">Cập nhật</button>
+                                <button class="btn btn-primary" onclick="updateTime()">Cập nhật</button>
                             </td>
                         </tr>
                     </tbody>
@@ -173,10 +174,10 @@
 <script>
     function updateSocial(id){
         var request = {
-            SocialId = id,
-            Icon = $(`.social_icon-${id}`).val(),
-            SocialName = $(`.social_name-${id}`).val(),
-            SocialUrl = $(`.social_url-${id}`).val(),
+            SocialId: id,
+            Icon: $(`.social_icon-${id}`).val(),
+            SocialName: $(`.social_name-${id}`).val(),
+            SocialUrl: $(`.social_url-${id}`).val(),
         };
         apiUpdateSocial(request);
     }
@@ -188,10 +189,62 @@
             contentType: 'application/json; charset=utf-8',
             type: 'POST',
             success: function (data) {
-
+                alert(data.message);
             },
-            error: function(data){
+            error: function (data) {
+                console.log(data);
+                alert(data.responseJSON.message);
+            }
+        });
+    }
 
+
+    function updateAddress() {
+        var request = {
+            Id: @Model.config.Id,
+            Address: $('.config-address').val(),
+            AddressUrl: $('.config-addressurl').val()
+        }
+        apiUpdateAddress(request)
+    }
+    function apiUpdateAddress(request) {
+        $.ajax({
+            url: '/api/ManageConfigurationsAPI/UpdateAddress',
+            data: JSON.stringify(request),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            type: 'POST',
+            success: function (data) {
+                alert(data.message);
+            },
+            error: function (data) {
+                console.log(data);
+                alert(data.responseJSON.message);
+            }
+        });
+    }
+
+    function updateTime() {
+        var request = {
+            Id: @Model.config.Id,
+            StartTime: $('.config-starttime').val(),
+            EndTime: $('.config-endtime').val()
+        };
+        apiUpdateTime(request);
+    }
+    function apiUpdateTime(request) {
+        $.ajax({
+            url: '/api/ManageConfigurationsAPI/UpdateTime',
+            data: JSON.stringify(request),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            type: 'POST',
+            success: function (data) {
+                alert(data.message);
+            },
+            error: function (data) {
+                console.log(data);
+                alert(data.responseJSON.message);
             }
         });
     }

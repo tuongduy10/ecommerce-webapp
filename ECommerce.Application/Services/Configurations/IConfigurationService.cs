@@ -1,4 +1,6 @@
-﻿using ECommerce.Application.Services.Configurations.Dtos;
+﻿using ECommerce.Application.Common;
+using ECommerce.Application.Services.Configurations.Dtos;
+using ECommerce.Application.Services.Configurations.Dtos.Footer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +13,7 @@ namespace ECommerce.Application.Services.Configurations
     {
         Task<ConfigurationModel> getConfiguration();
         Task<List<BannerModel>> getBanner();
+        Task<ApiResponse> UpdateAddress(AddressUpdateRequest request);
+        Task<ApiResponse> UpdateTime(TimeUpdateRequest request);
     }
 }

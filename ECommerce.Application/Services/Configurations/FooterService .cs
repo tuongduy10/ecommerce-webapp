@@ -53,9 +53,28 @@ namespace ECommerce.Application.Services.Configurations
 
             return list;
         }
+        public async Task<ApiResponse> AddBlog(BlogModel request)
+        {
+            if (request.BlogContent == null) return new ApiFailResponse("Nội dung không được để trống");
+            if (request.BlogTitle == null) return new ApiFailResponse("Tiêu đề không được để trống");
+            if (request.BlogPosition == null) return new ApiFailResponse("Vị trí không được để trống");
 
+            Data.Models.Blog blog = new Data.Models.Blog();
+            blog.BlogTitle = request.BlogTitle;
+            blog.BlogContent = request.BlogContent;
+            blog.BlogPosition = request.BlogPosition;
+            blog.Status = 1;
+            await _DbContext.Blogs.AddAsync(blog);
+            _DbContext.SaveChangesAsync().Wait();
+
+            return new ApiSuccessResponse("Thêm thành công");
+        }
         public async Task<ApiResponse> UpdateBlog(BlogUpdateRequest request)
         {
+            if (request.BlogContent == null) return new ApiFailResponse("Nội dung không được để trống");
+            if (request.BlogTitle == null) return new ApiFailResponse("Tiêu đề không được để trống");
+            if (request.BlogPosition == null) return new ApiFailResponse("Vị trí không được để trống");
+
             var blog = await _DbContext.Blogs
                                 .Where(i => i.BlogId == request.BlogId)
                                 .FirstOrDefaultAsync();
@@ -64,11 +83,26 @@ namespace ECommerce.Application.Services.Configurations
                 blog.BlogContent = request.BlogContent;
                 blog.BlogTitle = request.BlogTitle;
                 blog.BlogPosition = request.BlogPosition;
-                blog.Status = request.Status;
+                //blog.Status = request.Status;
                 _DbContext.SaveChangesAsync().Wait();
                 return new ApiSuccessResponse("Cập nhật thành công");
             }
             return new ApiFailResponse("Cập nhật không thành công");
+        }
+
+        public async Task<ApiResponse> DeleteBlog(int id)
+        {
+            var blog = await _DbContext.Blogs
+                                .Where(i => i.BlogId == id)
+                                .FirstOrDefaultAsync();
+            if (blog != null)
+            {
+                _DbContext.Blogs.Remove(blog);
+                await _DbContext.SaveChangesAsync();
+                return new ApiSuccessResponse("Xóa thành công");
+            }
+
+            return new ApiFailResponse("Xóa không thành công");
         }
 
         public async Task<ApiResponse> UpdateSocial(SocialUpdateRequest request)
@@ -82,7 +116,6 @@ namespace ECommerce.Application.Services.Configurations
                 _DbContext.SaveChangesAsync().Wait();
                 return new ApiSuccessResponse("Cập nhật thành công");
             }
-            _DbContext.Socials.Remove(social);
 
             return new ApiFailResponse("Cập nhật không thành công");
         }

@@ -1,49 +1,39 @@
 ﻿using ECommerce.Application.Services.Account;
 using ECommerce.Application.Services.Account.Dtos;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerce.WebApp.Controllers.Admin
+namespace ECommerce.WebApp.APIs.Admin
 {
-    [Authorize(AuthenticationSchemes = "AdminAuth")]
-    [Authorize(Roles = "Admin")]
-    public class AdminController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AdminAPI : ControllerBase
     {
         private IUserService _userService;
-        public AdminController(IUserService userService)
+        public AdminAPI(IUserService userService)
         {
             _userService = userService;
         }
-        public async Task<IActionResult> Index()
-        {
-            return View();
-        }
 
-        [AllowAnonymous]
-        public async Task<IActionResult> SignIn()
-        {
-            if (User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Index", "Admin");
-            }
-            return View();
-        }
-
-        [AllowAnonymous]
         [HttpPost("SignIn")]
-        public async Task<IActionResult> SignIn(string userphone, string password)
+        public async Task<IActionResult> SignIn([FromBody] SignInRequest request)
         {
-            var result = await _userService.SignIn(new SignInRequest(userphone, password));
+            var result = await _userService.SignIn(request);
             if (!result.isSucceed)
             {
-                ViewBag.error = result.Message;
-                return View("SignIn");
+                return BadRequest(result);
             }
             // User Data
             var user = result.ObjectData.GetType();
@@ -66,9 +56,10 @@ namespace ECommerce.WebApp.Controllers.Admin
             {
                 claims.Add(new Claim(ClaimTypes.Role, item));
             }
+            
             claimUserIdentity(claims, "AdminAuth");
 
-            return View("Index");
+            return Ok(result);
         }
         private void claimUserIdentity(List<Claim> claims, string scheme)
         {
@@ -76,11 +67,6 @@ namespace ECommerce.WebApp.Controllers.Admin
             var principal = new ClaimsPrincipal(identity);
             var props = new AuthenticationProperties();
             HttpContext.SignInAsync(scheme, principal, props).Wait();
-        }
-        public async Task<IActionResult> SignOut()
-        {
-            await HttpContext.SignOutAsync("AdminAuth");
-            return RedirectToAction("SignIn", "Admin");
         }
     }
 }

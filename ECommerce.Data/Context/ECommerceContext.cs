@@ -107,7 +107,9 @@ namespace ECommerce.Data.Context
             {
                 entity.ToTable("Blog");
 
-                entity.Property(e => e.BlogContent).HasColumnType("text");
+                entity.Property(e => e.BlogContent)
+                        .HasColumnType("ntext")
+                        .IsUnicode(true);
 
                 entity.Property(e => e.BlogTitle).HasMaxLength(100);
             });
@@ -145,8 +147,6 @@ namespace ECommerce.Data.Context
 
             modelBuilder.Entity<Configuration>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.Address).HasMaxLength(500);
 
                 entity.Property(e => e.AddressUrl)

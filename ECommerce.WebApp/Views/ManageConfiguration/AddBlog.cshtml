@@ -4,7 +4,7 @@
 <script src="https://cdn.tiny.cloud/1/4ctr9pi6o8mlflu8si6gdszgl62tn4zl73knhf3tkqalszsx/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Chi tiết Blog</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Thêm Blog</h6>
     </div>
     <div class="card-body">
         <div class="form-group mb-2">
@@ -12,79 +12,48 @@
             <select class="form-control blog-position">
                 @for (int i = 1; i <= 2; i++)
                 {
-                    if (Model.BlogPosition == i)
-                    {
-                        <option value="@Model.BlogPosition" selected>@Model.BlogPosition</option>
-                    }
-                    else
-                    {
-                        <option value="@i">@i</option>
-                    }
+                    <option value="@i">@i</option>
                 }
             </select>
         </div>
 
         <div class="form-group mb-2">
             <label class="mr-2">Tiêu đề</label>
-            <input class="form-control blog-title" value="@Model.BlogTitle">
+            <input class="form-control blog-title" value="">
         </div>
 
         <div class="form-group mb-2">
             <label>Nội dung</label>
-            <textarea id="blog-content">@Model.BlogContent</textarea>
+            <textarea id="blog-content"></textarea>
         </div>
 
-        <div class="text-center mt-4 d-flex">
-            <button class="btn-primary btn update-blog mr-2">Cập nhật</button>
-            <button class="btn-danger btn delete-blog">Xóa</button>
+        <div class="text-center mt-4">
+            <button class="btn-primary btn add-blog">Thêm</button>
         </div>
     </div>
 </div>
 <script>
-    $('.delete-blog').click(function () {
-        if (confirm("Xác nhận xóa") == true) {
-            apiDeleteBlog(@Model.BlogId);
-        }
-    })
-    $('.update-blog').click(function () {
+    $('.add-blog').click(function () {
         var request = {
-            BlogId: @Model.BlogId,
             BlogTitle: $('.blog-title').val(),
             BlogContent: tinymce.get("blog-content").getContent(),
             BlogPosition: $('.blog-position').val()
         };
-        apiUpdateBlog(request);
+        apiAddBlog(request);
     })
-    function apiDeleteBlog(BlogId) {
+    function apiAddBlog(request) {
         $.ajax({
-            url: '/api/ManageConfigurationsAPI/DeleteBlog',
-            data: JSON.stringify(BlogId),
-            dataType: 'json',
-            contentType: 'application/json; charset=utf-8',
-            type: 'POST',
-            success: function (data) {
-                alert(data.message);
-                window.location.href = "/ManageConfiguration/ManageFooter"
-            },
-            error: function (data) {
-                console.log(data);
-                alert(data.responseJSON.message)
-            }
-        });
-    }
-    function apiUpdateBlog(request) {
-        $.ajax({
-            url: '/api/ManageConfigurationsAPI/UpdateBlog',
+            url: '/api/ManageConfigurationsAPI/AddBlog',
             data: JSON.stringify(request),
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             type: 'POST',
             success: function (data) {
-                alert(data.message);
+                window.location.href = "/ManageConfiguration/ManageFooter";
             },
             error: function (data) {
                 console.log(data);
-                alert(data.message)
+                alert(data.responseJSON.message)
             }
         });
     }

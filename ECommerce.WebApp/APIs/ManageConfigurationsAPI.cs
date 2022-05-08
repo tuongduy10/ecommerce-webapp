@@ -4,6 +4,7 @@ using ECommerce.Application.Services.Configurations;
 using ECommerce.Application.Services.Configurations.Dtos.Footer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.APIs
@@ -21,6 +22,16 @@ namespace ECommerce.WebApp.APIs
             _footerService = footerService;
             _bankService = bankService;
         }
+        [HttpPost("AddBlog")]
+        public async Task<IActionResult> AddBlog(BlogModel request)
+        {
+            var result = await _footerService.AddBlog(request);
+            if (!result.isSucceed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
 
         [HttpPost("UpdateBlog")]
         public async Task<IActionResult> UpdateBlog(BlogUpdateRequest request)
@@ -32,8 +43,19 @@ namespace ECommerce.WebApp.APIs
             }
             return Ok(result);
         }
+        [HttpPost("DeleteBlog")]
+        public async Task<IActionResult> DeleteBlog([FromBody] int BlogId)
+        {
+            var result = await _footerService.DeleteBlog(BlogId);
+            if (!result.isSucceed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
         [HttpPost("UpdateSocial")]
-        public async Task<IActionResult> UpdateSocial(SocialUpdateRequest request)
+        public async Task<IActionResult> UpdateSocial([FromBody] SocialUpdateRequest request)
         {
             var result = await _footerService.UpdateSocial(request);
             if (!result.isSucceed)
@@ -67,6 +89,28 @@ namespace ECommerce.WebApp.APIs
         public async Task<IActionResult> AddBank([FromBody] BankAddRequest request)
         {
             var result = await _bankService.addBank(request);
+            if (result.isSucceed)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpPost("UpdateAddress")]
+        public async Task<IActionResult> UpdateAddress([FromBody] AddressUpdateRequest request)
+        {
+            var result = await _configurationService.UpdateAddress(request);
+            if (result.isSucceed)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpPost("UpdateTime")]
+        public async Task<IActionResult> UpdateTime([FromBody] TimeUpdateRequest request)
+        {
+            var result = await _configurationService.UpdateTime(request);
             if (result.isSucceed)
             {
                 return Ok(result);

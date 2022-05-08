@@ -42,22 +42,21 @@
                             <div class="col-lg-6">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                                        <h1 class="h4 text-gray-900 mb-4">HIHICHI Admin!</h1>
                                     </div>
-                                    <div class="user">
+                                    <form method="post" asp-action="SignIn" asp-controller="Admin" class="user">
                                         <div class="form-group">
-                                            <input type="email" class="form-control form-control-user"
-                                                id="exampleInputEmail" aria-describedby="emailHelp"
-                                                placeholder="Số điện thoại">
+                                            <input type="tel" class="form-control form-control-user"
+                                                id="adminPhoneNumber" aria-describedby="emailHelp"
+                                                placeholder="Số điện thoại" name="userphone">
                                         </div>
                                         <div class="form-group">
                                             <input type="password" class="form-control form-control-user"
-                                                id="exampleInputPassword" placeholder="Mật khẩu">
+                                                id="adminPassword" placeholder="Mật khẩu" name="password">
                                         </div>
-                                        <a href="" class="btn btn-primary btn-user btn-block">
-                                            Đăng nhập
-                                        </a>
-                                    </div>
+                                        <input class="btn btn-primary btn-user btn-block signin" type="submit" value="Đăng nhập" />
+                                    </form>
+                                    @ViewBag.Error
                                     <hr>
                                     <div class="text-center">
                                         <a class="small" href="forgot-password.html">Quên mật khẩu?</a>
@@ -83,7 +82,41 @@
 
     <!-- Custom scripts for all pages-->
     <script src="/js/sb-admin-2.min.js"></script>
+    <script>
+        @*// Events
+        $('.signin').click(function () {
+            signIn();
+        })
 
+        function signIn() {
+            var request = {
+                UserPhone: $('#adminPhoneNumber').val(),
+                Password: $('#adminPassword').val(),
+            }
+            var url = '@ViewData["ReturnUrl"]';
+            apiSignIn(request, url);
+        }
+
+        // API methods
+        function apiSignIn(request, returnUrl) {
+            $.ajax({
+                url: '/Admin/SignIn',
+                data: JSON.stringify(request),
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                type: 'POST',
+                success: function (data) {
+                    window.location.href = returnUrl;
+                    return;
+                },
+                error: function (data) {
+                    console.log(data);
+                    alert(data.responseJSON.message);
+                    return;
+                }
+            });
+        }*@
+    </script>
 </body>
 
 </html>

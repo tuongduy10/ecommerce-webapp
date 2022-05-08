@@ -34,6 +34,10 @@ namespace ECommerce.WebApp.Controllers.Admin
             };
             return View(model);
         }
+        public async Task<IActionResult> AddBlog()
+        {
+            return View();
+        }
         public async Task<IActionResult> BlogDetail(int BlogId)
         {
             var blog = await _footerService.getBlogDetail(BlogId);

@@ -20,6 +20,10 @@ namespace ECommerce.WebApp.Controllers.Client
         }
         public async Task<IActionResult> SignIn(string CurrentUrl = "/")
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             ViewData["ReturnUrl"] = CurrentUrl;
             return View();
         }
@@ -33,10 +37,6 @@ namespace ECommerce.WebApp.Controllers.Client
         public async Task<IActionResult> SignOut()
         {
             await HttpContext.SignOutAsync("ClientAuth");
-            if (User.IsInRole("Admin"))
-            {
-                await HttpContext.SignOutAsync("AdminAuth");
-            }
             return RedirectToAction("SignIn", "Account");
         }
 
