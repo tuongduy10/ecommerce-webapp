@@ -1,5 +1,5 @@
-﻿using ECommerce.Application.Services.Account;
-using ECommerce.Application.Services.Account.Dtos;
+﻿using ECommerce.Application.Services.User;
+using ECommerce.Application.Services.User.Dtos;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

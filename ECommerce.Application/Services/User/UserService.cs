@@ -1,29 +1,21 @@
 ﻿using ECommerce.Application.Common;
-using ECommerce.Application.Services.Account.Dtos;
-using ECommerce.Data.Models;
+using ECommerce.Application.Services.User.Dtos;
 using ECommerce.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Security.Claims;
-using System.IO;
 using Microsoft.Extensions.Configuration;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
 
-namespace ECommerce.Application.Services.Account
+namespace ECommerce.Application.Services.User
 {
     public class UserService : IUserService
     {
-        private readonly IConfiguration _config;
         private readonly ECommerceContext _DbContext;
 
-        public UserService(IConfiguration config, ECommerceContext DbContext)
+        public UserService(ECommerceContext DbContext)
         {
-            _config = config;
             _DbContext = DbContext;
         }
 
@@ -76,74 +68,40 @@ namespace ECommerce.Application.Services.Account
 
             UserGetModel user = new UserGetModel();
             user.UserId = result.UserId;
-            user.UserMail = result.UserMail;
             user.UserFullName = result.UserFullName;
-            user.UserAddress = result.UserAddress;
-            user.UserWardCode = result.UserWardCode;
-            user.UserDistrictCode = result.UserDistrictCode;
-            user.UserCityCode = result.UserCityCode;
-            user.UserPhone = result.UserPhone;
             user.UserRoles = roles;
-            user.Status = result.Status;
 
             return new ApiSuccessResponse("Đăng nhập thành công", user);
-
-            // Jwt Security
-            //var jwtTokenHandler = new JwtSecurityTokenHandler();
-            //var secretKey = Encoding.UTF8.GetBytes(_config["SecretKey:Key"]);
-            //var tokenDescription = new SecurityTokenDescriptor
-            //{
-            //    Subject = new ClaimsIdentity(new[] {
-            //        new Claim(ClaimTypes.Name, result.UserFullName),
-            //        new Claim("UserId", result.UserId.ToString()),
-            //        new Claim("UserPhone", result.UserPhone),
-            //        new Claim("TokenId", Guid.NewGuid().ToString())
-            //    }),
-            //    Expires = DateTime.UtcNow.AddSeconds(10),
-            //    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha512Signature)
-            //};
-            //var token = jwtTokenHandler.CreateToken(tokenDescription);
-
-            //return new ApiSuccessResult<string>("Đăng nhập thành công", jwtTokenHandler.WriteToken(token));
         }
 
         public async Task<ApiResponse> SignUp(SignUpRequest request)
         {
-            var fullname = request.UserFullName;
-            var mail = request.UserMail;
-            var phone = request.UserPhone;
-            var address = request.UserAddress;
-            var district = request.UserDistrictCode;
-            var ward = request.UserWardCode;
-            var city = request.UserCityCode;
-            var password = request.Password;
-            var repassword = request.RePassword;
-            if (phone.Contains("+84"))
+            if (request.UserPhone.Contains("+84"))
             {
-                phone = phone.Replace("+84", "");
-                if (!phone.StartsWith("0"))
+                request.UserPhone = request.UserPhone.Replace("+84", "");
+                if (!request.UserPhone.StartsWith("0"))
                 {
-                    phone = "0" + phone;
+                    request.UserPhone = "0" + request.UserPhone;
                 }
             }
 
-            if (fullname == "") return new ApiFailResponse("Vui lòng nhập họ tên");
-            if (password == "" || repassword == "") return new ApiFailResponse("Vui lòng nhập mật khẩu");
-            if (password != repassword) return new ApiFailResponse("Mật khẩu không trùng");
+            if (request.UserFullName == "") return new ApiFailResponse("Vui lòng nhập họ tên");
+            if (request.Password == "" || request.RePassword == "") return new ApiFailResponse("Vui lòng nhập mật khẩu");
+            if (request.Password != request.RePassword) return new ApiFailResponse("Mật khẩu không trùng");
 
-            var checkMail = await _DbContext.Users.Where(i => i.UserMail == mail).FirstOrDefaultAsync();
+            var checkMail = await _DbContext.Users.Where(i => i.UserMail == request.UserMail).FirstOrDefaultAsync();
             if(checkMail != null) return new ApiFailResponse("Mail đã tồn tại");
 
-            User user = new User();
-            user.UserMail = mail;
+            Data.Models.User user = new Data.Models.User();
+            user.UserMail = request.UserMail;
             user.UserJoinDate = DateTime.Now;
-            user.UserFullName = fullname;
-            user.UserPhone = phone;
-            user.UserAddress = address;
-            user.UserDistrictCode = district;
-            user.UserCityCode = city;
-            user.UserWardCode = ward;
-            user.Password = repassword;
+            user.UserFullName = request.UserFullName;
+            user.UserPhone = request.UserPhone;
+            user.UserAddress = request.UserAddress;
+            user.UserDistrictCode = request.UserDistrictCode;
+            user.UserCityCode = request.UserCityCode;
+            user.UserWardCode = request.UserWardCode;
+            user.Password = request.RePassword;
             user.Status = true;
 
             await _DbContext.Users.AddAsync(user);
@@ -174,32 +132,36 @@ namespace ECommerce.Application.Services.Account
 
         public async Task<ApiResponse> UpdateUserProfile(UserUpdateRequest request)
         {
-            var id = request.UserId;
-            var fullname = request.UserFullName;
-            var mail = request.UserMail;
-            var address = request.UserAddress;
-            var district = request.UserDistrictCode;
-            var ward = request.UserWardCode;
-            var city = request.UserCityCode;
-
-            if (fullname == "") return new ApiFailResponse("Họ tên không thể để trống");
+            if (request.UserFullName == "") return new ApiFailResponse("Họ tên không thể để trống");
 
             var user = await _DbContext.Users
-                                .Where(i => i.UserId == id)
+                                .Where(i => i.UserId == request.UserId)
                                 .FirstOrDefaultAsync();
             if (user != null)
             {
-                user.UserFullName = fullname;
-                user.UserMail = mail;
-                user.UserAddress = address;
-                user.UserWardCode = ward;
-                user.UserDistrictCode = district;
-                user.UserCityCode = city;
+                user.UserFullName = request.UserFullName;
+                user.UserMail = request.UserMail;
+                user.UserAddress = request.UserAddress;
+                user.UserWardCode = request.UserWardCode;
+                user.UserDistrictCode = request.UserDistrictCode;
+                user.UserCityCode = request.UserCityCode;
                 await _DbContext.SaveChangesAsync();
 
-                return new ApiSuccessResponse("Cập nhật thành công");
+                var roles = (
+                    from role in _DbContext.Roles
+                    from userrole in _DbContext.UserRoles
+                    where role.RoleId == userrole.RoleId && userrole.UserId == request.UserId
+                    select role.RoleName
+                ).Distinct().ToList();
+
+                UserGetModel result = new UserGetModel();
+                result.UserId = user.UserId;
+                result.UserFullName = user.UserFullName;
+                result.UserRoles = roles;
+
+                return new ApiSuccessResponse("Cập nhật thành công", result);
             }
-            
+
             return new ApiFailResponse("Cập nhật không thành công");
         }
 

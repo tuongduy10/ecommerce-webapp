@@ -6,23 +6,13 @@ using ECommerce.Application.Services.Product;
 using ECommerce.Data.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ECommerce.Application.Services.FilterProduct;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using ECommerce.Application.Services.Account;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using ECommerce.Application.Services.User;
 using ECommerce.Application.Services.Bank;
 
 namespace ECommerce.WebApp
@@ -61,7 +51,7 @@ namespace ECommerce.WebApp
                     option.AccessDeniedPath = "/Account/AccessDenied";
                     option.LoginPath = "/Admin/SignIn";
                     option.Cookie.Name = "_admincookie";
-                    option.ExpireTimeSpan = TimeSpan.FromDays(30);
+                    option.ExpireTimeSpan = TimeSpan.FromHours(4);
                     option.Cookie.MaxAge = option.ExpireTimeSpan;
                 });
 

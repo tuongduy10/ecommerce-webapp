@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerce.Application.Services.Account.Dtos
+namespace ECommerce.Application.Services.User.Dtos
 {
     public class SignInRequest
     {
