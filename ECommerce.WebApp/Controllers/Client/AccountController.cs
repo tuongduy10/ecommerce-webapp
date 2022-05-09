@@ -1,16 +1,14 @@
 ﻿using ECommerce.Application.Services.Account;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.Controllers.Client
 {
+    [Authorize(AuthenticationSchemes = "ClientAuth")]
     public class AccountController : Controller
     {
         private IUserService _userService;
@@ -18,6 +16,8 @@ namespace ECommerce.WebApp.Controllers.Client
         {
             _userService = userService;
         }
+
+        [AllowAnonymous]
         public async Task<IActionResult> SignIn(string CurrentUrl = "/")
         {
             if (User.Identity.IsAuthenticated)
@@ -27,39 +27,35 @@ namespace ECommerce.WebApp.Controllers.Client
             ViewData["ReturnUrl"] = CurrentUrl;
             return View();
         }
+
+        [AllowAnonymous]
         public async Task<IActionResult> SignUp()
         {
             var identity = User;
             return View();
         }
 
-        [Authorize]
         public async Task<IActionResult> SignOut()
         {
             await HttpContext.SignOutAsync("ClientAuth");
             return RedirectToAction("SignIn", "Account");
         }
-
-        [Authorize]
         public async Task<IActionResult> UserProfile()
         {
             var id = User.Claims.FirstOrDefault(i => i.Type == "UserId").Value;
             var user = await _userService.UserProfile(Int32.Parse(id));
             return View(user);
         }
-
-        [Authorize]
         public async Task<IActionResult> UpdateUserPhoneNumber()
         {
             return View();
         }
-
-        [Authorize]
         public async Task<IActionResult> UpdateUserPassword()
         {
             return View();
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> AccessDenied()
         {
             return View();

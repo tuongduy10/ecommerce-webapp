@@ -1,34 +1,30 @@
 ﻿using ECommerce.Application.Services.Account;
 using ECommerce.Application.Services.Account.Dtos;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.APIs
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "ClientAuth")]
     public class AccountAPI : ControllerBase
     {
         private IUserService _userService;
-        private IConfiguration _config;
-        public AccountAPI(IConfiguration config, IUserService userService)
+        public AccountAPI(IUserService userService)
         {
-            _config = config;
             _userService = userService;
         }
 
+        [AllowAnonymous]
         [HttpPost("SignIn")]
         public async Task<IActionResult> SignIn([FromBody] SignInRequest request)
         {
@@ -77,6 +73,7 @@ namespace ECommerce.WebApp.APIs
             HttpContext.SignInAsync(scheme, principal, props).Wait();
         }
 
+        [AllowAnonymous]
         [HttpPost("SignUp")]
         public async Task<IActionResult> SignUp([FromBody] SignUpRequest request)
         {
@@ -87,7 +84,7 @@ namespace ECommerce.WebApp.APIs
             }
             return Ok(result);
         }
-        [Authorize]
+
         [HttpPost("CheckUserPhoneNumber")]
         public async Task<IActionResult> CheckUserPhoneNumber([FromBody] string PhoneNumber)
         {
@@ -96,7 +93,7 @@ namespace ECommerce.WebApp.APIs
             
             return Ok(result);
         }
-        [Authorize]
+
         [HttpPost("UpdateUserPhoneNumber")]
         public async Task<IActionResult> UpdateUserPhoneNumber([FromBody] string PhoneNumber)
         {
@@ -106,7 +103,7 @@ namespace ECommerce.WebApp.APIs
 
             return Ok(result);
         }
-        [Authorize]
+
         [HttpPost("UpdateUserProfile")]
         public async Task<IActionResult> UpdateUserProfile([FromBody] UserUpdateRequest request)
         {
@@ -117,7 +114,7 @@ namespace ECommerce.WebApp.APIs
 
             return Ok(result);
         }
-        [Authorize]
+
         [HttpPost("UpdateUserPassword")]
         public async Task<IActionResult> UpdateUserPassword([FromBody] UpdatePasswordRequest request)
         {

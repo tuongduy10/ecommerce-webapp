@@ -5,14 +5,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.Controllers.Admin
 {
     [Authorize(AuthenticationSchemes = "AdminAuth")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "Seller")]
     public class AdminController : Controller
     {
         private IUserService _userService;
@@ -45,12 +44,13 @@ namespace ECommerce.WebApp.Controllers.Admin
                 ViewBag.error = result.Message;
                 return View("SignIn");
             }
+
             // User Data
             var user = result.ObjectData.GetType();
             var username = user.GetProperty("UserFullName").GetValue(result.ObjectData, null).ToString();
             var userid = user.GetProperty("UserId").GetValue(result.ObjectData, null).ToString();
             var userroles = user.GetProperty("UserRoles").GetValue(result.ObjectData, null) as List<string>;
-            if (!userroles.Contains("Admin"))
+            if(userroles.FindAll(role => role.Contains("Admin") || role.Contains("Seller")).Count == 0)
             {
                 return RedirectToAction("AccessDenied", "Account");
             }
@@ -68,7 +68,7 @@ namespace ECommerce.WebApp.Controllers.Admin
             }
             claimUserIdentity(claims, "AdminAuth");
 
-            return View("Index");
+            return RedirectToAction("Index", "Admin");
         }
         private void claimUserIdentity(List<Claim> claims, string scheme)
         {

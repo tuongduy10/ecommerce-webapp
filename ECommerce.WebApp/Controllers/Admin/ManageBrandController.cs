@@ -1,14 +1,14 @@
 ﻿using ECommerce.Application.Services.Brand;
 using ECommerce.Application.Services.Category;
 using ECommerce.WebApp.Models.Brand;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.Controllers.Admin
 {
+    [Authorize(AuthenticationSchemes = "AdminAuth")]
+    [Authorize(Policy = "Admin")]
     public class ManageBrandController : Controller
     {
         private IBrandService _brandService;

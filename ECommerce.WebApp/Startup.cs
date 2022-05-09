@@ -43,18 +43,24 @@ namespace ECommerce.WebApp
                 options.UseSqlServer(Configuration.GetConnectionString("ECommerceDB")));
             services.AddControllersWithViews();
             services
+                .AddAuthorization(option =>
+                {
+                    option.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+                    option.AddPolicy("Seller", policy => policy.RequireRole("Admin", "Seller"));
+                    option.AddPolicy("Buyer", policy => policy.RequireRole("Admin", "Seller", "Buyer"));
+                })
                 .AddAuthentication(option => option.DefaultAuthenticateScheme = "ClientAuth")
                 .AddCookie("ClientAuth", option => {
                     option.AccessDeniedPath = "/Account/AccessDenied";
                     option.LoginPath = "/Account/SignIn";
-                    option.Cookie.Name = "clientadmin";
+                    option.Cookie.Name = "_clientcookie";
                     option.ExpireTimeSpan = TimeSpan.FromDays(30);
                     option.Cookie.MaxAge = option.ExpireTimeSpan;
                 })
                 .AddCookie("AdminAuth", option => {
                     option.AccessDeniedPath = "/Account/AccessDenied";
                     option.LoginPath = "/Admin/SignIn";
-                    option.Cookie.Name = "admincookie";
+                    option.Cookie.Name = "_admincookie";
                     option.ExpireTimeSpan = TimeSpan.FromDays(30);
                     option.Cookie.MaxAge = option.ExpireTimeSpan;
                 });

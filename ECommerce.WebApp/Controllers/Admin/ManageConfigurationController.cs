@@ -1,14 +1,14 @@
 ﻿using ECommerce.Application.Services.Bank;
 using ECommerce.Application.Services.Configurations;
 using ECommerce.WebApp.Models.Configurations.Footer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.Controllers.Admin
 {
+    [Authorize(AuthenticationSchemes = "AdminAuth")]
+    [Authorize(Policy = "Admin")]
     public class ManageConfigurationController : Controller
     {
         private IFooterService _footerService;

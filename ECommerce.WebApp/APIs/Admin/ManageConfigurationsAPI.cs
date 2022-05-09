@@ -2,15 +2,16 @@
 using ECommerce.Application.Services.Bank.Dtos;
 using ECommerce.Application.Services.Configurations;
 using ECommerce.Application.Services.Configurations.Dtos.Footer;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
-namespace ECommerce.WebApp.APIs
+namespace ECommerce.WebApp.APIs.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "AdminAuth")]
+    [Authorize(Policy = "Admin")]
     public class ManageConfigurationsAPI : ControllerBase
     {
         private IConfigurationService _configurationService;
@@ -43,6 +44,7 @@ namespace ECommerce.WebApp.APIs
             }
             return Ok(result);
         }
+
         [HttpPost("DeleteBlog")]
         public async Task<IActionResult> DeleteBlog([FromBody] int BlogId)
         {
@@ -75,6 +77,7 @@ namespace ECommerce.WebApp.APIs
             }
             return BadRequest(result);
         }
+
         [HttpPost("UpdateBank")]
         public async Task<IActionResult> UpdateBank([FromBody] BankUpdateRequest request)
         {
@@ -85,6 +88,7 @@ namespace ECommerce.WebApp.APIs
             }
             return BadRequest(result);
         }
+
         [HttpPost("AddBank")]
         public async Task<IActionResult> AddBank([FromBody] BankAddRequest request)
         {
