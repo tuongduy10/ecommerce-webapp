@@ -1,0 +1,83 @@
+﻿@{ 
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Thông tin khách hàng</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered order-table" width="100%" id="dataTable" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Tên</th>
+                        <th>Địa chỉ</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th>Ngày tham gia</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>@user.UserId</td>
+                            <td>@user.UserFullName</td>
+                            <td class="user-address">@user.UserAddress|@user.UserWardCode|@user.UserDistrictCode|@user.UserCityCode</td>
+                            <td>@user.UserMail</td>
+                            <td>@user.UserPhone</td>
+                            <td>@user.UserJoinDate.ToString("dd/MM/yyyy")</td>
+                            @if (user.Status == true)
+                            {
+                                <td class="text-success">
+                                    Đã xác thực
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="text-danger">
+                                    Đã khóa
+                                </td>
+                            }
+                            <td class="text-center">
+                                <a href="">Chi tiết</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    $('.user-address').each(function(){
+        let address = $(this).text().split('|')[0];
+        let ward = $(this).text().split('|')[1];
+        let district = $(this).text().split('|')[2];
+        let city = $(this).text().split('|')[3];
+        var ele = $(this);
+
+        $.get("/js/json/provinces-open-api.json", function (data) {
+            // Cities
+            data.forEach(c => {
+                if (city == c.codename) {
+                    c.districts.forEach(d => {
+                        if (district == d.codename) {
+                            d.wards.forEach(w => {
+                                if (ward == w.codename) {
+                                    address += ', ' + w.name + ', ' + d.name + ', ' + c.name;
+                                    ele.text(address);
+                                    return;
+                                }
+                            })
+                        }
+                    })
+                }
+            });
+        })
+    })
+</script>

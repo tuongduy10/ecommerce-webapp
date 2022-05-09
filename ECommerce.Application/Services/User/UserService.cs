@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace ECommerce.Application.Services.User
 {
@@ -18,9 +17,26 @@ namespace ECommerce.Application.Services.User
         {
             _DbContext = DbContext;
         }
-
+        public async Task<List<UserGetModel>> getAll()
+        {
+            var list = await _DbContext.Users.Select(i => new UserGetModel() { 
+                UserId = i.UserId,
+                UserFullName = i.UserFullName,
+                UserJoinDate = i.UserJoinDate,
+                UserMail = i.UserMail,
+                UserAddress = i.UserAddress,
+                UserWardCode = i.UserWardCode,
+                UserDistrictCode = i.UserDistrictCode,
+                UserCityCode = i.UserCityCode,
+                UserPhone = i.UserPhone,
+                Status = i.Status,
+            }).ToListAsync();
+            return list;
+        }
         public async Task<ApiResponse> CheckUserPhoneNumber(string PhoneNumber)
         {
+            if (string.IsNullOrEmpty(PhoneNumber)) return new ApiFailResponse("Thông tin không được để trống");
+
             var phonenumber = PhoneNumber;
             if (phonenumber.Contains("+84"))
             {
@@ -42,6 +58,8 @@ namespace ECommerce.Application.Services.User
 
         public async Task<ApiResponse> SignIn(SignInRequest request)
         {
+            if (string.IsNullOrEmpty(request.UserPhone) || string.IsNullOrEmpty(request.Password)) return new ApiFailResponse("Thông tin không được để trống");
+
             var phonenumber = request.UserPhone;
             if (phonenumber.Contains("+84"))
             {
@@ -76,6 +94,7 @@ namespace ECommerce.Application.Services.User
 
         public async Task<ApiResponse> SignUp(SignUpRequest request)
         {
+            if (string.IsNullOrEmpty(request.UserPhone)) return new ApiFailResponse("Số điện thoại không được để trống");
             if (request.UserPhone.Contains("+84"))
             {
                 request.UserPhone = request.UserPhone.Replace("+84", "");
@@ -85,8 +104,8 @@ namespace ECommerce.Application.Services.User
                 }
             }
 
-            if (request.UserFullName == "") return new ApiFailResponse("Vui lòng nhập họ tên");
-            if (request.Password == "" || request.RePassword == "") return new ApiFailResponse("Vui lòng nhập mật khẩu");
+            if (string.IsNullOrEmpty(request.UserFullName)) return new ApiFailResponse("Vui lòng nhập họ tên");
+            if (string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.RePassword)) return new ApiFailResponse("Vui lòng nhập mật khẩu");
             if (request.Password != request.RePassword) return new ApiFailResponse("Mật khẩu không trùng");
 
             var checkMail = await _DbContext.Users.Where(i => i.UserMail == request.UserMail).FirstOrDefaultAsync();
@@ -132,7 +151,7 @@ namespace ECommerce.Application.Services.User
 
         public async Task<ApiResponse> UpdateUserProfile(UserUpdateRequest request)
         {
-            if (request.UserFullName == "") return new ApiFailResponse("Họ tên không thể để trống");
+            if (string.IsNullOrEmpty(request.UserFullName)) return new ApiFailResponse("Họ tên không thể để trống");
 
             var user = await _DbContext.Users
                                 .Where(i => i.UserId == request.UserId)
@@ -167,6 +186,8 @@ namespace ECommerce.Application.Services.User
 
         public async Task<ApiResponse> UpdateUserPhoneNumber(int UserId, string PhoneNumber)
         {
+            if (string.IsNullOrEmpty(PhoneNumber)) return new ApiFailResponse("Số điện thoại không được để trống");
+
             var phonenumber = PhoneNumber;
             if (phonenumber.Contains("+84"))
             {
@@ -190,19 +211,18 @@ namespace ECommerce.Application.Services.User
         }
         public async Task<ApiResponse> UpdateUserPassword(UpdatePasswordRequest request)
         {
-            var id = request.UserId;
-            var curentPassword = request.CurrentPassword;
-            var newPassword = request.NewPassword;
-            var rePassword = request.RePassword;
+            if (string.IsNullOrEmpty(request.CurrentPassword)) return new ApiFailResponse("Thông tin không được để trống");
+            if (string.IsNullOrEmpty(request.NewPassword)) return new ApiFailResponse("Thông tin không được để trống");
+            if (string.IsNullOrEmpty(request.RePassword)) return new ApiFailResponse("Thông tin không được để trống");
 
             var user = await _DbContext.Users
-                                .Where(i => i.UserId == id && i.Password == curentPassword)
+                                .Where(i => i.UserId == request.UserId && i.Password == request.CurrentPassword)
                                 .FirstOrDefaultAsync();
 
             if (user == null) return new ApiFailResponse("Mật khẩu không chính xác");
-            if (newPassword != rePassword) return new ApiFailResponse("Mật khẩu không trùng");
+            if (request.NewPassword != request.RePassword) return new ApiFailResponse("Mật khẩu không trùng");
 
-            user.Password = rePassword;
+            user.Password = request.RePassword;
             await _DbContext.SaveChangesAsync();
 
             return new ApiSuccessResponse("Cập nhật mật khẩu thành công");
