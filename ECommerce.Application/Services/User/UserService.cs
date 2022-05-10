@@ -1,6 +1,7 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.User.Dtos;
 using ECommerce.Data.Context;
+using ECommerce.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -55,7 +56,6 @@ namespace ECommerce.Application.Services.User
 
             return new ApiSuccessResponse("Có thể tạo tài khoản với số điện thoại này");
         }
-
         public async Task<ApiResponse> SignIn(SignInRequest request)
         {
             if (string.IsNullOrEmpty(request.UserPhone) || string.IsNullOrEmpty(request.Password)) return new ApiFailResponse("Thông tin không được để trống");
@@ -91,7 +91,6 @@ namespace ECommerce.Application.Services.User
 
             return new ApiSuccessResponse("Đăng nhập thành công", user);
         }
-
         public async Task<ApiResponse> SignUp(SignUpRequest request)
         {
             if (string.IsNullOrEmpty(request.UserPhone)) return new ApiFailResponse("Số điện thoại không được để trống");
@@ -131,7 +130,6 @@ namespace ECommerce.Application.Services.User
             
             return new ApiSuccessResponse("Tạo tài khoản thành công");
         }
-
         public async Task<UserGetModel> UserProfile(int id)
         {
             var user = await _DbContext.Users
@@ -151,7 +149,6 @@ namespace ECommerce.Application.Services.User
 
             return user;
         }
-
         public async Task<ApiResponse> UpdateUserProfile(UserUpdateRequest request)
         {
             if (string.IsNullOrEmpty(request.UserFullName)) return new ApiFailResponse("Họ tên không thể để trống");
@@ -186,7 +183,6 @@ namespace ECommerce.Application.Services.User
 
             return new ApiFailResponse("Cập nhật không thành công");
         }
-
         public async Task<ApiResponse> UpdateUserPhoneNumber(int UserId, string PhoneNumber)
         {
             if (string.IsNullOrEmpty(PhoneNumber)) return new ApiFailResponse("Số điện thoại không được để trống");
@@ -270,6 +266,39 @@ namespace ECommerce.Application.Services.User
             } 
             
             return new ApiFailResponse("Mật khẩu không chính xác");
+        }
+        public async Task<ApiResponse> SaleRegistration(SaleRegistrationRequest request)
+        {
+            if (string.IsNullOrEmpty(request.ShopName)) return new ApiFailResponse("Thông tin không được để trống");
+            if (string.IsNullOrEmpty(request.ShopPhoneNumber)) return new ApiFailResponse("Thông tin không được để trống");
+            if (string.IsNullOrEmpty(request.ShopAddress)) return new ApiFailResponse("Thông tin không được để trống");
+            if (string.IsNullOrEmpty(request.ShopCityCode)) return new ApiFailResponse("Thông tin không được để trống");
+            if (string.IsNullOrEmpty(request.ShopDistrictCode)) return new ApiFailResponse("Thông tin không được để trống");
+            if (string.IsNullOrEmpty(request.ShopWardCode)) return new ApiFailResponse("Thông tin không được để trống");
+            if (string.IsNullOrEmpty(request.ShopBankName)) return new ApiFailResponse("Thông tin không được để trống");
+            if (string.IsNullOrEmpty(request.ShopAccountNumber)) return new ApiFailResponse("Thông tin không được để trống");
+
+            Shop shop = new Shop();
+            shop.ShopName = request.ShopName;
+            shop.ShopPhoneNumber = request.ShopPhoneNumber;
+            shop.ShopAddress = request.ShopAddress;
+            shop.ShopCityCode = request.ShopCityCode;
+            shop.ShopDistrictCode = request.ShopDistrictCode;
+            shop.ShopWardCode = request.ShopWardCode;
+            shop.UserId = request.UserId;
+            shop.Status = 2; // waiting..
+
+            await _DbContext.Shops.AddAsync(shop);
+            await _DbContext.SaveChangesAsync();
+
+            Data.Models.ShopBank bank = new Data.Models.ShopBank();
+            bank.ShopId = shop.ShopId;
+            bank.ShopBankName = request.ShopBankName;
+            bank.ShopAccountNumber = request.ShopAccountNumber;
+            await _DbContext.ShopBanks.AddAsync(bank);
+            await _DbContext.SaveChangesAsync();
+
+            return new ApiSuccessResponse("Đăng ký thành công");
         }
     }
 }

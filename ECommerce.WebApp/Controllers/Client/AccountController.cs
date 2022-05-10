@@ -53,6 +53,10 @@ namespace ECommerce.WebApp.Controllers.Client
         {
             return View();
         }
+        public async Task<IActionResult> SaleRegistration()
+        {
+            return View();
+        }
 
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword()

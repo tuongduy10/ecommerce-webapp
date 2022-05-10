@@ -3,7 +3,8 @@
     <select name="" id="" class="form-control" onchange="location = this.value">
         <option value="@Url.Action("UserProfile", "Account")" selected>Thông tin cá nhân</option>
         <option value="user-orderhistory.html">Lịch sử đơn hàng</option>
-        <option value="user-changepassword.html">Đổi mật khẩu</option>
+        <option value="@Url.Action("UpdateUserPassword", "Account")">Đổi mật khẩu</option>
+        <option value="@Url.Action("SaleRegistration", "Account")">Đăng ký bán hàng</option>
     </select>
     <span class="d-flex align-items-center">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -17,7 +18,7 @@
 <ul class="control-list">
     <!-- Pc view-->
     <li class="mb-2">
-        <a class="d-flex align-items-center active" href="@Url.Action("UserProfile", "Account")"
+        <a class="d-flex align-items-center @(Context.Request.Path.ToString().Contains("UserProfile") ? "active" : "") " href="@Url.Action("UserProfile", "Account")"
            style="white-space: nowrap;">
             <span class="mr-2" style="height: 24px;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -54,7 +55,7 @@
     </li>
     <!-- Change password -->
     <li class="mb-2">
-        <a class="d-flex align-items-center" href="@Url.Action("UpdateUserPassword", "Account")"
+        <a class="d-flex align-items-center @(Context.Request.Path.ToString().Contains("UpdateUserPassword") ? "active" : "")" href="@Url.Action("UpdateUserPassword", "Account")"
            style="white-space: nowrap;">
             <span class="mr-2 mb-0" style="height: 24px;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -81,7 +82,7 @@
     <hr>
     <!-- Sales registration -->
     <li class="mb-2">
-        <a class="d-flex align-items-center" href="user-salesregistration.html" style="white-space: nowrap;">
+        <a class="d-flex align-items-center @(Context.Request.Path.ToString().Contains("SaleRegistration") ? "active" : "")" href="@Url.Action("SaleRegistration", "Account")" style="white-space: nowrap;">
             <span class="mr-2 mb-0" style="height: 24px;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"

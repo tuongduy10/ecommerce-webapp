@@ -129,5 +129,14 @@ namespace ECommerce.WebApp.APIs
 
             return Ok(result);
         }
+        [HttpPost("SaleRegistration")]
+        public async Task<IActionResult> SaleRegistration(SaleRegistrationRequest request)
+        {
+            var result = await _userService.SaleRegistration(request);
+            if (!result.isSucceed) {
+                return BadRequest(request);
+            }
+            return Ok(result);
+        }
     }
 }

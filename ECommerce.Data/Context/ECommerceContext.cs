@@ -561,7 +561,9 @@ namespace ECommerce.Data.Context
             {
                 entity.ToTable("ShopBank");
 
-                entity.Property(e => e.ShopAccountNumber).HasColumnType("decimal(20, 0)");
+                entity.Property(e => e.ShopAccountNumber)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.ShopBankName)
                     .IsRequired()
