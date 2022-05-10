@@ -227,5 +227,19 @@ namespace ECommerce.Application.Services.User
 
             return new ApiSuccessResponse("Cập nhật mật khẩu thành công");
         }
+        public async Task<ApiResponse> UpdateUserStatus(UserUpdateRequest request)
+        {
+            var user = await _DbContext.Users
+                                .Where(i => i.UserId == request.UserId)
+                                .FirstOrDefaultAsync();
+            if (user != null)
+            {
+                user.Status = request.Status;
+                _DbContext.SaveChangesAsync().Wait();
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+
+            return new ApiFailResponse("Cập nhật thất bại");
+        }
     }
 }

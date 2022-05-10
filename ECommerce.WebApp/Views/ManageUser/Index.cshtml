@@ -31,20 +31,26 @@
                             <td>@user.UserMail</td>
                             <td>@user.UserPhone</td>
                             <td>@user.UserJoinDate.ToString("dd/MM/yyyy")</td>
-                            @if (user.Status == true)
-                            {
-                                <td class="text-success">
-                                    Đã xác thực
-                                </td>
-                            }
-                            else
-                            {
-                                <td class="text-danger">
-                                    Đã khóa
-                                </td>
-                            }
-                            <td class="text-center">
-                                <a href="">Chi tiết</a>
+                            <td class="status_@user.UserId">
+                                @if (user.Status == true)
+                                {
+                                    <p class="text-success">Đã xác thực</p>
+                                }
+                                else
+                                {
+                                    <p class="text-danger">Đã khóa</p>
+                                }
+                            </td>
+                            <td class="action_@user.UserId text-center d-flex align-items-center">
+                                <a class="mr-2" href="">Chi tiết</a>
+                                @if(user.Status == false)
+                                {
+                                    <button class="btn btn-success" onclick="unblockUser(@user.UserId)">Mở khóa</button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-danger" onclick="blockUser(@user.UserId)">Khóa</button>
+                                }
                             </td>
                         </tr>
                     }
@@ -80,4 +86,55 @@
             });
         })
     })
+    function blockUser(id){
+        var request = {
+            UserId: id,
+            Status: false
+        };
+        apiUpdateUserStatus(request);
+    }
+    function unblockUser(id){
+        var request = {
+            UserId: id,
+            Status: true
+        };
+        apiUpdateUserStatus(request);
+    }
+    function apiUpdateUserStatus(request){
+        $.ajax({
+            url: '/api/ManageUserAPI/UpdateUserStatus',
+            data: JSON.stringify(request),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            type: 'POST',
+            success: function (data) {
+                alert(data.message);
+                if(request.Status) {
+                    $(`.action_${request.UserId}`).html(`
+                         <a class="mr-2" href="">Chi tiết</a>
+                         <button class="btn btn-danger" onclick="blockUser(${request.UserId})">Khóa</button>
+                    `)
+                    $(`.status_${request.UserId}`).html(`
+                        <p class="text-success">Đã xác thực</p>
+                    `)
+                    return;
+                }
+
+                if(!request.Status){
+                    $(`.action_${request.UserId}`).html(`
+                        <a class="mr-2" href="">Chi tiết</a>
+                        <button class="btn btn-success" onclick="unblockUser(${request.UserId})">Mở khóa</button>
+                    `)
+                    $(`.status_${request.UserId}`).html(`
+                        <p class="text-danger">Đã khóa</p>
+                    `)
+                    return;
+                }
+            },
+            error: function (data) {
+                console.log(data)
+                alert(data.responseJSON.message)
+            }
+        });
+    }
 </script>

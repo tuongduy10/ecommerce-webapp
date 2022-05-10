@@ -10,5 +10,6 @@ namespace ECommerce.Application.Services.User.Dtos
         public string UserWardCode { get; set; }
         public string UserDistrictCode { get; set; }
         public string UserCityCode { get; set; }
+        public bool Status { get; set; }
     }
 }
