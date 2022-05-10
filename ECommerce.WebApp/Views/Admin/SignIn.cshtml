@@ -42,7 +42,7 @@
                             <div class="col-lg-6">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">HIHICHI Admin!</h1>
+                                        <h1 class="h4 text-gray-900 mb-4">Đăng nhập</h1>
                                     </div>
                                     <form method="post" asp-action="SignIn" asp-controller="Admin" class="user">
                                         <div class="form-group">
@@ -59,7 +59,7 @@
                                     @ViewBag.Error
                                     <hr>
                                     <div class="text-center">
-                                        <a class="small" href="forgot-password.html">Quên mật khẩu?</a>
+                                        <a class="small" href="@Url.Action("ResetPassword", "Admin")">Quên mật khẩu ?</a>
                                     </div>
                                 </div>
                             </div>

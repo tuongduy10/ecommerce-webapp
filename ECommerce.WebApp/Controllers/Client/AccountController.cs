@@ -31,7 +31,6 @@ namespace ECommerce.WebApp.Controllers.Client
         [AllowAnonymous]
         public async Task<IActionResult> SignUp()
         {
-            var identity = User;
             return View();
         }
 

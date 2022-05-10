@@ -101,5 +101,11 @@ namespace ECommerce.WebApp.Controllers.Admin
             var user = await _userService.UserProfile(Int32.Parse(id));
             return View(user);
         }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword()
+        {
+            return View();
+        }
     }
 }
