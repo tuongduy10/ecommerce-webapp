@@ -76,6 +76,7 @@ namespace ECommerce.WebApp.APIs
             return Ok(result);
         }
 
+        [AllowAnonymous]
         [HttpPost("CheckUserPhoneNumber")]
         public async Task<IActionResult> CheckUserPhoneNumber([FromBody] string PhoneNumber)
         {
@@ -114,6 +115,16 @@ namespace ECommerce.WebApp.APIs
             var id = User.Claims.FirstOrDefault(i => i.Type == "UserId").Value;
             request.UserId = Int32.Parse(id);
             var result = await _userService.UpdateUserPassword(request);
+            if (!result.isSucceed) return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] UpdatePasswordRequest request)
+        {
+            var result = await _userService.ResetPassword(request);
             if (!result.isSucceed) return BadRequest(result);
 
             return Ok(result);

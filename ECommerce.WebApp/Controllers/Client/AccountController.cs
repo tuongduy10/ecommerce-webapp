@@ -56,6 +56,12 @@ namespace ECommerce.WebApp.Controllers.Client
         }
 
         [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
         public async Task<IActionResult> AccessDenied()
         {
             return View();

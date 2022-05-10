@@ -111,6 +111,9 @@ namespace ECommerce.Application.Services.User
             var checkMail = await _DbContext.Users.Where(i => i.UserMail == request.UserMail).FirstOrDefaultAsync();
             if(checkMail != null) return new ApiFailResponse("Mail đã tồn tại");
 
+            var checkPhone = await _DbContext.Users.Where(i => i.UserPhone == request.UserPhone).FirstOrDefaultAsync();
+            if (checkPhone != null) return new ApiFailResponse("Số điện thoại đã tồn tại");
+
             Data.Models.User user = new Data.Models.User();
             user.UserMail = request.UserMail;
             user.UserJoinDate = DateTime.Now;
@@ -240,6 +243,33 @@ namespace ECommerce.Application.Services.User
             }
 
             return new ApiFailResponse("Cập nhật thất bại");
+        }
+        public async Task<ApiResponse> ResetPassword(UpdatePasswordRequest request)
+        {
+            if (string.IsNullOrEmpty(request.PhoneNumber)) return new ApiFailResponse("Thông tin không được để trống");
+            if (request.PhoneNumber.Contains("+84"))
+            {
+                request.PhoneNumber = request.PhoneNumber.Replace("+84", "");
+                if (!request.PhoneNumber.StartsWith("0"))
+                {
+                    request.PhoneNumber = "0" + request.PhoneNumber;
+                }
+            }
+            if (string.IsNullOrEmpty(request.NewPassword)) return new ApiFailResponse("Thông tin không được để trống");
+            if (string.IsNullOrEmpty(request.RePassword)) return new ApiFailResponse("Thông tin không được để trống");
+            if (request.NewPassword != request.RePassword) return new ApiFailResponse("Mật khẩu không trùng");
+
+            var user = await _DbContext.Users
+                                .Where(i => i.UserPhone == request.PhoneNumber)
+                                .FirstOrDefaultAsync();
+            if (user != null) {
+                user.Password = request.RePassword;
+                await _DbContext.SaveChangesAsync();
+
+                return new ApiSuccessResponse("Cập nhật mật khẩu thành công");
+            } 
+            
+            return new ApiFailResponse("Mật khẩu không chính xác");
         }
     }
 }

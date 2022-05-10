@@ -16,5 +16,6 @@ namespace ECommerce.Application.Services.User
         Task<ApiResponse> UpdateUserPhoneNumber(int UserId, string PhoneNumber);
         Task<ApiResponse> UpdateUserPassword(UpdatePasswordRequest request);
         Task<ApiResponse> UpdateUserStatus(UserUpdateRequest request);
+        Task<ApiResponse> ResetPassword(UpdatePasswordRequest request);
     }
 }
