@@ -18,7 +18,6 @@
     <Compile Remove="Services\Rate\**" />
     <Compile Remove="Services\RatingImage\**" />
     <Compile Remove="Services\ShopBrand\**" />
-    <Compile Remove="Services\Shop\**" />
     <Compile Remove="Services\Social\**" />
     <Compile Remove="Services\SubCategoryAttribute\**" />
     <Compile Remove="Services\SubCategoryOption\**" />
@@ -36,7 +35,6 @@
     <EmbeddedResource Remove="Services\Rate\**" />
     <EmbeddedResource Remove="Services\RatingImage\**" />
     <EmbeddedResource Remove="Services\ShopBrand\**" />
-    <EmbeddedResource Remove="Services\Shop\**" />
     <EmbeddedResource Remove="Services\Social\**" />
     <EmbeddedResource Remove="Services\SubCategoryAttribute\**" />
     <EmbeddedResource Remove="Services\SubCategoryOption\**" />
@@ -54,7 +52,6 @@
     <None Remove="Services\Rate\**" />
     <None Remove="Services\RatingImage\**" />
     <None Remove="Services\ShopBrand\**" />
-    <None Remove="Services\Shop\**" />
     <None Remove="Services\Social\**" />
     <None Remove="Services\SubCategoryAttribute\**" />
     <None Remove="Services\SubCategoryOption\**" />

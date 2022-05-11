@@ -287,7 +287,7 @@ namespace ECommerce.Application.Services.User
             var checkMail = await _DbContext.Shops.Where(s => s.ShopMail == request.ShopMail).FirstOrDefaultAsync();
             if (checkMail != null) return new ApiFailResponse("Mail đã tồn tại");
 
-            Shop shop = new Shop();
+            Data.Models.Shop shop = new Data.Models.Shop();
             shop.ShopName = request.ShopName;
             shop.ShopPhoneNumber = request.ShopPhoneNumber;
             shop.ShopAddress = request.ShopAddress;
@@ -295,6 +295,7 @@ namespace ECommerce.Application.Services.User
             shop.ShopDistrictCode = request.ShopDistrictCode;
             shop.ShopWardCode = request.ShopWardCode;
             shop.ShopMail = request.ShopMail;
+            shop.ShopJoinDate = DateTime.Now;
             shop.UserId = request.UserId;
             shop.Status = 2; // waiting..
             await _DbContext.Shops.AddAsync(shop);

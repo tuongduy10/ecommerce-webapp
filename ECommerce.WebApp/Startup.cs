@@ -14,6 +14,7 @@ using System;
 using ECommerce.Application.Services.FilterProduct;
 using ECommerce.Application.Services.User;
 using ECommerce.Application.Services.Bank;
+using ECommerce.Application.Services.Shop;
 
 namespace ECommerce.WebApp
 {
@@ -72,6 +73,9 @@ namespace ECommerce.WebApp
 
             // User
             services.AddTransient<IUserService, UserService>();
+
+            // Shop
+            services.AddTransient<IShopService, ShopService>();
 
             //services
             //    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

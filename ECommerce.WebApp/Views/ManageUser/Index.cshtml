@@ -27,7 +27,7 @@
                         <tr>
                             <td>@user.UserId</td>
                             <td>@user.UserFullName</td>
-                            <td class="user-address">@user.UserAddress|@user.UserWardCode|@user.UserDistrictCode|@user.UserCityCode</td>
+                            <td class="address">@user.UserAddress|@user.UserWardCode|@user.UserDistrictCode|@user.UserCityCode</td>
                             <td>@user.UserMail</td>
                             <td>@user.UserPhone</td>
                             <td>@user.UserJoinDate.ToString("dd/MM/yyyy")</td>
@@ -60,7 +60,7 @@
     </div>
 </div>
 <script>
-    $('.user-address').each(function(){
+    $('.address').each(function(){
         let address = $(this).text().split('|')[0];
         let ward = $(this).text().split('|')[1];
         let district = $(this).text().split('|')[2];
