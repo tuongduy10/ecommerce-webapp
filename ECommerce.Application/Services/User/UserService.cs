@@ -269,6 +269,7 @@ namespace ECommerce.Application.Services.User
         }
         public async Task<ApiResponse> SaleRegistration(SaleRegistrationRequest request)
         {
+            // Check null
             if (string.IsNullOrEmpty(request.ShopName)) return new ApiFailResponse("Thông tin không được để trống");
             if (string.IsNullOrEmpty(request.ShopPhoneNumber)) return new ApiFailResponse("Thông tin không được để trống");
             if (string.IsNullOrEmpty(request.ShopAddress)) return new ApiFailResponse("Thông tin không được để trống");
@@ -278,6 +279,14 @@ namespace ECommerce.Application.Services.User
             if (string.IsNullOrEmpty(request.ShopBankName)) return new ApiFailResponse("Thông tin không được để trống");
             if (string.IsNullOrEmpty(request.ShopAccountNumber)) return new ApiFailResponse("Thông tin không được để trống");
 
+            // Check already exist
+            var checkName = await _DbContext.Shops.Where(s => s.ShopName == request.ShopName).FirstOrDefaultAsync();
+            if (checkName != null) return new ApiFailResponse("Tên đã tồn tại");
+            var checkPhone = await _DbContext.Shops.Where(s => s.ShopPhoneNumber == request.ShopPhoneNumber).FirstOrDefaultAsync();
+            if (checkPhone != null) return new ApiFailResponse("Số điện thoại đã tồn tại");
+            var checkMail = await _DbContext.Shops.Where(s => s.ShopMail == request.ShopMail).FirstOrDefaultAsync();
+            if (checkMail != null) return new ApiFailResponse("Mail đã tồn tại");
+
             Shop shop = new Shop();
             shop.ShopName = request.ShopName;
             shop.ShopPhoneNumber = request.ShopPhoneNumber;
@@ -285,9 +294,9 @@ namespace ECommerce.Application.Services.User
             shop.ShopCityCode = request.ShopCityCode;
             shop.ShopDistrictCode = request.ShopDistrictCode;
             shop.ShopWardCode = request.ShopWardCode;
+            shop.ShopMail = request.ShopMail;
             shop.UserId = request.UserId;
             shop.Status = 2; // waiting..
-
             await _DbContext.Shops.AddAsync(shop);
             await _DbContext.SaveChangesAsync();
 
@@ -299,6 +308,16 @@ namespace ECommerce.Application.Services.User
             await _DbContext.SaveChangesAsync();
 
             return new ApiSuccessResponse("Đăng ký thành công");
+        }
+        public async Task<ApiResponse> isRegisted(int id)
+        {
+            var result = await _DbContext.Shops.Where(i => i.UserId == id).FirstOrDefaultAsync();
+            if (result == null)
+            {
+                return new ApiFailResponse("Chưa đăng ký");
+            }
+
+            return new ApiSuccessResponse("Trạng thái đăng ký", result);
         }
     }
 }

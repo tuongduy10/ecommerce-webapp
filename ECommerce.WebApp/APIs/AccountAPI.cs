@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -130,8 +129,9 @@ namespace ECommerce.WebApp.APIs
             return Ok(result);
         }
         [HttpPost("SaleRegistration")]
-        public async Task<IActionResult> SaleRegistration(SaleRegistrationRequest request)
+        public async Task<IActionResult> SaleRegistration([FromBody] SaleRegistrationRequest request)
         {
+            request.UserId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
             var result = await _userService.SaleRegistration(request);
             if (!result.isSucceed) {
                 return BadRequest(request);

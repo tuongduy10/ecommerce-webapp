@@ -84,6 +84,11 @@
                             }
                             <li class="footer__info-link pb-2">
                                 <a>
+                                    <i class="fas fa-map-marker-alt"></i> @Model.config.Address
+                                </a>
+                            </li>
+                            <li class="footer__info-link pb-2">
+                                <a>
                                     <i class="fa-solid fa-clock"></i> @((Model.config.StartTime).ToString().Substring(0,5)) - @((Model.config.EndTime).ToString().Substring(0,5))
                                 </a>
                             </li>

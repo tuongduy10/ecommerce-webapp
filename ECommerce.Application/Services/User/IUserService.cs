@@ -18,5 +18,6 @@ namespace ECommerce.Application.Services.User
         Task<ApiResponse> UpdateUserStatus(UserUpdateRequest request);
         Task<ApiResponse> ResetPassword(UpdatePasswordRequest request);
         Task<ApiResponse> SaleRegistration(SaleRegistrationRequest request);
+        Task<ApiResponse> isRegisted(int id);
     }
 }
