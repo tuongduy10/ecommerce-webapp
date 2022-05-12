@@ -1,0 +1,203 @@
+﻿<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary text-center">Thông tin shop</h6>
+    </div>
+    <div class="card-body p-2">
+        <div class="mb-4"><strong>Thông tin shop</strong></div>
+        <div class="table-responsive mb-4">
+            <table class="table table-bordered order-table" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Tên shop</th>
+                        <th>Ngày đăng ký</th>
+                        <th>Số điện thoại</th>
+                        <th>Email</th>
+                        <th>Địa chỉ</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Shop Demo 01</td>
+                        <td>31/12/2022</td>
+                        <td>0123456789</td>
+                        <td>mail@gmail.com</td>
+                        <td>Số 01 Lê Lợi, phường Đa Kao, Quận 01, Tp.HCM</td>
+                        <td>Chờ xác nhận...</td>
+                        <td>
+                            <div class="text-center">
+                                <button class="btn btn-danger">Hủy</button>
+                                <button class="btn btn-success">Xác nhận</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="mb-4"><strong>Thông tin chủ shop</strong></div>
+        <div class="table-responsive mb-4">
+            <table class="table table-bordered order-table" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Chủ shop</th>
+                        <th>Ngày đăng ký</th>
+                        <th>Số điện thoại</th>
+                        <th>Email</th>
+                        <th>Địa chỉ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Shop Demo 01</td>
+                        <td>31/12/2022</td>
+                        <td>0123456789</td>
+                        <td>mail@gmail.com</td>
+                        <td>Số 1 Lê Lợi, phường Đa Kao, Quận 01, TP.HCM</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="mb-4"><strong>Thông tin ngân hàng</strong></div>
+        <div class="table-responsive mb-4">
+            <table class="table table-bordered order-table" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Ngân hàng</th>
+                        <th>Tên</th>
+                        <th>Số tài khoản</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>BIDV</td>
+                        <td>Nguyễn Văn A</td>
+                        <td>
+                            <div class="d-flex">
+                                <span><u class="stk">987654321000</u></span>
+                                <button class="--tooltip copy-stk" style="height: 22px; background: none; cursor: pointer; border: none;">
+                                    <span class="--tooltip-text">Sao chép</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-copy">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="mb-4"><strong>Thông tin bán hàng</strong></div>
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="form-group mb-2">
+                    <label class="mr-2">Chiết khấu %</label>
+                    <input class="form-control" type="number" value="3">
+                </div>
+                <div class="form-group mb-2">
+                    <label class="mr-2">Thương hiệu</label>
+                    <div class="dropdown mb-2 mr-2">
+                        <button class="btn border dropdown-toggle" type="button" data-toggle="dropdown">
+                            Thương hiệu quản lý
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu px-2">
+                            <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm.." autocomplete="off">
+                            <li>
+                                <div>
+                                    <input class="mr-1" id="attr1" type="checkbox" checked>
+                                    <label for="attr1">Samsung</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div>
+                                    <input class="mr-1" id="attr1" type="checkbox" checked>
+                                    <label for="attr1">Apple</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div>
+                                    <input class="mr-1" id="attr1" type="checkbox">
+                                    <label for="attr1">Sony</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <button class="btn btn-success">Lưu</button>
+                </div>
+            </div>
+        </div>
+        <div class="mb-4"><strong>Danh sách sản phẩm</strong></div>
+        <div class="table-responsive mb-4">
+            <table class="table table-bordered order-table" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Giá đặt trước</th>
+                        <th>Giá có sẵn</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="d-flex">
+                                <div class="mr-2 d-flex align-items-center justify-content-between"
+                                     style="height: 100px; width: 100px;">
+                                    <img class="w-auto h-100"
+                                         src="../assets/images/products/jacket1.jpg" alt="">
+                                </div>
+                                <div>
+                                    <div>Samsung Galaxy S22 Ultra 5G</div>
+                                    <div>Samsung</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>10,000,008 ₫</td>
+                        <td>10,000,008 ₫</td>
+                        <td style="color: var(--success); white-space: nowrap;">Đang bán</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="d-flex">
+                                <div class="d-flex align-items-center justify-content-center mr-2"
+                                     style="height: 100px; width: 100px;">
+                                    <img class="mw-100 mh-100"
+                                         src="../assets/images/banner/snidel.jpg" alt="">
+                                </div>
+                                <div>
+                                    <div>Samsung Galaxy S22 Ultra 5G</div>
+                                    <div>Samsung</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>10,000,001 ₫</td>
+                        <td>10,000,008 ₫</td>
+                        <td style="white-space: nowrap;">Đã ẩn</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="d-flex">
+                                <div class="d-flex align-items-center justify-content-center mr-2"
+                                     style="height: 100px; width: 100px;">
+                                    <img class="mw-100 mh-100"
+                                         src="../assets/images/products/pro1.png" alt="">
+                                </div>
+                                <div>
+                                    <div>Samsung Galaxy S22 Ultra 5G</div>
+                                    <div>Samsung</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>10,000,002 ₫</td>
+                        <td>10,000,008 ₫</td>
+                        <td style="white-space: nowrap;">Đã ẩn</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -84,7 +84,7 @@
     <hr>
     <!-- Sales registration -->
     <li class="mb-2">
-        @if (!Model.isRegisted || Model.status == 2)
+        @if (!Model.isRegisted || Model.status == 2 || Model.status == 4)
         {
             <a class="d-flex align-items-center @(Context.Request.Path.ToString().Contains("SaleRegistration") ? "active" : "")"
                href="@Url.Action("SaleRegistration", "Account")" style="white-space: nowrap;">

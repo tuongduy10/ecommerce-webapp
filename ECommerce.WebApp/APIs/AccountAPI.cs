@@ -1,4 +1,6 @@
 ﻿using ECommerce.Application.Common;
+using ECommerce.Application.Services.Shop;
+using ECommerce.Application.Services.Shop.Dtos;
 using ECommerce.Application.Services.User;
 using ECommerce.Application.Services.User.Dtos;
 using Microsoft.AspNetCore.Authentication;
@@ -20,9 +22,11 @@ namespace ECommerce.WebApp.APIs
     {
         private const string _cookieClientScheme = "ClientAuth";
         private IUserService _userService;
-        public AccountAPI(IUserService userService)
+        private IShopService _shopService;
+        public AccountAPI(IUserService userService, IShopService shopService)
         {
             _userService = userService;
+            _shopService = shopService;
         }
         private void SignInHttpContext(ApiResponse result, string scheme)
         {
@@ -107,7 +111,6 @@ namespace ECommerce.WebApp.APIs
 
             return Ok(result);
         }
-        
         [HttpPost("UpdateUserPassword")]
         public async Task<IActionResult> UpdateUserPassword([FromBody] UpdatePasswordRequest request)
         {
@@ -132,7 +135,7 @@ namespace ECommerce.WebApp.APIs
         public async Task<IActionResult> SaleRegistration([FromBody] SaleRegistrationRequest request)
         {
             request.UserId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
-            var result = await _userService.SaleRegistration(request);
+            var result = await _shopService.SaleRegistration(request);
             if (!result.isSucceed) {
                 return BadRequest(request);
             }

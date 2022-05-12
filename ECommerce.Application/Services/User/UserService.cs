@@ -1,7 +1,6 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.User.Dtos;
 using ECommerce.Data.Context;
-using ECommerce.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -266,59 +265,6 @@ namespace ECommerce.Application.Services.User
             } 
             
             return new ApiFailResponse("Mật khẩu không chính xác");
-        }
-        public async Task<ApiResponse> SaleRegistration(SaleRegistrationRequest request)
-        {
-            // Check null
-            if (string.IsNullOrEmpty(request.ShopName)) return new ApiFailResponse("Thông tin không được để trống");
-            if (string.IsNullOrEmpty(request.ShopPhoneNumber)) return new ApiFailResponse("Thông tin không được để trống");
-            if (string.IsNullOrEmpty(request.ShopAddress)) return new ApiFailResponse("Thông tin không được để trống");
-            if (string.IsNullOrEmpty(request.ShopCityCode)) return new ApiFailResponse("Thông tin không được để trống");
-            if (string.IsNullOrEmpty(request.ShopDistrictCode)) return new ApiFailResponse("Thông tin không được để trống");
-            if (string.IsNullOrEmpty(request.ShopWardCode)) return new ApiFailResponse("Thông tin không được để trống");
-            if (string.IsNullOrEmpty(request.ShopBankName)) return new ApiFailResponse("Thông tin không được để trống");
-            if (string.IsNullOrEmpty(request.ShopAccountNumber)) return new ApiFailResponse("Thông tin không được để trống");
-
-            // Check already exist
-            var checkName = await _DbContext.Shops.Where(s => s.ShopName == request.ShopName).FirstOrDefaultAsync();
-            if (checkName != null) return new ApiFailResponse("Tên đã tồn tại");
-            var checkPhone = await _DbContext.Shops.Where(s => s.ShopPhoneNumber == request.ShopPhoneNumber).FirstOrDefaultAsync();
-            if (checkPhone != null) return new ApiFailResponse("Số điện thoại đã tồn tại");
-            var checkMail = await _DbContext.Shops.Where(s => s.ShopMail == request.ShopMail).FirstOrDefaultAsync();
-            if (checkMail != null) return new ApiFailResponse("Mail đã tồn tại");
-
-            Data.Models.Shop shop = new Data.Models.Shop();
-            shop.ShopName = request.ShopName;
-            shop.ShopPhoneNumber = request.ShopPhoneNumber;
-            shop.ShopAddress = request.ShopAddress;
-            shop.ShopCityCode = request.ShopCityCode;
-            shop.ShopDistrictCode = request.ShopDistrictCode;
-            shop.ShopWardCode = request.ShopWardCode;
-            shop.ShopMail = request.ShopMail;
-            shop.ShopJoinDate = DateTime.Now;
-            shop.UserId = request.UserId;
-            shop.Status = 2; // waiting..
-            await _DbContext.Shops.AddAsync(shop);
-            await _DbContext.SaveChangesAsync();
-
-            Data.Models.ShopBank bank = new Data.Models.ShopBank();
-            bank.ShopId = shop.ShopId;
-            bank.ShopBankName = request.ShopBankName;
-            bank.ShopAccountNumber = request.ShopAccountNumber;
-            await _DbContext.ShopBanks.AddAsync(bank);
-            await _DbContext.SaveChangesAsync();
-
-            return new ApiSuccessResponse("Đăng ký thành công");
-        }
-        public async Task<ApiResponse> isRegisted(int id)
-        {
-            var result = await _DbContext.Shops.Where(i => i.UserId == id).FirstOrDefaultAsync();
-            if (result == null)
-            {
-                return new ApiFailResponse("Chưa đăng ký");
-            }
-
-            return new ApiSuccessResponse("Trạng thái đăng ký", result);
         }
     }
 }

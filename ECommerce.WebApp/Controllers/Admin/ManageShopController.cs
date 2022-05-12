@@ -22,7 +22,16 @@ namespace ECommerce.WebApp.Controllers.Admin
             var list = await _shopService.getUnconfirmedShop();
             return View(list);
         }
-
+        public async Task<IActionResult> ShopList()
+        {
+            var list = await _shopService.getShopList();
+            return View(list);
+        }
+        public async Task<IActionResult> ShopDetail(int ShopId)
+        {
+            var shop = await _shopService.getShopDetail(ShopId);
+            return View(shop);
+        }
         public async Task<IActionResult> UpdateShopStatus(int id, byte status)
         {
             var result = await _shopService.updateShopStatus(id, status);

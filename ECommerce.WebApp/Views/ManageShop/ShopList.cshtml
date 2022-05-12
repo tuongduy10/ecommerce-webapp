@@ -31,21 +31,17 @@
                             <td class="address">@shop.ShopAddress|@shop.ShopWardCode|@shop.ShopDistrictCode|@shop.ShopCityCode</td>
                             <td>@shop.UserName</td>
                             <td>
-                                @if (shop.Status == 2)
+                                @if (shop.Status == 0)
                                 {
-                                    <p>Chờ xác nhận</p>
+                                    <p class="text-danger">Đã khóa</p>
                                 }
-                                @if (shop.Status == 4)
+                                @if (shop.Status == 1)
                                 {
-                                    <p class="text-danger">Đã từ chối</p>
+                                    <p class="text-success">Đã xác thực</p>
                                 }
                             </td>
                             <td class="d-flex">
-                                @if (shop.Status != 4)
-                                {
-                                    <a class="btn btn-danger mr-2" href="@Url.Action("UpdateShopStatus", "ManageShop", new { id = shop.ShopId, status = 4 })">Từ chối</a>
-                                }
-                                <a class="btn btn-success" href="@Url.Action("UpdateShopStatus", "ManageShop", new { id = shop.ShopId, status = 1 })">Xác nhận</a>
+                                <a href="@Url.Action("ShopDetail", "ManageShop", new { ShopId = shop.ShopId })">Chi tiết</a>
                             </td>
                         </tr>
                     }

@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.User;
+﻿using ECommerce.Application.Services.Shop;
+using ECommerce.Application.Services.User;
 using ECommerce.WebApp.Controllers.Client;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,16 +11,16 @@ namespace ECommerce.WebApp.ViewComponents
 {
     public class UserProfileMenuViewComponent : ViewComponent
     {
-        private IUserService _userService;
-        public UserProfileMenuViewComponent(IUserService userService)
+        private IShopService _shopService;
+        public UserProfileMenuViewComponent(IShopService shopService)
         {
-            _userService = userService;
+            _shopService = shopService;
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var user = User as ClaimsPrincipal;
             var id = Int32.Parse(user.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
-            var result = await _userService.isRegisted(id);
+            var result = await _shopService.isRegisted(id);
             var model = new SaleRegistrationModel();
 
             // Chưa đăng ký

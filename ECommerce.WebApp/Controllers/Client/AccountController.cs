@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.User;
+﻿using ECommerce.Application.Services.Shop;
+using ECommerce.Application.Services.User;
 using ECommerce.Application.Services.User.Dtos;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -13,9 +14,11 @@ namespace ECommerce.WebApp.Controllers.Client
     public class AccountController : Controller
     {
         private IUserService _userService;
-        public AccountController(IUserService userService)
+        private IShopService _shopService;
+        public AccountController(IUserService userService, IShopService shopService)
         {
             _userService = userService;
+            _shopService = shopService;
         }
 
         [AllowAnonymous]
@@ -57,7 +60,7 @@ namespace ECommerce.WebApp.Controllers.Client
         public async Task<IActionResult> SaleRegistration()
         {
             var id = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
-            var result = await _userService.isRegisted(id);
+            var result = await _shopService.isRegisted(id);
             var model = new SaleRegistrationModel();
 
             if (!result.isSucceed || result.ObjectData == null)
@@ -72,6 +75,17 @@ namespace ECommerce.WebApp.Controllers.Client
             model.status = status;
 
             return View(model);
+        }
+        public async Task<IActionResult> DeleteShop()
+        {
+            var id = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
+            var result = await _shopService.deleteShop(id);
+            if (result.isSucceed)
+            {
+                return RedirectToAction("SaleRegistration", "Account");
+            }
+            ViewBag.Message = result.Message;
+            return RedirectToAction("SaleRegistration", "Account");
         }
 
         [AllowAnonymous]

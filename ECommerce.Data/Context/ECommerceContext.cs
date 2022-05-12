@@ -565,6 +565,10 @@ namespace ECommerce.Data.Context
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
+                entity.Property(e => e.ShopAccountName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.ShopBankName)
                     .IsRequired()
                     .HasMaxLength(100);
