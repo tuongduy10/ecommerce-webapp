@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ECommerce.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,7 @@ namespace ECommerce.Application.Services.Shop.Dtos
         public User User { get; set; }
 
         // Shop's brand management
+        public List<int> ShopBrands { get; set; }
         public List<Brand> Brands { get; set; }
     }
     public class Brand

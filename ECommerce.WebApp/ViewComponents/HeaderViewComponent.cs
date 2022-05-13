@@ -2,12 +2,6 @@
 using ECommerce.WebApp.Models.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.ViewComponents
@@ -31,7 +25,7 @@ namespace ECommerce.WebApp.ViewComponents
             var model = new HeaderViewModel()
             {
                 listHeader = _listHeader,
-                config = _config,
+                config = _config
             };
 
             return View(model);

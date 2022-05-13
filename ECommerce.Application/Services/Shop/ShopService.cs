@@ -182,6 +182,7 @@ namespace ECommerce.Application.Services.Shop
                                                         UserCityCode = u.UserCityCode
                                                     })
                                                     .FirstOrDefault(),
+                                        // Shop's bank account
                                         ShopBank = _DbContext.ShopBanks
                                                         .Where(b => b.ShopId == i.ShopId)
                                                         .Select(b => new ShopBank()
@@ -191,15 +192,17 @@ namespace ECommerce.Application.Services.Shop
                                                             ShopAccountNumber = b.ShopAccountNumber
                                                         })
                                                         .FirstOrDefault(),
-                                        Brands = _DbContext.ShopBrands
+                                        ShopBrands = _DbContext.ShopBrands
                                                         .Where(br => br.ShopId == i.ShopId)
+                                                        .Select(br => br.BrandId)
+                                                        .ToList(),
+                                        Brands = _DbContext.Brands
                                                         .Select(br => new Dtos.Brand()
                                                         {
-                                                            BrandId = br.Brand.BrandId,
-                                                            BrandName = br.Brand.BrandName
+                                                            BrandId = br.BrandId,
+                                                            BrandName = br.BrandName
                                                         })
                                                         .ToList()
-                                        // Shop's bank account
                                     })
                                     .FirstOrDefaultAsync();
 

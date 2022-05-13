@@ -1,0 +1,155 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="container-fluid">
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Quản lý header</h6>
+        </div>
+        <div class="card-body p-2">
+            <div class="mb-2">Menu Header</div>
+            <div class="form-group">
+                @foreach (var header in Model.headers)
+                {
+                    <input class="form-control mb-2" type="text" value="@header.HeaderName" placeholder="@header.HeaderName">
+                }
+            </div>
+            <div class="mb-2">Logo</div>
+            <div class="mb-2">
+                <label class="btn btn-secondary" for="logo">Chọn ảnh</label>
+                <input id="logo" type="file" hidden>
+            </div>
+            <div class="border mb-2" style="height: 300px; width: 300px;">
+                <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
+                    <img id="logo-preview" class="mw-100 mh-100" src="@(Configuration["ImagePath:Logo"] + Model.LogoPath)" alt="">
+                </div>
+            </div>
+
+            <div class="mb-2">Banner</div>
+            <div class="form-group mb-4">
+                <label for="banner-upload" class="input-tile mb-2">
+                    <div class="d-flex align-items-center">
+                        <a class="upload btn btn-secondary">Chọn ảnh</a>
+                        <div>(Kích thước mỗi ảnh: 1920 x 750 px, tối đa 10 ảnh)</div>
+                    </div>
+                </label>
+                <input id="banner-upload" type="file" multiple hidden />
+                <output class="d-flex flex-wrap" id="banner-preview">
+                    @foreach (var banner in Model.banners)
+                    {
+                        <div class="image__upload-item mr-2">
+                            <div class="border mb-2 mx-auto" style="height: 180px; width: 180px;">
+                                <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
+                                    <img class="mw-100 mh-100" src="@(Configuration["ImagePath:Banner"] + banner.BannerPath)" alt="">
+                                    <span class="position-absolute remove-upload"
+                                          style="right: 0; top: 0; cursor: pointer;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                             height="18" viewBox="0 0 24 24" fill="none"
+                                             stroke="red" stroke-width="1" stroke-linecap="round"
+                                             stroke-linejoin="round" class="feather feather-x">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </output>
+            </div>
+            <div class="text-right">
+                <button class="btn btn-primary" onclick="updateBanner()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.querySelectorAll('.remove-upload').forEach(item => {
+        item.addEventListener('click', event => {
+            item.parentElement.parentElement.remove();
+        });
+    })
+    var arrFiles = [];
+    window.onload = function () {
+        loadIamgesWithPreview("banner-upload", "banner-preview", 10);
+        function loadIamgesWithPreview(upload, preview, lim) {
+            if (window.File && window.FileList && window.FileReader) {
+                $(`#${upload}`).change(function (event) {
+                    var files = event.target.files; //FileList object
+                    var currentFiles = $('.image__upload-item').length + files.length
+                    if (currentFiles > lim) {
+                        return;
+                    }
+                    for (var i = 0; i < files.length; i++) {
+                        var file = files[i];
+                        //Only pics
+                        if (!file.type.match('image'))
+                            continue;
+
+                        arrFiles.push(file);
+
+                        var picReader = new FileReader();
+                        picReader.fileName = file.name;
+                        picReader.addEventListener("load", function (event) {
+                            var picFile = event.target;
+                            var div = document.createElement("div");
+                            div.classList.add(`image__upload-item`, `mr-2`);
+                            div.innerHTML = `
+                                    <div class="border mb-2 mx-auto" style="height: 100px; width: 100px;">
+                                        <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
+                                            <img class="mw-100 mh-100" src="${picFile.result}" alt="${event.target.fileName}">
+                                            <span class="position-absolute remove-upload"
+                                                style="right: 0; top: 0; cursor: pointer;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                                    height="18" viewBox="0 0 24 24" fill="none"
+                                                    stroke="red" stroke-width="1" stroke-linecap="round"
+                                                    stroke-linejoin="round" class="feather feather-x">
+                                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </div>
+                                `;
+                            var removeUpload = div.querySelector(".remove-upload");
+                            removeUpload.addEventListener("click", function (evt) {
+                                arrFiles.forEach(function (file, index) {
+                                    if (file.name == event.target.fileName) {
+                                        arrFiles.splice(index, 1);
+                                    }
+                                })
+                                div.remove();
+                            });
+                            $(`#${preview}`).append(div);
+                        });
+                        //Read the image
+                        picReader.readAsDataURL(file);
+                    }
+                })
+            }
+        }
+    }
+    function updateBanner() {
+        var formData = new FormData();
+        for (let i = 0; i < arrFiles.length; i++) {
+            formData.append('images', arrFiles[i]);
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/ManageConfiguration/UpdateBanner",
+            data: formData, // In the controller it receives IFormFile image
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                console.log("Thành công")
+            },
+            error: function (errorMessage) {
+                console.log(errorMessage);
+            }
+        });
+    }
+</script>

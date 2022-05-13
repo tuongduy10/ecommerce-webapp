@@ -1,4 +1,7 @@
-﻿<div class="card shadow mb-4">
+﻿@{ 
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="card shadow mb-4">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary text-center">Thông tin shop</h6>
     </div>
@@ -19,16 +22,31 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Shop Demo 01</td>
-                        <td>31/12/2022</td>
-                        <td>0123456789</td>
-                        <td>mail@gmail.com</td>
-                        <td>Số 01 Lê Lợi, phường Đa Kao, Quận 01, Tp.HCM</td>
-                        <td>Chờ xác nhận...</td>
+                        <td>@Model.ShopName</td>
+                        <td>@Model.ShopJoinDate.ToString("dd/MM/yyyy")</td>
+                        <td>@Model.ShopPhoneNumber</td>
+                        <td>@Model.ShopMail</td>
+                        <td class="address">@Model.ShopAddress|@Model.ShopWardCode|@Model.ShopDistrictCode|@Model.ShopCityCode</td>
+                        <td>
+                            @if(Model.Status == 0)
+                            {
+                                <p class="text-danger">Đã khóa</p>
+                            }
+                            else
+                            {
+                                <p class="text-success">Đã xác thực</p>
+                            }
+                        </td>
                         <td>
                             <div class="text-center">
-                                <button class="btn btn-danger">Hủy</button>
-                                <button class="btn btn-success">Xác nhận</button>
+                                @if (Model.Status == 0)
+                                {
+                                    <a href="@Url.Action("UpdateShopStatus", "ManageShop", new { })" class="btn btn-success">Mở khóa</a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("UpdateShopStatus", "ManageShop", new { })" class="btn btn-danger">Khóa</a>
+                                }                                                            
                             </div>
                         </td>
                     </tr>
@@ -45,15 +63,19 @@
                         <th>Số điện thoại</th>
                         <th>Email</th>
                         <th>Địa chỉ</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Shop Demo 01</td>
-                        <td>31/12/2022</td>
-                        <td>0123456789</td>
-                        <td>mail@gmail.com</td>
-                        <td>Số 1 Lê Lợi, phường Đa Kao, Quận 01, TP.HCM</td>
+                        <td>@Model.User.UserName</td>
+                        <td>@Model.User.UserJoinDate.ToString("dd/MM/yyyy")</td>
+                        <td>@Model.User.UserPhone</td>
+                        <td>@Model.User.UserMail</td>
+                        <td class="address">@Model.User.UserAddress|@Model.User.UserWardCode|@Model.User.UserDistrictCode|@Model.User.UserCityCode</td>
+                        <td>
+                            <a href="@Url.Action("UserDetail", "ManageUser", new { UserId = Model.User.UserId})">Chi tiết</a>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -70,11 +92,11 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>BIDV</td>
-                        <td>Nguyễn Văn A</td>
+                        <td>@Model.ShopBank.ShopBankName</td>
+                        <td>@Model.ShopBank.ShopAccountName</td>
                         <td>
                             <div class="d-flex">
-                                <span><u class="stk">987654321000</u></span>
+                                <span><u class="stk">@Model.ShopBank.ShopAccountNumber</u></span>
                                 <button class="--tooltip copy-stk" style="height: 22px; background: none; cursor: pointer; border: none;">
                                     <span class="--tooltip-text">Sao chép</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-copy">
@@ -93,7 +115,7 @@
             <div class="col-md-4">
                 <div class="form-group mb-2">
                     <label class="mr-2">Chiết khấu %</label>
-                    <input class="form-control" type="number" value="3">
+                    <input class="form-control" type="number" value="@Model.Tax">
                 </div>
                 <div class="form-group mb-2">
                     <label class="mr-2">Thương hiệu</label>
@@ -102,26 +124,29 @@
                             Thương hiệu quản lý
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu px-2">
-                            <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm.." autocomplete="off">
-                            <li>
-                                <div>
-                                    <input class="mr-1" id="attr1" type="checkbox" checked>
-                                    <label for="attr1">Samsung</label>
-                                </div>
-                            </li>
-                            <li>
-                                <div>
-                                    <input class="mr-1" id="attr1" type="checkbox" checked>
-                                    <label for="attr1">Apple</label>
-                                </div>
-                            </li>
-                            <li>
-                                <div>
-                                    <input class="mr-1" id="attr1" type="checkbox">
-                                    <label for="attr1">Sony</label>
-                                </div>
-                            </li>
+                        <ul class="dropdown-menu px-2" style="overflow: hidden scroll; max-height: 300px">
+                            <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm..." autocomplete="off">
+                            @foreach (var brand in Model.Brands)
+                            {
+                                @if (Model.ShopBrands.Contains(brand.BrandId))
+                                {
+                                    <li>
+                                        <div>
+                                            <input class="mr-1" id="attr-@brand.BrandId" type="checkbox" checked>
+                                            <label for="attr1">@brand.BrandName</label>
+                                        </div>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <div>
+                                            <input class="mr-1" id="attr-@brand.BrandId" type="checkbox">
+                                            <label for="attr1">@brand.BrandName</label>
+                                        </div>
+                                    </li>
+                                }
+                            }
                         </ul>
                     </div>
                 </div>
@@ -201,3 +226,47 @@
         </div>
     </div>
 </div>
+<script>
+    $('.address').each(function () {
+        let address = $(this).text().split('|')[0];
+        let ward = $(this).text().split('|')[1];
+        let district = $(this).text().split('|')[2];
+        let city = $(this).text().split('|')[3];
+        var ele = $(this);
+
+        $.get("/js/json/provinces-open-api.json", function (data) {
+            // Cities
+            data.forEach(c => {
+                if (city == c.codename) {
+                    c.districts.forEach(d => {
+                        if (district == d.codename) {
+                            d.wards.forEach(w => {
+                                if (ward == w.codename) {
+                                    address += ', ' + w.name + ', ' + d.name + ', ' + c.name;
+                                    ele.text(address);
+                                    return;
+                                }
+                            })
+                        }
+                    })
+                }
+            });
+        })
+    })
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $(".dropdown-menu li").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+    $('.copy-stk').on('click', function () {
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val($(this).siblings().children('.stk').text()).select();
+        document.execCommand("copy");
+        $temp.remove();
+        $(this).children('.--tooltip-text').text('Đã sao chép');
+    })
+</script>
