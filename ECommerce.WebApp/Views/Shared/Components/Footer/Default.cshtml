@@ -70,21 +70,16 @@
                             {
                                 if (item.Position == 2)
                                 {
-                                    var url = "";
-                                    if (item.SocialUrl != "")
-                                    {
-                                        url = item.SocialUrl;
-                                    }
                                     <li class="footer__info-link pb-2">
-                                        <a target="_blank" rel="noopener noreferrer" href="@url">
-                                            <i class="@item.Icon"></i> @item.SocialName
+                                        <a target="_blank" rel="noopener noreferrer" href="@item.SocialUrl">
+                                            <i class="@item.Icon"></i> @(item.SocialName + " " + item.SocialUrl)
                                         </a>
                                     </li>
                                 }
                             }
                             <li class="footer__info-link pb-2">
                                 <a>
-                                    <i class="fas fa-map-marker-alt"></i> @Model.config.Address
+                                    <i class="fas fa-map-marker-alt"></i>Zalo: @Model.config.Address
                                 </a>
                             </li>
                             <li class="footer__info-link pb-2">

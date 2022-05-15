@@ -11,12 +11,105 @@
         </div>
         <div class="card-body p-2">
             <div class="mb-2">Menu Header</div>
-            <div class="form-group">
-                @foreach (var header in Model.headers)
-                {
-                    <input class="form-control mb-2" type="text" value="@header.HeaderName" placeholder="@header.HeaderName">
-                }
+            <div class="table-responsive">
+                <table class="table table-bordered order-table" width="100%"
+                       cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Vị trí</th>
+                            <th>Danh mục</th>
+                            <th>Trạng thái</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var header in Model.headers)
+                        {
+                            <tr>
+                                <td class="text-right">@header.HeaderPosition</td>
+                                <td>
+                                    <input class="form-control mb-2" value="@header.HeaderName" placeholder="@header.HeaderName">
+                                </td>
+                                <td>
+                                    <select class="form-control">
+                                        @if (header.Status == 1)
+                                        {
+                                            <option value="" selected>Đang hiển thị</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="">Đang hiển thị</option>
+                                        }
+
+                                        @if (header.Status == 0)
+                                        {
+                                            <option value="" selected>Đang ẩn</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="">Đang ẩn</option>
+                                        }
+                                    </select>
+                                </td>
+                                <td class="text-center">
+                                    <a href="@Url.Action("")" class="btn btn-primary mr-2">Cập nhật</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
+
+
+            <div class="mb-2">Website</div>
+            <div class="table-responsive">
+                <table class="table table-bordered order-table" width="100%"
+                       cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Thông tin</th>
+                            <th>Nội dung</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Tên Website</td>
+                            <td>
+                                <input class="form-control mb-2 config-webname" value="@Model.config.WebsiteName" placeholder="@Model.config.WebsiteName">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Chủ sở hữu</td>
+                            <td>
+                                <input class="form-control mb-2 config-webowner" value="@Model.config.Owner" placeholder="@Model.config.Owner">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Số điện thoại chủ sở hữu</td>
+                            <td>
+                                <input class="form-control mb-2 config-ownerphone" value="@Model.config.PhoneNumber" placeholder="@Model.config.PhoneNumber">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Mail chủ sở hữu</td>
+                            <td>
+                                <input class="form-control mb-2 config-ownermail" value="@Model.config.Mail" placeholder="@Model.config.Mail">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Facebook chủ sở hữu</td>
+                            <td>
+                                <input class="form-control mb-2 config-ownerfburl" value="@Model.config.FacebookUrl" placeholder="@Model.config.FacebookUrl">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-right">
+                    <a class="btn btn-primary" onclick="updateWebConfig()">Cập nhật</a>
+                </div>
+            </div>
+
+
             <div class="mb-2">Logo</div>
             <div class="mb-2">
                 <label class="btn btn-secondary" for="logo">Chọn ảnh</label>
@@ -24,15 +117,20 @@
             </div>
             <div class="border mb-2" style="height: 300px; width: 300px;">
                 <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
-                    <img id="logo-preview" class="mw-100 mh-100" src="@(Configuration["ImagePath:Logo"] + Model.LogoPath)" alt="">
+                    <img id="logo-preview" class="mw-100 mh-100" src="@(Configuration["ImagePath:Logo"] + Model.config.LogoPath)" alt="">
                 </div>
             </div>
+            <div class="text-right">
+                <button class="btn btn-primary" onclick="addLogo()">Lưu</button>
+            </div>
+
+
 
             <div class="mb-2">Banner</div>
             <div class="form-group mb-4">
                 <label for="banner-upload" class="input-tile mb-2">
                     <div class="d-flex align-items-center">
-                        <a class="upload btn btn-secondary">Chọn ảnh</a>
+                        <a class="upload btn btn-secondary">Thêm ảnh</a>
                         <div>(Kích thước mỗi ảnh: 1920 x 750 px, tối đa 10 ảnh)</div>
                     </div>
                 </label>
@@ -44,8 +142,9 @@
                             <div class="border mb-2 mx-auto" style="height: 180px; width: 180px;">
                                 <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
                                     <img class="mw-100 mh-100" src="@(Configuration["ImagePath:Banner"] + banner.BannerPath)" alt="">
-                                    <span class="position-absolute remove-upload"
-                                          style="right: 0; top: 0; cursor: pointer;">
+                                    <a class="position-absolute remove-currentupload"
+                                       style="right: 0; top: 0; cursor: pointer;"
+                                       onclick="deleteCurrentBanner(@banner.BannerId, '@banner.BannerPath')">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18"
                                              height="18" viewBox="0 0 24 24" fill="none"
                                              stroke="red" stroke-width="1" stroke-linecap="round"
@@ -53,7 +152,7 @@
                                             <line x1="18" y1="6" x2="6" y2="18"></line>
                                             <line x1="6" y1="6" x2="18" y2="18"></line>
                                         </svg>
-                                    </span>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -61,12 +160,39 @@
                 </output>
             </div>
             <div class="text-right">
-                <button class="btn btn-primary" onclick="updateBanner()">Lưu</button>
+                <button class="btn btn-primary" onclick="addBanner()">Lưu</button>
             </div>
         </div>
     </div>
 </div>
+@if (!string.IsNullOrEmpty(ViewBag.Message)) {
+    <script>
+        alert('@ViewBag.Message');
+    </script>
+}
 <script>
+    $('#logo').change(function () {
+        var src = window.URL.createObjectURL(this.files[0])
+        document.getElementById('logo-preview').src = src
+    })
+    function addLogo() {
+        var formData = new FormData();
+        formData.append('image', $("#logo")[0].files[0])
+        $.ajax({
+            type: "POST",
+            url: "/ManageConfiguration/AddLogo",
+            data: formData, // In the controller it receives IFormFile image
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                alert("Thêm thành công");
+                location.reload();
+            },
+            error: function (errorMessage) {
+                console.log(errorMessage);
+            }
+        });
+    }
     document.querySelectorAll('.remove-upload').forEach(item => {
         item.addEventListener('click', event => {
             item.parentElement.parentElement.remove();
@@ -98,7 +224,7 @@
                             var div = document.createElement("div");
                             div.classList.add(`image__upload-item`, `mr-2`);
                             div.innerHTML = `
-                                    <div class="border mb-2 mx-auto" style="height: 100px; width: 100px;">
+                                    <div class="border mb-2 mx-auto" style="height: 180px; width: 180px;">
                                         <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
                                             <img class="mw-100 mh-100" src="${picFile.result}" alt="${event.target.fileName}">
                                             <span class="position-absolute remove-upload"
@@ -132,7 +258,35 @@
             }
         }
     }
-    function updateBanner() {
+
+    function updateWebConfig() {
+        var request = {
+            WebsiteName: $('.config-webname').val(),
+            Owner: $('.config-webowner').val(),
+            Mail: $('.config-ownermail').val(),
+            PhoneNumber: $('.config-ownerphone').val(),
+            FacebookUrl: $('.config-ownerfburl').val()
+        }
+        $.ajax({
+            type: "POST",
+            url: "/api/ManageConfigurationsAPI/UpdateWebConfig",
+            data: JSON.stringify(request),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                alert("Cập nhật thành công");
+                location.reload();
+            },
+            error: function (data) {
+                console.log(data)
+                alert(data.responseJSON.message);
+            }
+        });
+    }
+    function addBanner() {
+        if (arrFiles.length == 0) {
+            return;
+        }
         var formData = new FormData();
         for (let i = 0; i < arrFiles.length; i++) {
             formData.append('images', arrFiles[i]);
@@ -140,16 +294,38 @@
 
         $.ajax({
             type: "POST",
-            url: "/ManageConfiguration/UpdateBanner",
-            data: formData, // In the controller it receives IFormFile image
+            url: "/ManageConfiguration/AddBanner",
+            data: formData, // In the controller it receives List<IFormFile> images
             processData: false,
             contentType: false,
             success: function (data) {
-                console.log("Thành công")
+                alert("Thêm thành công");
+                location.reload();
             },
             error: function (errorMessage) {
                 console.log(errorMessage);
             }
         });
+    }
+    function deleteCurrentBanner(id, path) {
+        if (confirm("Xác nhận xóa")) {
+            $.ajax({
+                type: "POST",
+                url: "/api/ManageConfigurationsAPI/DeleteBanner",
+                data: JSON.stringify({ 'BannerId': id, 'BannerPath': path }), // In the controller it receives BannerId, BannerPath
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    alert("Xóa thành công");
+                    location.reload();
+                },
+                error: function (data) {
+                    console.log(data)
+                    alert(data.responseJSON.message);
+                }
+            });
+        } else {
+            return;
+        }
     }
 </script>

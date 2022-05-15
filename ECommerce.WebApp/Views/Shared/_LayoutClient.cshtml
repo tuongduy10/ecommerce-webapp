@@ -1,5 +1,10 @@
 ﻿@using Microsoft.Extensions.Configuration
+@using ECommerce.Application.Services.Configurations;
 @inject IConfiguration Configuration
+@inject IConfigurationService _configurationService
+@{       
+    var config = await _configurationService.getConfiguration();
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,8 +38,8 @@
     <link rel="stylesheet" href="/css/main/header.css" />
     <link rel="stylesheet" href="/css/main/main.css" />
     <link rel="stylesheet" href="/css/main/footer.css" />
-    <link rel="icon" href="@Configuration["ImagePath:Favicon"]swarovski.png" type="image/x-icon">
-    <title>Web Demo</title>
+    <link rel="icon" href="@(Configuration["ImagePath:Favicon"] + config.FaviconPath)" type="image/x-icon">
+    <title>@config.WebsiteName</title>
 </head>
 
 <body>

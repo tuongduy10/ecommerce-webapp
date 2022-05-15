@@ -1,7 +1,6 @@
 ﻿using ECommerce.Application.Services.Configurations;
 using ECommerce.WebApp.Models.Components;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.ViewComponents
@@ -10,10 +9,8 @@ namespace ECommerce.WebApp.ViewComponents
     {
         private readonly IHeaderService _headerService;
         private readonly IConfigurationService _configurationService;
-        private IConfiguration _config;
-        public HeaderViewComponent(IConfiguration config, IConfigurationService configurationService, IHeaderService headerService)
+        public HeaderViewComponent(IConfigurationService configurationService, IHeaderService headerService)
         {
-            _config = config;
             _configurationService = configurationService;
             _headerService = headerService;
         }

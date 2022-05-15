@@ -16,7 +16,7 @@ namespace ECommerce.Application.Services.Configurations.Dtos
         public TimeSpan? EndTime { get; set; }
         public string PhoneNumber { get; set; }
         public string Mail { get; set; }
-        public string Facebook { get; set; }
+        public string Owner { get; set; }
         public string FacebookUrl { get; set; }
         public string Address { get; set; }
         public string AddressUrl { get; set; }

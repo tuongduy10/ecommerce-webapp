@@ -18,7 +18,6 @@ namespace ECommerce.Application.Services.Configurations
         {
             _DbContext = DbContext;
         }
-
         public async Task<List<BannerModel>> getBanner()
         {
             var query = from banner in _DbContext.Banners select banner;
@@ -31,7 +30,6 @@ namespace ECommerce.Application.Services.Configurations
 
             return result;
         }
-
         public async Task<ConfigurationModel> getConfiguration()
         {
             var query = from con in _DbContext.Configurations select con;
@@ -43,7 +41,7 @@ namespace ECommerce.Application.Services.Configurations
                 FaviconPath = i.FaviconPath,
                 StartTime = i.StartTime,
                 EndTime = i.EndTime,
-                Facebook = i.Facebook,
+                Owner = i.Owner,
                 FacebookUrl = i.FacebookUrl,
                 Mail = i.Mail,
                 PhoneNumber = i.PhoneNumber,
@@ -67,7 +65,6 @@ namespace ECommerce.Application.Services.Configurations
 
             return new ApiFailResponse("Cập nhật không thành công");
         }
-
         public async Task<ApiResponse> UpdateTime(TimeUpdateRequest request)
         {
             var config = await _DbContext.Configurations.Where(i => i.Id == request.Id).FirstOrDefaultAsync();
@@ -81,6 +78,30 @@ namespace ECommerce.Application.Services.Configurations
             }
 
             return new ApiFailResponse("Cập nhật không thành công");
+        }
+        public async Task<ApiResponse> updateConfig(UpdateConfigRequest request)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.Mail)) return new ApiFailResponse("Thông tin không được để trống");
+                if (string.IsNullOrEmpty(request.Owner)) return new ApiFailResponse("Thông tin không được để trống");
+                if (string.IsNullOrEmpty(request.PhoneNumber)) return new ApiFailResponse("Thông tin không được để trống");
+                if (string.IsNullOrEmpty(request.WebsiteName)) return new ApiFailResponse("Thông tin không được để trống");
+
+                var config = await _DbContext.Configurations.Where(i => i.Id == 1).FirstOrDefaultAsync();
+                config.Mail = request.Mail;
+                config.Owner = request.Owner;
+                config.FacebookUrl = request.FacebookUrl == "" ? "www.facebook.com" : request.FacebookUrl;
+                config.PhoneNumber = request.PhoneNumber;
+                config.WebsiteName = request.WebsiteName;
+
+                await _DbContext.SaveChangesAsync();
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Cập nhật thất bại");
+            }
         }
     }
 }

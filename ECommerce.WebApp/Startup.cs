@@ -107,6 +107,7 @@ namespace ECommerce.WebApp
             }
 
             app.UseHttpsRedirection();
+            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             app.UseAuthentication();

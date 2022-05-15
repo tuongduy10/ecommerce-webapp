@@ -11,6 +11,6 @@ namespace ECommerce.WebApp.Models.Configurations.Header
     {
         public List<HeaderModel> headers { get; set; }
         public List<BannerModel> banners { get; set; }
-        public string LogoPath { get; set; }
+        public ConfigurationModel config { get; set; }
     }
 }

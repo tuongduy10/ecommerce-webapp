@@ -1,9 +1,12 @@
 ﻿using ECommerce.Application.Services.Bank;
 using ECommerce.Application.Services.Bank.Dtos;
 using ECommerce.Application.Services.Configurations;
+using ECommerce.Application.Services.Configurations.Dtos;
 using ECommerce.Application.Services.Configurations.Dtos.Footer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.APIs.Admin
@@ -17,11 +20,19 @@ namespace ECommerce.WebApp.APIs.Admin
         private IConfigurationService _configurationService;
         private IFooterService _footerService;
         private IBankService _bankService;
-        public ManageConfigurationsAPI(IConfigurationService configurationService, IFooterService footerService, IBankService bankService)
+        private IWebHostEnvironment _webHostEnvironment;
+        private IHeaderService _headerService;
+        public ManageConfigurationsAPI(IConfigurationService configurationService,
+                                        IFooterService footerService,
+                                        IBankService bankService,
+                                        IHeaderService headerService,
+                                        IWebHostEnvironment webHostEnvironment)
         {
+            _headerService = headerService;
             _configurationService = configurationService;
             _footerService = footerService;
             _bankService = bankService;
+            _webHostEnvironment = webHostEnvironment;
         }
         [HttpPost("AddBlog")]
         public async Task<IActionResult> AddBlog(BlogModel request)
@@ -33,7 +44,6 @@ namespace ECommerce.WebApp.APIs.Admin
             }
             return Ok(result);
         }
-
         [HttpPost("UpdateBlog")]
         public async Task<IActionResult> UpdateBlog(BlogUpdateRequest request)
         {
@@ -44,7 +54,6 @@ namespace ECommerce.WebApp.APIs.Admin
             }
             return Ok(result);
         }
-
         [HttpPost("DeleteBlog")]
         public async Task<IActionResult> DeleteBlog([FromBody] int BlogId)
         {
@@ -55,7 +64,6 @@ namespace ECommerce.WebApp.APIs.Admin
             }
             return Ok(result);
         }
-
         [HttpPost("UpdateSocial")]
         public async Task<IActionResult> UpdateSocial([FromBody] SocialUpdateRequest request)
         {
@@ -66,7 +74,6 @@ namespace ECommerce.WebApp.APIs.Admin
             }
             return Ok(result);
         }
-        
         [HttpPost("DeleteBank")]
         public async Task<IActionResult> DeleteBank([FromBody] int bankId)
         {
@@ -77,7 +84,6 @@ namespace ECommerce.WebApp.APIs.Admin
             }
             return BadRequest(result);
         }
-
         [HttpPost("UpdateBank")]
         public async Task<IActionResult> UpdateBank([FromBody] BankUpdateRequest request)
         {
@@ -88,7 +94,6 @@ namespace ECommerce.WebApp.APIs.Admin
             }
             return BadRequest(result);
         }
-
         [HttpPost("AddBank")]
         public async Task<IActionResult> AddBank([FromBody] BankAddRequest request)
         {
@@ -99,7 +104,6 @@ namespace ECommerce.WebApp.APIs.Admin
             }
             return BadRequest(result);
         }
-
         [HttpPost("UpdateAddress")]
         public async Task<IActionResult> UpdateAddress([FromBody] AddressUpdateRequest request)
         {
@@ -110,7 +114,6 @@ namespace ECommerce.WebApp.APIs.Admin
             }
             return BadRequest(result);
         }
-
         [HttpPost("UpdateTime")]
         public async Task<IActionResult> UpdateTime([FromBody] TimeUpdateRequest request)
         {
@@ -121,5 +124,35 @@ namespace ECommerce.WebApp.APIs.Admin
             }
             return BadRequest(result);
         }
+        [HttpPost("DeleteBanner")]
+        public async Task<IActionResult> DeleteBanner([FromBody] BannerDeleteModel banner)
+        {
+            var result = await _headerService.deleteBanner(banner.BannerId);
+            if (result.isSucceed)
+            {
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images/banner");
+                string filePath = Path.Combine(uploadsFolder, banner.BannerPath);
+                System.IO.File.Delete(filePath);
+
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
+        [HttpPost("UpdateWebConfig")]
+        public async Task<IActionResult> UpdateWebConfig([FromBody] UpdateConfigRequest request)
+        {
+            var result = await _configurationService.updateConfig(request);
+            if (result.isSucceed)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+    }
+    public class BannerDeleteModel
+    {
+        public int BannerId { get; set; }
+        public string BannerPath { get; set; }
     }
 }

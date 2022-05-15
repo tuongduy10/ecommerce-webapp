@@ -1,11 +1,10 @@
-﻿using ECommerce.Application.Services.Configurations.Dtos;
+﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.Configurations.Dtos.Header;
 using ECommerce.Data.Context;
+using ECommerce.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ECommerce.Application.Services.Configurations
@@ -17,7 +16,6 @@ namespace ECommerce.Application.Services.Configurations
         {
             _DbContext = db;
         }
-
         public async Task<List<HeaderModel>> getAll()
         {
             var query = from header in _DbContext.Headers 
@@ -31,14 +29,79 @@ namespace ECommerce.Application.Services.Configurations
                 HeaderPosition = i.HeaderPosition,
                 HeaderUrl = i.HeaderUrl,
                 Status = i.Status
-            }).ToListAsync();
-
+            })
+            .OrderBy(i => i.HeaderPosition)
+            .ToListAsync();
             return list;
         }
-
-        public async Task<int> Update(HeaderUpdateRequest request)
+        public async Task<ApiResponse> Update(HeaderUpdateRequest request)
         {
-            return 0;
+            return null;
+        }
+        public async Task<ApiResponse> updateLogo(string path)
+        {
+            try
+            {
+                var config = await _DbContext.Configurations
+                                        .Where(i => i.Id == 1)
+                                        .FirstOrDefaultAsync();
+                config.LogoPath = path;
+                config.FaviconPath = path;
+                await _DbContext.SaveChangesAsync();
+                return new ApiSuccessResponse("Thêm thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Thêm thất bại");
+            }
+        }
+        public async Task<ApiResponse> addBanner(List<string> listName)
+        {
+            try
+            {
+                foreach (var name in listName)
+                {
+                    var banner = new Banner();
+                    banner.BannerPath = name;
+                    await _DbContext.Banners.AddAsync(banner);
+                }
+
+                await _DbContext.SaveChangesAsync();
+                return new ApiSuccessResponse("Thêm thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Thêm thất bại công");
+            }
+        }
+        public async Task<ApiResponse> deleteBanner(int id)
+        {
+            try
+            {
+                var banner = await _DbContext.Banners.Where(b => b.BannerId == id).FirstOrDefaultAsync();
+                _DbContext.Banners.Remove(banner);
+                await _DbContext.SaveChangesAsync();
+                return new ApiSuccessResponse("Xóa thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Xóa thất bại");
+            }
+        }
+        public async Task<ApiResponse> updateWebName(string name)
+        {
+            try
+            {
+                var config = await _DbContext.Configurations.Where(b => b.Id == 1).FirstOrDefaultAsync();
+                config.WebsiteName = name;
+
+                await _DbContext.SaveChangesAsync();
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Cập nhật thất bại");
+            }
         }
     }
 }

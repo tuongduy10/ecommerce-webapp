@@ -15,5 +15,6 @@ namespace ECommerce.Application.Services.Configurations
         Task<List<BannerModel>> getBanner();
         Task<ApiResponse> UpdateAddress(AddressUpdateRequest request);
         Task<ApiResponse> UpdateTime(TimeUpdateRequest request);
+        Task<ApiResponse> updateConfig(UpdateConfigRequest request);
     }
 }

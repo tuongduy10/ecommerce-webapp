@@ -11,6 +11,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
+      "launchUrl": "ManageConfiguration/ManageHeader", // Change it when you're developing some features needed
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
