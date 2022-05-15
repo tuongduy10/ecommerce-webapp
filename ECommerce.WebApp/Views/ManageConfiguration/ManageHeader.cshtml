@@ -26,33 +26,28 @@
                         @foreach (var header in Model.headers)
                         {
                             <tr>
-                                <td class="text-right">@header.HeaderPosition</td>
-                                <td>
-                                    <input class="form-control mb-2" value="@header.HeaderName" placeholder="@header.HeaderName">
+                                <td class="text-right">
+                                    <input type="number" class="form-control mb-2 header_position-@header.HeaderId" value="@header.HeaderPosition" placeholder="@header.HeaderPosition">
                                 </td>
                                 <td>
-                                    <select class="form-control">
+                                    <input type="text" class="form-control mb-2 header_name-@header.HeaderId" value="@header.HeaderName" placeholder="@header.HeaderName">
+                                </td>
+                                <td>
+                                    <select class="form-control header_status-@header.HeaderId">
                                         @if (header.Status == 1)
                                         {
-                                            <option value="" selected>Đang hiển thị</option>
+                                            <option value="1" selected>Hiển thị</option>
+                                            <option value="0">Ẩn</option>
                                         }
-                                        else
-                                        {
-                                            <option value="">Đang hiển thị</option>
-                                        }
-
                                         @if (header.Status == 0)
                                         {
-                                            <option value="" selected>Đang ẩn</option>
-                                        }
-                                        else
-                                        {
-                                            <option value="">Đang ẩn</option>
+                                            <option value="1">Hiển thị</option>
+                                            <option value="0" selected>Ẩn</option>
                                         }
                                     </select>
                                 </td>
                                 <td class="text-center">
-                                    <a href="@Url.Action("")" class="btn btn-primary mr-2">Cập nhật</a>
+                                    <a onclick="updateHeaderMenu(@header.HeaderId)" class="btn btn-primary mr-2">Cập nhật</a>
                                 </td>
                             </tr>
                         }
@@ -121,9 +116,8 @@
                 </div>
             </div>
             <div class="text-right">
-                <button class="btn btn-primary" onclick="addLogo()">Lưu</button>
+                <button class="btn btn-primary" onclick="addLogo()">Cập nhật</button>
             </div>
-
 
 
             <div class="mb-2">Banner</div>
@@ -160,7 +154,7 @@
                 </output>
             </div>
             <div class="text-right">
-                <button class="btn btn-primary" onclick="addBanner()">Lưu</button>
+                <button class="btn btn-primary" onclick="addBanner()">Cập nhật</button>
             </div>
         </div>
     </div>
@@ -259,6 +253,33 @@
         }
     }
 
+    function updateHeaderMenu(id) {
+        var pos = $(`.header_position-${id}`).val();
+        var name = $(`.header_name-${id}`).val();
+        var status = $(`.header_status-${id}`).val();
+
+        var request = {
+            HeaderId: id,
+            HeaderPosition: pos,
+            HeaderName: name,
+            Status: status
+        };
+        $.ajax({
+            type: "POST",
+            url: "/api/ManageConfigurationsAPI/UpdateHeaderMenu",
+            data: JSON.stringify(request),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                alert("Cập nhật thành công");
+                location.reload();
+            },
+            error: function (data) {
+                console.log(data)
+                alert(data.responseJSON.message);
+            }
+        });
+    }
     function updateWebConfig() {
         var request = {
             WebsiteName: $('.config-webname').val(),

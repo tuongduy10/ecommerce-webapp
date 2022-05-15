@@ -34,9 +34,41 @@ namespace ECommerce.Application.Services.Configurations
             .ToListAsync();
             return list;
         }
-        public async Task<ApiResponse> Update(HeaderUpdateRequest request)
+        public async Task<List<HeaderModel>> getAllManage()
         {
-            return null;
+            var query = from header in _DbContext.Headers
+                        orderby header.HeaderPosition
+                        select header;
+            var list = await query.Select(i => new HeaderModel()
+            {
+                HeaderId = i.HeaderId,
+                HeaderName = i.HeaderName,
+                HeaderPosition = i.HeaderPosition,
+                HeaderUrl = i.HeaderUrl,
+                Status = i.Status
+            })
+            .OrderBy(i => i.HeaderPosition)
+            .ToListAsync();
+            return list;
+        }
+        public async Task<ApiResponse> updateHeaderMenu(HeaderUpdateRequest request)
+        {
+            if (string.IsNullOrEmpty(request.HeaderPosition)) return new ApiFailResponse("Thông không được để trống");
+            if (string.IsNullOrEmpty(request.HeaderName)) return new ApiFailResponse("Thông không được để trống");
+
+            try
+            {
+                var config = await _DbContext.Headers.Where(i => i.HeaderId == request.HeaderId).FirstOrDefaultAsync();
+                config.HeaderName = request.HeaderName;
+                config.HeaderPosition = byte.Parse(request.HeaderPosition);
+                config.Status = request.Status;
+                await _DbContext.SaveChangesAsync();
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Cập nhật thất bại");
+            }
         }
         public async Task<ApiResponse> updateLogo(string path)
         {
@@ -86,21 +118,6 @@ namespace ECommerce.Application.Services.Configurations
             catch
             {
                 return new ApiFailResponse("Xóa thất bại");
-            }
-        }
-        public async Task<ApiResponse> updateWebName(string name)
-        {
-            try
-            {
-                var config = await _DbContext.Configurations.Where(b => b.Id == 1).FirstOrDefaultAsync();
-                config.WebsiteName = name;
-
-                await _DbContext.SaveChangesAsync();
-                return new ApiSuccessResponse("Cập nhật thành công");
-            }
-            catch
-            {
-                return new ApiFailResponse("Cập nhật thất bại");
             }
         }
     }

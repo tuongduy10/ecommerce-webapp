@@ -7,7 +7,7 @@ namespace ECommerce.Data.Models
 {
     public partial class Configuration
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
         public string WebsiteName { get; set; }
         public string FaviconPath { get; set; }
         public string LogoPath { get; set; }

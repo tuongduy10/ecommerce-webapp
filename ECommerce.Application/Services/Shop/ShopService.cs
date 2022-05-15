@@ -68,6 +68,7 @@ namespace ECommerce.Application.Services.Shop
         }
         public async Task<ApiResponse> updateShopStatus(int ShopId, byte status)
         {
+            // Missing updating user role (buyer to seller)
             var shop = await _DbContext.Shops.Where(i => i.ShopId == ShopId).FirstOrDefaultAsync();
             if (shop != null)
             {
@@ -146,7 +147,6 @@ namespace ECommerce.Application.Services.Shop
             await _DbContext.SaveChangesAsync();
             return new ApiSuccessResponse("Xóa thành công");
         }
-
         public async Task<ShopDetailModel> getShopDetail(int ShopId)
         {
             var shop = await _DbContext.Shops

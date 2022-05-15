@@ -7,11 +7,11 @@ namespace ECommerce.Application.Services.Configurations
 {
     public interface IHeaderService
     {
-        Task<ApiResponse> Update(HeaderUpdateRequest request);
+        Task<ApiResponse> updateHeaderMenu(HeaderUpdateRequest request);
         Task<List<HeaderModel>> getAll();
+        Task<List<HeaderModel>> getAllManage();
         Task<ApiResponse> addBanner(List<string> listName);
         Task<ApiResponse> deleteBanner(int id);
         Task<ApiResponse> updateLogo(string path);
-        Task<ApiResponse> updateWebName(string name);
     }
 }

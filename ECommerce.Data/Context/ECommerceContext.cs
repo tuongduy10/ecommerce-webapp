@@ -45,7 +45,6 @@ namespace ECommerce.Data.Context
         public virtual DbSet<Rate> Rates { get; set; }
         public virtual DbSet<RatingImage> RatingImages { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
-        public virtual DbSet<RoleFunction> RoleFunctions { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
         public virtual DbSet<ShopBank> ShopBanks { get; set; }
         public virtual DbSet<ShopBrand> ShopBrands { get; set; }
@@ -107,9 +106,7 @@ namespace ECommerce.Data.Context
             {
                 entity.ToTable("Blog");
 
-                entity.Property(e => e.BlogContent)
-                        .HasColumnType("ntext")
-                        .IsUnicode(true);
+                entity.Property(e => e.BlogContent).HasColumnType("ntext");
 
                 entity.Property(e => e.BlogTitle).HasMaxLength(100);
             });
@@ -153,10 +150,6 @@ namespace ECommerce.Data.Context
                     .HasMaxLength(500)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Owner)
-                    .HasMaxLength(100)
-                    .IsUnicode(true);
-
                 entity.Property(e => e.FacebookUrl)
                     .HasMaxLength(100)
                     .IsUnicode(false);
@@ -172,6 +165,8 @@ namespace ECommerce.Data.Context
                 entity.Property(e => e.Mail)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Owner).HasMaxLength(100);
 
                 entity.Property(e => e.PhoneNumber)
                     .HasMaxLength(20)
@@ -507,16 +502,6 @@ namespace ECommerce.Data.Context
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<RoleFunction>(entity =>
-            {
-                entity.ToTable("RoleFunction");
-
-                entity.Property(e => e.RoleFunctionName)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-            });
-
             modelBuilder.Entity<Shop>(entity =>
             {
                 entity.ToTable("Shop");
@@ -561,12 +546,13 @@ namespace ECommerce.Data.Context
             {
                 entity.ToTable("ShopBank");
 
-                entity.Property(e => e.ShopAccountNumber)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.ShopAccountName)
                     .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShopAccountNumber)
+                    .IsRequired()
+                    .HasMaxLength(20)
                     .IsUnicode(false);
 
                 entity.Property(e => e.ShopBankName)
@@ -708,15 +694,9 @@ namespace ECommerce.Data.Context
 
             modelBuilder.Entity<UserRole>(entity =>
             {
-                entity.HasKey(e => new { e.UserId, e.RoleId, e.RoleFunctionId });
+                entity.HasKey(e => new { e.UserId, e.RoleId });
 
                 entity.ToTable("UserRole");
-
-                entity.HasOne(d => d.RoleFunction)
-                    .WithMany(p => p.UserRoles)
-                    .HasForeignKey(d => d.RoleFunctionId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UserRole_RoleFunction");
 
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.UserRoles)

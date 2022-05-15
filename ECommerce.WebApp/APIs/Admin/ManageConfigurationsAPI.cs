@@ -3,6 +3,7 @@ using ECommerce.Application.Services.Bank.Dtos;
 using ECommerce.Application.Services.Configurations;
 using ECommerce.Application.Services.Configurations.Dtos;
 using ECommerce.Application.Services.Configurations.Dtos.Footer;
+using ECommerce.Application.Services.Configurations.Dtos.Header;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -148,6 +149,16 @@ namespace ECommerce.WebApp.APIs.Admin
                 return Ok(result);
             }
             return BadRequest(result);
+        }
+        [HttpPost("UpdateHeaderMenu")]
+        public async Task<IActionResult> UpdateHeaderMenu(HeaderUpdateRequest request)
+        {
+            var result = await _headerService.updateHeaderMenu(request);
+            if (result.isSucceed)
+            {
+                return Ok(result);
+            }
+            return BadRequest();
         }
     }
     public class BannerDeleteModel

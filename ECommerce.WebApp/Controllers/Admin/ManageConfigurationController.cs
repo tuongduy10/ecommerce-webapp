@@ -1,6 +1,5 @@
 ﻿using ECommerce.Application.Services.Bank;
 using ECommerce.Application.Services.Configurations;
-using ECommerce.Application.Services.Configurations.Dtos.Header;
 using ECommerce.WebApp.Models.Configurations.Footer;
 using ECommerce.WebApp.Models.Configurations.Header;
 using Microsoft.AspNetCore.Authorization;
@@ -37,7 +36,7 @@ namespace ECommerce.WebApp.Controllers.Admin
         }
         public async Task<IActionResult> ManageHeader()
         {
-            var headers = await _headerService.getAll();
+            var headers = await _headerService.getAllManage();
             var banners = await _configurationService.getBanner();
             var config = await _configurationService.getConfiguration();
             var model = new ManageHeaderViewModel()
@@ -134,10 +133,6 @@ namespace ECommerce.WebApp.Controllers.Admin
                 }
             }
             ViewBag.Message = result.Message;
-            return RedirectToAction("ManageHeader", "ManageConfiguration");
-        }
-        public async Task<IActionResult> UpdateHeaderMenu(HeaderUpdateRequest request)
-        {
             return RedirectToAction("ManageHeader", "ManageConfiguration");
         }
     } 
