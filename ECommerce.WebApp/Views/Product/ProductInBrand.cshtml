@@ -339,7 +339,7 @@
                                 {
                                     <div class="product product-3">
                                         <a class="product-img" href="product-detail.html">
-                                            <img src="@Configuration["ImagePath:Product"]@product.ProductImages" alt="">
+                                            <img src="@(Configuration["ImagePath:Product"] + product.ProductImages)" alt="">
                                         </a>
                                         <div class="product-label d-flex justify-content-end align-items-center w-100" style="background-color: #fff; padding: 3px 0;">
                                             @if (product.DiscountPercent != null)
@@ -384,59 +384,22 @@
                                                 }
                                                 @if (product.ProductImportDate == null)
                                                 {
-                                                    if (product.Type.Count == 1)
-                                                    {
-                                                        <div class="product-name">
-                                                            (@product.Type[0].ProductTypeName)
-                                                        </div>
-                                                    }
-
-                                                    if (product.Type.Count == 2)
-                                                    {
-                                                        @foreach (var type in product.Type)
-                                                        {
-                                                            if (type.ProductTypeId == 1)
-                                                            {
-                                                                <div class="product-name">
-                                                                    (@type.ProductTypeName)
-                                                                </div>
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                @if (product.Price.Count == 2)
-                                                {
-                                                    @foreach (var price in product.Price)
-                                                    {
-                                                        if (price.ProductTypeId == 2)
-                                                        {
-                                                            if (price.PriceOnSell == null)
-                                                            {
-                                                                <div class="product-price">@String.Format("{0:0,0} ₫", price.Price)</div>
-                                                                <div class="product-subprice" style="visibility: hidden">@String.Format("{0:0,0} ₫", price.Price)</div>
-                                                            }
-                                                            else
-                                                            {
-                                                                <div class="product-price">@String.Format("{0:0,0} ₫", price.PriceOnSell)</div>
-                                                                <div class="product-subprice">@String.Format("{0:0,0} ₫", price.Price)</div>
-                                                            }
-                                                        }
-                                                    }
+                                                    <div class="product-name">
+                                                        (@product.ProductTypeName)
+                                                    </div>
                                                 }
 
-                                                @if (product.Price.Count == 1)
+                                                @if (product.PriceOnSell == null)
                                                 {
-                                                    if (product.Price[0].PriceOnSell == null)
-                                                    {
-                                                        <div class="product-price">@String.Format("{0:0,0} ₫", product.Price[0].Price)</div>
-                                                        <div class="product-subprice" style="visibility: hidden">@String.Format("{0:0,0} ₫", product.Price[0].Price)</div>
-                                                    }
-                                                    else
-                                                    {
-                                                        <div class="product-price">@String.Format("{0:0,0} ₫", product.Price[0].PriceOnSell)</div>
-                                                        <div class="product-subprice">@String.Format("{0:0,0} ₫", product.Price[0].Price)</div>
-                                                    }
+                                                    <div class="product-subprice" style="visibility: hidden">@String.Format("{0:0,0} ₫", product.Price)</div>
+                                                    <div class="product-price">@String.Format("{0:0,0} ₫", product.Price)</div>
                                                 }
+                                                else
+                                                {
+                                                    <div class="product-subprice">@String.Format("{0:0,0} ₫", product.PriceOnSell)</div>
+                                                    <div class="product-price">@String.Format("{0:0,0} ₫", product.Price)</div>
+                                                }
+
                                                 <div class="product-btn">
                                                     <a href="">Xem nhanh</a>
                                                 </div>
@@ -773,8 +736,9 @@
                     product.shopName,
                     product.productName,
                     product.productImportDate,
-                    product.type,
+                    product.productTypeName,
                     product.price,
+                    product.priceOnSell,
                 );
                 $('.product__grid-inner').append(html);
             })
@@ -836,6 +800,7 @@
         importDate,
         type,
         price,
+        priceOnSell,
     ) {
         var htmlDiscountPercent = ``;
         if (discountPercent !== null) {
@@ -864,59 +829,24 @@
                 </div>
             `;
         } else {
-            if (type.length == 1) {
-                htmlImportDate = `
-                    <div class="product-name">
-                        ${type[0].productTypeName}
-                    </div>
-                `;
-            }
-            if (type.length == 2) {
-                type.forEach(item => {
-                    if (item.productTypeId == 1) {
-                        htmlImportDate = `
-                            <div class="product-name">
-                                ${item.productTypeName}
-                            </div>
-                        `;
-                    }
-                })
-            }
+            htmlImportDate = `
+                <div class="product-name">
+                    ${type}
+                </div>
+            `;
         }
         var htmlPrice = ``;
-        if (price.length == 2) {
-            price.forEach(item => {
-                if (item.productTypeId == 2) {
-                    if (item.priceOnSell == null) {
-                        htmlPrice = `
-                            <div class="product-subprice" style="visibility: hidden;">${(item.price).toLocaleString()} ₫</div>
-                            <div class="product-price">${(item.price).toLocaleString()} ₫</div>
-                        `;
-                    }
-                    else {
-                        htmlPrice = `
-                            <div class="product-subprice">${(item.price).toLocaleString()} ₫</div>
-                            <div class="product-price">${(item.priceOnSell).toLocaleString()} ₫</div>
-                        `;
-                    }
-                }
-            })
+        if (priceOnSell == null) {
+            htmlPrice = `
+                <div class="product-subprice" style="visibility: hidden;">${(price).toLocaleString()} ₫</div>
+                <div class="product-price">${(price).toLocaleString()} ₫</div>
+            `;
         }
-        if (price.length == 1) {
-            if (price[0].priceOnSell == null)
-            {
-                htmlPrice = `
-                    <div class="product-subprice" style="visibility: hidden;">${(price[0].price).toLocaleString()} ₫</div>
-                    <div class="product-price">${(price[0].price).toLocaleString()} ₫</div>
-                `;
-            }
-            else
-            {
-                htmlPrice = `
-                    <div class="product-subprice">${(price[0].price).toLocaleString()} ₫</div>
-                    <div class="product-price">${(price[0].priceOnSell).toLocaleString()} ₫</div>
-                `;
-            }
+        else {
+            htmlPrice = `
+                <div class="product-subprice">${(priceOnSell).toLocaleString()} ₫</div>
+                <div class="product-price">${(price).toLocaleString()} ₫</div>
+            `;
         }
 
         var html = `

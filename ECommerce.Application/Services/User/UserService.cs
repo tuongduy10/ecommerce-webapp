@@ -12,7 +12,6 @@ namespace ECommerce.Application.Services.User
     public class UserService : IUserService
     {
         private readonly ECommerceContext _DbContext;
-
         public UserService(ECommerceContext DbContext)
         {
             _DbContext = DbContext;
