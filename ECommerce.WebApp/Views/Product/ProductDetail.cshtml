@@ -1,0 +1,976 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{ 
+    Layout = "~/Views/Shared/_LayoutClientNoBanner.cshtml";
+}
+<!-- Main contain -->
+<div class="custom-container">
+    <div class="content__wrapper products__content-wrapper">
+        <div class="content__inner w-100 pb-0">
+            <ul class="web__directional">
+                <li>
+                    <a href="index.html">Trang chủ</a>
+                </li>
+                <li>
+                    <a href="">Samsung</a>
+                </li>
+                <li>
+                    <a href="">Samsung Galaxy S21 Ultra 5G</a>
+                </li>
+            </ul>
+            <div class="product__detail-content">
+                <div class="row no-gutters">
+                    <div class="product__detail-image col-md-5">
+                        <div class="product__detail-card">
+                            <div class="product__detail-slider mb-2">
+                                <ul class="lightSlider h-100">
+                                    <li class="h-100" data-thumb="/images/products/jacket4.jpg">
+                                        <img class="pop h-100" src="/images/products/jacket4.jpg" />
+                                    </li>
+                                    <li class="h-100" data-thumb="/images/products/pro1.png">
+                                        <img class="pop h-100" src="/images/products/pro1.png" />
+                                    </li>
+                                    <li class="h-100" data-thumb="/images/products/watch3.jpg">
+                                        <img class="pop h-100" src="/images/products/watch3.jpg" />
+                                    </li>
+                                    <li class="h-100" data-thumb="/images/products/jacket3.jpg">
+                                        <img class="pop h-100" src="/images/products/jacket3.jpg" />
+                                    </li>
+                                    <li class="h-100" data-thumb="/images/products/jacket2.jpg">
+                                        <img class="pop h-100" src="/images/products/jacket2.jpg" />
+                                    </li>
+                                    <li class="h-100" data-thumb="/images/products/watch4.jpg">
+                                        <img class="pop h-100" src="/images/products/watch4.jpg" />
+                                    </li>
+                                </ul>
+                            </div>
+                            <a class="product__detail-link" style="text-decoration: underline; cursor: pointer;" data-toggle="modal"
+                                data-target="#sizeguideModal">
+                                Hướng dẫn chọn size
+                            </a>
+                        </div>
+                    </div>
+                    <div class="product__detail-info col-md-7">
+                        <div class="product__detail-card">
+                            <div class="about">
+                                <div class="product__detail-id d-flex flex-wrap align-items-center">
+                                    <a class="product-id d-flex">
+                                        <span>Mã sản phẩm:</span>
+                                        <span>22082022</span>
+                                    </a>
+                                    <a class="product-rating d-flex">
+                                        <div class="stars">
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                        </div>
+                                        <u style="cursor: pointer;">6 Đánh giá</u>
+                                    </a>
+                                </div>
+                                <div class="d-flex mb-4">
+                                    <div class="w-50">
+                                        <a class="product__detail-action">
+                                            <span class="icon mr-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="#333"
+                                                        stroke-width="1" stroke-linecap="round"
+                                                        stroke-linejoin="round" class="feather feather-phone">
+                                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                                                    </path>
+                                                </svg>
+                                            </span>
+                                            <span class="text">0397974403</span>
+                                        </a>
+                                    </div>
+                                    <div class="w-50">
+                                        <a class="product__detail-action">
+                                            <span class="icon mr-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="#333"
+                                                        stroke-width="1" stroke-linecap="round"
+                                                        stroke-linejoin="round" class="feather feather-heart">
+                                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                                    </path>
+                                                </svg>
+                                            </span>
+                                            <span class="text">Yêu Thích</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="product__detail-name">Samsung Galaxy S21 Ultra 5G</div>
+                                <div class="product__detail-brand">
+                                    <a href="">Shop Demo 01</a>
+                                </div>
+                                <div class="product__detail-brand">
+                                    <span style="font-size: calc(16px + (20 - 14) * ((100vw - 375px)/ (1920 - 375)));">
+                                        Tạm
+                                        hết đến ngày 09/04/2022
+                                    </span>
+                                </div>
+                                <div class="product__detail-desciption">
+                                    <div class="bullets">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span class="mr-2">
+                                                <img src="/images/icon/medal.png" alt="">
+                                            </span>
+                                            <span class="bullet-text">Sản phẩm chính hãng</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span class="mr-2">
+                                                <img src="/images/icon/baohanh.png" alt="">
+                                            </span>
+                                            <span class="bullet-text">Bảo hành 2 năm</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span class="mr-2">
+                                                <img src="/images/icon/return.png" alt="">
+                                            </span>
+                                            <span class="bullet-text">Đổi trả miễn phí</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span class="mr-2">
+                                                <img src="/images/icon/giaohang.png" alt="">
+                                            </span>
+                                            <span class="bullet-text">Giao hàng miễn phí</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="product__detail-bottom">
+                                <!-- Product options -->
+                                <div class="product__detail-options">
+                                    <div class="option-quality d-flex mb-2 align-items-center">
+                                        <div class="option-title">Chọn số lượng </div>
+                                        <input class="text-center mr-2" type="number" value="1" min="1"
+                                                max="50">
+                                        <a class="product__detail-link" style="text-decoration: underline; cursor: pointer;" data-toggle="modal"
+                                            data-target="#wholesaleModal">
+                                            Xem giá mua sỉ
+                                        </a>
+                                    </div>
+                                    <div class="option-size d-flex mb-2 align-items-center">
+                                        <div class="option-title">Chọn kích cỡ </div>
+                                        <div class="options-wrapper">
+                                            <select class="options form-select w-100"
+                                                    aria-label="Default select example">
+                                                <option disabled selected>- Chọn -</option>
+                                                <option value="1">S</option>
+                                                <option value="2">M</option>
+                                                <option value="3">L</option>
+                                                <option value="4">XL</option>
+                                                <option value="4">XXL</option>
+                                            </select>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                    class="feather feather-chevron-down">
+                                                <polyline points="6 9 12 15 18 9"></polyline>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="option-color d-flex mb-2 align-items-center">
+                                        <div class="option-title">Chọn màu sắc </div>
+                                        <div class="options-wrapper">
+                                            <select class="options form-select w-100"
+                                                    aria-label="Default select example">
+                                                <option disabled selected>- Chọn -</option>
+                                                <option value="1">Xanh</option>
+                                                <option value="2">Đỏ</option>
+                                                <option value="3">Tím</option>
+                                                <option value="4">Vàng</option>
+                                                <option value="1">Xanh</option>
+                                                <option value="2">Đỏ</option>
+                                                <option value="3">Tím</option>
+                                                <option value="4">Vàng</option>
+                                                <option value="1">Xanh</option>
+                                                <option value="2">Đỏ</option>
+                                                <option value="3">Tím</option>
+                                                <option value="4">Vàng</option>
+                                                <option value="1">Xanh</option>
+                                                <option value="2">Đỏ</option>
+                                                <option value="3">Tím</option>
+                                                <option value="4">Vàng</option>
+                                                <option value="1">Xanh</option>
+                                                <option value="2">Đỏ</option>
+                                                <option value="3">Tím</option>
+                                                <option value="4">Vàng</option>
+                                                <option value="1">Xanh</option>
+                                                <option value="2">Đỏ</option>
+                                                <option value="3">Tím</option>
+                                                <option value="4">Vàng</option>
+                                                <option value="1">Xanh</option>
+                                                <option value="2">Đỏ</option>
+                                                <option value="3">Tím</option>
+                                                <option value="4">Vàng</option>
+                                            </select>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                    class="feather feather-chevron-down">
+                                                <polyline points="6 9 12 15 18 9"></polyline>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="product__detail-price">
+                                    <span class="sales-value">Giảm 15%</span>
+                                    <div class="option-price form-check form-check-inline w-100">
+                                        <div class="option-title">
+                                            <input class="form-check-input" type="radio"
+                                                    name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                                            <label class="form-check-label" for="inlineRadio1">
+                                                Có sẵn
+                                            </label>
+                                        </div>
+                                        <label class="form-check-label d-flex align-items-center"
+                                                for="inlineRadio1">
+                                            <span class="price mr-2">12.500.000 ₫</span>
+                                            <span class="saleprice">
+                                                <strike>13.000.000 ₫</strike>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="option-price form-check form-check-inline w-100">
+                                        <div class="option-title">
+                                            <input class="form-check-input" type="radio"
+                                                    name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                                            <label class="form-check-label" for="inlineRadio2">
+                                                Đặt trước
+                                            </label>
+                                        </div>
+                                        <label class="form-check-label d-flex align-items-center"
+                                                for="inlineRadio2">
+                                            <span class="price mr-2">11.500.000 ₫</span>
+                                            <span class="saleprice">
+                                                <strike>12.000.000 ₫</strike>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="mt-2">
+                                        <div class="product__sale-code w-100 justify-content-between d-flex align-items-center">
+                                            <span class="circle-left"></span>
+                                            <div class="product__sale-content">
+                                                <div class="text">
+                                                    Nhập mã <strong>SALECODE</strong> giảm 500.000
+                                                    ₫
+                                                </div>
+                                            </div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                    class="feather feather-chevron-down">
+                                                <polyline points="6 9 12 15 18 9"></polyline>
+                                            </svg>
+                                            <span class="circle-right"></span>
+                                        </div>
+                                        <div class="product__sale-bottom d-none">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="text">
+                                                    Nhập <strong class="salecode">SALECODE</strong> chỉ còn
+                                                    <br>12.000.000 ₫ (Có sẵn)
+                                                    <br>11.000.000 ₫ (Đặt trước)
+                                                </div>
+                                                <button type="button" class="getcode">Lấy mã</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Price -->
+                                <div class="product__detail-buttons d-flex justify-content-between w-100">
+                                    <button class="btn-addtocart btn-black" onclick="window.location.href='cart.html'"
+                                            style="width: 49%; background-color: #333; color: #fff;">
+                                        Thêm vào giỏ
+                                    </button>
+                                    <button class="btn-buynow btn-black" onclick="window.location.href='cart.html'"
+                                            style="width: 49%; background-color: #333; color: #fff;">
+                                        Mua ngay
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="product__images-slider">
+                <h1 class="detail-title mb-0"><strong>HÌNH ẢNH THỰC TẾ</strong></h1>
+                <hr class="mt-0">
+                <ul id="content-slider">
+                    <li>
+                        <img class="pop" src="/images/products/test1.jpg" alt="">
+                    </li>
+                    <li>
+                        <img class="pop" src="/images/products/pro1.png" alt="">
+                    </li>
+                    <li>
+                        <img class="pop" src="/images/products/test2.jpg" alt="">
+                    </li>
+                    <li>
+                        <img class="pop" src="/images/products/jacket4.jpg" alt="">
+                    </li>
+                    <li>
+                        <img class="pop" src="/images/products/test3.jpg" alt="">
+                    </li>
+                    <li>
+                        <img class="pop" src="/images/products/jacket4.jpg" alt="">
+                    </li>
+                </ul>
+            </div>
+            <div class="product__detail-tab">
+                <div class="product__tab-control">
+                    <ul class="d-flex justify-content-around">
+                        <li class="mx-2">
+                            <a class="control-tab detail-title control__tab-info active">Thông tin sản phẩm</a>
+                        </li>
+                        <li class="mx-2">
+                            <a class="control-tab detail-title control__tab-comment">Đánh giá sản phẩm</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="product__tab-content">
+                    <div class="content-tab tab__product-info active">
+                        <div class="product-detail">
+                            <ul class="detail-list d-flex mb-4 flex-wrap justify-content-between">
+                                <li class="detail-item">
+                                    <span><b>Mã sản phẩm</b></span>
+                                    <span>22022022</span>
+                                </li>
+                                <li class="detail-item">
+                                    <span><b>RAM</b></span>
+                                    <span>6 GB</span>
+                                </li>
+                                <li class="detail-item">
+                                    <span><b>Bộ nhớ trong</b></span>
+                                    <span>128 GB</span>
+                                </li>
+                                <li class="detail-item">
+                                    <span><b>Màn hình</b></span>
+                                    <span>6.7", Super Retina XDR, OLED, 2778 x 1284 Pixel</span>
+                                </li>
+                                <li class="detail-item">
+                                    <span><b>GPU</b></span>
+                                    <span>Apple GPU 4 nhân</span>
+                                </li>
+                                <li class="detail-item">
+                                    <span><b>Dung lượng pin </b></span>
+                                    <span>3687 mAh</span>
+                                </li>
+                                <li class="detail-item">
+                                    <span><b>Hệ điều hành</b></span>
+                                    <span>iOS 14</span>
+                                </li>
+                                <li class="detail-item">
+                                    <span><b>Xuất xứ</b></span>
+                                    <span>6 GB</span>
+                                </li>
+                                <li class="detail-item">
+                                    <span><b>Xuất xứ</b></span>
+                                    <span>Trung Quốc</span>
+                                </li>
+                                <li class="detail-item">
+                                    <span><b>Thời gian ra mắt</b></span>
+                                    <span>10/2020</span>
+                                </li>
+                                <li class="detail-item">
+                                    <span><b>Camera sau</b></span>
+                                    <span>12.0 MP + 12.0 MP + 12.0 MP</span>
+                                </li>
+                                <li class="detail-item">
+                                    <span><b>Camera Selfie</b></span>
+                                    <span>12.0 MP</span>
+                                </li>
+                            </ul>
+                            <div class="title">Mô tả ngắn</div>
+                            <div class="description">
+                                <div>
+                                    PHONG CÁCH CÙNG SWAROVSKI CRYSTAL FROST
+                                    <br><br>
+                                    Swarovski Crystal Frost không chỉ sở hữu vẻ đẹp nữ tính mà còn mang đến sự
+                                    trẻ trung hiếm có qua những đường nét phá cách. Tạo tác này phô diễn nét đẹp
+                                    của viên đá pha lê với 178 tinh thể pha lê được sắp xếp khéo trên vành bezel
+                                    mang đến hiệu ứng như những bông tuyết nổi bật trên nền kim loại vàng hồng.
+                                    <br><br>
+                                    Trẻ trung, thời thượng và phá cách với mặt số đồng hồ là bức tranh đầy biểu
+                                    cảm. Trên nền mặt số đen tuyền, cô nàng thiên nga khoe sắc tại vị trí 12h và
+                                    chữ số Ả Rập mang đến sự vui nhộn, hoạt bát hiếm có.
+                                    <br><br>
+                                    Hoàn thiện với dây đồng hồ bằng lụa đen, Swarovski Crystal Frost mang đến
+                                    phong cách thời trang thanh thoát bí ẩn nhưng rất nữ tính cho cô nàng sành
+                                    điệu.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-tab tab__product-comment">
+                        <div class="product-comment">
+
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <div class="text-center mb-4">
+                                    <button class="d-flex mx-auto" onclick="window.location.href = '@Url.Action("SignIn", "Account", new { CurrentUrl = Context.Request.Path})'">
+                                        <span style="height: 24px; margin-right: 10px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1"
+                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                 class="feather feather-edit-3">
+                                                <path d="M12 20h9"></path>
+                                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z">
+                                                </path>
+                                            </svg>
+                                        </span>
+                                        <span>Viết bình luận</span>
+                                    </button>
+                                </div>
+                            }
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <div class="tab__content-block">
+                                    <div class="d-flex">
+                                        <span class="input-title mx-auto">VIẾT NHẬN XÉT CỦA BẠN BÊN DƯỚI</span>
+                                    </div>
+                                    <div class="rating d-flex mb-2 align-items-center">
+                                        <span>Đánh giá</span>
+                                        <div class="stars ml-2">
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <textarea class="d-flex w-100 mb-2" name="" id=""
+                                                  placeholder="Nhận xét của bạn về sản phẩm này"></textarea>
+                                    </div>
+                                    <div class="upload-image mb-2">
+                                        <label for="image-upload" class="input-tile mb-2">
+                                            <a class="upload">Chọn ảnh</a>
+                                            <div>Thêm hình ảnh sản phẩm nếu có (*Tối đa 3)</div>
+                                        </label>
+                                        <input id="image-upload" type="file" multiple hidden />
+                                        <output class="d-flex" id="image-preview">
+                                        </output>
+                                    </div>
+                                    <div class="text-right">
+                                        <button type="button">Gửi bình luận</button>
+                                    </div>
+                                </div>
+                                <div class="tab__content-block d-block">
+                                    <div class="user-comment mb-4">
+                                        <div class="d-flex align-items-center">
+                                            <span class="user__comment-name">
+                                                <strong>Nguyễn Văn A </strong>
+                                            </span>
+                                            <span class="user__comment-time ml-2">12:22, 01/11/2021</span>
+                                        </div>
+                                        <div class="d-flex stars">
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                        </div>
+                                        <div class="comment">
+                                            Mua cho ck mình lọ này 2 lần rồi, thấy ông bảo lần sau mua cứ mua loại
+                                            này nhé, công nhận mùi thơm thật sự.
+                                        </div>
+                                        <div class="image">
+                                            <ul class="image-list d-flex">
+                                                <li>
+                                                    <img class="pop" src="/images/products/pro1.png" alt="">
+                                                </li>
+                                                <li>
+                                                    <img class="pop" src="/images/products/jacket2.jpg" alt="">
+                                                </li>
+                                                <li>
+                                                    <img class="pop" src="/images/products/jacket3.jpg"
+                                                         alt="">
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="user-comment mb-4">
+                                        <div class="d-flex align-items-center">
+                                            <span class="user__comment-name">
+                                                <strong>Nguyễn Văn B</strong>
+                                            </span>
+                                            <span class="user__comment-time ml-2">12:22, 01/11/2021</span>
+                                        </div>
+                                        <div class="d-flex stars">
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                        </div>
+                                        <div class="comment">
+                                            Shop đóng bọc hàng cẩn thận, mình ở nội thành đặt 2 ngày là nhận được
+                                            rồi.
+                                        </div>
+                                        <div class="image">
+                                            <ul class="image-list d-flex">
+                                                <li>
+                                                    <img class="pop" src="/images/products/jacket3.jpg"
+                                                         alt="">
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="user-comment mb-4">
+                                        <div class="d-flex align-items-center">
+                                            <span class="user__comment-name">
+                                                <strong>Nguyễn Văn C</strong>
+                                            </span>
+                                            <span class="user__comment-time ml-2">12:22, 01/11/2021</span>
+                                        </div>
+                                        <div class="d-flex stars">
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                            <span class="fa fa-star checked"></span>
+                                        </div>
+                                        <div class="comment">
+                                            Hi shop.sao chai mình lại có thêm dòng chữ “ Eau De Toilette” trên
+                                            thân chai vậy shop. Nhờ shop phản hồi lại dùm
+                                        </div>
+                                        <div class="image">
+                                            <ul class="image-list d-flex">
+                                                <li>
+                                                    <img class="pop" src="/images/products/jacket2.jpg"
+                                                         alt="">
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Recommend products -->
+            <div class="products__list mx-auto w-100">
+                <h1 class="detail-title mb-0"><strong>GỢI Ý CHO BẠN</strong></h1>
+                <hr class="my-0">
+                <div class="product__grid-wrapper pb-0">
+                    <div class="product__grid-inner product__grid-4 w-100 d-flex flex-wrap mb-2">
+                        <div class="product">
+                            <a class="product-img" href="product-detail.html">
+                                <img src="/images/products/jacket1.jpg" alt="">
+                            </a>
+                            <div class="product-label d-flex">
+                                <span class="label-sales"> -10%</span>
+                                <span class="label-new">Mới</span>
+                                <span class="label-new">Hot</span>
+                                <a class="product-heart" style="cursor: pointer;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="add-to-wishlist feather feather-heart">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                        </path>
+                                    </svg>
+                                </a>
+                            </div>
+                            <hr style="width: 50%; margin: 0 auto;">
+                            <div class="product__info">
+                                <div class="product__info-detail text-center">
+                                    <div class="product-brand align-items-center">
+                                        Shop Demo 01
+                                    </div>
+                                    <div class="product-name mb-0">
+                                        Omega Speedmaster Moonwatch Professional, 42
+                                        mm
+                                    </div>
+                                    <div class="product-name">(Hàng sắp về)</div>
+                                    <div class="product-subprice">200.020.000 đ</div>
+                                    <div class="product-price">180.030.000 đ</div>
+                                    <div class="product-btn">
+                                        <a href="">Xem nhanh</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product">
+                            <a class="product-img" href="/product-detail.html">
+                                <img src="/images/products/jacket2.jpg" alt="">
+                            </a>
+                            <div class="product-label d-flex">
+                                <span class="label-sales"> -10%</span>
+                                <a class="product-heart" style="cursor: pointer;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="add-to-wishlist feather feather-heart">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                        </path>
+                                    </svg>
+                                </a>
+                            </div>
+                            <hr style="width: 50%; margin: 0 auto;">
+                            <div class="product__info text-center">
+                                <div class="product__info-detail">
+                                    <div class="product-brand">
+                                        Shop Demo 01
+                                    </div>
+                                    <div class="product-name mb-0">Samsung Galaxy S21 Ultra 5G</div>
+                                    <div class="product-name">(Hàng có sẵn)</div>
+                                    <div class="product-subprice">200.020.000 đ</div>
+                                    <div class="product-price">190.030.000 đ</div>
+                                    <div class="product-btn">
+                                        <a href="">Xem nhanh</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product">
+                            <a class="product-img" href="/product-detail.html">
+                                <img src="/images/products/jacket4.jpg" alt="">
+                            </a>
+                            <div class="product-label d-flex">
+                                <span class="label-new">Mới</span>
+                                <span class="label-new">Hot</span>
+                                <a class="product-heart" style="cursor: pointer;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="add-to-wishlist feather feather-heart">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                        </path>
+                                    </svg>
+                                </a>
+                            </div>
+                            <hr style="width: 50%; margin: 0 auto;">
+                            <div class="product__info">
+                                <div class="product__info-detail text-center">
+                                    <div class="product-brand align-items-center">
+                                        Shop Demo 01
+                                    </div>
+                                    <div class="product-name mb-0">Samsung Galaxy S21 Ultra 5G</div>
+                                    <div class="product-name">(Hàng sắp về)</div>
+                                    <div class="product-subprice">200.020.000 đ</div>
+                                    <div class="product-price">190.030.000 đ</div>
+                                    <div class="product-btn text-center">
+                                        <a href="">Xem nhanh</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product">
+                            <a class="product-img" href="product-detail.html">
+                                <img src="/images/products/jacket1.jpg" alt="">
+                            </a>
+                            <div class="product-label d-flex">
+                                <span class="label-sales"> -10%</span>
+                                <span class="label-new">Mới</span>
+                                <span class="label-new">Hot</span>
+                                <a class="product-heart" style="cursor: pointer;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="add-to-wishlist feather feather-heart">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                        </path>
+                                    </svg>
+                                </a>
+                            </div>
+                            <hr style="width: 50%; margin: 0 auto;">
+                            <div class="product__info">
+                                <div class="product__info-detail text-center">
+                                    <div class="product-brand align-items-center">
+                                        Shop Demo 01
+                                    </div>
+                                    <div class="product-name mb-0">
+                                        Omega Speedmaster Moonwatch Professional, 42
+                                        mm
+                                    </div>
+                                    <div class="product-name">(Hàng sắp về)</div>
+                                    <div class="product-subprice">200.020.000 đ</div>
+                                    <div class="product-price">180.030.000 đ</div>
+                                    <div class="product-btn">
+                                        <a href="">Xem nhanh</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product">
+                            <a class="product-img" href="/product-detail.html">
+                                <img src="/images/products/jacket2.jpg" alt="">
+                            </a>
+                            <div class="product-label d-flex">
+                                <span class="label-sales"> -10%</span>
+                                <a class="product-heart" style="cursor: pointer;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="add-to-wishlist feather feather-heart">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                        </path>
+                                    </svg>
+                                </a>
+                            </div>
+                            <hr style="width: 50%; margin: 0 auto;">
+                            <div class="product__info text-center">
+                                <div class="product__info-detail">
+                                    <div class="product-brand">
+                                        Shop Demo 01
+                                    </div>
+                                    <div class="product-name mb-0">Samsung Galaxy S21 Ultra 5G</div>
+                                    <div class="product-name">(Hàng có sẵn)</div>
+                                    <div class="product-subprice">200.020.000 đ</div>
+                                    <div class="product-price">190.030.000 đ</div>
+                                    <div class="product-btn">
+                                        <a href="">Xem nhanh</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product">
+                            <a class="product-img" href="/product-detail.html">
+                                <img src="/images/products/jacket4.jpg" alt="">
+                            </a>
+                            <div class="product-label d-flex">
+                                <span class="label-new">Mới</span>
+                                <span class="label-new">Hot</span>
+                                <a class="product-heart" style="cursor: pointer;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="add-to-wishlist feather feather-heart">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                        </path>
+                                    </svg>
+                                </a>
+                            </div>
+                            <hr style="width: 50%; margin: 0 auto;">
+                            <div class="product__info">
+                                <div class="product__info-detail text-center">
+                                    <div class="product-brand align-items-center">
+                                        Shop Demo 01
+                                    </div>
+                                    <div class="product-name mb-0">Samsung Galaxy S21 Ultra 5G</div>
+                                    <div class="product-name">(Hàng sắp về)</div>
+                                    <div class="product-subprice">200.020.000 đ</div>
+                                    <div class="product-price">190.030.000 đ</div>
+                                    <div class="product-btn text-center">
+                                        <a href="">Xem nhanh</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-100 text-center d-block">
+                        <a class="bran__viewmore d-inline-block" href="">Xem thêm</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Product image modal -->
+<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Đóng</span>
+                </button>
+                <img src="" class="imagepreview" style="width: 100%;">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Mua sỉ modal -->
+<div class="modal fade" id="wholesaleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+    <div id="sizechart-modal" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="border: unset;">
+                <h5 class="modal-title" id="exampleModalLabel">Bảng giá mua sỉ</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body py-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered order-table" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Số lượng</th>
+                                <th>Giảm</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10 - 20</td>
+                                <td>10%</td>
+                            </tr>
+                            <tr>
+                                <td>21 - 30</td>
+                                <td>20%</td>
+                            </tr>
+                            <tr>
+                                <td>31 - 40</td>
+                                <td>30%</td>
+                            </tr>
+                            <tr>
+                                <td>41 - 50</td>
+                                <td>40%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer" style="border: unset;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Size guid modal -->
+<div class="modal fade" id="sizeguideModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header pb-0" style="border: unset;">
+                <h5 class="modal-title" id="exampleModalLabel">Hướng dẫn chọn size</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered order-table" id="dataTable" width="100%" cellspacing="0">
+                        <thead style="">
+                            <tr>
+                                <th>Size</th>
+                                <th>UK</th>
+                                <th>DE</th>
+                                <th>US</th>
+                                <th>FR</th>
+                                <th>IT</th>
+                                <th>ES</th>
+                                <th>Length</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>36</td>
+                                <td>3</td>
+                                <td>35.5</td>
+                                <td>5.5</td>
+                                <td>35.5</td>
+                                <td>35.5</td>
+                                <td>35.5</td>
+                                <td>22cm</td>
+                            </tr>
+                            <tr>
+                                <td>36</td>
+                                <td>3</td>
+                                <td>35.5</td>
+                                <td>5.5</td>
+                                <td>35.5</td>
+                                <td>35.5</td>
+                                <td>35.5</td>
+                                <td>22cm</td>
+                            </tr>
+                            <tr>
+                                <td>36</td>
+                                <td>3</td>
+                                <td>35.5</td>
+                                <td>5.5</td>
+                                <td>35.5</td>
+                                <td>35.5</td>
+                                <td>35.5</td>
+                                <td>22cm</td>
+                            </tr>
+                            <tr>
+                                <td>36</td>
+                                <td>3</td>
+                                <td>35.5</td>
+                                <td>5.5</td>
+                                <td>35.5</td>
+                                <td>35.5</td>
+                                <td>35.5</td>
+                                <td>22cm</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer pt-0" style="border: unset;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.lightSlider').lightSlider({
+            gallery: true,
+            item: 1,
+            loop: true,
+            slideMargin: 0,
+            thumbItem: 6
+        });
+        $('.lSSlideOuter .lSPager').css('height', $('.lSSlideOuter .lSPager li').width() + 4)
+        $('#content-slider').lightSlider({
+            keyPress: false,
+            item: 5,
+            loop: true
+        })
+        $('#content-slider').css('height', $('#content-slider li').width())
+        $(document).resize(function () {
+            $('.lSPager').css('height', $('.lSPager li').width() + 4)
+            $('#content-slider').css('height', $('#content-slider li').width())
+        })
+    })
+    $('.pop').on('click', function () {
+        $('.imagepreview').attr('src', $(this).attr('src'));
+        $('#imagemodal').modal('show');
+    });
+
+    window.onload = function () {
+        if (window.File && window.FileList && window.FileReader) {
+            var filesInput = document.getElementById("image-upload");
+            filesInput.addEventListener("change", function (event) {
+                var files = event.target.files; //FileList object
+                if (files.length > 3)
+                    return;
+                var output = document.getElementById("image-preview");
+                $('#image-preview').empty();
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    //Only pics
+                    if (!file.type.match('image'))
+                        continue;
+
+                    var picReader = new FileReader();
+                    picReader.addEventListener("load", function (event) {
+                        var picFile = event.target;
+                        var div = document.createElement("div");
+                        div.classList.add(`image__upload-item`);
+                        div.innerHTML = "<div class='image-uploaded' style='position: relative; width: 100px; height: 100px; margin-right: 4px'><img src='" + picFile.result + "'" + "title='" + picFile.name + "' style='height: 100%; width: 100%; object-fit: contain'/><span class='remove__upload' style='position: absolute; top: 0; right: 0; cursor: pointer'><svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='red' stroke-width='1' stroke-linecap='round' stroke-linejoin='round' class='feather feather-x'><line x1='18' y1='6' x2='6' y2='18'></line><line x1='6' y1='6' x2='18' y2='18'></line></svg><span></div>";
+                        var removeUpload = div.querySelector(".image-uploaded .remove__upload");
+                        removeUpload.addEventListener("click", function (evt) {
+                            div.remove();
+                        })
+                        output.insertBefore(div, null);
+                    });
+                    //Read the image
+                    picReader.readAsDataURL(file);
+                }
+            });
+        } else {
+            console.log("Your browser does not support File API");
+        }
+    }
+</script>

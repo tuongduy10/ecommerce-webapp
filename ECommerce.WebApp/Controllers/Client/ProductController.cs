@@ -5,10 +5,7 @@ using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.SubCategory;
 using ECommerce.WebApp.Models.Products;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.Controllers.Client
@@ -37,6 +34,7 @@ namespace ECommerce.WebApp.Controllers.Client
             foreach (var product in products.Items)
             {
                 ProductModel pro = new ProductModel();
+                pro.ProductId = product.ProductId;
                 pro.ProductImages = product.ProductImages;
                 pro.DiscountPercent = product.DiscountPercent;
                 pro.New = product.New;
@@ -97,7 +95,6 @@ namespace ECommerce.WebApp.Controllers.Client
 
                 list.Add(pro);
             }
-            //list.OrderBy(i => i.Price).ToList();
 
             ProductRecordModel listProduct = new ProductRecordModel();
             listProduct.CurrentPage = products.CurrentPage;
@@ -116,7 +113,10 @@ namespace ECommerce.WebApp.Controllers.Client
 
             return View(model);
         }
-        
+        public async Task<IActionResult> ProductDetail(int ProductId)
+        {
+            return View();
+        }
         public async Task<IActionResult> ProductAvaliable()
         {
             return View();

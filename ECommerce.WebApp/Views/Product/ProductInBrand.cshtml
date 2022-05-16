@@ -338,7 +338,7 @@
                                 @foreach (var product in Model.listProduct.Items)
                                 {
                                     <div class="product product-3">
-                                        <a class="product-img" href="product-detail.html">
+                                        <a class="product-img" href="@Url.Action("ProductDetail", "Product", new { ProductId = product.ProductId })">
                                             <img src="@(Configuration["ImagePath:Product"] + product.ProductImages)" alt="">
                                         </a>
                                         <div class="product-label d-flex justify-content-end align-items-center w-100" style="background-color: #fff; padding: 3px 0;">
@@ -401,7 +401,7 @@
                                                 }
 
                                                 <div class="product-btn">
-                                                    <a href="">Xem nhanh</a>
+                                                    <a href="@Url.Action("ProductDetail", "Product", new { ProductId = product.ProductId })">Xem nhanh</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -729,6 +729,7 @@
         if (listProduct.length > 0) {
             listProduct.forEach(product => {
                 var html = htmlProduct(
+                    product.productId,
                     product.productImages,
                     product.discountPercent,
                     product.new,
@@ -791,6 +792,7 @@
 
     // Html product
     function htmlProduct(
+        id,
         image,
         discountPercent,
         newProduct,
@@ -851,7 +853,7 @@
 
         var html = `
             <div class="product product-3">
-                <a class="product-img" href="product-detail.html">
+                <a class="product-img" href="/Product/ProductDetail?ProductId=${id}">
                     <img src="@Configuration["ImagePath:Product"]${image}" alt="">
                 </a>
                 <div class="product-label d-flex justify-content-end align-items-center w-100" style="background-color: #fff; padding: 3px 0;">
@@ -883,7 +885,7 @@
                         ${htmlImportDate}
                         ${htmlPrice}
                         <div class="product-btn">
-                            <a href="">Xem nhanh</a>
+                            <a href="/Product/ProductDetail?ProductId=${id}">Xem nhanh</a>
                         </div>
                     </div>
                 </div>

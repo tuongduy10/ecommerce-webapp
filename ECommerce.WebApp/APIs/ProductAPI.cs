@@ -38,6 +38,7 @@ namespace ECommerce.WebApp.APIs
             foreach (var product in products.Items)
             {
                 ProductModel pro = new ProductModel();
+                pro.ProductId = product.ProductId;
                 pro.ProductImages = product.ProductImages;
                 pro.DiscountPercent = product.DiscountPercent;
                 pro.New = product.New;

@@ -195,6 +195,7 @@
     var arrFiles = [];
     window.onload = function () {
         loadIamgesWithPreview("banner-upload", "banner-preview", 10);
+
         function loadIamgesWithPreview(upload, preview, lim) {
             if (window.File && window.FileList && window.FileReader) {
                 $(`#${upload}`).change(function (event) {

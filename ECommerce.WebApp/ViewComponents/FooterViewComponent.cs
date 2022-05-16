@@ -1,9 +1,6 @@
 ﻿using ECommerce.Application.Services.Configurations;
 using ECommerce.WebApp.Models.Components;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.ViewComponents
