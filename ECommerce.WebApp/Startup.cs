@@ -15,6 +15,7 @@ using ECommerce.Application.Services.FilterProduct;
 using ECommerce.Application.Services.User;
 using ECommerce.Application.Services.Bank;
 using ECommerce.Application.Services.Shop;
+using ECommerce.Application.Services.Rate;
 
 namespace ECommerce.WebApp
 {
@@ -70,6 +71,7 @@ namespace ECommerce.WebApp
             services.AddTransient<IBrandService, BrandService>();
             services.AddTransient<IFilterProductService, FilterProductService>();
             services.AddTransient<IBankService, BankService>();
+            services.AddTransient<IRateService, RateService>();
 
             // User
             services.AddTransient<IUserService, UserService>();

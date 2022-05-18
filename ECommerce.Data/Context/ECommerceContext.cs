@@ -28,7 +28,6 @@ namespace ECommerce.Data.Context
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Configuration> Configurations { get; set; }
         public virtual DbSet<Discount> Discounts { get; set; }
-        public virtual DbSet<DiscountType> DiscountTypes { get; set; }
         public virtual DbSet<Header> Headers { get; set; }
         public virtual DbSet<Option> Options { get; set; }
         public virtual DbSet<OptionValue> OptionValues { get; set; }
@@ -189,21 +188,8 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.StartDate).HasColumnType("datetime");
 
-                entity.HasOne(d => d.DiscountType)
-                    .WithMany(p => p.Discounts)
-                    .HasForeignKey(d => d.DiscountTypeId)
-                    .HasConstraintName("FK_DiscountValue_DiscountType");
             });
 
-            modelBuilder.Entity<DiscountType>(entity =>
-            {
-                entity.ToTable("DiscountType");
-
-                entity.Property(e => e.DiscountType1)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("DiscountType");
-            });
 
             modelBuilder.Entity<Header>(entity =>
             {
@@ -465,7 +451,7 @@ namespace ECommerce.Data.Context
             {
                 entity.ToTable("Rate");
 
-                entity.Property(e => e.Comment).HasColumnType("text");
+                entity.Property(e => e.Comment).HasColumnType("ntext");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Rates)
@@ -476,6 +462,8 @@ namespace ECommerce.Data.Context
                     .WithMany(p => p.Rates)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_Rate_User");
+
+                entity.Property(e => e.CreateDate).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<RatingImage>(entity =>

@@ -1,9 +1,6 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.Product.Dtos;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ECommerce.Application.Services.Product
@@ -11,5 +8,7 @@ namespace ECommerce.Application.Services.Product
     public interface IProductService
     {
         Task<PageResult<ProductInBrandModel>> getProductPaginated(ProductGetRequest request);
+        Task<List<ProductInBrandModel>> getProductSuggestion();
+        Task<ProductDetailModel> getProductDeatil(int id);
     }
 }

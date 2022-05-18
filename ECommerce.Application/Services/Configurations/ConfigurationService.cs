@@ -18,6 +18,13 @@ namespace ECommerce.Application.Services.Configurations
         {
             _DbContext = DbContext;
         }
+        public async Task<string> getPhoneNumber()
+        {
+            var query = from con in _DbContext.Configurations select con;
+            var result = await query.Select(i => i.PhoneNumber).FirstAsync();
+
+            return result;
+        }
         public async Task<List<BannerModel>> getBanner()
         {
             var query = from banner in _DbContext.Banners select banner;

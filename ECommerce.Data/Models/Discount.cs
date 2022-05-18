@@ -19,9 +19,8 @@ namespace ECommerce.Data.Models
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public byte? Status { get; set; }
-        public int? DiscountTypeId { get; set; }
+        public bool? isPercent { get; set; }
 
-        public virtual DiscountType DiscountType { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
     }
 }

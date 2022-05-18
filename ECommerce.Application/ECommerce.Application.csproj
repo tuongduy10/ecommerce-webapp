@@ -15,7 +15,6 @@
     <Compile Remove="Services\ProductOption\**" />
     <Compile Remove="Services\ProductPrice\**" />
     <Compile Remove="Services\ProductType\**" />
-    <Compile Remove="Services\Rate\**" />
     <Compile Remove="Services\RatingImage\**" />
     <Compile Remove="Services\ShopBrand\**" />
     <Compile Remove="Services\Social\**" />
@@ -32,7 +31,6 @@
     <EmbeddedResource Remove="Services\ProductOption\**" />
     <EmbeddedResource Remove="Services\ProductPrice\**" />
     <EmbeddedResource Remove="Services\ProductType\**" />
-    <EmbeddedResource Remove="Services\Rate\**" />
     <EmbeddedResource Remove="Services\RatingImage\**" />
     <EmbeddedResource Remove="Services\ShopBrand\**" />
     <EmbeddedResource Remove="Services\Social\**" />
@@ -49,7 +47,6 @@
     <None Remove="Services\ProductOption\**" />
     <None Remove="Services\ProductPrice\**" />
     <None Remove="Services\ProductType\**" />
-    <None Remove="Services\Rate\**" />
     <None Remove="Services\RatingImage\**" />
     <None Remove="Services\ShopBrand\**" />
     <None Remove="Services\Social\**" />

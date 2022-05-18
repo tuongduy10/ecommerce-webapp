@@ -11,6 +11,7 @@ namespace ECommerce.Application.Services.Configurations
 {
     public interface IConfigurationService
     {
+        Task<string> getPhoneNumber();
         Task<ConfigurationModel> getConfiguration();
         Task<List<BannerModel>> getBanner();
         Task<ApiResponse> UpdateAddress(AddressUpdateRequest request);

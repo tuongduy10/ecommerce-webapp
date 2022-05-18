@@ -1,7 +1,9 @@
 ﻿using ECommerce.Application.Services.Brand;
+using ECommerce.Application.Services.Configurations;
 using ECommerce.Application.Services.FilterProduct;
 using ECommerce.Application.Services.Product;
 using ECommerce.Application.Services.Product.Dtos;
+using ECommerce.Application.Services.Rate;
 using ECommerce.Application.Services.SubCategory;
 using ECommerce.WebApp.Models.Products;
 using Microsoft.AspNetCore.Mvc;
@@ -11,17 +13,27 @@ using System.Threading.Tasks;
 namespace ECommerce.WebApp.Controllers.Client
 {
     public class ProductController : Controller
-    { 
+    {
+        private readonly IConfigurationService _configurationService;
         private readonly IProductService _productService;
         private readonly ISubCategoryService _subCategoryService;
         private readonly IBrandService _brandService;
         private readonly IFilterProductService _filterService;
-        public ProductController(IProductService productService, ISubCategoryService subCategoryService, IBrandService brandService, IFilterProductService filterService)
+        private readonly IRateService _rateService;
+        public ProductController(
+            IConfigurationService configurationService,
+            IProductService productService, 
+            ISubCategoryService subCategoryService, 
+            IBrandService brandService, 
+            IFilterProductService filterService,
+            IRateService rateService)
         {
+            _configurationService = configurationService;
             _productService = productService;
             _subCategoryService = subCategoryService;
             _brandService = brandService;
             _filterService = filterService;
+            _rateService = rateService;
         }
         public async Task<IActionResult> ProductInBrand(ProductGetRequest request)
         {
@@ -30,27 +42,70 @@ namespace ECommerce.WebApp.Controllers.Client
             var brand = await _brandService.getBrandById(request.BrandId);
             var filter = await _filterService.listFilterModel(request.BrandId);
 
-            var list = new List<ProductModel>();
-            foreach (var product in products.Items)
+            ProductRecordModel listProduct = new ProductRecordModel();
+            listProduct.CurrentPage = products.CurrentPage;
+            listProduct.CurrentRecord = products.CurrentRecord;
+            listProduct.TotalPage = products.TotalPage;
+            listProduct.TotalRecord = products.TotalRecord;
+            listProduct.Items = productListFormated(products.Items);
+
+            var model = new ProductInBrandViewModel()
+            {
+                listProduct = listProduct,
+                listSubCategory = listSubCategory,
+                brand = brand,
+                listFilterModel = filter,
+            };
+
+            return View(model);
+        }
+        public async Task<IActionResult> ProductDetail(int ProductId)
+        {
+            var product = await _productService.getProductDeatil(ProductId);
+            var rates = await _rateService.getRatesByProductId(ProductId);
+            var suggestion = await _productService.getProductSuggestion();
+            var phone = await _configurationService.getPhoneNumber();
+
+            var model = new ProductDetailViewModel
+            {
+                product = product,
+                rates = rates,
+                suggestion = productListFormated(suggestion),
+                phone = phone
+            };
+            return View(model);
+        }
+        public async Task<IActionResult> ProductAvaliable()
+        {
+            return View();
+        }
+        public async Task<IActionResult> ProductPreOrder()
+        {
+            return View();
+        }
+        private List<ProductModel> productListFormated(List<ProductInBrandModel> list)
+        {
+            var _list = new List<ProductModel>();
+            foreach (var item in list)
             {
                 ProductModel pro = new ProductModel();
-                pro.ProductId = product.ProductId;
-                pro.ProductImages = product.ProductImages;
-                pro.DiscountPercent = product.DiscountPercent;
-                pro.New = product.New;
-                pro.Highlights = product.Highlights;
-                pro.ShopName = product.ShopName;
-                pro.ProductName = product.ProductName;
-                pro.BrandName = product.BrandName;
-                pro.ProductImportDate = product.ProductImportDate;
+                pro.ProductId = item.ProductId;
+                pro.ProductImages = item.ProductImages;
+                pro.DiscountPercent = item.DiscountPercent;
+                pro.New = item.New;
+                pro.Highlights = item.Highlights;
+                pro.ShopName = item.ShopName;
+                pro.ProductName = item.ProductName;
+                pro.BrandName = item.BrandName;
+                pro.ProductImportDate = item.ProductImportDate;
 
-                if (product.Type.Count == 1)
+                if (item.Type.Count == 1)
                 {
-                    pro.ProductTypeName = product.Type[0].ProductTypeName;
+                    pro.ProductTypeName = item.Type[0].ProductTypeName;
                 }
-                if (product.Type.Count == 2)
+                if (item.Type.Count == 2)
                 {
-                    foreach (var type in product.Type)
+                    foreach (var type in item.Type)
                     {
                         if (type.ProductTypeId == 1)
                         {
@@ -60,9 +115,9 @@ namespace ECommerce.WebApp.Controllers.Client
                 }
 
                 // price
-                if (product.Price.Count == 2)
+                if (item.Price.Count == 2)
                 {
-                    foreach (var price in product.Price)
+                    foreach (var price in item.Price)
                     {
                         if (price.ProductTypeId == 2)
                         {
@@ -79,51 +134,23 @@ namespace ECommerce.WebApp.Controllers.Client
                         }
                     }
                 }
-                if (product.Price.Count == 1)
+                if (item.Price.Count == 1)
                 {
-                    if (product.Price[0].PriceOnSell == null)
+                    if (item.Price[0].PriceOnSell == null)
                     {
-                        pro.Price = product.Price[0].Price;
+                        pro.Price = item.Price[0].Price;
                         pro.PriceOnSell = null;
                     }
                     else
                     {
-                        pro.Price = product.Price[0].Price;
-                        pro.PriceOnSell = product.Price[0].PriceOnSell;
+                        pro.Price = item.Price[0].Price;
+                        pro.PriceOnSell = item.Price[0].PriceOnSell;
                     }
                 }
 
-                list.Add(pro);
+                _list.Add(pro);
             }
-
-            ProductRecordModel listProduct = new ProductRecordModel();
-            listProduct.CurrentPage = products.CurrentPage;
-            listProduct.CurrentRecord = products.CurrentRecord;
-            listProduct.TotalPage = products.TotalPage;
-            listProduct.TotalRecord = products.TotalRecord;
-            listProduct.Items = list;
-
-            var model = new ProductInBrandViewModel()
-            {
-                listProduct = listProduct,
-                listSubCategory = listSubCategory,
-                brand = brand,
-                listFilterModel = filter,
-            };
-
-            return View(model);
-        }
-        public async Task<IActionResult> ProductDetail(int ProductId)
-        {
-            return View();
-        }
-        public async Task<IActionResult> ProductAvaliable()
-        {
-            return View();
-        }
-        public async Task<IActionResult> ProductPreOrder()
-        {
-            return View();
+            return _list;
         }
     }
 }
