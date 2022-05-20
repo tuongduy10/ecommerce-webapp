@@ -14,5 +14,6 @@ namespace ECommerce.Application.Services.SubCategory
         Task<int> Delete(int CategoryId);
         Task<List<SubCategoryModel>> getAll();
         Task<List<SubCategoryModel>> getSubCategoryInBrand(int BrandId);
+        Task<List<SubCategoryModel>> getSubCategoryByUser(int userId);
     }
 }

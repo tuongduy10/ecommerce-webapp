@@ -18,7 +18,6 @@ namespace ECommerce.Application.Services.Product
         {
             _DbContext = DbContext;
         }
-
         public async Task<List<Dtos.Option>> getProductOption(int productId)
         {
             // get Options by product id
@@ -39,14 +38,13 @@ namespace ECommerce.Application.Services.Product
             {
                 var opt_v = await _DbContext.Options
                                     .Where(i => i.OptionId == id)
-                                    .Select(i => new Dtos.Option()
-                                    {
+                                    .Select(i => new Dtos.Option() {
                                         Name = i.OptionName,
                                         Value =_DbContext.ProductOptionValues
                                                 .Where(pov => pov.ProductId == productId && pov.OptionValue.OptionId == i.OptionId)
                                                 .Select(pov => pov.OptionValue.OptionValueName)
                                                 .ToList()
-            })
+                                    })
                                     .FirstOrDefaultAsync();
                 result.Add(opt_v);
             }
@@ -246,6 +244,33 @@ namespace ECommerce.Application.Services.Product
                 .ToListAsync();
 
             return list;
+        }
+        public async Task<List<ProductShopListModel>> getProductByUser(int userId, int subcategoryId)
+        {
+            var query = from products in _DbContext.Products
+                        where products.Shop.UserId == userId
+                        select products;
+            if(subcategoryId != 0)
+            {
+                query = query.Where(i => i.SubCategoryId == subcategoryId);
+            }
+
+            var result = await query
+                .Select(i => new ProductShopListModel()
+                {
+                    ProductId = i.ProductId,
+                    ProductName = i.ProductName,
+                    Status = i.Status,
+                    Stock = (int)i.ProductStock,
+                    SubCategoryName = i.SubCategory.SubCategoryName,
+                    CategoryName = i.SubCategory.Category.CategoryName,
+                    BrandName = i.Brand.BrandName,
+                    ProductImages = i.ProductImages.Select(i => i.ProductImagePath).FirstOrDefault(),
+                    Price = _DbContext.ProductPrices.Where(price => price.ProductId == i.ProductId).ToList()
+                })
+                .ToListAsync();
+
+            return result;
         }
     }
 }

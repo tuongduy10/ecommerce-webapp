@@ -58,5 +58,55 @@ namespace ECommerce.Application.Services.SubCategory
 
             return list;
         }
+        public async Task<List<SubCategoryModel>> getSubCategoryByUser(int userId)
+        {
+            // get brandids by shop(userid)
+            var brandIds = await _DbContext.ShopBrands
+                .Where(i => i.Shop.UserId == userId)
+                .Select(i => i.BrandId)
+                .Distinct()
+                .ToListAsync();
+
+            // get categoryids by brandids
+            var categoryIds = new List<int>();
+            foreach (var id in brandIds)
+            {
+                var categoryId = await _DbContext.Brands
+                    .Where(i => i.BrandId == id)
+                    .Select(i => i.CategoryId)
+                    .ToListAsync();
+                categoryIds.AddRange(categoryId);
+            }
+            categoryIds = categoryIds.Distinct().ToList();
+
+            // get subcategoryids by categoryids
+            var subcIds = new List<int>();
+            foreach (var id in categoryIds)
+            {
+                var subcId = await _DbContext.SubCategories
+                    .Where(i => i.CategoryId == id)
+                    .Select(i => i.SubCategoryId)
+                    .ToListAsync();
+                subcIds.AddRange(subcId);
+            }
+            subcIds = subcIds.Distinct().ToList();
+
+            // get subcategory by subcategoryids
+            var result = new List<SubCategoryModel>();
+            foreach (var id in subcIds)
+            {
+                var sub = await _DbContext.SubCategories
+                    .Where(i => i.SubCategoryId == id)
+                    .Select(i => new SubCategoryModel()
+                    {
+                        SubCategoryId = i.SubCategoryId,
+                        SubCategoryName = i.SubCategoryName,
+                    })
+                    .FirstOrDefaultAsync();
+                result.Add(sub);
+            }
+
+            return result;
+        }
     }
 }

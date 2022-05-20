@@ -11,5 +11,6 @@ namespace ECommerce.Application.Services.Product
         Task<List<ProductInBrandModel>> getProductSuggestion();
         Task<ProductDetailModel> getProductDeatil(int id);
         Task<List<Option>> getProductOption(int id);
+        Task<List<ProductShopListModel>> getProductByUser(int shopId, int subcategoryId);
     }
 }

@@ -1,0 +1,144 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Quản lý sản phẩm</h6>
+    </div>
+    <div class="card-body">
+        <div class="form-group mb-2">
+            <select class="form-control" aria-label="Default select example">
+                <option selected>Tất cả</option>
+                @foreach (var sub in Model.subCategories)
+                {
+                    <option value="@sub.SubCategoryId">@sub.SubCategoryName</option>
+                }
+            </select>
+        </div>
+        <div class="d-flex align-items-center flex-wrap mb-2">
+            <div class="mr-4">
+                <input type="checkbox" name="select-all" id="select-all">
+                <label class="mb-0" for="select-all">Chọn tất cả</label>
+            </div>
+            <div class="select-actions d-flex align-items-center" style="height: 40px;">
+
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered order-table" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="text-center"></th>
+                        <th>Sản phẩm</th>
+                        <th>Giá có sẵn</th>
+                        <th>Giá đặt trước</th>
+                        <th>Loại sản phẩm</th>
+                        <th>Danh mục</th>
+                        <th>Kho</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model.products)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                <input type="checkbox" class="select-product">
+                            </td>
+                            <td>
+                                <div class="d-flex">
+                                    <div class="mr-2 d-flex align-items-center justify-content-between"
+                                         style="height: 100px; width: 100px;">
+                                        <img class="w-auto h-100"
+                                             src="@(Configuration["ImagePath:Product"] + product.ProductImages)" alt="">
+                                    </div>
+                                    <div>
+                                        <div>@product.ProductName</div>
+                                        <div>@product.BrandName</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                @foreach (var price in product.Price)
+                                {
+                                    @if (price.ProductTypeId == 1)
+                                    {
+                                        @String.Format("{0:0,0} ₫", price.Price)
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @foreach (var price in product.Price)
+                                {
+                                    @if (price.ProductTypeId == 2)
+                                    {
+                                        @String.Format("{0:0,0} ₫", price.Price)
+                                    }
+                                }
+                            </td>
+                            <td>@product.SubCategoryName</td>
+                            <td>@product.CategoryName</td>
+                            <td>@product.Stock</td>
+                            @if (product.Status == 1)
+                            {
+                                <td style="color: var(--success); white-space: nowrap;">Đang bán</td>
+                            }
+                            @if (product.Status == 0)
+                            {
+                                <td style="white-space: nowrap;">Đã ẩn</td>
+                            }
+                            <td class="text-center">
+                                <a href="" style="color: var(--blue-dior);">Chi tiết</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+        $(document).ready(function () {
+            $('#select-all').click(function () {
+                if ($('#select-all').is(":checked")) {
+                    $('.select-product').prop('checked', true);
+                    setAction();
+                    return;
+                }
+                $('.select-actions').html(``);
+                $('.select-product').prop('checked', false);
+            })
+
+            $('.select-product').click(function () {
+                $('#select-all').prop('checked', false);
+                setAction();
+            })
+
+            function setAction() {
+                let count = 0;
+                $('.select-product').each(function (index) {
+                    if ($(this).is(":checked")) {
+                        count++;
+                    }
+                })
+                $('.select-actions').html(`
+                    <div class="mr-2">
+                        <span class="products-selected"><strong>${count}</strong></span>
+                        <span>Sản phẩm đã chọn</span>
+                    </div>
+                    <a class="mr-2 btn btn-secondary">Xóa</a>
+                    <a class="mr-2 btn btn-primary">Ẩn</a>
+                `);
+                if (count == 0) {
+                    $('.select-actions').html(``);
+                }
+                if(count == $('.select-product').length){
+                    $('#select-all').prop('checked', true);
+                }
+            }
+        })
+</script>
