@@ -65,13 +65,15 @@ namespace ECommerce.WebApp.Controllers.Client
             var rates = await _rateService.getRatesByProductId(ProductId);
             var suggestion = await _productService.getProductSuggestion();
             var phone = await _configurationService.getPhoneNumber();
+            var options = await _productService.getProductOption(ProductId);
 
             var model = new ProductDetailViewModel
             {
                 product = product,
                 rates = rates,
                 suggestion = productListFormated(suggestion),
-                phone = phone
+                phone = phone,
+                options = options,
             };
             return View(model);
         }

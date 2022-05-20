@@ -11,5 +11,6 @@ namespace ECommerce.WebApp.Models.Products
         public ProductDetailModel product { get; set; }
         public List<RateGetModel> rates { get; set; }
         public List<ProductModel> suggestion { get; set; }
+        public List<Option> options { get; set; }
     }
 }

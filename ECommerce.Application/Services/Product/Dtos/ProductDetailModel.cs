@@ -34,20 +34,10 @@ namespace ECommerce.Application.Services.Product.Dtos
         public string AttrName { get; set; }
         public string Value { get; set; }
     }
-    public class OptionModel
-    {
-        public List<Option> Options { get; set; }
-        public List<OptionValue> OptionValues { get; set; }
-    }
-    public class OptionValue
-    {
-        public int Id { get; set; }
-        public string Value { get; set; }
-    }
     public class Option
     {
-        public int Id { get; set; }
         public string Name { get; set; }
+        public List<string> Value { get; set; }
     }
     public class Rate
     {

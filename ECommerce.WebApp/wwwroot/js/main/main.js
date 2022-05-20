@@ -260,7 +260,10 @@ $('.rating .stars span').click(function(){
         })        
     }else{
         $(this).removeClass('rated');
-        $('.rating .stars span').each(function(index, element){
+        $('.rating .stars span').each(function (index, element) {
+            if ($($('.rating .stars span').length == 1)) {
+                return;
+            }
             $(element).removeClass('checked');
         })
     }

@@ -10,5 +10,6 @@ namespace ECommerce.Application.Services.Product
         Task<PageResult<ProductInBrandModel>> getProductPaginated(ProductGetRequest request);
         Task<List<ProductInBrandModel>> getProductSuggestion();
         Task<ProductDetailModel> getProductDeatil(int id);
+        Task<List<Option>> getProductOption(int id);
     }
 }

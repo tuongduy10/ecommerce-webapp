@@ -19,15 +19,39 @@ namespace ECommerce.Application.Services.Product
             _DbContext = DbContext;
         }
 
-        public async Task<int> getProductOption(int id)
+        public async Task<List<Dtos.Option>> getProductOption(int productId)
         {
-            var opt = await _DbContext.Options.ToListAsync();
-            var optValue = await _DbContext.OptionValues.ToListAsync();
+            // get Options by product id
+            var opts = from opt in _DbContext.Options
+                       from opt_v in _DbContext.OptionValues
+                       from pro_optv in _DbContext.ProductOptionValues
+                       where pro_optv.ProductId == productId &&
+                            pro_optv.OptionValueId == opt_v.OptionValueId &&
+                            opt_v.OptionId == opt.OptionId
+                       select opt;
 
-            var pro_optValue = await _DbContext.ProductOptionValues.Where(i => i.ProductId == id).ToListAsync();
-            pro_optValue = pro_optValue.Distinct().ToList();
+            // get option ids distincted
+            var opt_ids = await opts.Select(i => i.OptionId).Distinct().ToListAsync();
 
-            return 0;
+            // list option with option_values 
+            var result = new List<Dtos.Option>();
+            foreach (var id in opt_ids)
+            {
+                var opt_v = await _DbContext.Options
+                                    .Where(i => i.OptionId == id)
+                                    .Select(i => new Dtos.Option()
+                                    {
+                                        Name = i.OptionName,
+                                        Value =_DbContext.ProductOptionValues
+                                                .Where(pov => pov.ProductId == productId && pov.OptionValue.OptionId == i.OptionId)
+                                                .Select(pov => pov.OptionValue.OptionValueName)
+                                                .ToList()
+            })
+                                    .FirstOrDefaultAsync();
+                result.Add(opt_v);
+            }
+
+            return result;
         }
         public async Task<ProductDetailModel> getProductDeatil(int id)
         {

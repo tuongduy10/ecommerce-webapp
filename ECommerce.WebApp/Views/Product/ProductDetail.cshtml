@@ -155,75 +155,36 @@
                                     <div class="option-quality d-flex mb-2 align-items-center">
                                         <div class="option-title">Chọn số lượng </div>
                                         <input class="text-center mr-2" type="number" value="1" min="1"
-                                                max="50">
+                                               max="50">
                                         <a class="product__detail-link" style="text-decoration: underline; cursor: pointer;" data-toggle="modal"
-                                            data-target="#wholesaleModal">
+                                           data-target="#wholesaleModal">
                                             Xem giá mua sỉ
                                         </a>
                                     </div>
-                                    <div class="option-size d-flex mb-2 align-items-center">
-                                        <div class="option-title">Chọn kích cỡ </div>
-                                        <div class="options-wrapper">
-                                            <select class="options form-select w-100"
-                                                    aria-label="Default select example">
-                                                <option disabled selected>- Chọn -</option>
-                                                <option value="1">S</option>
-                                                <option value="2">M</option>
-                                                <option value="3">L</option>
-                                                <option value="4">XL</option>
-                                                <option value="4">XXL</option>
-                                            </select>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="feather feather-chevron-down">
-                                                <polyline points="6 9 12 15 18 9"></polyline>
-                                            </svg>
+                                    @foreach (var option in Model.options)
+                                    {
+                                        <div class="option-size d-flex mb-2 align-items-center">
+                                            <div class="option-title">@option.Name</div>
+                                            <div class="options-wrapper">
+                                                <select class="options form-select w-100"
+                                                        aria-label="Default select example">
+                                                    <option disabled selected>- Chọn -</option>
+                                                    @foreach (var value in option.Value)
+                                                    {
+                                                        <option value="1">@value</option>
+                                                    }
+
+                                                </select>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                     viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                                     stroke-linecap="round" stroke-linejoin="round"
+                                                     class="feather feather-chevron-down">
+                                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                                </svg>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="option-color d-flex mb-2 align-items-center">
-                                        <div class="option-title">Chọn màu sắc </div>
-                                        <div class="options-wrapper">
-                                            <select class="options form-select w-100"
-                                                    aria-label="Default select example">
-                                                <option disabled selected>- Chọn -</option>
-                                                <option value="1">Xanh</option>
-                                                <option value="2">Đỏ</option>
-                                                <option value="3">Tím</option>
-                                                <option value="4">Vàng</option>
-                                                <option value="1">Xanh</option>
-                                                <option value="2">Đỏ</option>
-                                                <option value="3">Tím</option>
-                                                <option value="4">Vàng</option>
-                                                <option value="1">Xanh</option>
-                                                <option value="2">Đỏ</option>
-                                                <option value="3">Tím</option>
-                                                <option value="4">Vàng</option>
-                                                <option value="1">Xanh</option>
-                                                <option value="2">Đỏ</option>
-                                                <option value="3">Tím</option>
-                                                <option value="4">Vàng</option>
-                                                <option value="1">Xanh</option>
-                                                <option value="2">Đỏ</option>
-                                                <option value="3">Tím</option>
-                                                <option value="4">Vàng</option>
-                                                <option value="1">Xanh</option>
-                                                <option value="2">Đỏ</option>
-                                                <option value="3">Tím</option>
-                                                <option value="4">Vàng</option>
-                                                <option value="1">Xanh</option>
-                                                <option value="2">Đỏ</option>
-                                                <option value="3">Tím</option>
-                                                <option value="4">Vàng</option>
-                                            </select>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="feather feather-chevron-down">
-                                                <polyline points="6 9 12 15 18 9"></polyline>
-                                            </svg>
-                                        </div>
-                                    </div>
+
+                                    }
                                 </div>
                                 <div class="product__detail-price">
                                     @if (Model.product.DiscountPercent != null)
@@ -395,15 +356,15 @@
                                     <div class="rating d-flex mb-2 align-items-center">
                                         <span>Đánh giá</span>
                                         <div class="stars ml-2">
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
-                                            <span class="fa fa-star checked"></span>
+                                            <span class="rate-value fa fa-star checked"></span>
+                                            <span class="rate-value fa fa-star checked"></span>
+                                            <span class="rate-value fa fa-star checked"></span>
+                                            <span class="rate-value fa fa-star checked"></span>
+                                            <span class="rate-value fa fa-star checked"></span>
                                         </div>
                                     </div>
                                     <div class="d-flex">
-                                        <textarea class="d-flex w-100 mb-2" name="" id=""
+                                        <textarea class="comment-val d-flex w-100 mb-2" name="" id=""
                                                   placeholder="Nhận xét của bạn về sản phẩm này"></textarea>
                                     </div>
                                     <div class="upload-image mb-2">
@@ -416,7 +377,7 @@
                                         </output>
                                     </div>
                                     <div class="text-right">
-                                        <button type="button">Gửi bình luận</button>
+                                        <button class="post-comment" type="button">Gửi bình luận</button>
                                     </div>
                                 </div>
                             }
@@ -700,6 +661,15 @@
     </div>
 </div>
 
+@if (!string.IsNullOrEmpty(ViewBag.Message))
+{
+<script>
+    window.onload = function () {
+        alert("@ViewBag.Message");
+    };
+</script>
+}
+
 <script type="text/javascript">
     $(document).ready(function () {
         $('.lightSlider').lightSlider({
@@ -726,6 +696,7 @@
         $('#imagemodal').modal('show');
     });
 
+    var arrFiles = [];
     window.onload = function () {
         if (window.File && window.FileList && window.FileReader) {
             var filesInput = document.getElementById("image-upload");
@@ -741,7 +712,10 @@
                     if (!file.type.match('image'))
                         continue;
 
+                    arrFiles.push(file)
+
                     var picReader = new FileReader();
+                    picReader.fileName = file.name;
                     picReader.addEventListener("load", function (event) {
                         var picFile = event.target;
                         var div = document.createElement("div");
@@ -749,8 +723,13 @@
                         div.innerHTML = "<div class='image-uploaded' style='position: relative; width: 100px; height: 100px; margin-right: 4px'><img src='" + picFile.result + "'" + "title='" + picFile.name + "' style='height: 100%; width: 100%; object-fit: contain'/><span class='remove__upload' style='position: absolute; top: 0; right: 0; cursor: pointer'><svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='red' stroke-width='1' stroke-linecap='round' stroke-linejoin='round' class='feather feather-x'><line x1='18' y1='6' x2='6' y2='18'></line><line x1='6' y1='6' x2='18' y2='18'></line></svg><span></div>";
                         var removeUpload = div.querySelector(".image-uploaded .remove__upload");
                         removeUpload.addEventListener("click", function (evt) {
+                            arrFiles.forEach(function (file, index) {
+                                if (file.name == event.target.fileName) {
+                                    arrFiles.splice(index, 1);
+                                }
+                            })
                             div.remove();
-                        })
+                        });
                         output.insertBefore(div, null);
                     });
                     //Read the image
@@ -761,4 +740,35 @@
             console.log("Your browser does not support File API");
         }
     }
+
+    $('.post-comment').click(function () {
+        var formData = new FormData();
+        for (let i = 0; i < arrFiles.length; i++) {
+            formData.append('files', arrFiles[i]);
+        }
+        formData.append('comment', $('.comment-val').val());
+        formData.append('productId', @Model.product.ProductId);
+        var value = 0;
+        $('.rate-value').each(function(){
+            if ($(this).hasClass('checked')) {
+                value++;
+            }
+        })
+        formData.append('value', value);
+
+        $.ajax({
+            type: "POST",
+            url: "/api/RateAPI/PostComment",
+            data: formData, // In the controller it receives List<IFormFile> files, ...
+            processData: false,
+            contentType: false,
+            success: function (message) {
+                alert(message);
+                location.reload();
+            },
+            error: function (error) {
+                alert(error.responseText);
+            }
+        });
+    })
 </script>
