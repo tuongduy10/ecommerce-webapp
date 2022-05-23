@@ -15,5 +15,8 @@ namespace ECommerce.Application.Services.SubCategory
         Task<List<SubCategoryModel>> getAll();
         Task<List<SubCategoryModel>> getSubCategoryInBrand(int BrandId);
         Task<List<SubCategoryModel>> getSubCategoryByUser(int userId);
+        Task<List<SubCategoryModel>> getSubCategoryByCategoryId(int id);
+        Task<List<string>> getOptionBySubCategoryId(int id);
+        Task<List<string>> getAttributeBySubCategoryId(int id);
     }
 }

@@ -11,7 +11,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "SaleProduct/ProductList", // Change it when you're developing some features needed
+      "launchUrl": "SaleProduct/AddProduct", // Change it when you're developing some features needed
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

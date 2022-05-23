@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.Product;
+﻿using ECommerce.Application.Services.Brand;
+using ECommerce.Application.Services.Product;
 using ECommerce.Application.Services.SubCategory;
 using ECommerce.WebApp.Models.SaleProduct;
 using Microsoft.AspNetCore.Authorization;
@@ -16,10 +17,12 @@ namespace ECommerce.WebApp.Controllers.Seller
     {
         private IProductService _productService;
         private ISubCategoryService _subCategoryService;
-        public SaleProductController(IProductService productService, ISubCategoryService subCategoryService)
+        private IBrandService _brandService;
+        public SaleProductController(IProductService productService, ISubCategoryService subCategoryService, IBrandService brandService)
         {
             _productService = productService;
             _subCategoryService = subCategoryService;
+            _brandService = brandService;
         }
         public async Task<IActionResult> Index()
         {
@@ -36,6 +39,11 @@ namespace ECommerce.WebApp.Controllers.Seller
                 subCategories = subcategories,
             };
             return View(model);
+        }
+        public async Task<IActionResult> AddProduct()
+        {
+            var brands = await _brandService.getAll();
+            return View(brands);
         }
     }
 }

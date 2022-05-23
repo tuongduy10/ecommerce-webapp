@@ -108,5 +108,34 @@ namespace ECommerce.Application.Services.SubCategory
 
             return result;
         }
+        public async Task<List<SubCategoryModel>> getSubCategoryByCategoryId(int id)
+        {
+            var result = await _DbContext.SubCategories
+                .Where(i => i.CategoryId == id)
+                .Select(i => new SubCategoryModel() { 
+                    SubCategoryId = i.SubCategoryId, 
+                    SubCategoryName = i.SubCategoryName 
+                })
+                .ToListAsync();
+            return result;
+        }
+        public async Task<List<string>> getOptionBySubCategoryId(int id)
+        {
+            var result = await _DbContext.SubCategoryOptions
+                .Where(i => i.SubCategoryId == id)
+                .Select(i => i.Option.OptionName)
+                .ToListAsync();
+
+            return result;
+        }
+        public async Task<List<string>> getAttributeBySubCategoryId(int id)
+        {
+            var result = await _DbContext.SubCategoryAttributes
+                .Where(i => i.SubCategoryId == id)
+                .Select(i => i.Attribute.AttributeName)
+                .ToListAsync();
+
+            return result;
+        }
     }
 }
