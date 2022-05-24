@@ -573,7 +573,7 @@
         }  
         .signup__inner input,
         .signup__inner button{
-            font-size: calc(4px + (24 - 10) * ((100vw - 375px)/ (1920 - 375)))
+            /*font-size: calc(4px + (24 - 10) * ((100vw - 375px)/ (1920 - 375)))*/
         }
             .signup__inner input,
             .signup__inner select{
@@ -946,6 +946,7 @@ hr {
     color: #fff;
     padding: 5px 10px;
     cursor: pointer;
+    font-size: calc(14px + (20 - 14) * ((100vw - 375px)/ (1920 - 375)));
 }
 .btn-black:hover{
     background-color: #fff !important;

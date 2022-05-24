@@ -18,7 +18,7 @@
             {
                 if (item.Highlights == true)
                 {
-                    <a class="bran__logo p-4" style="cursor: pointer;">
+                    <a href="@Url.Action("ProductInBrand","Product", new { BrandId = item.BrandId, PageIndex = 1})" class="bran__logo p-4" style="cursor: pointer;">
                         <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" alt="">
                     </a>
                 }
@@ -33,7 +33,7 @@
     <div class="content__wrapper">
         <div class="w-100 my-4 p-4">
             <div class="d-flex align-items-center flex-wrap">
-                <!-- Sort Bran by Alphabet -->
+                <!-- Sort brand by Alphabet -->
                 <div class="bran__filter d-flex align-items-center">
                     <h3 class="mb-0">Hiển thị theo bởi</h3>
                     <div class="order__item-wrapper order__button">
@@ -100,6 +100,7 @@
 
                     </div>
                 </div>
+                <!-- Sort brand by category -->
                 <div class="bran__filter d-flex align-items-center">
                     <h3 class="mb-0">Danh mục</h3>
                     <div class="order__item-wrapper order__button">
@@ -113,7 +114,7 @@
                         </div>
                         <div class="order__item-dropdown_menu">
                             <div class="order__item-dropdown_items">
-                                <a class="order__item d-none" onclick="getAllBrandList()">
+                                <a class="order__item d-none getAllBrandByAlphabets">
                                     Tất cả<svg xmlns='http://www.w3.org/2000/svg'
                                                width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#333'
                                                stroke-width='1' stroke-linecap='round' stroke-linejoin='round'
@@ -200,62 +201,111 @@
     </div>
 </div>
 <script>
+    var currentAlphabets = ["A", "B", "C", "D", "E"];
+    var currentCategoryId = 0;
+
     // Events
     $('.getBrandListFromAtoE').click(function () {
         var sortBy = ["A", "B", "C", "D", "E"];
+        currentAlphabets = sortBy;
+
+        // Call api functions
+        if (currentCategoryId != 0) {
+            getAllBrandInCategory(currentCategoryId)
+            return;
+        }
         getBrandListOrdered(sortBy);
     })
     $('.getBrandListFromFtoJ').click(function () {
         var sortBy = ["F", "G", "H", "I", "J"];
+        currentAlphabets = sortBy;
+
+        // Call api functions
+        if (currentCategoryId != 0) {
+            getAllBrandInCategory(currentCategoryId)
+            return;
+        }
         getBrandListOrdered(sortBy);
     })
     $('.getBrandListFromKtoO').click(function () {
         var sortBy = ["K", "L", "M", "N", "O"];
+        currentAlphabets = sortBy;
+
+        // Call api functions
+        if (currentCategoryId != 0) {
+            getAllBrandInCategory(currentCategoryId)
+            return;
+        }
         getBrandListOrdered(sortBy);
     })
     $('.getBrandListFromPtoT').click(function () {
         var sortBy = ["P", "Q", "R", "S", "T"];
+        currentAlphabets = sortBy;
+
+        // Call api functions
+        if (currentCategoryId != 0) {
+            getAllBrandInCategory(currentCategoryId)
+            return;
+        }
         getBrandListOrdered(sortBy);
     })
     $('.getBrandListFromUtoZ').click(function () {
         var sortBy = ["U", "V", "W", "X", "Y", "Z"];
+        currentAlphabets = sortBy;
+
+        // Call api functions
+        if (currentCategoryId != 0) {
+            getAllBrandInCategory(currentCategoryId)
+            return;
+        }
         getBrandListOrdered(sortBy);
     })
-    $('.getAllBrandList').click(function () {
+    $('.getAllBrandList').click(function () { // View all at sort by alphabets
+        currentAlphabets.splice(0, currentAlphabets.length);
+
+        if (currentCategoryId != 0) {
+            getAllBrandInCategory(currentCategoryId);
+            return;
+        }
+        getAllBrandList();
+    })
+    $('.getAllBrandByAlphabets').click(function () { // Tất cả
+        currentCategoryId = 0;
+        if (currentAlphabets.length > 0) {
+            getBrandListOrdered(currentAlphabets);
+            return;
+        }
         getAllBrandList();
     })
     $(document).on('click', '.bran__viewmore', function () { // View more 
         getAllBrandList();
     })
-
     // Call API functions
     function getAllBrandInCategory(id) {
         $.get("/api/BrandAPI/getAllBrandInCategory", { id: id }, function (data, response) {
-            if (response != "success") {
-                $('.bran__list-items').empty();
-                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                return;
-            }
-            if (data.status != "success") {
+            if (response != "success" || data.status != "success") {
                 $('.bran__list-items').empty();
                 $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
                 return;
             }
             if (data.status == "success") {
-                $('.bran__list-items').empty();
                 var listBrand = data.data;
+
+                $('.bran__list-items').empty();
+
+                // Get data and render
+                currentCategoryId = id;
+                if (currentAlphabets.length > 0) {
+                    renderBrandListOrdered(listBrand, currentAlphabets);
+                    return;
+                }
                 renderBrandList(listBrand);
             }
         })
     }
     function getBrandListOrdered(sortBy) {
         $.get("/api/BrandAPI/getAll", function (data, response) {
-            if (response != "success") {
-                $('.bran__list-items').empty();
-                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                return;
-            }
-            if (data.status != "success") {
+            if (response != "success" || data.status != "success") {
                 $('.bran__list-items').empty();
                 $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
                 return;
@@ -263,18 +313,13 @@
             if (data.status == "success") {
                 $('.bran__list-items').empty();
                 var listBrand = data.data; // array brand
-                renderBrandListOrdered(listBrand, sortBy);
+                renderBrandListOrdered(listBrand, sortBy);                
             }
         });
     }
     function getAllBrandList() {
         $.get("/api/BrandAPI/getAll", function (data, response) {
-            if (response != "success") {
-                $('.bran__list-items').empty();
-                $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
-                return;
-            }
-            if (data.status != "success") {
+            if (response != "success" || data.status != "success") {
                 $('.bran__list-items').empty();
                 $('.bran__list-items').append(`<div class="text-center">Không có kết quả</div>`);
                 return;

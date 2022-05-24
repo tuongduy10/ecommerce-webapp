@@ -125,6 +125,7 @@ namespace ECommerce.Application.Services.Product
             var query = (from product in _DbContext.Products
                          join brand in _DbContext.Brands on product.BrandId equals brand.BrandId
                          join shop in _DbContext.Shops on product.ShopId equals shop.ShopId
+                         where product.BrandId == BrandId
                          orderby product.SubCategoryId
                          select new { product, brand, shop }).AsQueryable();
 
@@ -132,14 +133,14 @@ namespace ECommerce.Application.Services.Product
             // Query get products by brandid
             if (BrandId > 0 && SubCategoryId == 0)
             {
-                queryAble = query.Where(q => q.product.BrandId == BrandId);
+                //queryAble = query.Where(q => q.product.BrandId == BrandId);
                 if (orderBy == "Newest") queryAble = query.Where(q => q.product.New == true);
                 if (orderBy == "Discount") queryAble = query.Where(q => q.product.DiscountPercent > 0);
             }
             // Query get products by brandid and subcategoryid
             if (BrandId > 0 && SubCategoryId > 0)
             {
-                queryAble = query.Where(q => q.product.BrandId == BrandId && q.product.SubCategoryId == SubCategoryId);
+                queryAble = query.Where(q => q.product.SubCategoryId == SubCategoryId);
                 if (orderBy == "Newest") queryAble = query.Where(q => q.product.New == true);
                 if (orderBy == "Discount") queryAble = query.Where(q => q.product.DiscountPercent > 0);
             }

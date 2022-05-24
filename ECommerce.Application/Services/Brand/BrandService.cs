@@ -26,7 +26,6 @@ namespace ECommerce.Application.Services.Brand
         {
             throw new NotImplementedException();
         }
-
         public async Task<List<BrandModel>> getAll()
         {
             var query = from category in DbContext.Categories

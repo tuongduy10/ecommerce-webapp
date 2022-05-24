@@ -6,8 +6,7 @@
         <div class="content__inner w-100">
             <ul class="web__directional">
                 <li><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
-                <li><a href="@Url.Action("AllBrands","Brand")">Thương hiệu</a></li>
-                <li><a href="@Url.Action("ProductInBrand","Product", new { BrandId = Model.brand.BrandId})">@Model.brand.BrandName</a></li>
+                <li><a href="@Url.Action("ProductInBrand","Product", new { BrandId = Model.brand.BrandId, PageIndex = 1})">@Model.brand.BrandName</a></li>
             </ul>
             <div class="products__content d-flex">
                 <div class="products__menu">
