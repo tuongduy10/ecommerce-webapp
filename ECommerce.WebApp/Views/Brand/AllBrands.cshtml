@@ -1,0 +1,55 @@
+﻿
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
+    Layout = "~/Views/Shared/_LayoutClient.cshtml";
+}
+
+<div class="custom-container">
+    <!-- Bran list -->
+    <div class="content__wrapper">
+        <div class="w-100 my-4 p-4">
+            <!-- Bran list content -->
+            <div class="text-center">
+                <div class="line my-4"></div>
+                <h3 class="home-title mx-auto">Tất cả thương hiệu</h3>
+            </div>
+
+            <div class="bran__list-items mb-4">
+                @{
+                    var list = new List<string>();
+                    for (var i = 0; i < Model.Count; i++)
+                    {
+                        list.Add(@Model[i].BrandName.Substring(0, 1));
+                    }
+                    var listDist = list.Distinct().ToArray();
+
+                    for (var i = 0; i < listDist.Count(); i++)
+                    {
+                        <h4>@listDist[i]</h4>
+                        <div class="d-flex flex-wrap">
+                            @foreach (var item in Model)
+                            {
+                                if (listDist[i] == item.BrandName.Substring(0, 1))
+                                {
+                                    <div class="bran__list-item card">
+                                        <a href="">
+                                            <div class="bran__list-img py-2 px-4">
+                                                <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" class="card-img-top" alt="@item.BrandName">
+                                            </div>
+                                            <div class="card-body text-center p-2 align-items-center justify-content-center">
+                                                <h5 class="bran__list-name card-title mb-0">@item.BrandName</h5>
+                                                <h6 class="bran__list-type card-text">@item.Category</h6>
+                                            </div>
+                                        </a>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

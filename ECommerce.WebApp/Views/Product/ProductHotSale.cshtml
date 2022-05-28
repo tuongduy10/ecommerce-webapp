@@ -1,61 +1,15 @@
 ﻿@using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
-<!-- Main contain -->
+    <!-- Main contain -->
 <div class="custom-container">
     <div class="content__wrapper products__content-wrapper">
         <div class="content__inner w-100">
             <ul class="web__directional">
                 <li><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
-                <li><a href="@Url.Action("ProductInBrand","Product", new { BrandId = Model.brand.BrandId, PageIndex = 1})">@Model.brand.BrandName</a></li>
+                <li><a href="@Url.Action("ProductHotSale","Product")">Hot sale</a></li>
             </ul>
             <div class="products__content d-flex">
-                <div class="products__menu">
-                    <!-- Filter with options -->
-                    <div class="product__filter">
-                        @foreach (var filter in Model.listFilterModel)
-                        {
-                            <div class="filter__block">
-                                <h3 class="filter__title" onclick="getProductBySubCategory(@Model.brand.BrandId,@filter.SubCategoryId,'@filter.SubCategoryName',1)">
-                                    @filter.SubCategoryName <svg xmlns='http://www.w3.org/2000/svg' width='24'
-                                                 height='24' viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
-                                                 stroke-linecap='round' stroke-linejoin='round'
-                                                 class='feather feather-chevron-right'>
-                                        <polyline points='9 18 15 12 9 6'></polyline>
-                                    </svg>
-                                </h3>
-                                <ul class="filter__list filter--scrollbar">
-                                    @foreach (var option in filter.listOption)
-                                    {
-                                        if (option.listOptionValue.Count > 0)
-                                        {
-                                            <li class="filter__item">
-                                                <p class="mb-0"><i class="fas fa-caret-down"></i> @option.OptionName</p>
-                                                <ul class="filter__sub-list">
-                                                    @foreach (var productOption in option.listOptionValue)
-                                                    {
-                                                        if (productOption.TotalRecord > 0)
-                                                        {
-                                                            <li class="filter__sub-item">
-                                                                <div class="checkbox d-flex align-items-center">
-                                                                    <input id="check__sub-item_@productOption.OptionValueId" class="checkboxFilter" type="checkbox" value="@productOption.OptionValueId">
-                                                                    <label for="check__sub-item_@productOption.OptionValueId" class="d-flex align-items-center mb-0">
-                                                                        <div class="sub-item-cate">@productOption.OptionValueName</div>
-                                                                        <span class="sub-item-cate">(@productOption.TotalRecord)</span>
-                                                                    </label>
-                                                                </div>
-                                                            </li>
-                                                        }
-                                                    }
-                                                </ul>
-                                            </li>
-                                        }
-                                    }
-                                </ul>
-                            </div>
-                        }
-                    </div>
-                </div>
-                <div class="products__list">
+                <div class="products__list w-100">
                     <div class="filter__control-top">
                         <!-- Dropdown order list-->
                         <div class="order__item-wrapper order__button">
@@ -70,7 +24,7 @@
                             </div>
                             <div class="order__item-dropdown_menu">
                                 <div class="order__item-dropdown_items">
-                                    <a class="order__item d-none" onclick="getProduct(@Model.brand.BrandId, 1)">
+                                    <a class="order__item d-none" onclick="getAllProduct()">
                                         Tất cả<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
                                                    viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
                                                    stroke-linecap='round' stroke-linejoin='round'
@@ -102,88 +56,6 @@
                                             <polyline points='9 18 15 12 9 6'></polyline>
                                         </svg>
                                     </a>
-                                    <a class="order__item orderby-discount">
-                                        Đang giảm giá %<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
-                                                            viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
-                                                            stroke-linecap='round' stroke-linejoin='round'
-                                                            class='feather feather-chevron-right'>
-                                            <polyline points='9 18 15 12 9 6'></polyline>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>    
-                        <!-- Mobile filter -->
-                        <div class="product__filter-wrapper">
-                            <div class="product__filter-dropdown filter__button">
-                                Chọn lọc
-                                <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
-                                     viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
-                                     stroke-linecap='round' stroke-linejoin='round'
-                                     class='feather feather-chevron-left'>
-                                    <polyline points='15 18 9 12 15 6'></polyline>
-                                </svg>
-                            </div>
-                            <div class="product__filter-dropdown-menu">
-                                <div class="product__filter-header text-center p-4">
-                                    <div class="w-100 px-4">
-                                        <img style="max-height: 55px; max-width: 100%;" class="" src="@Configuration["ImagePath:Brand"]@Model.brand.BrandImagePath" alt="">
-                                    </div>
-                                    <p class="mb-0">@Model.brand.BrandName</p>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                         viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
-                                         stroke-linecap="round" stroke-linejoin="round"
-                                         class="filter-close feather feather-x">
-                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                                    </svg>
-                                </div>
-                                <div class="filter__menu-wrapper">
-                                    <div class="filter__menu-items">
-                                        @foreach (var filter in Model.listFilterModel)
-                                        {
-                                            <div class="filter__block-mobile">
-                                                <p class="filter__item-title mb-0 d-flex justify-content-between align-items-center" onclick="getProductBySubCategory(@Model.brand.BrandId,@filter.SubCategoryId,'@filter.SubCategoryName',1)">
-                                                    @filter.SubCategoryName
-                                                    <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'
-                                                         viewBox='0 0 24 24' fill='none' stroke='#333'
-                                                         stroke-width='1' stroke-linecap='round'
-                                                         stroke-linejoin='round'
-                                                         class='feather feather-chevron-right'>
-                                                        <polyline points='9 18 15 12 9 6'></polyline>
-                                                    </svg>
-                                                </p>
-                                                <ul class="filter__items-mobile">
-                                                    @foreach (var option in filter.listOption)
-                                                    {
-                                                        if (option.listOptionValue.Count > 0)
-                                                        {
-                                                            <li class="filter__item-mobile">
-                                                                <p class="mb-0">
-                                                                    <i class="fas fa-caret-down"></i> @option.OptionName
-                                                                </p>
-                                                                <ul class="filter__sub-items-mobile">
-                                                                    @foreach (var productOption in option.listOptionValue)
-                                                                    {
-                                                                        if (productOption.TotalRecord > 0)
-                                                                        {
-                                                                            <li class="d-flex align-items-center">
-                                                                                <input class="checkboxFilter mr-2" id="checkbox__mobile-@productOption.OptionValueId" type="checkbox" value="@productOption.OptionValueId">
-                                                                                <label for="checkbox__mobile-@productOption.OptionValueId" class="d-flex align-items-center mb-0">
-                                                                                    <div class="mr-1">@productOption.OptionValueName</div>
-                                                                                    <span>(@productOption.TotalRecord)</span>
-                                                                                </label>
-                                                                            </li>
-                                                                        }
-                                                                    }
-                                                                </ul>
-                                                            </li>
-                                                        }
-                                                    }
-                                                </ul>
-                                            </div>
-                                        }
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -195,7 +67,7 @@
                                 /
                                 <span class="totalItems">@Model.listProduct.TotalRecord</span>
                             </div>
-                        </div>   
+                        </div>
                         <!-- Pagination -->
                         <div class="filter__pagination">
                             <ul class="pagination">
@@ -331,14 +203,12 @@
                     </div>
                     <!-- Products -->
                     <div class="product__grid-wrapper">
-                        <!-- Product in Subscategory -->
                         @if (Model.listProduct.Items.Count > 0)
                         {
-                            <p class="product__grid-title text-center">Tất cả sản phẩm</p>
                             <div class="product__grid-inner w-100 d-flex flex-wrap">
                                 @foreach (var product in Model.listProduct.Items)
                                 {
-                                    <div class="product product-3">
+                                    <div class="product product-4">
                                         <a class="product-img" href="@Url.Action("ProductDetail", "Product", new { ProductId = product.ProductId })">
                                             <img src="@(Configuration["ImagePath:Product"] + product.ProductImages)" alt="">
                                         </a>
@@ -414,7 +284,7 @@
                         {
                             <p class="text-center">Chưa có sản phẩm</p>
                         }
-                    </div>               
+                    </div>
                     <div class="filter__control-bottom">
                         <!-- Number / total -->
                         <div class="filter__number">
@@ -558,9 +428,6 @@
 </div>
 <script>
     // Global request variables
-    var SubCategoryIdRequest = '';
-    var SubCategoryNameRequest = '';
-    var listOptionValueIdRequest = [];
     var orderRequest = '';
 
     // Events
@@ -574,32 +441,18 @@
         if (orderRequest != '') {
             orderBy(orderRequest, pageIndex); return;
         }
-        // Current BrandId
-        if (SubCategoryIdRequest == '') {
-            getProduct(@Model.brand.BrandId, pageIndex); return;
-        }
-        // Current SubCategoryId
-        if (SubCategoryIdRequest != '') {
-            getProductBySubCategory(@Model.brand.BrandId, SubCategoryIdRequest, SubCategoryNameRequest, pageIndex); return;
-        }
-        // Current OptionValueIds
-        if (listOptionValueIdRequest.length > 0) {
-            getProductByOptionValue(@Model.brand.BrandId, listOptionValueIdRequest, pageIndex); return;
+        if (orderRequest == '') {
+            // params request
+            var request = {
+                GetBy: "Discount",
+                PageIndex: pageIndex,
+            }
+
+            // call api
+            apiGetProduct(request); return;
         }
     })
-    $('.checkboxFilter').click(function () {
-        if ($(this).is(":checked")) {
-            listOptionValueIdRequest.push($(this).val());
-        }
-        if (!$(this).is(":checked")) {
-            listOptionValueIdRequest.splice($.inArray($(this).val(), listOptionValueIdRequest), 1);
-        }
-        if (listOptionValueIdRequest.length == 0) {
-            getProductBySubCategory(@Model.brand.BrandId, SubCategoryIdRequest, SubCategoryNameRequest, 1);
-            return;
-        }
-        getProductByOptionValue(@Model.brand.BrandId, listOptionValueIdRequest, 1);
-    })
+
     $('.orderby-newest').click(function () {
         var order = "Newest";
         orderBy(order, 1);
@@ -615,117 +468,56 @@
         orderBy(order, 1);
         orderRequest = order;
     });
-    $('.orderby-discount').click(function () {
-        var order = "Discount";
-        orderBy(order, 1);
-        orderRequest = order;
-    });
-
-    // Call API
-    function getProduct(BrandId, pageIndex) {
+    
+    // Call API functions
+    function getAllProduct() {
+        // params request
         var request = {
-            BrandId: BrandId,
-            PageIndex: pageIndex
+            GetBy: "Discount",
+            PageIndex: 1,
         }
-        apiGetProduct(request, "Tất cả sản phẩm");
 
-        SubCategoryIdRequest = '';
-        orderRequest = '';
-        listOptionValueIdRequest = [];
-    }
-    function getProductBySubCategory(BrandId, SubCategoryId, SubCategoryName, pageIndex) {
-        var request = {
-            BrandId: BrandId,
-            SubCategoryId: SubCategoryId,
-            PageIndex: pageIndex
-        }
-        apiGetProduct(request, SubCategoryName);
-
-        SubCategoryIdRequest = SubCategoryId;
-        SubCategoryNameRequest = SubCategoryName;
+        // call api
+        apiGetProduct(request);
         orderRequest = '';
     }
-    function getProductByOptionValue(BrandId, listOptionValueId, pageIndex) {
-        var request = {
-            BrandId: BrandId,
-            listOptionValueId: listOptionValueId,
-            PageIndex: pageIndex
-        }
-        apiGetProduct(request, SubCategoryNameRequest);
-        orderRequest = '';
-    }
-
     function orderBy(order, pageIndex) {
-        // Current BrandId
-        if (SubCategoryIdRequest == '') {
-            orderProduct(@Model.brand.BrandId, pageIndex, order);
-        }
-        // Current SubCategoryId
-        if (SubCategoryIdRequest != '') {
-            orderBySubCategory(@Model.brand.BrandId, SubCategoryIdRequest, SubCategoryNameRequest, pageIndex, order)
-        }
-        // Current OptionValueIds
-        if (listOptionValueIdRequest.length > 0) {
-            orderByOPtionValue(@Model.brand.BrandId, listOptionValueIdRequest, pageIndex, order);
-        }
-    }
-    function orderProduct(BrandId, pageIndex, order) {
+        // params request
         var request = {
-            BrandId: BrandId,
+            GetBy: "Discount",
             PageIndex: pageIndex,
             OrderBy: order
         }
-        apiGetProduct(request, "Tất cả sản phẩm");
 
-        SubCategoryIdRequest = '';
-        listOptionValueIdRequest = [];
-    }
-    function orderBySubCategory(BrandId, SubCategoryId, SubCategoryName, pageIndex, order) {
-        var request = {
-            BrandId: BrandId,
-            SubCategoryId: SubCategoryId,
-            PageIndex: pageIndex,
-            OrderBy: order
-        }
-        apiGetProduct(request, SubCategoryName);
-
-        SubCategoryIdRequest = SubCategoryId;
-        SubCategoryNameRequest = SubCategoryName;
-    }
-    function orderByOPtionValue(BrandId, listOptionValueId, pageIndex, order) {
-        var request = {
-            BrandId: BrandId,
-            listOptionValueId: listOptionValueId,
-            PageIndex: pageIndex,
-            OrderBy: order
-        }
-        apiGetProduct(request, SubCategoryNameRequest);
+        // call api
+        apiGetProduct(request);
     }
 
     // API methods
-    function apiGetProduct(request, title) {
+    function apiGetProduct(request) {
         $.ajax({
-            url: '/api/ProductAPI/getProductInBrand',
+            url: '/api/ProductAPI/getProductInPage',
             data: JSON.stringify(request),
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             type: 'POST',
             success: function (data) {
+                // data response
                 var currentRecord = data.data.listProduct.currentRecord;
                 var totalRecord = data.data.listProduct.totalRecord;
                 var listProduct = data.data.listProduct.items;
                 var totalPage = data.data.listProduct.totalPage;
 
+                // Render html with received data
                 renderCurrentRecord(currentRecord, totalRecord);
                 renderPagination(totalPage, request.PageIndex);
-                renderProduct(listProduct, title);
+                renderProduct(listProduct);
             }
         });
     }
 
-    // Append product
-    function renderProduct(listProduct, title) {
-        $('.product__grid-title').html(title);
+    // Render product
+    function renderProduct(listProduct) {
         $('.product__grid-inner').empty();
         if (listProduct.length > 0) {
             listProduct.forEach(product => {
@@ -750,12 +542,12 @@
             <p class="text-center">Chưa có sản phẩm</p>
         `);
     }
-    // Append current product/total
+    // Render current product/total
     function renderCurrentRecord(currentRecord, totalRecord) {
         $('.filter__number .number').empty();
         $('.filter__number .number').append(htmlCurrentRecord(currentRecord, totalRecord));
     }
-    // Append pagination
+    // Render pagination
     function renderPagination(pagesize, pageindex) {
         var firstIndex = 1;
         var lastIndex = pagesize;
@@ -857,7 +649,7 @@
         }
 
         var html = `
-            <div class="product product-3">
+            <div class="product product-4">
                 <a class="product-img" href="/Product/ProductDetail?ProductId=${id}">
                     <img src="@Configuration["ImagePath:Product"]${image}" alt="">
                 </a>
@@ -1032,5 +824,5 @@
             </li>
         `
         return html;
-    } 
+    }
 </script>

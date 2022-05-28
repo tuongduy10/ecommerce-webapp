@@ -33,7 +33,7 @@
                                 </ul>
                             </div>
                             <a class="product__detail-link" style="text-decoration: underline; cursor: pointer;" data-toggle="modal"
-                                data-target="#sizeguideModal">
+                               data-target="#sizeguideModal">
                                 Hướng dẫn chọn size
                             </a>
                         </div>
@@ -154,8 +154,7 @@
                                 <div class="product__detail-options">
                                     <div class="option-quality d-flex mb-2 align-items-center">
                                         <div class="option-title">Chọn số lượng </div>
-                                        <input class="text-center mr-2" type="number" value="1" min="1"
-                                               max="50">
+                                        <input class="text-center mr-2 pro-qty" type="number" value="1" min="1" max="50">
                                         <a class="product__detail-link" style="text-decoration: underline; cursor: pointer;" data-toggle="modal"
                                            data-target="#wholesaleModal">
                                             Xem giá mua sỉ
@@ -166,12 +165,12 @@
                                         <div class="option-size d-flex mb-2 align-items-center">
                                             <div class="option-title">@option.Name</div>
                                             <div class="options-wrapper">
-                                                <select class="options form-select w-100"
+                                                <select class="options form-select w-100 pro-options"
                                                         aria-label="Default select example">
                                                     <option disabled selected>- Chọn -</option>
                                                     @foreach (var value in option.Value)
                                                     {
-                                                        <option value="1">@value</option>
+                                                        <option value="@value">@value</option>
                                                     }
 
                                                 </select>
@@ -200,7 +199,7 @@
                                             <div class="option-price form-check form-check-inline w-100">
                                                 <div class="option-title">
                                                     <input class="form-check-input" type="radio"
-                                                           name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                                                           name="pro-type" id="inlineRadio2" value="1">
                                                     <label class="form-check-label" for="inlineRadio2">
                                                         Có sẵn
                                                     </label>
@@ -222,7 +221,7 @@
                                             <div class="option-price form-check form-check-inline w-100">
                                                 <div class="option-title">
                                                     <input class="form-check-input" type="radio"
-                                                           name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                                                           name="pro-type" id="inlineRadio2" value="2">
                                                     <label class="form-check-label" for="inlineRadio2">
                                                         Đặt trước
                                                     </label>
@@ -268,10 +267,10 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- Price -->
+                                
+                                <!-- Action -->
                                 <div class="product__detail-buttons d-flex justify-content-between w-100">
-                                    <button class="btn-addtocart btn-black" onclick="window.location.href='cart.html'"
+                                    <button class="btn-addtocart btn-black"
                                             style="width: 49%; background-color: #333; color: #fff;">
                                         Thêm vào giỏ
                                     </button>
@@ -297,6 +296,7 @@
                     }
                 </ul>
             </div>
+            <!-- Attributes and desciption -->
             <div class="product__detail-tab">
                 <div class="product__tab-control">
                     <ul class="d-flex justify-content-around">
@@ -327,8 +327,8 @@
                         </div>
                     </div>
                     <div class="content-tab tab__product-comment">
+                        <!-- comment -->
                         <div class="product-comment">
-
                             @if (!User.Identity.IsAuthenticated)
                             {
                                 <div class="text-center mb-4">
@@ -381,45 +381,45 @@
                                     </div>
                                 </div>
                             }
-                        <div class="tab__content-block d-block">
-                            @foreach (var rate in Model.rates)
-                            {
-                                <div class="user-comment mb-4">
-                                    <div class="d-flex align-items-center">
-                                        <span class="user__comment-name">
-                                            <strong>@rate.UserName</strong>
-                                        </span>
-                                        <span class="user__comment-time ml-2">@rate.CreateDate.ToString("HH:mm, dd/MM/yyyy")</span>
-                                    </div>
-                                    <div class="d-flex stars">
-                                        @for (int i = 0; i < rate.Value; i++)
-                                        {
-                                            <span class="fa fa-star checked"></span>
-                                        }
-                                        @if (rate.Value != 0)
-                                        {
-                                            for (int i = 0; i < 5 - rate.Value; i++)
+                            <div class="tab__content-block d-block">
+                                @foreach (var rate in Model.rates)
+                                {
+                                    <div class="user-comment mb-4">
+                                        <div class="d-flex align-items-center">
+                                            <span class="user__comment-name">
+                                                <strong>@rate.UserName</strong>
+                                            </span>
+                                            <span class="user__comment-time ml-2">@rate.CreateDate.ToString("HH:mm, dd/MM/yyyy")</span>
+                                        </div>
+                                        <div class="d-flex stars">
+                                            @for (int i = 0; i < rate.Value; i++)
                                             {
-                                                <span class="fa fa-star"></span>
+                                                <span class="fa fa-star checked"></span>
                                             }
-                                        }
-                                    </div>
-                                    <div class="comment">
-                                        @rate.Comment
-                                    </div>
-                                    <div class="image">
-                                        <ul class="image-list d-flex">
-                                            @foreach (var img in rate.Images)
+                                            @if (rate.Value != 0)
                                             {
-                                                <li>
-                                                    <img class="pop" src="@(Configuration["ImagePath:Rate"] + img)" alt="">
-                                                </li>
+                                                for (int i = 0; i < 5 - rate.Value; i++)
+                                                {
+                                                    <span class="fa fa-star"></span>
+                                                }
                                             }
-                                        </ul>
+                                        </div>
+                                        <div class="comment">
+                                            @rate.Comment
+                                        </div>
+                                        <div class="image">
+                                            <ul class="image-list d-flex">
+                                                @foreach (var img in rate.Images)
+                                                {
+                                                    <li>
+                                                        <img class="pop" src="@(Configuration["ImagePath:Rate"] + img)" alt="">
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
                                     </div>
-                                </div>
-                            }
-                        </div>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -691,11 +691,12 @@
             $('#content-slider').css('height', $('#content-slider li').width())
         })
     })
+    // View image in large size (open Modal)
     $('.pop').on('click', function () {
         $('.imagepreview').attr('src', $(this).attr('src'));
         $('#imagemodal').modal('show');
     });
-
+    // Feature: upload files
     var arrFiles = [];
     window.onload = function () {
         if (window.File && window.FileList && window.FileReader) {
@@ -740,7 +741,7 @@
             console.log("Your browser does not support File API");
         }
     }
-
+    // Feature: post comment
     $('.post-comment').click(function () {
         var formData = new FormData();
         for (let i = 0; i < arrFiles.length; i++) {
@@ -771,4 +772,78 @@
             }
         });
     })
+    // Feature: Add to cart
+    $('.btn-addtocart').click(function () {
+        // Product and options
+        var options = [];
+        $('.pro-options').each(function () {
+            options.push($(this).val());
+        })
+        var product = {
+            id: @Model.product.ProductId,
+            qty: Number($('.pro-qty').val()),
+            opts: options,
+            type: document.querySelector('input[name="pro-type"]:checked').value
+        }
+
+        var cart = JSON.parse(localStorage.getItem("_cart"));
+        // create new cart with new product
+        if (cart == null) {
+            cart = {
+                items: [],
+                qty: product.qty
+            };
+            cart.items.push(product);
+        } else {
+        // update or add product
+            var isExist = false;
+            cart.items.forEach(function (item, index) {
+                // update product
+                if (item.id == product.id && JSON.stringify(item.opts) == JSON.stringify(product.opts) && item.type == product.type) {
+                    item.qty = +item.qty + +product.qty;
+                    isExist = true;
+                }
+            })
+            // add new 
+            if (!isExist) {
+                cart.items.push(product);
+            }
+            cart.qty = +cart.qty + +product.qty;
+        }
+
+        window.localStorage.setItem("_cart", JSON.stringify(cart));
+        renderMiniCartQty(cart.qty);
+        console.log(cart);
+    })
+
+    // Api
+    function addToCart(request){
+        $.ajax({
+            url: '/api/CartAPI/AddToCart',
+            data: JSON.stringify(request),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            type: 'POST',
+            success: function (response) {
+
+            },
+            error: function (error) {
+
+            }
+        });
+    }
+
+    // render Html
+    function renderMiniCartQty(qty) {
+        $('.quality').remove();
+        $('.minicart').append(htmlMiniCartQty(qty));
+    }
+
+    // Html
+    function htmlMiniCartQty(qty){
+        var html = `
+            <span class="quality">${qty}</span>
+        `
+        return html;
+    }
 </script>

@@ -85,6 +85,41 @@ namespace ECommerce.WebApp.Controllers.Client
         {
             return View();
         }
+        public async Task<IActionResult> ProductHotSale()
+        {
+            var products = await _productService.getProductInPagePaginated(new ProductGetRequest() { GetBy = "Discount", PageIndex = 1 });
+            ProductRecordModel listProduct = new ProductRecordModel();
+            listProduct.CurrentPage = products.CurrentPage;
+            listProduct.CurrentRecord = products.CurrentRecord;
+            listProduct.TotalPage = products.TotalPage;
+            listProduct.TotalRecord = products.TotalRecord;
+            listProduct.Items = productListFormated(products.Items);
+
+            var model = new ProductInBrandViewModel()
+            {
+                listProduct = listProduct,
+            };
+
+            return View(model);
+        }
+        public async Task<IActionResult> ProductNewest()
+        {
+            var products = await _productService.getProductInPagePaginated(new ProductGetRequest() { GetBy = "Newest", PageIndex = 1 });
+            ProductRecordModel listProduct = new ProductRecordModel();
+            listProduct.CurrentPage = products.CurrentPage;
+            listProduct.CurrentRecord = products.CurrentRecord;
+            listProduct.TotalPage = products.TotalPage;
+            listProduct.TotalRecord = products.TotalRecord;
+            listProduct.Items = productListFormated(products.Items);
+
+            var model = new ProductInBrandViewModel()
+            {
+                listProduct = listProduct,
+            };
+
+            return View(model);
+        }
+        
         private List<ProductModel> productListFormated(List<ProductInBrandModel> list)
         {
             var _list = new List<ProductModel>();

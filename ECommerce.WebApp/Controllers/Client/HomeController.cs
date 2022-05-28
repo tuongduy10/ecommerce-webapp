@@ -18,12 +18,14 @@ namespace ECommerce.WebApp.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ICategoryService _categoryService;
         private readonly IBrandService _brandService;
+        private readonly IFooterService _footerService;
 
-        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService, IBrandService brandService)
+        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService, IBrandService brandService, IFooterService footerService)
         {
             _logger = logger;
             _categoryService = categoryService;
             _brandService = brandService;
+            _footerService = footerService;
         }
 
         public async Task<IActionResult> Index()
@@ -38,6 +40,11 @@ namespace ECommerce.WebApp.Controllers
             };
 
             return View(model);
+        }
+        public async Task<IActionResult> Payment()
+        {
+            var result = await _footerService.getBlogDetail(7);
+            return View(result);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

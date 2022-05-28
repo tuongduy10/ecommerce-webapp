@@ -111,6 +111,8 @@ namespace ECommerce.Application.Services.Product
 
             return product;
         }
+        
+        // Product in brand
         public async Task<PageResult<ProductInBrandModel>> getProductPaginated(ProductGetRequest request)
         {
             //Request parameters
@@ -129,20 +131,10 @@ namespace ECommerce.Application.Services.Product
                          orderby product.SubCategoryId
                          select new { product, brand, shop }).AsQueryable();
 
-            var queryAble = query;
-            // Query get products by brandid
-            if (BrandId > 0 && SubCategoryId == 0)
-            {
-                //queryAble = query.Where(q => q.product.BrandId == BrandId);
-                if (orderBy == "Newest") queryAble = query.Where(q => q.product.New == true);
-                if (orderBy == "Discount") queryAble = query.Where(q => q.product.DiscountPercent > 0);
-            }
             // Query get products by brandid and subcategoryid
             if (BrandId > 0 && SubCategoryId > 0)
             {
-                queryAble = query.Where(q => q.product.SubCategoryId == SubCategoryId);
-                if (orderBy == "Newest") queryAble = query.Where(q => q.product.New == true);
-                if (orderBy == "Discount") queryAble = query.Where(q => q.product.DiscountPercent > 0);
+                query = query.Where(q => q.product.SubCategoryId == SubCategoryId);
             }
             // Query get products by optionvalue
             if (BrandId > 0 && listOptionValueId != null)
@@ -152,13 +144,15 @@ namespace ECommerce.Application.Services.Product
                                             .Select(i => i.ProductId)
                                             .Distinct()
                                             .ToListAsync();
-                queryAble = query.Where(q => listProductId.Any(l => l == q.product.ProductId));
-                if (orderBy == "Newest") queryAble = query.Where(q => q.product.New == true);
-                if (orderBy == "Discount") queryAble = query.Where(q => q.product.DiscountPercent > 0);
+                query = query.Where(q => listProductId.Any(l => l == q.product.ProductId));
             }
 
+            // Order by... request
+            if (orderBy == "Newest") query = query.Where(q => q.product.New == true);
+            if (orderBy == "Discount") query = query.Where(q => q.product.DiscountPercent > 0);
+
             // Select from query
-            var list = queryAble
+            var list = query
                 .OrderByDescending(i => i.product.ProductAddedDate)
                 .Select(i => new ProductInBrandModel()
                 {
@@ -202,6 +196,74 @@ namespace ECommerce.Application.Services.Product
 
             return result;
         }
+        // Hotsale, new product only
+        public async Task<PageResult<ProductInBrandModel>> getProductInPagePaginated(ProductGetRequest request)
+        {
+            //Request parameters
+            int pageindex = request.PageIndex;
+            int pagesize = request.PageSize;
+
+            // Query
+            var query = (from product in _DbContext.Products
+                         join brand in _DbContext.Brands on product.BrandId equals brand.BrandId
+                         join shop in _DbContext.Shops on product.ShopId equals shop.ShopId
+                         orderby product.SubCategoryId
+                         select new { product, brand, shop }).AsQueryable();
+
+            // Get by... request for 1 page only
+            if (request.GetBy == "Newest") query = query.Where(q => q.product.New == true);
+            if (request.GetBy == "Discount") query = query.Where(q => q.product.DiscountPercent > 0);
+
+            // order by... request
+            if (request.OrderBy == "Newest") query = query.Where(q => q.product.New == true);
+            if (request.OrderBy == "Discount") query = query.Where(q => q.product.DiscountPercent > 0);
+
+            // Select from query
+            var list = query
+                .OrderByDescending(i => i.product.ProductAddedDate)
+                .Select(i => new ProductInBrandModel()
+                {
+                    ProductId = i.product.ProductId,
+                    ProductName = i.product.ProductName,
+                    DiscountPercent = i.product.DiscountPercent,
+                    Status = i.product.Status,
+                    Highlights = i.product.Highlights,
+                    New = i.product.New,
+                    ProductImportDate = i.product.ProductImportDate,
+                    SubCategoryId = i.product.SubCategoryId,
+                    Type = (
+                        from product in _DbContext.Products
+                        from price in _DbContext.ProductPrices
+                        from type in _DbContext.ProductTypes
+                        where product.ProductId == i.product.ProductId &&
+                              price.ProductTypeId == type.ProductTypeId && price.ProductId == product.ProductId
+                        select new { id = type.ProductTypeId, name = type.ProductTypeName }
+                    ).Select(t => new Dtos.Type()
+                    {
+                        ProductTypeId = t.id,
+                        ProductTypeName = t.name
+                    }).ToList(),
+
+                    Price = _DbContext.ProductPrices.Where(price => price.ProductId == i.product.ProductId).ToList(),
+                    ProductImages = _DbContext.ProductImages.Where(img => img.ProductId == i.product.ProductId).Select(i => i.ProductImagePath).FirstOrDefault(),
+                    BrandName = i.brand.BrandName,
+                    ShopName = i.shop.ShopName,
+                });
+
+            var record = await list.CountAsync();
+            var data = await PaginatedList<ProductInBrandModel>.CreateAsync(list, pageindex, pagesize);
+            var result = new PageResult<ProductInBrandModel>()
+            {
+                Items = data,
+                CurrentRecord = (pageindex * pagesize) <= record ? (pageindex * pagesize) : record,
+                TotalRecord = record,
+                CurrentPage = pageindex,
+                TotalPage = (int)Math.Ceiling(record / (double)pagesize)
+            };
+
+            return result;
+        }
+
         public async Task<List<ProductInBrandModel>> getProductSuggestion()
         {
             // Query

@@ -13,5 +13,6 @@ namespace ECommerce.Application.Services.Product.Dtos
         public int SubCategoryId { get; set; }
         public string OrderBy { get; set; }
         public List<int> listOptionValueId { get; set; }
+        public string GetBy { get; set; }
     }
 }
