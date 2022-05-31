@@ -17,41 +17,13 @@
                 <h3 class="text-center">Tạo tài khoản mới</h3>
                 <input class="mb-2 w-100" type="text" id="number" placeholder="Số điện thoại">
                 <div class="mb-2" id="recaptcha-container"></div>
-                <button class="btn-black" onclick="checkPhoneNumber()" style="border: 1px solid #4d4d4d;">Xác minh</button>
+                <button class="btn-black verify-capcha" onclick="checkPhoneNumber()" style="border: 1px solid #4d4d4d;">Xác minh</button>
             </div>
             <div class="signup-verifycode d-flex pt-2 justify-content-between">
-                @*<input type="text" id="verificationCode" placeholder="Nhập mã OTP">
-                <button type="button" onclick="codeverify()">Tiếp theo</button>*@
+
             </div>
             <div class="signup-information d-flex flex-column pt-2">
-                @*<div class="signup-block">
-                    <div class="signup-info"><strong>THÔNG TIN CÁ NHÂN</strong></div>
-                    <input class="user-name mb-2 w-100" type="text" placeholder="Họ tên" autocomplete="off">
-                    <input class="user-email mb-2 w-100" type="email" placeholder="Email" autocomplete="off">
-                    <input class="user-address mb-2 w-100" type="text" placeholder="Địa chỉ" autocomplete="off">
 
-                    <div class="location mb-2">
-                        <select name="" id="" class="user-citycode city-select w-100">
-                            <option value="" disabled selected>Tỉnh/Thành...</option>
-                        </select>
-                    </div>
-                    <div class="location mb-2">
-                        <select name="" id="" class="user-districtcode district-select w-100">
-                            <option value="" disabled selected>Quận/Huyện...</option>
-                        </select>
-                    </div>
-                    <div class="location mb-2">
-                        <select name="" id="" class="user-wardcode ward-select w-100">
-                            <option value="" disabled selected>Phường/Xã...</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="signup-block">
-                    <div class="signup-info"><strong>THÔNG TIN ĐĂNG NHẬP</strong></div>
-                    <input class="user-password mb-2 w-100" type="password" placeholder="Nhập mật khẩu">
-                    <input class="user-repassword mb-2 w-100" type="password" placeholder="Nhập lại mật khẩu">
-                    <button class="w-100 btn-black" onclick="signup()" style="border: 1px solid #4d4d4d;">Tạo tài khoản</button>
-                </div>*@
             </div>
         </div>
     </div>
@@ -126,7 +98,10 @@
                 //s is in lowercase
                 window.confirmationResult = confirmationResult;
                 coderesult = confirmationResult;
+                $('#recaptcha-container').remove();
+                $('.verify-capcha').remove();
                 renderFormVerifyCode();
+                alert('Nhập mã OTP từ tin nhắn của CloundOTP hoặc Google');
             }).catch(function (error) {
                 alert(error.message);
             });
@@ -135,8 +110,8 @@
         var code = document.getElementById('verificationCode').value;
         coderesult.confirm(code)
             .then(function (result) {
-                //var user = result.user;
-                //console.log(user);
+                $('#verificationCode').remove();
+                $('.verifycode').remove();
                 renderFormInformation();
             }).catch(function (error) {
                 console.log(error.message);

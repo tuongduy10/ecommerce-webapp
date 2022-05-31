@@ -19,5 +19,10 @@ namespace ECommerce.WebApp.Controllers.Admin
             var list = await _userService.getAll();
             return View(list);
         }
+        public async Task<IActionResult> UnConfirmUser()
+        {
+            var list = await _userService.getAll();
+            return View(list);
+        }
     }
 }

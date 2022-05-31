@@ -13,5 +13,6 @@ namespace ECommerce.Application.Services.Product
         Task<List<Option>> getProductOption(int id);
         Task<List<ProductShopListModel>> getProductByUser(int shopId, int subcategoryId);
         Task<PageResult<ProductInBrandModel>> getProductInPagePaginated(ProductGetRequest request);
+        Task<Price> getProductPirce(int productId, int typeId);
     }
 }

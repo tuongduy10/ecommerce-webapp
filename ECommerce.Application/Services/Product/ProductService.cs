@@ -263,7 +263,6 @@ namespace ECommerce.Application.Services.Product
 
             return result;
         }
-
         public async Task<List<ProductInBrandModel>> getProductSuggestion()
         {
             // Query
@@ -333,6 +332,16 @@ namespace ECommerce.Application.Services.Product
                 })
                 .ToListAsync();
 
+            return result;
+        }
+        public async Task<Price> getProductPirce(int productId, int typeId)
+        {
+            var result = await _DbContext.ProductPrices
+                .Where(i => i.ProductId == productId && i.ProductTypeId == typeId)
+                .Select(i => new Price() { 
+                    price = i.Price,
+                    priceOnSell = i.PriceOnSell
+                }).FirstOrDefaultAsync();
             return result;
         }
     }

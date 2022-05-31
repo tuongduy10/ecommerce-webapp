@@ -199,20 +199,24 @@
                                             <div class="option-price form-check form-check-inline w-100">
                                                 <div class="option-title">
                                                     <input class="form-check-input" type="radio"
-                                                           name="pro-type" id="inlineRadio2" value="1">
-                                                    <label class="form-check-label" for="inlineRadio2">
+                                                           name="pro-type" id="inlineRadio1" value="1">
+                                                    <label class="form-check-label" for="inlineRadio1">
                                                         Có sẵn
                                                     </label>
                                                 </div>
                                                 <label class="form-check-label d-flex align-items-center"
-                                                       for="inlineRadio2">
+                                                       for="inlineRadio1">
+                                                @if (item.PriceOnSell != null)
+                                                {
+                                                    <span class="price mr-2">@String.Format("{0:0,0} ₫", item.PriceOnSell)</span>
+                                                    <span class="saleprice">
+                                                        <strike>@String.Format("{0:0,0} ₫", item.Price)</strike>
+                                                    </span>
+                                                }
+                                                else
+                                                {
                                                     <span class="price mr-2">@String.Format("{0:0,0} ₫", item.Price)</span>
-                                                    @if (item.PriceOnSell != null)
-                                                    {
-                                                        <span class="saleprice">
-                                                            <strike>@String.Format("{0:0,0} ₫", item.PriceOnSell)</strike>
-                                                        </span>
-                                                    }
+                                                }
                                                 </label>
                                             </div>
                                         }
@@ -228,13 +232,17 @@
                                                 </div>
                                                 <label class="form-check-label d-flex align-items-center"
                                                        for="inlineRadio2">
+                                                @if (item.PriceOnSell != null)
+                                                {
+                                                    <span class="price mr-2">@String.Format("{0:0,0} ₫", item.PriceOnSell)</span>
+                                                    <span class="saleprice">
+                                                        <strike>@String.Format("{0:0,0} ₫", item.Price)</strike>
+                                                    </span>
+                                                }
+                                                else
+                                                {
                                                     <span class="price mr-2">@String.Format("{0:0,0} ₫", item.Price)</span>
-                                                    @if (item.PriceOnSell != null)
-                                                    {
-                                                        <span class="saleprice">
-                                                            <strike>@String.Format("{0:0,0} ₫", item.PriceOnSell)</strike>
-                                                        </span>
-                                                    }
+                                                }
                                                 </label>
                                             </div>
                                         }
@@ -698,48 +706,44 @@
     });
     // Feature: upload files
     var arrFiles = [];
-    window.onload = function () {
-        if (window.File && window.FileList && window.FileReader) {
-            var filesInput = document.getElementById("image-upload");
-            filesInput.addEventListener("change", function (event) {
-                var files = event.target.files; //FileList object
-                if (files.length > 3)
-                    return;
-                var output = document.getElementById("image-preview");
-                $('#image-preview').empty();
-                for (var i = 0; i < files.length; i++) {
-                    var file = files[i];
-                    //Only pics
-                    if (!file.type.match('image'))
-                        continue;
+    if (window.File && window.FileList && window.FileReader) {
+        var filesInput = document.getElementById("image-upload");
+        filesInput.addEventListener("change", function (event) {
+            var files = event.target.files; //FileList object
+            if (files.length > 3)
+                return;
+            var output = document.getElementById("image-preview");
+            $('#image-preview').empty();
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                //Only pics
+                if (!file.type.match('image'))
+                    continue;
 
-                    arrFiles.push(file)
+                arrFiles.push(file)
 
-                    var picReader = new FileReader();
-                    picReader.fileName = file.name;
-                    picReader.addEventListener("load", function (event) {
-                        var picFile = event.target;
-                        var div = document.createElement("div");
-                        div.classList.add(`image__upload-item`);
-                        div.innerHTML = "<div class='image-uploaded' style='position: relative; width: 100px; height: 100px; margin-right: 4px'><img src='" + picFile.result + "'" + "title='" + picFile.name + "' style='height: 100%; width: 100%; object-fit: contain'/><span class='remove__upload' style='position: absolute; top: 0; right: 0; cursor: pointer'><svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='red' stroke-width='1' stroke-linecap='round' stroke-linejoin='round' class='feather feather-x'><line x1='18' y1='6' x2='6' y2='18'></line><line x1='6' y1='6' x2='18' y2='18'></line></svg><span></div>";
-                        var removeUpload = div.querySelector(".image-uploaded .remove__upload");
-                        removeUpload.addEventListener("click", function (evt) {
-                            arrFiles.forEach(function (file, index) {
-                                if (file.name == event.target.fileName) {
-                                    arrFiles.splice(index, 1);
-                                }
-                            })
-                            div.remove();
-                        });
-                        output.insertBefore(div, null);
+                var picReader = new FileReader();
+                picReader.fileName = file.name;
+                picReader.addEventListener("load", function (event) {
+                    var picFile = event.target;
+                    var div = document.createElement("div");
+                    div.classList.add(`image__upload-item`);
+                    div.innerHTML = "<div class='image-uploaded' style='position: relative; width: 100px; height: 100px; margin-right: 4px'><img src='" + picFile.result + "'" + "title='" + picFile.name + "' style='height: 100%; width: 100%; object-fit: contain'/><span class='remove__upload' style='position: absolute; top: 0; right: 0; cursor: pointer'><svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='red' stroke-width='1' stroke-linecap='round' stroke-linejoin='round' class='feather feather-x'><line x1='18' y1='6' x2='6' y2='18'></line><line x1='6' y1='6' x2='18' y2='18'></line></svg><span></div>";
+                    var removeUpload = div.querySelector(".image-uploaded .remove__upload");
+                    removeUpload.addEventListener("click", function (evt) {
+                        arrFiles.forEach(function (file, index) {
+                            if (file.name == event.target.fileName) {
+                                arrFiles.splice(index, 1);
+                            }
+                        })
+                        div.remove();
                     });
-                    //Read the image
-                    picReader.readAsDataURL(file);
-                }
-            });
-        } else {
-            console.log("Your browser does not support File API");
-        }
+                    output.insertBefore(div, null);
+                });
+                //Read the image
+                picReader.readAsDataURL(file);
+            }
+        });
     }
     // Feature: post comment
     $('.post-comment').click(function () {
@@ -781,6 +785,9 @@
         })
         var product = {
             id: @Model.product.ProductId,
+            name: '@Model.product.ProductName',
+            img: '@(Configuration["ImagePath:Product"] + Model.product.ProductImages[0])',
+
             qty: Number($('.pro-qty').val()),
             opts: options,
             type: document.querySelector('input[name="pro-type"]:checked').value
@@ -794,6 +801,7 @@
                 qty: product.qty
             };
             cart.items.push(product);
+            // render create new html
         } else {
         // update or add product
             var isExist = false;
@@ -804,39 +812,70 @@
                     isExist = true;
                 }
             })
-            // add new 
+            // add new
             if (!isExist) {
                 cart.items.push(product);
+                // render update current
             }
             cart.qty = +cart.qty + +product.qty;
         }
 
         window.localStorage.setItem("_cart", JSON.stringify(cart));
-        renderMiniCartQty(cart.qty);
-        console.log(cart);
+        renderMiniCart(cart.qty);
+        renderProduct(cart.items);
+        GetTotal(cart.items);
     })
 
-    // Api
-    function addToCart(request){
+    // render Html
+    function renderMiniCart(qty) {
+        $('.minicart .quality').remove();
+        $('.minicart').append(htmlMiniCartQty(qty)); // red icon
+        $('.minicart-content').remove();
+        $('.cart-action').append(htmlMiniCart(qty)); // mini cart content
+    }
+    function renderProduct(items) {
+        items.forEach(function (item, index) {
+            var id = item.id;
+            var type = item.type;
+            var name = item.name;
+            var img = item.img;
+            var opts = item.opts;
+            var qty = item.qty;
+            // call api to get product price by type
+            $.get('/api/CartAPI/GetProductPrice', { id: id, type: type }, function (response) {
+                var objPrice = {
+                    price: response.price,
+                    priceOnSell: response.priceOnSell
+                }
+                // render html
+                $('.minicart-products').append(htmlProductInCart(img, name, opts, qty, objPrice, index));
+            })
+        })
+    }
+    function GetTotal(items) {
+        var request = [];
+        items.forEach(function (item) {
+            request.push({
+                id: item.id,
+                typeId: item.type,
+                qty: item.qty
+            })
+        })
         $.ajax({
-            url: '/api/CartAPI/AddToCart',
+            url: '/api/CartAPI/getCartTotalPrice',
             data: JSON.stringify(request),
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             type: 'POST',
-            success: function (response) {
-
+            success: function (data) {
+                $('.cart-totalprice').html(`
+                    <strong>${new Intl.NumberFormat().format(data)} ₫</strong>
+                `)
             },
             error: function (error) {
-
+                console.log('error--',error)
             }
         });
-    }
-
-    // render Html
-    function renderMiniCartQty(qty) {
-        $('.quality').remove();
-        $('.minicart').append(htmlMiniCartQty(qty));
     }
 
     // Html
@@ -844,6 +883,80 @@
         var html = `
             <span class="quality">${qty}</span>
         `
+        return html;
+    }
+    function htmlMiniCart(qty) {
+        var html = `
+            <div class="minicart-content">
+                <div class="w-100 minicart-quantity">
+                    <div class="header-title pb-4 pt-3">Giỏ hàng: ${qty}</div>
+                </div>
+                <div class="minicart-products filter--scrollbar px-4">
+
+                </div>
+                <div class="minicart-totals px-4 pb-3">
+                    <div class="d-flex justify-content-between pt-3 pb-4">
+                        <div>Tạm tính</div>
+                        <div class="total-price cart-totalprice"><strong>120.000.000 ₫</strong></div>
+                    </div>
+                    <div class="text-center d-block">
+                        <a class="minicart-checkout d-inline-block w-100 py-3 mb-4 btn-black" href="">THANH TOÁN</a>
+                        <a href=""><u>Xem/Chỉnh sửa</u></a>
+                    </div>
+                </div>
+            </div>
+        `;
+        return html;
+    }
+    function htmlProductInCart(img, name, opts, qty, objPrice, index) {
+        var price;
+        if (!objPrice.priceOnSell) {
+            price = `
+                <div class="price">${new Intl.NumberFormat().format(objPrice.price)} ₫</div>
+                <div class="total-price">
+                    ${new Intl.NumberFormat().format(objPrice.price * qty)} ₫
+                </div>
+            `;
+        } else {
+            price = `
+                <div class="price" style="text-decoration: line-through;">
+                    ${new Intl.NumberFormat().format(objPrice.price)} ₫
+                </div>
+                <div class="price">${new Intl.NumberFormat().format(objPrice.priceOnSell)} ₫</div>
+                <div class="total-price">
+                    ${new Intl.NumberFormat().format(objPrice.priceOnSell * qty)} ₫
+                </div>
+            `;
+        }
+        var options = ``;
+        if (opts.length) {
+            options = `
+                <div class="detail mb-auto">(${opts.join(', ')})</div>
+            `
+        }
+        var html = `
+            <div class="minicart-product d-flex py-4">
+                <div class="minicart__product-image mr-2">
+                    <img class="h-100 w-100" src="${img}" alt="">
+                </div>
+                <div class="minicart__product-info d-flex flex-column">
+                    <div class="name">
+                        <strong>${name}</strong>
+                    </div>
+                    ${options}
+                    <div class="amount">x${qty}</div>
+                    ${price}
+                </div>
+                <span class="minicart-remove" value="${index}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </span>
+            </div>
+        `;
         return html;
     }
 </script>

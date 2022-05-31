@@ -1,0 +1,131 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Thông tin khách hàng</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered order-table" width="100%" id="dataTable" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Tên</th>
+                        <th>Địa chỉ</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th>Ngày tham gia</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        if (user.Status == false)
+                        {
+                            <tr>
+                                <td>@user.UserId</td>
+                                <td>@user.UserFullName</td>
+                                <td class="address">@user.UserAddress|@user.UserWardCode|@user.UserDistrictCode|@user.UserCityCode</td>
+                                <td>@user.UserMail</td>
+                                <td>@user.UserPhone</td>
+                                <td>@user.UserJoinDate.ToString("dd/MM/yyyy")</td>
+                                <td class="status_@user.UserId">
+                                    <p class="text-danger">Chưa xác thực</p>
+                                </td>
+                                <td class="action_@user.UserId text-center d-flex align-items-center">
+                                    @if (user.Status == false)
+                                    {
+                                        <button class="btn btn-success" onclick="unblockUser(@user.UserId)">Xác thực</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    $('.address').each(function(){
+        let address = $(this).text().split('|')[0];
+        let ward = $(this).text().split('|')[1];
+        let district = $(this).text().split('|')[2];
+        let city = $(this).text().split('|')[3];
+        var ele = $(this);
+
+        $.get("/js/json/provinces-open-api.json", function (data) {
+            // Cities
+            data.forEach(c => {
+                if (city == c.codename) {
+                    c.districts.forEach(d => {
+                        if (district == d.codename) {
+                            d.wards.forEach(w => {
+                                if (ward == w.codename) {
+                                    address += ', ' + w.name + ', ' + d.name + ', ' + c.name;
+                                    ele.text(address);
+                                    return;
+                                }
+                            })
+                        }
+                    })
+                }
+            });
+        })
+    })
+    function blockUser(id){
+        var request = {
+            UserId: id,
+            Status: false
+        };
+        apiUpdateUserStatus(request);
+    }
+    function unblockUser(id){
+        var request = {
+            UserId: id,
+            Status: true
+        };
+        apiUpdateUserStatus(request);
+    }
+    function apiUpdateUserStatus(request){
+        $.ajax({
+            url: '/api/ManageUserAPI/UpdateUserStatus',
+            data: JSON.stringify(request),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            type: 'POST',
+            success: function (data) {
+                alert(data.message);
+                if(request.Status) {
+                    $(`.action_${request.UserId}`).html(`
+                         <a class="mr-2" href="">Chi tiết</a>
+                         <button class="btn btn-danger" onclick="blockUser(${request.UserId})">Khóa</button>
+                    `)
+                    $(`.status_${request.UserId}`).html(`
+                        <p class="text-success">Đã xác thực</p>
+                    `)
+                    return;
+                }
+
+                if(!request.Status){
+                    $(`.action_${request.UserId}`).html(`
+                        <a class="mr-2" href="">Chi tiết</a>
+                        <button class="btn btn-success" onclick="unblockUser(${request.UserId})">Mở khóa</button>
+                    `)
+                    $(`.status_${request.UserId}`).html(`
+                        <p class="text-danger">Đã khóa</p>
+                    `)
+                    return;
+                }
+            },
+            error: function (data) {
+                console.log(data)
+                alert(data.responseJSON.message)
+            }
+        });
+    }
+</script>
