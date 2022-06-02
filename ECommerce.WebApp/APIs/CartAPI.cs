@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.Product;
+﻿using ECommerce.Application.Services.Discount;
+using ECommerce.Application.Services.Product;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,11 @@ namespace ECommerce.WebApp.APIs
     public class CartAPI : ControllerBase
     {
         private IProductService _productService;
-        public CartAPI(IProductService productService)
+        private IDiscountService _discountService;
+        public CartAPI(IProductService productService, IDiscountService discountService)
         {
             _productService = productService;
+            _discountService = discountService;
         }
         [HttpGet("GetProductPrice")]
         public async Task<IActionResult> GetProductPrice(int id, int type)
@@ -44,6 +47,16 @@ namespace ECommerce.WebApp.APIs
                 sum += (int)total;
             }
             return Ok(sum);
+        }
+        [HttpGet("GetDiscountValue")]
+        public async Task<IActionResult> GetDiscountValue(string code)
+        {
+            var result = await _discountService.getDiscountValue(code);
+            if (result == null)
+            {
+                return BadRequest("Mã giảm giá không hợp lệ hoặc hết hạn");
+            }
+            return Ok(result);
         }
     }
     public class GetTotalPriceRequest

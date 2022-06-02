@@ -1,4 +1,6 @@
-﻿using ECommerce.Application.Services.Product;
+﻿using ECommerce.Application.Services.Brand;
+using ECommerce.Application.Services.Product;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -7,16 +9,21 @@ using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.Controllers.Admin
 {
+    [Authorize(AuthenticationSchemes = "AdminAuth")]
+    [Authorize(Policy = "Admin")]
     public class ManageProductController : Controller
     {
         private IProductService _productService;
-        public ManageProductController(IProductService productService)
+        private IBrandService _brandService;
+        public ManageProductController(IProductService productService, IBrandService brandService)
         {
             _productService = productService;
+            _brandService = brandService;
         }
         public async Task<IActionResult> Index()
         {
-            return View();
+            var brand = await _brandService.getAllManage();
+            return View(brand);
         }
     }
 }

@@ -26,7 +26,7 @@ namespace ECommerce.Application.Services.Rate
                     Value = (int)rate.RateValue,
                     UserName = rate.User.UserFullName,
                     Comment = rate.Comment,
-                    CreateDate = rate.CreateDate,
+                    CreateDate = (DateTime)rate.CreateDate,
                     Images = _DbContext.RatingImages.Where(img => img.RateId == rate.RateId).Select(i=>i.RatingImagePath).ToList()
                 })
                 .ToListAsync();

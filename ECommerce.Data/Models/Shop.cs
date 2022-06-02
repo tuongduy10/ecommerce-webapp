@@ -26,7 +26,9 @@ namespace ECommerce.Data.Models
         public byte Tax { get; set; }
         public int UserId { get; set; }
         public byte Status { get; set; }
+        public int? DiscountId { get; set; }
 
+        public virtual Discount Discount { get; set; }
         public virtual User User { get; set; }
         public virtual ICollection<Product> Products { get; set; }
         public virtual ICollection<ShopBank> ShopBanks { get; set; }

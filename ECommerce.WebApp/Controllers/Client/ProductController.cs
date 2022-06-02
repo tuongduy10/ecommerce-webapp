@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Services.Brand;
 using ECommerce.Application.Services.Configurations;
+using ECommerce.Application.Services.Discount;
 using ECommerce.Application.Services.FilterProduct;
 using ECommerce.Application.Services.Product;
 using ECommerce.Application.Services.Product.Dtos;
@@ -20,13 +21,15 @@ namespace ECommerce.WebApp.Controllers.Client
         private readonly IBrandService _brandService;
         private readonly IFilterProductService _filterService;
         private readonly IRateService _rateService;
+        private readonly IDiscountService _discountService;
         public ProductController(
             IConfigurationService configurationService,
             IProductService productService, 
             ISubCategoryService subCategoryService, 
             IBrandService brandService, 
             IFilterProductService filterService,
-            IRateService rateService)
+            IRateService rateService,
+            IDiscountService discountService)
         {
             _configurationService = configurationService;
             _productService = productService;
@@ -34,6 +37,7 @@ namespace ECommerce.WebApp.Controllers.Client
             _brandService = brandService;
             _filterService = filterService;
             _rateService = rateService;
+            _discountService = discountService;
         }
         public async Task<IActionResult> ProductInBrand(ProductGetRequest request)
         {
@@ -66,7 +70,7 @@ namespace ECommerce.WebApp.Controllers.Client
             var suggestion = await _productService.getProductSuggestion();
             var phone = await _configurationService.getPhoneNumber();
             var options = await _productService.getProductOption(ProductId);
-
+            var discount = await _discountService.getDisount(product.ShopId, product.BrandId);
             var model = new ProductDetailViewModel
             {
                 product = product,
@@ -74,6 +78,7 @@ namespace ECommerce.WebApp.Controllers.Client
                 suggestion = productListFormated(suggestion),
                 phone = phone,
                 options = options,
+                discount = discount
             };
             return View(model);
         }

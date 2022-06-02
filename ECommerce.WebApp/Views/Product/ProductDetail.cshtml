@@ -144,7 +144,6 @@
                                                 <span class="bullet-text">Giao hàng miễn phí</span>
                                             </div>
                                         }
-
                                     </div>
                                 </div>
                             </div>
@@ -185,6 +184,7 @@
 
                                     }
                                 </div>
+                                <!-- Product price -->
                                 <div class="product__detail-price">
                                     @if (Model.product.DiscountPercent != null)
                                     {
@@ -206,17 +206,17 @@
                                                 </div>
                                                 <label class="form-check-label d-flex align-items-center"
                                                        for="inlineRadio1">
-                                                @if (item.PriceOnSell != null)
-                                                {
-                                                    <span class="price mr-2">@String.Format("{0:0,0} ₫", item.PriceOnSell)</span>
-                                                    <span class="saleprice">
-                                                        <strike>@String.Format("{0:0,0} ₫", item.Price)</strike>
-                                                    </span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="price mr-2">@String.Format("{0:0,0} ₫", item.Price)</span>
-                                                }
+                                                    @if (item.PriceOnSell != null)
+                                                    {
+                                                        <span class="price mr-2">@String.Format("{0:0,0} ₫", item.PriceOnSell)</span>
+                                                        <span class="saleprice">
+                                                            <strike>@String.Format("{0:0,0} ₫", item.Price)</strike>
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="price mr-2">@String.Format("{0:0,0} ₫", item.Price)</span>
+                                                    }
                                                 </label>
                                             </div>
                                         }
@@ -232,50 +232,67 @@
                                                 </div>
                                                 <label class="form-check-label d-flex align-items-center"
                                                        for="inlineRadio2">
-                                                @if (item.PriceOnSell != null)
-                                                {
-                                                    <span class="price mr-2">@String.Format("{0:0,0} ₫", item.PriceOnSell)</span>
-                                                    <span class="saleprice">
-                                                        <strike>@String.Format("{0:0,0} ₫", item.Price)</strike>
-                                                    </span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="price mr-2">@String.Format("{0:0,0} ₫", item.Price)</span>
-                                                }
+                                                    @if (item.PriceOnSell != null)
+                                                    {
+                                                        <span class="price mr-2">@String.Format("{0:0,0} ₫", item.PriceOnSell)</span>
+                                                        <span class="saleprice">
+                                                            <strike>@String.Format("{0:0,0} ₫", item.Price)</strike>
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="price mr-2">@String.Format("{0:0,0} ₫", item.Price)</span>
+                                                    }
                                                 </label>
                                             </div>
                                         }
                                     }
-
-                                    <div class="mt-2">
-                                        <div class="product__sale-code w-100 justify-content-between d-flex align-items-center">
-                                            <span class="circle-left"></span>
-                                            <div class="product__sale-content">
-                                                <div class="text">
-                                                    Nhập mã <strong>SALECODE</strong> giảm 500.000
-                                                    ₫
+                                    <!-- Discount -->
+                                    @if (Model.discount != null)
+                                    {
+                                        <div class="mt-2">
+                                            <div class="product__sale-code w-100 justify-content-between d-flex align-items-center">
+                                                <span class="circle-left"></span>
+                                                <div class="product__sale-content">
+                                                    @if(Model.discount.IsPercent)
+                                                    {
+                                                        <div class="text">
+                                                            Nhập mã <strong>@Model.discount.DiscountCode</strong> giảm @Model.discount.DiscountValue%
+                                                        </div>
+                                                    } else {
+                                                        <div class="text">
+                                                            Nhập mã <strong>@Model.discount.DiscountCode</strong> giảm @String.Format("{0:0,0} ₫", Model.discount.DiscountValue)
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                     viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
+                                                     stroke-linecap="round" stroke-linejoin="round"
+                                                     class="feather feather-chevron-down">
+                                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                                </svg>
+                                                <span class="circle-right"></span>
+                                            </div>
+                                            <div class="product__sale-bottom d-none">
+                                                <div class="d-flex align-items-center justify-content-between my-2">
+                                                    @if (Model.discount.IsPercent)
+                                                    {
+                                                        <div class="text">
+                                                            Nhập <strong class="salecode">@Model.discount.DiscountCode</strong> để giảm @Model.discount.DiscountValue % trên tổng hóa đơn
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="text">
+                                                            Nhập <strong class="salecode">@Model.discount.DiscountCode</strong> để giảm @String.Format("{0:0,0} ₫", Model.discount.DiscountValue) trên tổng hóa đơn
+                                                        </div>
+                                                    }
+                                                    <button type="button" class="getcode" style="white-space: nowrap">Lấy mã</button>
                                                 </div>
                                             </div>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                 viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
-                                                 stroke-linecap="round" stroke-linejoin="round"
-                                                 class="feather feather-chevron-down">
-                                                <polyline points="6 9 12 15 18 9"></polyline>
-                                            </svg>
-                                            <span class="circle-right"></span>
                                         </div>
-                                        <div class="product__sale-bottom d-none">
-                                            <div class="d-flex align-items-center justify-content-between my-2">
-                                                <div class="text">
-                                                    Nhập <strong class="salecode">SALECODE</strong> để giảm 500.000 ₫ trên tổng hóa đơn
-                                                </div>
-                                                <button type="button" class="getcode" style="white-space: nowrap">Lấy mã</button>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    }
                                 </div>
-                                
                                 <!-- Action -->
                                 <div class="product__detail-buttons d-flex justify-content-between w-100">
                                     <button class="btn-addtocart btn-black"
@@ -292,6 +309,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Product user images -->
             <div class="product__images-slider">
                 <h1 class="detail-title mb-0"><strong>HÌNH ẢNH THỰC TẾ</strong></h1>
                 <hr class="mt-0">
@@ -828,7 +846,7 @@
 
     // render Html
     function renderMiniCart(qty) {
-        $('.minicart .quality').remove();
+        $('.minicart .quantity').remove();
         $('.minicart').append(htmlMiniCartQty(qty)); // red icon
         $('.minicart-content').remove();
         $('.cart-action').append(htmlMiniCart(qty)); // mini cart content

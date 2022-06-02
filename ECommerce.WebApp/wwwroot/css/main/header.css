@@ -57,7 +57,7 @@
             .header__top-link .icon{
                 position: relative;
             }
-            .header__top-link .icon .quality{
+            .header__top-link .icon .quantity{
                 position: absolute;
                     
                 display: flex;
@@ -381,7 +381,7 @@
                 margin-right: 10px;
                 position: relative;
             }
-                .nav__mobile-account .icon .quality{
+                .nav__mobile-account .icon .quantity{
                     position: absolute;
                     position: absolute;
                     

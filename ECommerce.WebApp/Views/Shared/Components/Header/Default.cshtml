@@ -49,7 +49,7 @@
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
-                            <span class="quality">99</span>
+                            <span class="quantity">99</span>
                         </span>
                         <span class="text">
                             Hi, @User.Identity.Name
@@ -92,7 +92,7 @@
                 <li class="wishlist-action">
                     <a href="" class="header__top-link">
                         <span class="icon favorite">
-                            <span class="quality">1</span>
+                            <span class="quantity">1</span>
                             <svg class="" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                  viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
                                  stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart">
@@ -103,7 +103,7 @@
                     </a>
                 </li>
                 <li class="cart-action">
-                    <a href="" class="header__top-link">
+                    <a href="@Url.Action("Index", "Cart")" class="header__top-link">
                         <span class="icon cart minicart">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                  fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
@@ -172,7 +172,7 @@
                                 <li class="pb-4">
                                     <a href="@Url.Action("UserProfile","Account")" class="d-flex w-100">
                                         <span class="icon">
-                                            <span class="quality">1</span>
+                                            <span class="quantity">1</span>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                  viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
                                                  stroke-linecap="round" stroke-linejoin="round"
@@ -258,7 +258,7 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <a href="@Url.Action("UserProfile","Account")" class="profile-mobile">
-                            <span class="quality">1</span>
+                            <span class="quantity">1</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                  fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
                                  stroke-linejoin="round" class="feather feather-user">
@@ -280,7 +280,7 @@
                     }
                     <!-- Wishlist -->
                     <a class="favorite-mobile">
-                        <span class="quality">1</span>
+                        <span class="quantity">1</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                              fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
                              stroke-linejoin="round" class="feather feather-heart">
@@ -289,8 +289,8 @@
                         </svg>
                     </a>
                     <!-- Cart -->   
-                    <a class="cart-mobile minicart">
-                        <span class="quality">1</span>
+                    <a class="cart-mobile minicart" href="@Url.Action("Index", "Cart")">
+                        <span class="quantity">1</span>
                         <svg classs="cart-mobile" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                              viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
                              stroke-linejoin="round" class="feather feather-shopping-bag">
@@ -354,7 +354,7 @@
                 renderTotal(cart.items);
             }
             function renderMiniCartQty(qty) {
-                $('.minicart .quality').remove();
+                $('.minicart .quantity').remove();
                 $('.minicart').append(htmlMiniCartQty(qty)); // red icon
             }
             function renderProduct(items) {
@@ -419,7 +419,7 @@
                             </div>
                             <div class="text-center d-block">
                                 <a class="minicart-checkout d-inline-block w-100 py-3 mb-4 btn-black" href="">THANH TOÁN</a>
-                                <a href=""><u>Xem/Chỉnh sửa</u></a>
+                                <a href="@Url.Action("Index", "Cart")"><u>Xem/Chỉnh sửa</u></a>
                             </div>
                         </div>
                     </div>
@@ -428,7 +428,7 @@
             }
             function htmlMiniCartQty(qty) {
                 var html = `
-                    <span class="quality">${qty}</span>
+                    <span class="quantity">${qty}</span>
                 `
                 return html;
             }
@@ -483,12 +483,12 @@
                 `;
                 return html;
             }
-            
+
             // Remove product in cart
             $(document).on('click', '.minicart-remove', function () {
                 var _cart = JSON.parse(localStorage.getItem("_cart"));
                 if (_cart.items.length == 1) {
-                    $('.minicart .quality').remove();
+                    $('.minicart .quantity').remove();
                     $('.minicart-content').remove();
                     window.localStorage.removeItem('_cart');
                     return;

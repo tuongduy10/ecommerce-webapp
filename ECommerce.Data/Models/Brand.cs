@@ -21,8 +21,10 @@ namespace ECommerce.Data.Models
         public int CategoryId { get; set; }
         public bool? Highlights { get; set; }
         public bool? New { get; set; }
+        public int? DiscountId { get; set; }
 
         public virtual Category Category { get; set; }
+        public virtual Discount Discount { get; set; }
         public virtual ICollection<Product> Products { get; set; }
         public virtual ICollection<ShopBrand> ShopBrands { get; set; }
     }

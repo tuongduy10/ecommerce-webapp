@@ -92,6 +92,7 @@ namespace ECommerce.Application.Services.Product
                                                 BrandId = i.Brand.BrandId,
                                                 BrandName = i.Brand.BrandName,
                                                 ShopName = i.Shop.ShopName,
+                                                ShopId = i.Shop.ShopId,
                                                 ProductRate = productRate,
 
                                                 Attributes = attr,
@@ -343,6 +344,10 @@ namespace ECommerce.Application.Services.Product
                     priceOnSell = i.PriceOnSell
                 }).FirstOrDefaultAsync();
             return result;
+        }
+        public async Task<ApiResponse> AddProduct()
+        {
+            return new ApiSuccessResponse("Thêm thành công");
         }
     }
 }

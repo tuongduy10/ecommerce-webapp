@@ -8,7 +8,6 @@
     <Compile Remove="Services\AvailablePrice\**" />
     <Compile Remove="Services\Banner\**" />
     <Compile Remove="Services\DiscountType\**" />
-    <Compile Remove="Services\Discount\**" />
     <Compile Remove="Services\Header\**" />
     <Compile Remove="Services\Option\**" />
     <Compile Remove="Services\ProductAttribute\**" />
@@ -24,7 +23,6 @@
     <EmbeddedResource Remove="Services\AvailablePrice\**" />
     <EmbeddedResource Remove="Services\Banner\**" />
     <EmbeddedResource Remove="Services\DiscountType\**" />
-    <EmbeddedResource Remove="Services\Discount\**" />
     <EmbeddedResource Remove="Services\Header\**" />
     <EmbeddedResource Remove="Services\Option\**" />
     <EmbeddedResource Remove="Services\ProductAttribute\**" />
@@ -40,7 +38,6 @@
     <None Remove="Services\AvailablePrice\**" />
     <None Remove="Services\Banner\**" />
     <None Remove="Services\DiscountType\**" />
-    <None Remove="Services\Discount\**" />
     <None Remove="Services\Header\**" />
     <None Remove="Services\Option\**" />
     <None Remove="Services\ProductAttribute\**" />

@@ -3,6 +3,7 @@ using ECommerce.Application.Services.SubCategory;
 using ECommerce.Application.Services.Category;
 using ECommerce.Application.Services.Configurations;
 using ECommerce.Application.Services.Product;
+using ECommerce.Application.Services.Discount;
 using ECommerce.Data.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -72,6 +73,7 @@ namespace ECommerce.WebApp
             services.AddTransient<IFilterProductService, FilterProductService>();
             services.AddTransient<IBankService, BankService>();
             services.AddTransient<IRateService, RateService>();
+            services.AddTransient<IDiscountService, DiscountService>();
 
             // User
             services.AddTransient<IUserService, UserService>();

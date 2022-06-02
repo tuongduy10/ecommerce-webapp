@@ -16,12 +16,10 @@ namespace ECommerce.Application.Services.Brand
         {
             this.DbContext = DbContext;
         }
-
         public Task<int> Create(BrandCreateRequest request)
         {
             throw new NotImplementedException();
         }
-
         public Task<int> Delete(int BrandId)
         {
             throw new NotImplementedException();
@@ -91,7 +89,6 @@ namespace ECommerce.Application.Services.Brand
 
             return list;
         }
-
         public async Task<BrandModel> getBrandById(int BrandId)
         {
             var query = from category in DbContext.Categories
@@ -114,7 +111,6 @@ namespace ECommerce.Application.Services.Brand
 
             return result;
         }
-
         public Task<int> Update(BrandModel request)
         {
             throw new NotImplementedException();

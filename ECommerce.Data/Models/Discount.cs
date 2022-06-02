@@ -9,7 +9,8 @@ namespace ECommerce.Data.Models
     {
         public Discount()
         {
-            Orders = new HashSet<Order>();
+            Brands = new HashSet<Brand>();
+            Shops = new HashSet<Shop>();
         }
 
         public int DiscountId { get; set; }
@@ -19,8 +20,12 @@ namespace ECommerce.Data.Models
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public byte? Status { get; set; }
-        public bool? isPercent { get; set; }
+        public bool? IsPercent { get; set; }
+        public bool? ForGlobal { get; set; }
+        public bool? ForShop { get; set; }
+        public bool? ForBrand { get; set; }
 
-        public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Brand> Brands { get; set; }
+        public virtual ICollection<Shop> Shops { get; set; }
     }
 }

@@ -130,6 +130,11 @@ namespace ECommerce.Data.Context
                     .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Brand_Category");
+
+                entity.HasOne(d => d.Discount)
+                    .WithMany(p => p.Brands)
+                    .HasForeignKey(d => d.DiscountId)
+                    .HasConstraintName("FK_Brand_Discount");
             });
 
             modelBuilder.Entity<Category>(entity =>
@@ -186,10 +191,16 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.EndDate).HasColumnType("datetime");
 
+                entity.Property(e => e.ForBrand).HasColumnName("forBrand");
+
+                entity.Property(e => e.ForGlobal).HasColumnName("forGlobal");
+
+                entity.Property(e => e.ForShop).HasColumnName("forShop");
+
+                entity.Property(e => e.IsPercent).HasColumnName("isPercent");
+
                 entity.Property(e => e.StartDate).HasColumnType("datetime");
-
             });
-
 
             modelBuilder.Entity<Header>(entity =>
             {
@@ -251,11 +262,6 @@ namespace ECommerce.Data.Context
                 entity.Property(e => e.Temporary).HasColumnType("decimal(18, 0)");
 
                 entity.Property(e => e.Total).HasColumnType("decimal(18, 0)");
-
-                entity.HasOne(d => d.Discount)
-                    .WithMany(p => p.Orders)
-                    .HasForeignKey(d => d.DiscountId)
-                    .HasConstraintName("FK_Order_Discount");
 
                 entity.HasOne(d => d.PaymentMethod)
                     .WithMany(p => p.Orders)
@@ -453,6 +459,8 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.Comment).HasColumnType("ntext");
 
+                entity.Property(e => e.CreateDate).HasColumnType("datetime");
+
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Rates)
                     .HasForeignKey(d => d.ProductId)
@@ -462,8 +470,6 @@ namespace ECommerce.Data.Context
                     .WithMany(p => p.Rates)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_Rate_User");
-
-                entity.Property(e => e.CreateDate).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<RatingImage>(entity =>
@@ -522,6 +528,11 @@ namespace ECommerce.Data.Context
                 entity.Property(e => e.ShopWardCode)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.Discount)
+                    .WithMany(p => p.Shops)
+                    .HasForeignKey(d => d.DiscountId)
+                    .HasConstraintName("FK_Shop_Discount");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Shops)

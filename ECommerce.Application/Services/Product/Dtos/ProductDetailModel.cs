@@ -16,6 +16,7 @@ namespace ECommerce.Application.Services.Product.Dtos
         public string Insurance { get; set; } //
 
         public string ShopName { get; set; } //
+        public int ShopId { get; set; }
         public int BrandId { get; set; } //
         public string BrandName { get; set; } //
         public DateTime? ProductImportDate { get; set; } //
