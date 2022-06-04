@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.Brand.Dtos;
+﻿using ECommerce.Application.Common;
+using ECommerce.Application.Services.Brand.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace ECommerce.Application.Services.Brand
 {
     public interface IBrandService
     {
-        Task<int> Create(BrandCreateRequest request);
-        Task<int> Update(BrandModel request);
+        Task<ApiResponse> Create(BrandCreateRequest request);
+        Task<Response<FileChangedResponse>> Update(BrandUpdateRequest request);
         Task<int> Delete(int BrandId);
         Task<BrandModel> getBrandById(int BrandId);
         Task<List<BrandModel>> getAll();

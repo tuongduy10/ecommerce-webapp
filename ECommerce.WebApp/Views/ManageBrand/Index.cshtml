@@ -10,12 +10,13 @@
     <div class="card-body">
         <div class="mb-2">
             <div class="form-group">
+                <input class="brand-id" type="number" hidden/>
                 <label>Tên thương hiệu</label>
-                <input class="form-control">
+                <input class="form-control brand-name">
             </div>
             <div class="form-group">
                 <label>Danh mục</label>
-                <select class="form-control" aria-label="Default select example">
+                <select class="form-control brand-category" aria-label="Default select example">
                     <option selected disabled>Chọn danh mục</option>
                     @foreach (var item in Model.listCategory)
                     {
@@ -26,7 +27,7 @@
             <div class="form-group">
                 <label>Ảnh thương hiệu</label>
                 <div class="border" style="height: 100px; width: 100px;">
-                    <label class="mb-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                    <label class="remove-wrapper mb-0 w-100 h-100 d-flex align-items-center justify-content-center"
                            for="pic-size" style="cursor: pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24"
                              height="24" viewBox="0 0 24 24" fill="none"
@@ -38,10 +39,9 @@
                             <line x1="8" y1="12" x2="16" y2="12"></line>
                         </svg>
                     </label>
-                    <input type="file" class="form-control-file image-uploaded"
-                           id="pic-size" hidden>
+                    <input type="file" class="form-control-file image-uploaded" id="pic-size" hidden>
                     <div class="image-wrapper w-100 h-100 position-relative d-none align-items-center justify-content-center">
-                        <img class="mw-100 mh-100"
+                        <img class="mw-100 mh-100 brand-img"
                              src="../assets/images/products/pro1.png" alt="">
                         <span class="position-absolute remove-upload"
                               style="right: 0; top: 0; cursor: pointer;">
@@ -56,7 +56,7 @@
                     </div>
                 </div>
             </div>
-            <button class="btn btn-primary">Lưu</button>
+            <button class="btn btn-primary brand-saveChanges">Lưu</button>
         </div>
         <div class="table-responsive">
             <table class="table table-bordered order-table" id="dataTable" width="100%"
@@ -98,7 +98,7 @@
                                 {
                                     <a class="btn btn-success">Hiển thị</a>
                                 }
-                                <a class="btn btn-primary">Chi tiết</a>
+                                <a class="btn btn-primary brand-detail" value="@item.BrandId">Chi tiết</a>
                                 <a class="btn btn-danger">Xóa</a>
                             </td>
                         </tr>
@@ -109,10 +109,74 @@
     </div>
 </div>
 
+<!-- Add or Update brand -->
 <script>
+    $('.brand-saveChanges').click(function () {
+        var id = $('.brand-id').val();
+        var name = $('.brand-name').val();
+        var file = $('.image-uploaded').prop('files')[0];
+        var category = $('.brand-category').val();
 
+        var formData = new FormData();
+        formData.append('ImagePath', file);
+        formData.append('BrandName', name);
+        formData.append('CategoryId', category);
+
+        if (!id) {
+            $.ajax({
+                type: "POST",
+                url: "/ManageBrand/AddBrand",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    alert(response);
+                    location.reload();
+                },
+                error: function (errorMessage) {
+                    alert(errorMessage.responseText);
+                }
+            });
+        } else {
+            formData.append('BrandId', id);
+            $.ajax({
+                type: "POST",
+                url: "/ManageBrand/UpdateBrand",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    alert(response);
+                    location.reload();
+                },
+                error: function (errorMessage) {
+                    alert(errorMessage.responseText);
+                }
+            });
+        }
+    })
+    $('.brand-detail').click(function () {
+        console.log($(this).attr('value'))
+        $.get('/api/ManageBrandAPI/getBrandById', { id: $(this).attr('value') })
+            .then(function (response) {
+                console.log(response)
+                $('.brand-id').val(response.brandId);
+                $('.brand-name').val(response.brandName);
+                $(`.brand-category`).val(response.categoryId);
+                // img
+                $('.image-wrapper').removeClass('d-none');
+                $('.image-wrapper').addClass('d-flex');
+
+                $('.remove-wrapper').removeClass('d-flex');
+                $('.remove-wrapper').addClass('d-none');
+                $('.brand-img').attr('src', `@Configuration["ImagePath:Brand"]${response.brandImagePath}`);
+
+            })
+            .catch(function (error) {
+                console.log(error.responseText)
+            })
+    })
 </script>
-
 <script type="text/javascript">
     $('.image-uploaded').change(function () {
         // Set image src

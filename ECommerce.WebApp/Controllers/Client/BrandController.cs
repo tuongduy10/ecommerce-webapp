@@ -1,5 +1,11 @@
 ﻿using ECommerce.Application.Services.Brand;
+using ECommerce.Application.Services.Brand.Dtos;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.Controllers.Client
@@ -16,13 +22,11 @@ namespace ECommerce.WebApp.Controllers.Client
             var list = await _brandService.getAll();
             return View(list);
         }
-
         public async Task<IActionResult> NewBrands()
         {
             var list = await _brandService.getAll();
             return View(list);
         }
-
         public async Task<IActionResult> AllBrands()
         {
             var list = await _brandService.getAll();

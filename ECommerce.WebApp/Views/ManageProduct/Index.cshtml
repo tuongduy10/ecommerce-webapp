@@ -14,7 +14,7 @@
             <form class="mx-auto">
                 <div class="row">
                     <div class="col-sm-6 mb-4">
-                        <div class="text-left mb-2 text-primary"><strong>1. Thông tin cơ bản</strong></div>
+                        <div class="text-left mb-2 text-primary"><strong>Thông tin cơ bản</strong></div>
                         <div class="form-group mb-4">
                             <label>Tên sản phẩm</label>
                             <input type="text" class="form-control" value="">
@@ -73,42 +73,10 @@
                         </div>
                     </div>
                     <div class="col-sm-6 mb-4">
-                        <div class="text-left mb-2 text-primary"><strong>2. Thông tin tùy chọn</strong></div>
-                        <div class="d-flex flex-wrap">
-                            <div class="form-group mr-4 mb-2">
-                                <label>Màu sắc</label>
-                                <div class="d-flex mb-2">
-                                    <div class="dropdown mr-2">
-                                        <input class="form-control" type="text">
-                                    </div>
-                                    <a class="add-option btn btn-primary">Thêm</a>
-                                </div>
-                                <ul class="pl-0">
-                                </ul>
-                            </div>
-                            <div class="form-group mr-4 mb-2">
-                                <label>Kích thước</label>
-                                <div class="d-flex mb-2">
-                                    <div class="dropdown mr-2">
-                                        <input class="form-control" type="text">
-                                    </div>
-                                    <a class="add-option btn btn-primary">Thêm</a>
-                                </div>
-                                <ul class="pl-0">
-                                </ul>
-                            </div>
-                            <div class="form-group mr-4 mb-2">
-                                <label>Loại da</label>
-                                <div class="d-flex mb-2">
-                                    <div class="dropdown mr-2">
-                                        <input class="form-control" type="text">
-                                    </div>
-                                    <a class="add-option btn btn-primary">Thêm</a>
-                                </div>
-                                <ul class="pl-0">
-                                </ul>
-                            </div>
+                        <div class="attribute-form">
+                            
                         </div>
+                        <!-- Size guide -->
                         <div class="form-group mb-4">
                             <label>Hướng dẫn chọn kích thước</label>
                             <div class="d-flex flex-wrap">
@@ -146,44 +114,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="text-left mb-2 text-primary"><strong>3. Thông tin chi tiết</strong></div>
-                        <div class="d-flex flex-wrap">
-                            <div class="form-group mr-2">
-                                <label>CPU</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-group mr-2">
-                                <label>Hệ điều hành</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-group mr-2">
-                                <label>Màn hình</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-group mr-2">
-                                <label>Hệ điều hành</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-group mr-2">
-                                <label>Camera</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-group mr-2">
-                                <label>Trọng lượng</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-group mr-2">
-                                <label>Chất liệu</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-group mr-2">
-                                <label>Hệ điều hành</label>
-                                <input type="text" class="form-control">
-                            </div>
+                        <div class="option-form">
+                            
                         </div>
                     </div>
                     <div class="col-sm-12 mb-4">
-                        <div class="text-left mb-2 text-primary"><strong>4. Mô tả</strong></div>
+                        <div class="text-left mb-2 text-primary"><strong>Mô tả</strong></div>
                         <div class="form-group mb-4">
                             <textarea class="form-control" id="product-desciptions" rows="8"
                                       cols="50"></textarea>
@@ -223,6 +159,7 @@
     </div>
 </div>
 <script>
+    // get subcategory
     $('.brand_select').change(function () {
         $.get('/api/CategoryAPI/getSubCategoryByBrandId', { id: $(this).val() })
             .then(function (response) {
@@ -232,6 +169,26 @@
                 console(error.responseText);
             })
     })
+    // get attribute and options+
+    $(document).on('change', '.sub-category', function () {
+        var _id = $(this).val()
+        $.get('/api/CategoryAPI/getAttributesBySubCategoryId', { id: _id })
+            .then(function (response) {
+                console.log('1')
+                renderAttributeForm(response);
+            })
+            .catch(function (error) {
+                console.log(error.responseText);
+            })
+        $.get('/api/CategoryAPI/getOptionsBySubCategoryId', { id: _id })
+            .then(function (response) {
+                console.log('2')
+                renderOptionForm(response);
+            })
+            .catch(function (error) {
+                console.log(error.responseText);
+            })
+    })
 
     // render data and html
     function renderSubCategoryForm(list) {
@@ -239,6 +196,20 @@
         $('.subcategory-form').append(htmlSubCategoryForm());
         list.forEach(function (item) {
             $('.subcate-list').append(htmlSubCategory(item.subCategoryId, item.subCategoryName));
+        })
+    }
+    function renderAttributeForm(list) {
+        $('.attribute-form').empty();
+        $('.attribute-form').append(htmlAttributeForm());
+        list.forEach(function (item) {
+            $('.attribute-list').append(htmlAttribute(item));
+        })
+    }
+    function renderOptionForm(list) {
+        $('.option-form').empty();
+        $('.option-form').append(htmlOptionForm());
+        list.forEach(function (item) {
+            $('.option-list').append(htmlOption(item));
         })
     }
 
@@ -261,9 +232,50 @@
     function htmlSubCategory(id, name) {
         return `
             <li class="d-flex align-items-center">
-                <input name="subCategory" class="mr-2" id="attr_${id}" type="radio">
+                <input name="subCategory" class="mr-2 sub-category" id="attr_${id}" type="radio" value="${id}">
                 <label class="mb-0" for="attr_${id}">${name}</label>
             </li>
+        `;
+    }
+    function htmlOptionForm() {
+        return `
+            <div class="text-left mb-2 text-primary"><strong>Thông tin tùy chọn</strong></div>
+            <div class="d-flex flex-wrap option-list">
+
+            </div>
+        `;
+    }
+    function htmlAttributeForm() {
+        return `
+            <div class="text-left mb-2 text-primary"><strong>Thông tin chi tiết</strong></div>
+            <div class="d-flex flex-wrap attribute-list">
+
+            </div>
+        `;
+    }
+
+    function htmlOption(name) {
+        return `
+            <div class="form-group mr-4 mb-2">
+                <label>${name}</label>
+                <div class="d-flex mb-2">
+                    <div class="dropdown mr-2">
+                        <input class="form-control" type="text">
+                    </div>
+                    <a class="add-option btn btn-primary">Thêm</a>
+                </div>
+                <ul class="pl-0">
+                    
+                </ul>
+            </div>
+        `;
+    }
+    function htmlAttribute(name) {
+        return `
+            <div class="form-group mr-2">
+                <label>${name}</label>
+                <input type="text" class="form-control">
+            </div>
         `;
     }
 </script>
@@ -344,7 +356,6 @@
 <script type="text/javascript">
     // Remove current banner
     $('.remove-tag').click(function () {
-        alert('hello')
         $(this).parent().remove();
     })
     // Remove new added banner
@@ -352,57 +363,65 @@
         $(this).parent().remove();
     });
 
-    window.onload = function () {
-        loadIamgesWithPreview("imageProduct-upload", "imageProduct-preview");
-        loadIamgesWithPreview("imageUser-upload", "imageUser-preview");
-        function loadIamgesWithPreview(upload, preview) {
-            if (window.File && window.FileList && window.FileReader) {
-                var filesInput = document.getElementById(upload);
-                filesInput.addEventListener("change", function (event) {
-                    var files = event.target.files; //FileList object
-                    var currentFiles = $('.image__upload-item').length + files.length
-                    if (currentFiles > 10) {
-                        return;
-                    }
-                    var output = document.getElementById(preview);
-                    for (var i = 0; i < files.length; i++) {
-                        var file = files[i];
-                        //Only pics
-                        if (!file.type.match('image'))
-                            continue;
-                        var picReader = new FileReader();
-                        picReader.addEventListener("load", function (event) {
-                            var picFile = event.target;
-                            var div = document.createElement("div");
-                            div.classList.add(`image__upload-item`, `mr-2`);
-                            div.innerHTML = `
-                                <div class="border mb-2 mx-auto" style="height: 100px; width: 100px;">
-                                    <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
-                                        <img class="mw-100 mh-100" src="${picFile.result}" alt="${picFile.name}">
-                                        <span class="position-absolute remove-upload"
-                                            style="right: 0; top: 0; cursor: pointer;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18"
-                                                height="18" viewBox="0 0 24 24" fill="none"
-                                                stroke="red" stroke-width="1" stroke-linecap="round"
-                                                stroke-linejoin="round" class="feather feather-x">
-                                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                                            </svg>
-                                        </span>
-                                    </div>
+    var arrFiles = [];
+    loadIamgesWithPreview("imageProduct-upload", "imageProduct-preview");
+    loadIamgesWithPreview("imageUser-upload", "imageUser-preview");
+    function loadIamgesWithPreview(upload, preview) {
+        if (window.File && window.FileList && window.FileReader) {
+            var filesInput = document.getElementById(upload);
+            filesInput.addEventListener("change", function (event) {
+                var files = event.target.files; //FileList object
+                var currentFiles = $('.image__upload-item').length + files.length
+                if (currentFiles > 10) {
+                    return;
+                }
+                var output = document.getElementById(preview);
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    //Only pics
+                    if (!file.type.match('image'))
+                        continue;
+
+                    arrFiles.push(file);
+
+                    var picReader = new FileReader();
+                    picReader.fileName = file.name;
+                    picReader.addEventListener("load", function (event) {
+                        var picFile = event.target;
+                        var div = document.createElement("div");
+                        div.classList.add(`image__upload-item`, `mr-2`);
+                        div.innerHTML = `
+                            <div class="border mb-2 mx-auto" style="height: 100px; width: 100px;">
+                                <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
+                                    <img class="mw-100 mh-100" src="${picFile.result}" alt="${picFile.name}">
+                                    <span class="position-absolute remove-upload"
+                                        style="right: 0; top: 0; cursor: pointer;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                            height="18" viewBox="0 0 24 24" fill="none"
+                                            stroke="red" stroke-width="1" stroke-linecap="round"
+                                            stroke-linejoin="round" class="feather feather-x">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </span>
                                 </div>
-                            `;
-                            var removeUpload = div.querySelector(".remove-upload");
-                            removeUpload.addEventListener("click", function (evt) {
-                                div.remove();
-                            })
-                            output.insertBefore(div, null);
+                            </div>
+                        `;
+                        var removeUpload = div.querySelector(".remove-upload");
+                        removeUpload.addEventListener("click", function (evt) {
+                            arrFiles.forEach(function (file, index) {
+                                if (file.name == event.target.fileName) {
+                                    arrFiles.splice(index, 1);
+                                }
+                            });
+                            div.remove();
                         });
-                        //Read the image
-                        picReader.readAsDataURL(file);
-                    }
-                });
-            }
+                        output.insertBefore(div, null);
+                    });
+                    //Read the image
+                    picReader.readAsDataURL(file);
+                }
+            });
         }
     }
 </script>
