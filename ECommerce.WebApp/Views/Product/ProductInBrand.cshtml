@@ -412,7 +412,7 @@
                         }
                         @if (Model.listProduct.Items.Count == 0)
                         {
-                            <p class="text-center">Chưa có sản phẩm</p>
+                            <p class="text-center w-100">Chưa có sản phẩm</p>
                         }
                     </div>               
                     <div class="filter__control-bottom">
@@ -747,7 +747,7 @@
             return;
         }
         $('.product__grid-inner').append(`
-            <p class="text-center">Chưa có sản phẩm</p>
+            <p class="text-center w-100">Chưa có sản phẩm</p>
         `);
     }
     // Append current product/total

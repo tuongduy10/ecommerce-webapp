@@ -38,6 +38,10 @@ namespace ECommerce.WebApp.Controllers.Admin
         }
         public async Task<IActionResult> AddBrand(BrandCreateRequest request)
         {
+            if (request.ImagePath == null)
+            {
+                return BadRequest("Hình ảnh thương hiệu không được để trống");
+            }
             var fileName = Guid.NewGuid().ToString() + new FileInfo(request.ImagePath.FileName).Extension;
             request.BrandImagePath = fileName;
             var result = await _brandService.Create(request);
@@ -84,6 +88,15 @@ namespace ECommerce.WebApp.Controllers.Admin
                         request.ImagePath.CopyTo(fileStream);
                     }
                 }
+                return Ok(result.Message);
+            }
+            return BadRequest(result.Message);
+        }
+        public async Task<IActionResult> UpdateStatus(int id, bool status)
+        {
+            var result = await _brandService.UpdateStatus(id, status);
+            if (result.isSucceed)
+            {
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);

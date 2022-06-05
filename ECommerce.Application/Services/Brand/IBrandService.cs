@@ -12,6 +12,7 @@ namespace ECommerce.Application.Services.Brand
     {
         Task<ApiResponse> Create(BrandCreateRequest request);
         Task<Response<FileChangedResponse>> Update(BrandUpdateRequest request);
+        Task<ApiResponse> UpdateStatus(int id, bool status);
         Task<int> Delete(int BrandId);
         Task<BrandModel> getBrandById(int BrandId);
         Task<List<BrandModel>> getAll();

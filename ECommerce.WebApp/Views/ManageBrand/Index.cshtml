@@ -92,11 +92,11 @@
                             <td class="text-center">
                                 @if (item.Status == true)
                                 {
-                                    <a class="btn btn-dark">Ẩn</a>
+                                    <a class="btn btn-dark" onclick="updateStatus(@item.BrandId, false)">Ẩn</a>
                                 }
                                 @if (item.Status == false)
                                 {
-                                    <a class="btn btn-success">Hiển thị</a>
+                                    <a class="btn btn-success" onclick="updateStatus(@item.BrandId, true)">Hiển thị</a>
                                 }
                                 <a class="btn btn-primary brand-detail" value="@item.BrandId">Chi tiết</a>
                                 <a class="btn btn-danger">Xóa</a>
@@ -150,13 +150,12 @@
                     location.reload();
                 },
                 error: function (errorMessage) {
-                    alert(errorMessage.responseText);
+                    console.log(errorMessage);
                 }
             });
         }
     })
     $('.brand-detail').click(function () {
-        console.log($(this).attr('value'))
         $.get('/api/ManageBrandAPI/getBrandById', { id: $(this).attr('value') })
             .then(function (response) {
                 console.log(response)
@@ -173,9 +172,18 @@
 
             })
             .catch(function (error) {
-                console.log(error.responseText)
+                console.log(error)
             })
     })
+    function updateStatus(id, status) {
+        $.post('/ManageBrand/UpdateStatus', { id: id, status: status })
+            .then(function (response) {
+                alert(response);
+            })
+            .catch(function (error) {
+                alert(error.responseText);
+            })
+    }
 </script>
 <script type="text/javascript">
     $('.image-uploaded').change(function () {

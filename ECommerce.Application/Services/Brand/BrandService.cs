@@ -20,7 +20,7 @@ namespace ECommerce.Application.Services.Brand
         }
         public async Task<ApiResponse> Create(BrandCreateRequest request)
         {
-            if(string.IsNullOrEmpty(request.BrandImagePath) || string.IsNullOrEmpty(request.BrandName))
+            if(string.IsNullOrEmpty(request.BrandImagePath) || string.IsNullOrEmpty(request.BrandName) || request.CategoryId == 0)
             {
                 return new ApiFailResponse("Thông tin không được để trống");
             }
@@ -55,25 +55,38 @@ namespace ECommerce.Application.Services.Brand
             {
                 var brand = await _DbContext.Brands.Where(i => i.BrandId == request.BrandId).FirstOrDefaultAsync();
                 var oldFileName = brand.BrandImagePath;
-                
+
+                var fileChange = new FileChangedResponse();
+                fileChange.previousFileName = oldFileName;
                 if (request.BrandImagePath != null)
                 {
                     brand.BrandImagePath = request.BrandImagePath;
+                    fileChange.newFileName = brand.BrandImagePath;
                 }
                 brand.BrandName = request.BrandName;
                 brand.Status = true;
                 brand.CategoryId = request.CategoryId;
                 await _DbContext.SaveChangesAsync();
-                var fileChange = new FileChangedResponse
-                {
-                    previousFileName = oldFileName,
-                    newFileName = brand.BrandImagePath
-                };
+
                 return new SuccessResponse<FileChangedResponse>("Cập nhật thành công", fileChange);
             }
             catch
             {
                 return new FailResponse<FileChangedResponse>("Cập nhật thất bại");
+            }
+        }
+        public async Task<ApiResponse> UpdateStatus(int id, bool status)
+        {
+            try
+            {
+                var brand = await _DbContext.Brands.Where(i => i.BrandId == id).FirstOrDefaultAsync();
+                brand.Status = status;
+                _DbContext.SaveChangesAsync().Wait();
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Cập nhật thất bại");
             }
         }
         public Task<int> Delete(int BrandId)
