@@ -37,7 +37,6 @@ namespace ECommerce.WebApp.Controllers.Client
         {
             return View();
         }
-
         public async Task<IActionResult> SignOut()
         {
             await HttpContext.SignOutAsync("ClientAuth");

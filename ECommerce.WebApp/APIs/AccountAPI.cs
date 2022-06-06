@@ -52,7 +52,6 @@ namespace ECommerce.WebApp.APIs
             var props = new AuthenticationProperties();
             HttpContext.SignInAsync(scheme, principal, props).Wait();
         }
-
         [AllowAnonymous]
         [HttpPost("SignIn")]
         public async Task<IActionResult> SignIn([FromBody] SignInRequest request)
@@ -66,7 +65,6 @@ namespace ECommerce.WebApp.APIs
             SignInHttpContext(result, _cookieClientScheme);
             return Ok(result);
         }
-
         [AllowAnonymous]
         [HttpPost("SignUp")]
         public async Task<IActionResult> SignUp([FromBody] SignUpRequest request)
@@ -78,7 +76,6 @@ namespace ECommerce.WebApp.APIs
             }
             return Ok(result);
         }
-
         [AllowAnonymous]
         [HttpPost("CheckUserPhoneNumber")]
         public async Task<IActionResult> CheckUserPhoneNumber([FromBody] string PhoneNumber)
@@ -88,7 +85,6 @@ namespace ECommerce.WebApp.APIs
             
             return Ok(result);
         }
-
         [HttpPost("UpdateUserPhoneNumber")]
         public async Task<IActionResult> UpdateUserPhoneNumber([FromBody] string PhoneNumber)
         {
@@ -98,7 +94,6 @@ namespace ECommerce.WebApp.APIs
 
             return Ok(result);
         }
-
         [HttpPost("UpdateUserProfile")]
         public async Task<IActionResult> UpdateUserProfile([FromBody] UserUpdateRequest request)
         {

@@ -101,5 +101,14 @@ namespace ECommerce.WebApp.Controllers.Admin
             }
             return BadRequest(result.Message);
         }
+        public async Task<IActionResult> DeleteBrand(int id)
+        {
+            var result = await _brandService.DeleteBrand(id);
+            if (result.isSucceed)
+            {
+                return Ok(result.Message);
+            }
+            return BadRequest(result.Message);
+        }
     }
 }

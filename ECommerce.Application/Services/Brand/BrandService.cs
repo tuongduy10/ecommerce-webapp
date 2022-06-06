@@ -89,10 +89,6 @@ namespace ECommerce.Application.Services.Brand
                 return new ApiFailResponse("Cập nhật thất bại");
             }
         }
-        public Task<int> Delete(int BrandId)
-        {
-            throw new NotImplementedException();
-        }
         public async Task<List<BrandModel>> getAll()
         {
             var query = from category in _DbContext.Categories
@@ -183,6 +179,35 @@ namespace ECommerce.Application.Services.Brand
             }).SingleOrDefaultAsync();
 
             return result;
+        }
+        public async Task<ApiResponse> DeleteBrand(int id)
+        {
+            try
+            {
+                var brand = await _DbContext.Brands.Where(i => i.BrandId == id).FirstOrDefaultAsync();
+
+                var productCount = await _DbContext.Products.Where(i => i.BrandId == id).CountAsync();
+                var hasProduct = productCount > 0;
+                if (hasProduct)
+                {
+                    return new ApiFailResponse($"Thương hiệu này đang tồn tại { productCount } sản phẩm, không thể xóa");
+                }
+
+                var shopCount = await _DbContext.ShopBrands.Where(i => i.BrandId == id).CountAsync();
+                var hasShop = shopCount > 0;
+                if (hasShop)
+                {
+                    return new ApiFailResponse($"Thương hiệu đang được { shopCount } shop quản lý, không thể xóa");
+                }
+                _DbContext.Remove(brand);
+                _DbContext.SaveChangesAsync().Wait();
+                 
+                return new ApiSuccessResponse("Xóa thành công");
+            }
+            catch
+            {
+                return new ApiSuccessResponse("Xóa thất bại");
+            }
         }
     }
 }

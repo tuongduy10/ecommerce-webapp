@@ -99,7 +99,7 @@
                                     <a class="btn btn-success" onclick="updateStatus(@item.BrandId, true)">Hiển thị</a>
                                 }
                                 <a class="btn btn-primary brand-detail" value="@item.BrandId">Chi tiết</a>
-                                <a class="btn btn-danger">Xóa</a>
+                                <a class="btn btn-danger" onclick="deleteBrand(@item.BrandId)">Xóa</a>
                             </td>
                         </tr>
                      }
@@ -122,6 +122,7 @@
         formData.append('BrandName', name);
         formData.append('CategoryId', category);
 
+        // Add new brand
         if (!id) {
             $.ajax({
                 type: "POST",
@@ -137,7 +138,9 @@
                     alert(errorMessage.responseText);
                 }
             });
-        } else {
+        }
+        // Update brand with id
+        else {
             formData.append('BrandId', id);
             $.ajax({
                 type: "POST",
@@ -158,7 +161,6 @@
     $('.brand-detail').click(function () {
         $.get('/api/ManageBrandAPI/getBrandById', { id: $(this).attr('value') })
             .then(function (response) {
-                console.log(response)
                 $('.brand-id').val(response.brandId);
                 $('.brand-name').val(response.brandName);
                 $(`.brand-category`).val(response.categoryId);
@@ -169,16 +171,27 @@
                 $('.remove-wrapper').removeClass('d-flex');
                 $('.remove-wrapper').addClass('d-none');
                 $('.brand-img').attr('src', `@Configuration["ImagePath:Brand"]${response.brandImagePath}`);
-
             })
             .catch(function (error) {
-                console.log(error)
+                alert(error.responseText)
             })
     })
+
     function updateStatus(id, status) {
         $.post('/ManageBrand/UpdateStatus', { id: id, status: status })
             .then(function (response) {
                 alert(response);
+                location.reload();
+            })
+            .catch(function (error) {
+                alert(error.responseText);
+            })
+    }
+    function deleteBrand(id) {
+        $.post('/ManageBrand/DeleteBrand', { id: id })
+            .then(function (response) {
+                alert(response);
+                location.reload();
             })
             .catch(function (error) {
                 alert(error.responseText);
@@ -208,6 +221,9 @@
         // Display label
         $(this).parent().siblings('label').removeClass('d-none');
         $(this).parent().siblings('label').addClass('d-flex');
+
+        // Empty input value 
+        $('.image-uploaded').val(null);
     })
     $('.form-check-input').change(function () {
         $('.form-check-input').siblings('input').addClass('d-none');
