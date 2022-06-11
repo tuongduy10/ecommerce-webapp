@@ -334,6 +334,8 @@ namespace ECommerce.Data.Context
                     .IsRequired()
                     .HasMaxLength(100);
 
+                entity.Property(e => e.Note).HasMaxLength(500);
+
                 entity.HasOne(d => d.Brand)
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.BrandId)

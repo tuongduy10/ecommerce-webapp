@@ -123,6 +123,7 @@
         </div>
     </div>
 </div>
+<script src="~/js/main/provinces-rendering.js"></script>
 @if (!string.IsNullOrEmpty(ViewBag.Message)) { 
     <script>
         alert("@ViewBag.Message");
@@ -147,13 +148,13 @@
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             type: 'POST',
-            success: function (data) {
-                alert(data.message)
+            success: function (response) {
+                alert(response)
                 location.reload();
             },
             error: function (data) {
                 console.log(data)
-                alert(data.responseJSON.message)
+                alert(data.responseText)
             }
         });
     });

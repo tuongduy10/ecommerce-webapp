@@ -132,9 +132,9 @@ namespace ECommerce.WebApp.APIs
             request.UserId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
             var result = await _shopService.SaleRegistration(request);
             if (!result.isSucceed) {
-                return BadRequest(request);
+                return BadRequest(result.Message);
             }
-            return Ok(result);
+            return Ok(result.Message);
         }
     }
 }

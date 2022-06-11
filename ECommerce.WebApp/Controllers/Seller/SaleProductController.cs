@@ -1,11 +1,15 @@
 ﻿using ECommerce.Application.Services.Brand;
 using ECommerce.Application.Services.Product;
+using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.SubCategory;
 using ECommerce.WebApp.Models.SaleProduct;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,8 +22,11 @@ namespace ECommerce.WebApp.Controllers.Seller
         private IProductService _productService;
         private ISubCategoryService _subCategoryService;
         private IBrandService _brandService;
-        public SaleProductController(IProductService productService, ISubCategoryService subCategoryService, IBrandService brandService)
+        private IWebHostEnvironment _webHostEnvironment;
+
+        public SaleProductController(IProductService productService, ISubCategoryService subCategoryService, IBrandService brandService, IWebHostEnvironment webHostEnvironment)
         {
+            _webHostEnvironment = webHostEnvironment;
             _productService = productService;
             _subCategoryService = subCategoryService;
             _brandService = brandService;
@@ -40,10 +47,67 @@ namespace ECommerce.WebApp.Controllers.Seller
             };
             return View(model);
         }
+        [HttpGet]
         public async Task<IActionResult> AddProduct()
         {
             var brands = await _brandService.getAll();
             return View(brands);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddProduct(ProductAddRequest request)
+        {
+            // Image null check
+            if (request.systemImage == null || request.userImage == null)
+            {
+                return BadRequest("Vui lòng chọn ảnh");
+            }
+
+            // Get files name
+            var listSysFileName = new List<string>();
+            for (int i = 0; i < request.systemImage.Count; i++)
+            {
+                var file = request.userImage[i];
+                var extension = new FileInfo(file.FileName).Extension;
+                var fileName = Guid.NewGuid().ToString() + extension;
+                listSysFileName.Add(fileName);
+            }
+            var listUserFileName = new List<string>();
+            for (int i = 0; i < request.userImage.Count; i++)
+            {
+                var file = request.userImage[i];
+                var extension = new FileInfo(file.FileName).Extension;
+                var fileName = Guid.NewGuid().ToString() + extension;
+                listUserFileName.Add(fileName);
+            }
+
+            request.systemFileName = listSysFileName;
+            request.userFileName = listUserFileName;
+            request.userId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
+            var result = await _productService.AddProduct(request);
+            // Result 
+            if (result.isSucceed)
+            {
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images/products");
+                for (int i = 0; i < request.systemImage.Count; i++)
+                {
+                    string filePath = Path.Combine(uploadsFolder, request.systemFileName[i]);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        request.systemImage[i].CopyTo(fileStream);
+                    }
+                }
+                for (int i = 0; i < request.userImage.Count; i++)
+                {
+                    string filePath = Path.Combine(uploadsFolder, request.userFileName[i]);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        request.userImage[i].CopyTo(fileStream);
+                    }
+                }
+
+                return Ok(result.Message);
+            }
+            return BadRequest(result.Message);
         }
     }
 }

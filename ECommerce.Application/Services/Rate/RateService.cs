@@ -41,6 +41,7 @@ namespace ECommerce.Application.Services.Rate
                 if (request.files.Count > 3) return new ApiFailResponse("Ảnh không được vượt quá 3");
                 if (string.IsNullOrEmpty(request.comment)) return new ApiFailResponse("Nội dung không được để trống");
 
+                // Check if user haven't any order with this product
                 // get all order with productId and userId
                 var productInOrders = await _DbContext.OrderDetails
                     .Where(i => i.ProductId == request.productId && i.Order.UserId == request.userId)
@@ -49,6 +50,7 @@ namespace ECommerce.Application.Services.Rate
                 var hasProduct = productInOrders.Count > 0;
                 if (!hasProduct) return new ApiFailResponse("Bạn cần mua sản phẩm này để đánh giá");
 
+                // Check if user's shop is selling this product
                 // get user's shop by product id
                 var shops = await _DbContext.Products
                     .Where(i => i.ProductId == request.productId && i.Shop.UserId == request.userId)

@@ -1,8 +1,11 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.Product.Dtos;
+using ECommerce.Application.Services.Product.Enum;
+using ECommerce.Application.Services.User;
 using ECommerce.Data.Context;
 using ECommerce.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +17,11 @@ namespace ECommerce.Application.Services.Product
     public class ProductService : IProductService
     {
         private ECommerceContext _DbContext;
-        public ProductService(ECommerceContext DbContext)
+        private IUserService _userService;
+        public ProductService(ECommerceContext DbContext, IUserService userService)
         {
             _DbContext = DbContext;
+            _userService = userService;
         }
         public async Task<List<Dtos.Option>> getProductOption(int productId)
         {
@@ -112,90 +117,97 @@ namespace ECommerce.Application.Services.Product
 
             return product;
         }
-        
         // Product in brand
         public async Task<PageResult<ProductInBrandModel>> getProductPaginated(ProductGetRequest request)
         {
-            //Request parameters
-            int BrandId = request.BrandId;
-            int SubCategoryId = request.SubCategoryId;
-            int pageindex = request.PageIndex;
-            int pagesize = request.PageSize;
-            string orderBy = request.OrderBy;
-            List<int> listOptionValueId = request.listOptionValueId;
-
-            // Query
-            var query = (from product in _DbContext.Products
-                         join brand in _DbContext.Brands on product.BrandId equals brand.BrandId
-                         join shop in _DbContext.Shops on product.ShopId equals shop.ShopId
-                         where product.BrandId == BrandId
-                         orderby product.SubCategoryId
-                         select new { product, brand, shop }).AsQueryable();
-
-            // Query get products by brandid and subcategoryid
-            if (BrandId > 0 && SubCategoryId > 0)
+            try
             {
-                query = query.Where(q => q.product.SubCategoryId == SubCategoryId);
-            }
-            // Query get products by optionvalue
-            if (BrandId > 0 && listOptionValueId != null)
-            { 
-                var listProductId = await _DbContext.ProductOptionValues
-                                            .Where(i => listOptionValueId.Any(l => l == i.OptionValueId))
-                                            .Select(i => i.ProductId)
-                                            .Distinct()
-                                            .ToListAsync();
-                query = query.Where(q => listProductId.Any(l => l == q.product.ProductId));
-            }
+                //Request parameters
+                int BrandId = request.BrandId;
+                int SubCategoryId = request.SubCategoryId;
+                int pageindex = request.PageIndex;
+                int pagesize = request.PageSize;
+                string orderBy = request.OrderBy;
+                List<int> listOptionValueId = request.listOptionValueId;
 
-            // Order by... request
-            if (orderBy == "Newest") query = query.Where(q => q.product.New == true);
-            if (orderBy == "Discount") query = query.Where(q => q.product.DiscountPercent > 0);
+                // Query
+                var query = (from product in _DbContext.Products
+                             join brand in _DbContext.Brands on product.BrandId equals brand.BrandId
+                             join shop in _DbContext.Shops on product.ShopId equals shop.ShopId
+                             where product.BrandId == BrandId
+                             orderby product.SubCategoryId
+                             select new { product, brand, shop }).AsQueryable();
 
-            // Select from query
-            var list = query
-                .OrderByDescending(i => i.product.ProductAddedDate)
-                .Select(i => new ProductInBrandModel()
+                // Query get products by brandid and subcategoryid
+                if (BrandId > 0 && SubCategoryId > 0)
                 {
-                    ProductId = i.product.ProductId,
-                    ProductName = i.product.ProductName,
-                    DiscountPercent = i.product.DiscountPercent,
-                    Status = i.product.Status,
-                    Highlights = i.product.Highlights,
-                    New = i.product.New,
-                    ProductImportDate = i.product.ProductImportDate,
-                    SubCategoryId = i.product.SubCategoryId,
-                    Type = (
-                        from product in _DbContext.Products
-                        from price in _DbContext.ProductPrices
-                        from type in _DbContext.ProductTypes
-                        where product.ProductId == i.product.ProductId &&
-                              price.ProductTypeId == type.ProductTypeId && price.ProductId == product.ProductId
-                        select new { id = type.ProductTypeId, name = type.ProductTypeName }
-                    ).Select(t => new Dtos.Type()
+                    query = query.Where(q => q.product.SubCategoryId == SubCategoryId);
+                }
+                // Query get products by optionvalue
+                if (BrandId > 0 && listOptionValueId != null)
+                {
+                    var listProductId = await _DbContext.ProductOptionValues
+                                                .Where(i => listOptionValueId.Any(l => l == i.OptionValueId))
+                                                .Select(i => i.ProductId)
+                                                .Distinct()
+                                                .ToListAsync();
+
+                    query = query.Where(q => listProductId.Any(l => l == q.product.ProductId));
+                }
+
+                // Order by... request
+                if (orderBy == "Newest") query = query.Where(q => q.product.New == true);
+                if (orderBy == "Discount") query = query.Where(q => q.product.DiscountPercent > 0);
+
+                // Select from query
+                var list = query
+                    .OrderByDescending(i => i.product.ProductAddedDate)
+                    .Select(i => new ProductInBrandModel()
                     {
-                        ProductTypeId = t.id,
-                        ProductTypeName = t.name
-                    }).ToList(),
-                
-                    Price = _DbContext.ProductPrices.Where(price => price.ProductId == i.product.ProductId).ToList(),
-                    ProductImages = _DbContext.ProductImages.Where(img => img.ProductId == i.product.ProductId).Select(i => i.ProductImagePath).FirstOrDefault(),
-                    BrandName = i.brand.BrandName,
-                    ShopName = i.shop.ShopName,
-                });
+                        ProductId = i.product.ProductId,
+                        ProductName = i.product.ProductName,
+                        DiscountPercent = i.product.DiscountPercent,
+                        Status = i.product.Status,
+                        Highlights = i.product.Highlights,
+                        New = i.product.New,
+                        ProductImportDate = i.product.ProductImportDate,
+                        SubCategoryId = i.product.SubCategoryId,
+                        Type = (
+                            from product in _DbContext.Products
+                            from price in _DbContext.ProductPrices
+                            from type in _DbContext.ProductTypes
+                            where product.ProductId == i.product.ProductId &&
+                                  price.ProductTypeId == type.ProductTypeId && price.ProductId == product.ProductId
+                            select new { id = type.ProductTypeId, name = type.ProductTypeName }
+                        ).Select(t => new Dtos.Type()
+                        {
+                            ProductTypeId = t.id,
+                            ProductTypeName = t.name
+                        }).ToList(),
 
-            var record = await list.CountAsync();
-            var data = await PaginatedList<ProductInBrandModel>.CreateAsync(list, pageindex, pagesize);
-            var result = new PageResult<ProductInBrandModel>()
+                        Price = _DbContext.ProductPrices.Where(price => price.ProductId == i.product.ProductId).ToList(),
+                        ProductImages = _DbContext.ProductImages.Where(img => img.ProductId == i.product.ProductId).Select(i => i.ProductImagePath).FirstOrDefault(),
+                        BrandName = i.brand.BrandName,
+                        ShopName = i.shop.ShopName,
+                    });
+
+                var record = await list.CountAsync();
+                var data = await PaginatedList<ProductInBrandModel>.CreateAsync(list, pageindex, pagesize);
+                var result = new PageResult<ProductInBrandModel>()
+                {
+                    Items = data,
+                    CurrentRecord = (pageindex * pagesize) <= record ? (pageindex * pagesize) : record,
+                    TotalRecord = record,
+                    CurrentPage = pageindex,
+                    TotalPage = (int)Math.Ceiling(record / (double)pagesize)
+                };
+
+                return result;
+            }
+            catch(Exception error)
             {
-                Items = data,
-                CurrentRecord = (pageindex * pagesize) <= record ? (pageindex * pagesize) : record,
-                TotalRecord = record,
-                CurrentPage = pageindex,
-                TotalPage = (int)Math.Ceiling(record / (double)pagesize)
-            };
-
-            return result;
+                throw error;
+            }
         }
         // Hotsale, new product only
         public async Task<PageResult<ProductInBrandModel>> getProductInPagePaginated(ProductGetRequest request)
@@ -339,15 +351,196 @@ namespace ECommerce.Application.Services.Product
         {
             var result = await _DbContext.ProductPrices
                 .Where(i => i.ProductId == productId && i.ProductTypeId == typeId)
-                .Select(i => new Price() { 
+                .Select(i => new Price()
+                {
                     price = i.Price,
                     priceOnSell = i.PriceOnSell
                 }).FirstOrDefaultAsync();
             return result;
         }
-        public async Task<ApiResponse> AddProduct()
+        public async Task<ApiResponse> AddProduct(ProductAddRequest request)
         {
-            return new ApiSuccessResponse("Thêm thành công");
+            if(string.IsNullOrEmpty(request.name)) return new ApiFailResponse("Vui lòng nhập tên sản phẩm");
+            if (request.priceAvailable == null && request.pricePreorder == null)
+            {
+                return new ApiFailResponse("Vui lòng nhập giá sản phẩm");
+            }
+
+            try
+            {
+                var userRole = await _userService.getUserRole(request.userId);
+                var shopId = await _DbContext.Shops.Where(i => i.UserId == request.userId).Select(i => i.ShopId).FirstOrDefaultAsync();
+                /*
+                 * None relationship data
+                 */
+                var product = new Data.Models.Product
+                {
+                    ProductName = request.name,
+                    ProductDescription = request.description,
+                    Note = request.note,
+                    DiscountPercent = request.discountPercent,
+                    Legit = request.isLegit,
+                    FreeDelivery = request.isFreeDelivery,
+                    ProductStock = request.stock,
+                    FreeReturn = request.isFreeReturn,
+                    Insurance = request.insurance,
+                    New = request.isNew,
+                    ShopId = shopId,
+                    BrandId = request.brandId,
+                    ProductAddedDate = DateTime.Now,
+                    SubCategoryId = request.subCategoryId,
+                    Status = userRole == "Admin" ? (byte?)enumProductStatus.Available : (byte?)enumProductStatus.Pending
+                };
+                await _DbContext.Products.AddAsync(product);
+                await _DbContext.SaveChangesAsync();
+
+                /*
+                 * Relationship data
+                 */
+                // Options
+                List<int> options = JsonConvert.DeserializeObject<List<int>>(request.currentOptions);
+                if (options.Count > 0)
+                {
+                    foreach (var id in options)
+                    {
+                        var productOptionValue = new ProductOptionValue
+                        {
+                            ProductId = product.ProductId,
+                            OptionValueId = id
+                        };
+                        await _DbContext.ProductOptionValues.AddAsync(productOptionValue);
+                    }
+                }
+                
+                // New option value
+                List<NewOption> newOptions = JsonConvert.DeserializeObject<List<NewOption>>(request.newOptions);
+                if (newOptions.Count > 0)
+                {
+                    foreach (var option in newOptions)
+                    {
+                        var optionValues = await _DbContext.OptionValues
+                            .Where(i => i.OptionId == option.id)
+                            .Select(i => i.OptionValueName)
+                            .ToListAsync();
+
+                        // Get new values of list;
+                        // Lấy các giá trị khác với db;
+                        var values = option.values.Except(optionValues).ToList();
+                        foreach (var value in values)
+                        {
+                            var optionValue = new OptionValue
+                            {
+                                OptionId = option.id,
+                                OptionValueName = value,
+                            };
+                            await _DbContext.OptionValues.AddAsync(optionValue); // Add new value
+                            await _DbContext.SaveChangesAsync();
+
+                            await AddOptionValueByProductId(product.ProductId, value);
+                        }
+
+                        // Get already existed values in db of list;
+                        // Lấy các giá trị trùng với db;
+                        var currentValues = option.values.Intersect(optionValues).ToList();
+                        foreach (var value in currentValues)
+                        {
+                            await AddOptionValueByProductId(product.ProductId, value);
+                        }
+                    }
+                }
+                
+                // Attributes
+                List<Dtos.ProductAttribute> attributes = JsonConvert.DeserializeObject<List<Dtos.ProductAttribute>>(request.attributes);
+                if (attributes.Count > 0)
+                {
+                    foreach (var attr in attributes)
+                    {
+                        var attribute = new Data.Models.ProductAttribute
+                        {
+                            ProductId = product.ProductId,
+                            AttributeId = attr.id,
+                            Value = attr.value
+                        };
+                        await _DbContext.ProductAttributes.AddAsync(attribute);
+                        await _DbContext.SaveChangesAsync();
+                    }
+                }
+                
+                // Prices
+                Price priceAvailable = JsonConvert.DeserializeObject<Price>(request.priceAvailable);
+                if (priceAvailable.price == null && priceAvailable.priceOnSell != null) return new ApiFailResponse("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
+                if (priceAvailable.price < priceAvailable.priceOnSell) return new ApiFailResponse("Giá giảm không thể lớn hơn giá gốc !");
+                var availablePrice = new ProductPrice
+                {
+                    ProductId = product.ProductId,
+                    Price = priceAvailable.price,
+                    PriceOnSell = priceAvailable.priceOnSell != null ? priceAvailable.priceOnSell : GetDiscountPrice(priceAvailable.price, request.discountPercent),
+                    ProductTypeId = (int)enumProductType.Available,
+                };
+
+                Price pricePreorder = JsonConvert.DeserializeObject<Price>(request.pricePreorder);
+                if (pricePreorder.price == null && pricePreorder.priceOnSell != null) return new ApiFailResponse("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
+                if (pricePreorder.price < pricePreorder.priceOnSell) return new ApiFailResponse("Giá giảm không thể lớn hơn giá gốc !");
+                var preOrderPrice = new ProductPrice
+                {
+                    ProductId = product.ProductId,
+                    Price = pricePreorder.price,
+                    PriceOnSell = pricePreorder.priceOnSell != null ? pricePreorder.priceOnSell : GetDiscountPrice(pricePreorder.price, request.discountPercent),
+                    ProductTypeId = (int)enumProductType.PreOrder,
+                };
+                await _DbContext.ProductPrices.AddAsync(availablePrice);
+                await _DbContext.ProductPrices.AddAsync(preOrderPrice);
+                await _DbContext.SaveChangesAsync();
+
+                // Images
+                foreach (var file in request.systemFileName)
+                {
+                    var systemImage = new Data.Models.ProductImage
+                    {
+                        ProductId = product.ProductId,
+                        ProductImagePath = file
+                    };
+                    await _DbContext.ProductImages.AddAsync(systemImage);
+                    await _DbContext.SaveChangesAsync();
+                }
+                foreach (var file in request.userFileName)
+                {
+                    var userImage = new Data.Models.ProductUserImage
+                    {
+                        ProductId = product.ProductId,
+                        ProductUserImagePath = file
+                    };
+                    await _DbContext.ProductUserImages.AddAsync(userImage);
+                    await _DbContext.SaveChangesAsync();
+                }
+                
+                return new ApiSuccessResponse("Thêm thành công");
+            }
+            catch(Exception e)
+            {
+                return new ApiFailResponse(e.Message);
+            }
+        }
+        private async Task AddOptionValueByProductId(int productId, string value)
+        {
+            var id = await _DbContext.OptionValues
+                            .Where(i => i.OptionValueName == value)
+                            .Select(i => i.OptionValueId)
+                            .FirstOrDefaultAsync();
+
+            var productOptionValue = new ProductOptionValue
+            {
+                ProductId = productId,
+                OptionValueId = id
+            };
+
+            await _DbContext.ProductOptionValues.AddAsync(productOptionValue);
+            await _DbContext.SaveChangesAsync();
+        }
+        private decimal GetDiscountPrice(decimal? price, byte? percent)
+        {
+            var priceDiscounted = price - (price * percent / 100);
+            return (decimal)priceDiscounted;
         }
     }
 }

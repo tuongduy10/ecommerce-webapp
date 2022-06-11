@@ -719,6 +719,9 @@
                 renderCurrentRecord(currentRecord, totalRecord);
                 renderPagination(totalPage, request.PageIndex);
                 renderProduct(listProduct, title);
+            },
+            error: function (error) {
+                console.log(error);
             }
         });
     }

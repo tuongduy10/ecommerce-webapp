@@ -119,22 +119,47 @@ namespace ECommerce.Application.Services.SubCategory
                 .ToListAsync();
             return result;
         }
-        public async Task<List<string>> getOptionBySubCategoryId(int id)
+        public async Task<List<OptionGetModel>> getOptionBySubCategoryId(int id)
         {
             var result = await _DbContext.SubCategoryOptions
                 .Where(i => i.SubCategoryId == id)
-                .Select(i => i.Option.OptionName)
+                .Select(i => new OptionGetModel { 
+                    id = i.Option.OptionId,
+                    name = i.Option.OptionName
+                })
                 .ToListAsync();
 
             return result;
         }
-        public async Task<List<string>> getAttributeBySubCategoryId(int id)
+        public async Task<List<AttributeGetModel>> getAttributeBySubCategoryId(int id)
         {
             var result = await _DbContext.SubCategoryAttributes
                 .Where(i => i.SubCategoryId == id)
-                .Select(i => i.Attribute.AttributeName)
+                .Select(i => new AttributeGetModel { 
+                    id = i.Attribute.AttributeId,
+                    name = i.Attribute.AttributeName
+                })
                 .ToListAsync();
 
+            return result;
+        }
+        public async Task<List<string>> getOptionValueNameByOptionId(int id)
+        {
+            var result = await _DbContext.OptionValues
+                .Where(i => i.OptionId == id)
+                .Select(i => i.OptionValueName)
+                .ToListAsync();
+            return result;
+        }
+        public async Task<List<OptionValueGetModel>> getOptionValueByOptionId(int id)
+        {
+            var result = await _DbContext.OptionValues
+                .Where(i => i.OptionId == id)
+                .Select(i => new OptionValueGetModel { 
+                    id = i.OptionValueId,
+                    value = i.OptionValueName
+                })
+                .ToListAsync();
             return result;
         }
     }

@@ -94,7 +94,6 @@
                        aria-expanded="true" aria-controls="orderAdminManage">
                         <i class="fas fa-fw fa-list"></i>
                         <span>Quản lý đơn hàng</span>
-                        <span class="position-absolute" style="height: 8px; width: 8px; background-color: red; border-radius: 50%; top: 10px; right: 30px;"></span>
                     </a>
                     <div id="orderAdminManage" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
@@ -125,16 +124,14 @@
                        aria-expanded="true" aria-controls="collapseStore">
                         <i class="fas fa-fw fa-store"></i>
                         <span>Quản lý bán hàng</span>
-                        <span class="position-absolute" style="height: 8px; width: 8px; background-color: red; border-radius: 50%; top: 10px; right: 30px;"></span>
                     </a>
                     <div id="collapseStore" class="collapse" aria-labelledby="headingUtilities"
                          data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
-
                             <a class="collapse-item" href="@Url.Action("ShopList","ManageShop")">Danh sách cửa hàng</a>
                             <a class="collapse-item" href="@Url.Action("Index","ManageBrand")">Danh sách thương hiệu</a>
                             <a class="collapse-item" href="@Url.Action("Index","ManageCategory")">Danh sách danh mục</a>
-
+                            <a class="collapse-item" href="@Url.Action("","")">Bảng chọn size</a>
                         </div>
                     </div>
                 </li>

@@ -23,6 +23,7 @@ namespace ECommerce.Data.Models
         public byte? DiscountPercent { get; set; }
         public DateTime? ProductAddedDate { get; set; }
         public string ProductDescription { get; set; }
+        public string Note { get; set; }
         public int? ProductStock { get; set; }
         public byte? Status { get; set; }
         public bool? New { get; set; }

@@ -265,5 +265,13 @@ namespace ECommerce.Application.Services.User
             
             return new ApiFailResponse("Mật khẩu không chính xác");
         }
+        public async Task<string> getUserRole(int userId)
+        {
+            var role = await _DbContext.UserRoles
+                .Where(i => i.UserId == userId)
+                .Select(i => i.Role.RoleName)
+                .FirstOrDefaultAsync();
+            return role;
+        }
     }
 }

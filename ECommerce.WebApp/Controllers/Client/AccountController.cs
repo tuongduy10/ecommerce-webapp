@@ -31,7 +31,6 @@ namespace ECommerce.WebApp.Controllers.Client
             ViewData["ReturnUrl"] = CurrentUrl;
             return View();
         }
-
         [AllowAnonymous]
         public async Task<IActionResult> SignUp()
         {
