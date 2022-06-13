@@ -17,6 +17,7 @@ namespace ECommerce.Application.Services.Shop.Dtos
         public string ShopCityCode { get; set; }
         public string ShopBankName { get; set; }
         public string ShopAccountNumber { get; set; }
+        public string ShopAccountName { get; set; }
         public int UserId { get; set; }
     }
 }

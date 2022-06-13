@@ -97,6 +97,8 @@ namespace ECommerce.Application.Services.Shop
             if (checkPhone != null) return new ApiFailResponse("Số điện thoại đã tồn tại");
             var checkMail = await _DbContext.Shops.Where(s => s.ShopMail == request.ShopMail).FirstOrDefaultAsync();
             if (checkMail != null) return new ApiFailResponse("Mail đã tồn tại");
+            var checkUser = await _DbContext.Shops.Where(s => s.UserId == request.UserId).FirstOrDefaultAsync();
+            if (checkUser != null) return new ApiFailResponse("Tài khoản này đã đăng ký bán hàng");
 
             Data.Models.Shop shop = new Data.Models.Shop();
             shop.ShopName = request.ShopName;
@@ -109,14 +111,14 @@ namespace ECommerce.Application.Services.Shop
             shop.ShopJoinDate = DateTime.Now;
             shop.UserId = request.UserId;
             shop.Status = 2; // waiting..
-            await _DbContext.Shops.AddAsync(shop);
-            await _DbContext.SaveChangesAsync();
 
             Data.Models.ShopBank bank = new Data.Models.ShopBank();
-            bank.ShopId = shop.ShopId;
             bank.ShopBankName = request.ShopBankName;
             bank.ShopAccountNumber = request.ShopAccountNumber;
-            await _DbContext.ShopBanks.AddAsync(bank);
+            bank.ShopAccountName = request.ShopAccountName;
+            shop.ShopBanks.Add(bank);
+
+            await _DbContext.Shops.AddAsync(shop);
             await _DbContext.SaveChangesAsync();
 
             return new ApiSuccessResponse("Đăng ký thành công");

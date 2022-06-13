@@ -47,7 +47,8 @@
                                     <div class="form-group mb-4">
                                         <label>Thông tin ngân hàng</label>
                                         <input type="text" class="form-control mb-2 shop-bankname" value="" placeholder="Tên ngân hàng">
-                                        <input type="text" class="form-control shop-bankaccount" value="" placeholder="Số tài khoản">
+                                        <input type="text" class="form-control mb-2 shop-bankaccount" value="" placeholder="Số tài khoản">
+                                        <input type="text" class="form-control shop-accountname" value="" placeholder="Tên tài khoản">
                                     </div>
                                     <div class="form-group">
                                         <label>Địa chỉ cửa hàng</label>
@@ -141,6 +142,7 @@
             ShopCityCode: $('.shop-city').val(),
             ShopBankName: $('.shop-bankname').val(),
             ShopAccountNumber: $('.shop-bankaccount').val(),
+            ShopAccountName: $('.shop-accountname').val(),
         };
         $.ajax({
             url: '/api/AccountAPI/SaleRegistration',
@@ -152,9 +154,9 @@
                 alert(response)
                 location.reload();
             },
-            error: function (data) {
-                console.log(data)
-                alert(data.responseText)
+            error: function (error) {
+                console.log(error)
+                alert(error.responseText)
             }
         });
     });

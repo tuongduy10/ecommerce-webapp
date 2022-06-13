@@ -1,10 +1,41 @@
 ﻿<div class="control-selectlist">
     <!--Mobile view-->
     <select name="" id="" class="form-control" onchange="location = this.value">
-        <option value="@Url.Action("UserProfile", "Account")" selected>Thông tin cá nhân</option>
-        <option value="user-orderhistory.html">Lịch sử đơn hàng</option>
-        <option value="@Url.Action("UpdateUserPassword", "Account")">Đổi mật khẩu</option>
-        <option value="@Url.Action("SaleRegistration", "Account")">Đăng ký bán hàng</option>
+        @if (Context.Request.Path.ToString().Contains("UserProfile"))
+        {
+            <option value="@Url.Action("UserProfile", "Account")" selected>Thông tin cá nhân</option>
+        }
+        else
+        {
+            <option value="@Url.Action("UserProfile", "Account")">Thông tin cá nhân</option>
+        }
+
+        @if (Context.Request.Path.ToString().Contains("OrderHistory"))
+        {
+            <option value="" selected>Lịch sử đơn hàng</option>
+        }
+        else
+        {
+            <option value="">Lịch sử đơn hàng</option>
+        }
+
+        @if (Context.Request.Path.ToString().Contains("UpdateUserPassword"))
+        {
+            <option value="@Url.Action("UpdateUserPassword", "Account")" selected>Đổi mật khẩu</option>
+        }
+        else
+        {
+            <option value="@Url.Action("UpdateUserPassword", "Account")">Đổi mật khẩu</option>
+        }
+
+        @if (Context.Request.Path.ToString().Contains("SaleRegistration"))
+        {
+            <option value="@Url.Action("SaleRegistration", "Account")" selected>Đăng ký bán hàng</option>
+        }
+        else
+        {
+            <option value="@Url.Action("SaleRegistration", "Account")">Đăng ký bán hàng</option>
+        }        
     </select>
     <span class="d-flex align-items-center">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
