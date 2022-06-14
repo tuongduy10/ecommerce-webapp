@@ -147,7 +147,7 @@
                     var list = new List<string>();
                     for (var i = 0; i < Model.listBrand.Count; i++)
                     {
-                        list.Add(@Model.listBrand[i].BrandName.Substring(0, 1));
+                        list.Add(Model.listBrand[i].BrandName.Substring(0, 1).ToUpper());
                     }
                     var listDist = list.Distinct().ToArray();
                     var listAtoE = new List<string>() { "A", "B", "C", "D", "E" };
@@ -168,7 +168,7 @@
                                 <div class="d-flex flex-wrap">
                                     @foreach (var item in Model.listBrand)
                                     {
-                                        if (listOrderBy[j] == item.BrandName.Substring(0, 1))
+                                        if (listOrderBy[j] == item.BrandName.Substring(0, 1).ToUpper())
                                         {
                                             count++;
                                             if (count > 10) // 10 brands for each row
@@ -177,8 +177,8 @@
                                             }
                                             <div class="bran__list-item card">
                                                 <a href="@Url.Action("ProductInBrand","Product", new { @BrandId = item.BrandId, @PageIndex = 1})">
-                                                    <div class="bran__list-img py-2 px-4">
-                                                        <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" class="card-img-top" alt="@item.BrandName">
+                                                    <div class="bran__list-img d-flex align-items-center justify-content-between py-2 px-4 mx-auto">
+                                                        <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" class="mw-100 mh-100 mx-auto" alt="@item.BrandName">
                                                     </div>
                                                     <div class="card-body text-center p-2 align-items-center justify-content-center">
                                                         <h5 class="bran__list-name card-title mb-0">@item.BrandName</h5>

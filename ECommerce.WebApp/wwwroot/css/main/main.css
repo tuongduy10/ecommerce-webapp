@@ -179,14 +179,11 @@
     }
 
 .bran__list-img {
-    height: 4.4375vw;
+    height: 6.4375vw;
 }
 
     .bran__list-img img {
         opacity: .5;
-        height: 100%;
-        width: 100%;
-        object-fit: contain;
     }
 
 .bran__list-item:hover img {
