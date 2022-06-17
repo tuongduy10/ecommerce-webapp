@@ -175,9 +175,9 @@
                                             {
                                                 continue;
                                             }
-                                            <div class="bran__list-item card">
+                                            <div class="bran__list-item card" style="border: .5px solid #ddd; padding: 12px;">
                                                 <a href="@Url.Action("ProductInBrand","Product", new { @BrandId = item.BrandId, @PageIndex = 1})">
-                                                    <div class="bran__list-img d-flex align-items-center justify-content-between py-2 px-4 mx-auto">
+                                                    <div class="border bran__list-img d-flex align-items-center justify-content-between py-2 px-4 mx-auto" style="background-color: #fff;">
                                                         <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" class="mw-100 mh-100 mx-auto" alt="@item.BrandName">
                                                     </div>
                                                     <div class="card-body text-center p-2 align-items-center justify-content-center">
@@ -336,19 +336,19 @@
     function renderBrandList(listBrand) {
         var tempList = [];
         for (var i = 0; i < listBrand.length; i++) {
-            tempList.push(listBrand[i].brandName[0]);
+            tempList.push(listBrand[i].brandName[0].toUpperCase());
         }
         var listDist = tempList.filter(function (value, index) { return tempList.indexOf(value) == index });
         for (var i = 0; i < listDist.length; i++) {
             $('.bran__list-items').append(`<h4>${listDist[i]}</h4>`)
             var data = '';
             listBrand.forEach(brand => {
-                if (listDist[i] == brand.brandName[0]) {
+                if (listDist[i] == brand.brandName[0].toUpperCase()) {
                     data += `
-                        <div class="bran__list-item card">
+                        <div class="bran__list-item card" style=" border: .5px solid #ddd; padding: 12px;">
                             <a href="/Product/ProductInBrand?BrandId=${brand.brandId}&PageIndex=1">
-                                <div class="bran__list-img py-2 px-4">
-                                    <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="card-img-top" alt="${brand.brandName}">
+                                <div class="border bran__list-img d-flex align-items-center justify-content-between py-2 px-4 mx-auto" style="background-color: #fff;">
+                                    <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="mw-100 mh-100 mx-auto" alt="${brand.brandName}">
                                 </div>
                                 <div class="card-body text-center p-2 align-items-center justify-content-center">
                                     <h5 class="bran__list-name card-title mb-0">${brand.brandName}</h5>
@@ -365,7 +365,7 @@
     function renderBrandListOrdered(listBrand, sortBy) {
         var tempList = [];
         for (var i = 0; i < listBrand.length; i++){
-            tempList.push(listBrand[i].brandName[0]); // array of first letter of brandname
+            tempList.push(listBrand[i].brandName[0].toUpperCase()); // array of first letter of brandname
         }
         var listDist = tempList.filter(function (value, index) { return tempList.indexOf(value) == index }); // distincted array array of first letter of brandname
         for (var i = 0; i < listDist.length; i++) {
@@ -374,12 +374,12 @@
                     $('.bran__list-items').append(`<h4>${sortBy[j]}</h4>`)
                     var data = '';
                     listBrand.forEach(brand => {
-                        if (sortBy[j] == brand.brandName[0]) {
+                        if (sortBy[j] == brand.brandName[0].toUpperCase()) {
                             data += `
-                                <div class="bran__list-item card">
+                                <div class="bran__list-item card" style=" border: .5px solid #ddd; padding: 12px;">
                                     <a href="/Product/ProductInBrand?BrandId=${brand.brandId}&PageIndex=1">
-                                        <div class="bran__list-img py-2 px-4">
-                                            <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="card-img-top" alt="${brand.brandName}">
+                                        <div class="border bran__list-img d-flex align-items-center justify-content-between py-2 px-4 mx-auto" style="background-color: #fff;">
+                                            <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="mw-100 mh-100 mx-auto" alt="${brand.brandName}">
                                         </div>
                                         <div class="card-body text-center p-2 align-items-center justify-content-center">
                                             <h5 class="bran__list-name card-title mb-0">${brand.brandName}</h5>

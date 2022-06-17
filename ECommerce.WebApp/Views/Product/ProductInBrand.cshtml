@@ -17,40 +17,43 @@
                             <div class="filter__block">
                                 <h3 class="filter__title" onclick="getProductBySubCategory(@Model.brand.BrandId,@filter.SubCategoryId,'@filter.SubCategoryName',1)">
                                     @filter.SubCategoryName <svg xmlns='http://www.w3.org/2000/svg' width='24'
-                                                 height='24' viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
-                                                 stroke-linecap='round' stroke-linejoin='round'
-                                                 class='feather feather-chevron-right'>
+                                                                 height='24' viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1'
+                                                                 stroke-linecap='round' stroke-linejoin='round'
+                                                                 class='feather feather-chevron-right'>
                                         <polyline points='9 18 15 12 9 6'></polyline>
                                     </svg>
                                 </h3>
-                                <ul class="filter__list filter--scrollbar">
-                                    @foreach (var option in filter.listOption)
-                                    {
-                                        if (option.listOptionValue.Count > 0)
+                                @if (Model.listProduct.Items.Count > 0)
+                                {
+                                    <ul class="filter__list filter--scrollbar">
+                                        @foreach (var option in filter.listOption)
                                         {
-                                            <li class="filter__item">
-                                                <p class="mb-0"><i class="fas fa-caret-down"></i> @option.OptionName</p>
-                                                <ul class="filter__sub-list">
-                                                    @foreach (var productOption in option.listOptionValue)
-                                                    {
-                                                        if (productOption.TotalRecord > 0)
+                                            if (option.listOptionValue.Count > 0)
+                                            {
+                                                <li class="filter__item">
+                                                    <p class="mb-0"><i class="fas fa-caret-down"></i> @option.OptionName</p>
+                                                    <ul class="filter__sub-list">
+                                                        @foreach (var productOption in option.listOptionValue)
                                                         {
-                                                            <li class="filter__sub-item">
-                                                                <div class="checkbox d-flex align-items-center">
-                                                                    <input id="check__sub-item_@productOption.OptionValueId" class="checkboxFilter" type="checkbox" value="@productOption.OptionValueId">
-                                                                    <label for="check__sub-item_@productOption.OptionValueId" class="d-flex align-items-center mb-0">
-                                                                        <div class="sub-item-cate">@productOption.OptionValueName</div>
-                                                                        <span class="sub-item-cate">(@productOption.TotalRecord)</span>
-                                                                    </label>
-                                                                </div>
-                                                            </li>
+                                                            if (productOption.TotalRecord > 0)
+                                                            {
+                                                                <li class="filter__sub-item">
+                                                                    <div class="checkbox d-flex align-items-center">
+                                                                        <input id="check__sub-item_@productOption.OptionValueId" class="checkboxFilter" type="checkbox" value="@productOption.OptionValueId">
+                                                                        <label for="check__sub-item_@productOption.OptionValueId" class="d-flex align-items-center mb-0">
+                                                                            <div class="sub-item-cate">@productOption.OptionValueName</div>
+                                                                            <span class="sub-item-cate">(@productOption.TotalRecord)</span>
+                                                                        </label>
+                                                                    </div>
+                                                                </li>
+                                                            }
                                                         }
-                                                    }
-                                                </ul>
-                                            </li>
+                                                    </ul>
+                                                </li>
+                                            }
                                         }
-                                    }
-                                </ul>
+                                    </ul>
+                                }
                             </div>
                         }
                     </div>
@@ -153,34 +156,37 @@
                                                         <polyline points='9 18 15 12 9 6'></polyline>
                                                     </svg>
                                                 </p>
-                                                <ul class="filter__items-mobile">
-                                                    @foreach (var option in filter.listOption)
-                                                    {
-                                                        if (option.listOptionValue.Count > 0)
+                                                @if (Model.listProduct.Items.Count > 0)
+                                                {
+                                                    <ul class="filter__items-mobile">
+                                                        @foreach (var option in filter.listOption)
                                                         {
-                                                            <li class="filter__item-mobile">
-                                                                <p class="mb-0">
-                                                                    <i class="fas fa-caret-down"></i> @option.OptionName
-                                                                </p>
-                                                                <ul class="filter__sub-items-mobile">
-                                                                    @foreach (var productOption in option.listOptionValue)
-                                                                    {
-                                                                        if (productOption.TotalRecord > 0)
+                                                            if (option.listOptionValue.Count > 0)
+                                                            {
+                                                                <li class="filter__item-mobile">
+                                                                    <p class="mb-0">
+                                                                        <i class="fas fa-caret-down"></i> @option.OptionName
+                                                                    </p>
+                                                                    <ul class="filter__sub-items-mobile">
+                                                                        @foreach (var productOption in option.listOptionValue)
                                                                         {
-                                                                            <li class="d-flex align-items-center">
-                                                                                <input class="checkboxFilter mr-2" id="checkbox__mobile-@productOption.OptionValueId" type="checkbox" value="@productOption.OptionValueId">
-                                                                                <label for="checkbox__mobile-@productOption.OptionValueId" class="d-flex align-items-center mb-0">
-                                                                                    <div class="mr-1">@productOption.OptionValueName</div>
-                                                                                    <span>(@productOption.TotalRecord)</span>
-                                                                                </label>
-                                                                            </li>
+                                                                            if (productOption.TotalRecord > 0)
+                                                                            {
+                                                                                <li class="d-flex align-items-center">
+                                                                                    <input class="checkboxFilter mr-2" id="checkbox__mobile-@productOption.OptionValueId" type="checkbox" value="@productOption.OptionValueId">
+                                                                                    <label for="checkbox__mobile-@productOption.OptionValueId" class="d-flex align-items-center mb-0">
+                                                                                        <div class="mr-1">@productOption.OptionValueName</div>
+                                                                                        <span>(@productOption.TotalRecord)</span>
+                                                                                    </label>
+                                                                                </li>
+                                                                            }
                                                                         }
-                                                                    }
-                                                                </ul>
-                                                            </li>
+                                                                    </ul>
+                                                                </li>
+                                                            }
                                                         }
-                                                    }
-                                                </ul>
+                                                    </ul>
+                                                }
                                             </div>
                                         }
                                     </div>

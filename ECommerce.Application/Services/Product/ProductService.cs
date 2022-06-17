@@ -146,13 +146,28 @@ namespace ECommerce.Application.Services.Product
                 // Query get products by optionvalue
                 if (BrandId > 0 && listOptionValueId != null)
                 {
-                    var listProductId = await _DbContext.ProductOptionValues
-                                                .Where(i => listOptionValueId.Any(l => l == i.OptionValueId))
-                                                .Select(i => i.ProductId)
-                                                .Distinct()
-                                                .ToListAsync();
+                    // product ids from ProductOptionValues
+                    var optProIds = await _DbContext.ProductOptionValues
+                        .Select(i => i.ProductId)
+                        .ToListAsync();
+                    optProIds = optProIds.Distinct().ToList(); // 
 
-                    query = query.Where(q => listProductId.Any(l => l == q.product.ProductId));
+                    // 
+                    var listProIdsQuery = new List<int>();
+                    foreach(var id in optProIds)
+                    {
+                        var optValIds = await _DbContext.ProductOptionValues
+                            .Where(i => i.ProductId == id)
+                            .Select(i => i.OptionValueId)
+                            .ToListAsync();
+                        var hasProduct = listOptionValueId.All(i => optValIds.Any(j => j == i));
+                        if (hasProduct)
+                        {
+                            listProIdsQuery.Add(id);
+                        }
+                    }
+                    listProIdsQuery = listProIdsQuery.Distinct().ToList();
+                    query = query.Where(q => listProIdsQuery.Any(l => l == q.product.ProductId));
                 }
 
                 // Order by... request
