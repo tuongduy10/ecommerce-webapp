@@ -152,7 +152,6 @@ namespace ECommerce.Application.Services.Product
                         .ToListAsync();
                     optProIds = optProIds.Distinct().ToList(); // 
 
-                    // 
                     var listProIdsQuery = new List<int>();
                     foreach(var id in optProIds)
                     {
@@ -161,12 +160,10 @@ namespace ECommerce.Application.Services.Product
                             .Select(i => i.OptionValueId)
                             .ToListAsync();
                         var hasProduct = listOptionValueId.All(i => optValIds.Any(j => j == i));
-                        if (hasProduct)
-                        {
-                            listProIdsQuery.Add(id);
-                        }
+                        if (hasProduct) listProIdsQuery.Add(id);
                     }
                     listProIdsQuery = listProIdsQuery.Distinct().ToList();
+
                     query = query.Where(q => listProIdsQuery.Any(l => l == q.product.ProductId));
                 }
 

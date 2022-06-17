@@ -20,12 +20,15 @@ namespace ECommerce.Application.Services.Brand
         }
         public async Task<ApiResponse> Create(BrandCreateRequest request)
         {
-            if(string.IsNullOrEmpty(request.BrandImagePath) || string.IsNullOrEmpty(request.BrandName) || request.CategoryId == 0)
-            {
-                return new ApiFailResponse("Thông tin không được để trống");
-            }
             try
             {
+                if (string.IsNullOrEmpty(request.BrandImagePath) || string.IsNullOrEmpty(request.BrandName) || request.CategoryId == 0)
+                {
+                    return new ApiFailResponse("Thông tin không được để trống");
+                }
+                var name = await _DbContext.Brands.Where(i => i.BrandName == request.BrandName).ToListAsync();
+                if (name.Count() > 0) return new ApiFailResponse("Tên đã tồn tại");
+
                 // create new 
                 var brand = new Data.Models.Brand
                 {
@@ -33,7 +36,8 @@ namespace ECommerce.Application.Services.Brand
                     BrandImagePath = request.BrandImagePath,
                     CreatedDate = DateTime.Now,
                     Status = true,
-                    CategoryId = request.CategoryId
+                    CategoryId = request.CategoryId,
+                    Highlights = request.Highlights
                 };
 
                 await _DbContext.Brands.AddAsync(brand);
@@ -64,15 +68,16 @@ namespace ECommerce.Application.Services.Brand
                     fileChange.newFileName = brand.BrandImagePath;
                 }
                 brand.BrandName = request.BrandName;
-                brand.Status = true;
+                brand.Highlights = request.Highlights;
+                brand.Status = request.Status;
                 brand.CategoryId = request.CategoryId;
                 await _DbContext.SaveChangesAsync();
 
                 return new SuccessResponse<FileChangedResponse>("Cập nhật thành công", fileChange);
             }
-            catch
+            catch(Exception error)
             {
-                return new FailResponse<FileChangedResponse>("Cập nhật thất bại");
+                return new FailResponse<FileChangedResponse>("Cập nhật thất bại" + error.Message);
             }
         }
         public async Task<ApiResponse> UpdateStatus(int id, bool status)
