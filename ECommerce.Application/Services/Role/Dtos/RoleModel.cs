@@ -11,7 +11,5 @@ namespace ECommerce.Application.Services.Role.Dtos
     {
         public int RoleId { get; set; }
         public string RoleName { get; set; }
-
-        public virtual List<UserRole> UserRoles { get; set; }
     }
 }

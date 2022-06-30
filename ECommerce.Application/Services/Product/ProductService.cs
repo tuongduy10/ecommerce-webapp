@@ -1,6 +1,7 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.Product.Enum;
+using ECommerce.Application.Services.Rate;
 using ECommerce.Application.Services.User;
 using ECommerce.Data.Context;
 using ECommerce.Data.Models;
@@ -18,10 +19,12 @@ namespace ECommerce.Application.Services.Product
     {
         private ECommerceContext _DbContext;
         private IUserService _userService;
-        public ProductService(ECommerceContext DbContext, IUserService userService)
+        private IRateService _rateService;
+        public ProductService(ECommerceContext DbContext, IUserService userService, IRateService rateService)
         {
             _DbContext = DbContext;
             _userService = userService;
+            _rateService = rateService;
         }
         public async Task<List<Dtos.Option>> getProductOption(int productId)
         {
@@ -347,6 +350,7 @@ namespace ECommerce.Application.Services.Product
                 {
                     ProductId = i.ProductId,
                     ProductName = i.ProductName,
+                    CreatedDate = i.ProductAddedDate,
                     Status = i.Status,
                     Stock = (int)i.ProductStock,
                     SubCategoryName = i.SubCategory.SubCategoryName,
@@ -548,6 +552,78 @@ namespace ECommerce.Application.Services.Product
 
             await _DbContext.ProductOptionValues.AddAsync(productOptionValue);
             await _DbContext.SaveChangesAsync();
+        }
+        public async Task<ApiResponse> DeleteProduct(int id)
+        {
+            try
+            {
+                // Check null product
+                var product = await _DbContext.Products.Where(i => i.ProductId == id).FirstOrDefaultAsync();
+                if (product == null) return new ApiFailResponse("Sản phẩm không tồn tại");
+                // System's iamges
+                var sysImages = await _DbContext.ProductImages.Where(i => i.ProductId == id).ToListAsync();
+                if (sysImages.Count > 0) _DbContext.ProductImages.RemoveRange(sysImages);
+                // User's images
+                var userImages = await _DbContext.ProductUserImages.Where(i => i.ProductId == id).ToListAsync();
+                if (userImages.Count > 0) _DbContext.ProductUserImages.RemoveRange(userImages);
+                // Prices
+                var productPrices = await _DbContext.ProductPrices.Where(i => i.ProductId == id).ToListAsync();
+                if (productPrices.Count > 0) _DbContext.ProductPrices.RemoveRange(productPrices);
+                // Attributes
+                var attrs = await _DbContext.ProductAttributes.Where(i => i.ProductId == id).ToListAsync();
+                if (attrs.Count > 0) _DbContext.ProductAttributes.RemoveRange(attrs);
+                // Options
+                var opts = await _DbContext.ProductOptionValues.Where(i => i.ProductId == id).ToListAsync();
+                if (opts.Count > 0) _DbContext.ProductOptionValues.RemoveRange(opts);
+                // Product's comments
+                await _rateService.deleteCommentByProductId(id);
+                // Remove product and save changes
+                _DbContext.Products.Remove(product);
+                await _DbContext.SaveChangesAsync();
+
+                return new ApiSuccessResponse("Xóa thành công");
+            }
+            catch (Exception error)
+            {
+                return new ApiFailResponse("Xóa thất bại " + error);
+            }
+        }
+        public async Task<ApiResponse> DisableProducts(List<int> ids)
+        {
+            try
+            {
+                if (ids.Count == 0) return new ApiFailResponse("Vui lòng chọn sản phẩm cần cập nhật");
+                foreach (var id in ids)
+                {
+                    var product = await _DbContext.Products.Where(i => i.ProductId == id).FirstOrDefaultAsync();
+                    product.Status = (byte?)enumProductStatus.Disabled;
+                }
+                
+                await _DbContext.SaveChangesAsync();
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            catch (Exception error)
+            {
+                return new ApiFailResponse("Cập nhật thất bại " + error);
+            }
+        }
+        public async Task<ApiResponse> ApproveProducts(List<int> ids)
+        {
+            try
+            {
+                if (ids.Count == 0) return new ApiFailResponse("Vui lòng chọn sản phẩm cần cập nhật");
+                foreach (var id in ids)
+                {
+                    var product = await _DbContext.Products.Where(i => i.ProductId == id).FirstOrDefaultAsync();
+                    product.Status = (byte?)enumProductStatus.Available;
+                }
+                await _DbContext.SaveChangesAsync();
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            catch (Exception error)
+            {
+                return new ApiFailResponse("Cập nhật thất bại " + error);
+            }
         }
         private decimal GetDiscountPrice(decimal? price, byte? percent)
         {

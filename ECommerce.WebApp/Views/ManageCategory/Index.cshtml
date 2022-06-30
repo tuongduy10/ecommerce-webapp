@@ -11,9 +11,9 @@
                 <label>Danh mục</label>
             </div>
             <div class="form-group mx-sm-3">
-                <input class="form-control">
+                <input class="form-control category-name">
             </div>
-            <button class="btn btn-primary">Thêm</button>
+            <button class="btn btn-primary add-category">Thêm</button>
         </div>
         <div class="table-responsive">
             <table class="table table-bordered order-table" id="dataTable" width="100%"
@@ -30,8 +30,8 @@
                         <tr>
                             <td>@item.CategoryName</td>
                             <td class="text-center">
-                                <a class="btn btn-primary" href="admin-categorydetail.html">Chi tiết</a>
-                                <a class="btn btn-danger">Xóa</a>
+                                <a class="btn btn-primary" href="">Chi tiết</a>
+                                <a class="btn btn-danger" onclick="deleteCategory(@item.CategoryId)">Xóa</a>
                             </td>
                         </tr>
                     }
@@ -40,3 +40,31 @@
         </div>
     </div>
 </div>
+<script>
+    $('.add-category').click(function () {
+        var request = {
+            CategoryName: $('.category-name').val()
+        };
+        $.post("ManageCategory/Add", { request: request })
+            .then(function (response) {
+                alert(response);
+                location.reload();
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert(error.responseText);
+            })
+    })
+    
+    function deleteCategory(id) {
+        $.post("ManageCategory/Delete", { id: id })
+            .then(function (response) {
+                alert(response);
+                location.reload();
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert(error.responseText);
+            })
+    }
+</script>

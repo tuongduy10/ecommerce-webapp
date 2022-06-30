@@ -32,6 +32,7 @@
                 <thead>
                     <tr>
                         <th class="text-center"></th>
+                        <th>Ngày thêm</th>
                         <th>Sản phẩm</th>
                         <th>Giá có sẵn</th>
                         <th>Giá đặt trước</th>
@@ -47,8 +48,9 @@
                     {
                         <tr>
                             <td class="text-center">
-                                <input type="checkbox" class="select-product">
+                                <input type="checkbox" class="select-product" value="@product.ProductId">
                             </td>
+                            <td>@product.CreatedDate.ToString("HH:mm dd/MM/yyyy")</td>
                             <td>
                                 <div class="d-flex">
                                     <div class="mr-2 d-flex align-items-center justify-content-between"
@@ -102,43 +104,106 @@
     </div>
 </div>
 <script>
-        $(document).ready(function () {
-            $('#select-all').click(function () {
-                if ($('#select-all').is(":checked")) {
-                    $('.select-product').prop('checked', true);
-                    setAction();
-                    return;
-                }
-                $('.select-actions').html(``);
-                $('.select-product').prop('checked', false);
-            })
-
-            $('.select-product').click(function () {
-                $('#select-all').prop('checked', false);
+    $(document).ready(function () {
+        $('#select-all').click(function () {
+            if ($('#select-all').is(":checked")) {
+                $('.select-product').prop('checked', true);
                 setAction();
-            })
-
-            function setAction() {
-                let count = 0;
-                $('.select-product').each(function (index) {
-                    if ($(this).is(":checked")) {
-                        count++;
-                    }
-                })
-                $('.select-actions').html(`
-                    <div class="mr-2">
-                        <span class="products-selected"><strong>${count}</strong></span>
-                        <span>Sản phẩm đã chọn</span>
-                    </div>
-                    <a class="mr-2 btn btn-secondary">Xóa</a>
-                    <a class="mr-2 btn btn-primary">Ẩn</a>
-                `);
-                if (count == 0) {
-                    $('.select-actions').html(``);
-                }
-                if(count == $('.select-product').length){
-                    $('#select-all').prop('checked', true);
-                }
+                return;
             }
+            $('.select-actions').html(``);
+            $('.select-product').prop('checked', false);
         })
+
+        $('.select-product').click(function () {
+            $('#select-all').prop('checked', false);
+            setAction();
+        })
+
+        function setAction() {
+            let count = 0;
+            $('.select-product').each(function (index) {
+                if ($(this).is(":checked")) {
+                    count++;
+                }
+            })
+            $('.select-actions').html(`
+                <div class="mr-2">
+                    <span class="products-selected"><strong>${count}</strong></span>
+                    <span>Sản phẩm đã chọn</span>
+                </div>
+                <a class="mr-2 btn btn-primary approve-product">Hiện</a>
+                <a class="mr-2 btn btn-secondary hide-product">Ẩn</a>
+                <a class="mr-2 btn btn-danger delete-product">Xóa</a>
+            `);
+            if (count == 0) {
+                $('.select-actions').html(``);
+            }
+            if (count == $('.select-product').length) {
+                $('#select-all').prop('checked', true);
+            }
+        }
+    });
+</script>
+<script>
+    $(document).on('click', '.hide-product', function () {
+        if (confirm("Xác nhận cập nhật") == true) {
+            let ids = [];
+            $('.select-product').each(function () {
+                if ($(this).is(":checked")) {
+                    let id = $(this).val();
+                    ids.push(id);
+                }
+            });
+            $.post("/SaleProduct/DisableProducts", { ids: ids })
+                .then(function (response) {
+                    alert(response);
+                    location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    alert(error.responseText);
+                })
+        } 
+    })
+    $(document).on('click', '.approve-product', function () {
+        if (confirm("Xác nhận cập nhật") == true) {
+            let ids = [];
+            $('.select-product').each(function () {
+                if ($(this).is(":checked")) {
+                    let id = $(this).val();
+                    ids.push(id);
+                }
+            });
+            $.post("/SaleProduct/ApproveProducts", { ids: ids })
+                .then(function (response) {
+                    alert(response);
+                    location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    alert(error.responseText);
+                })
+        }
+    })
+    $(document).on('click', '.delete-product', function () {
+        if (confirm("Xác nhận xóa") == true) {
+            let ids = [];
+            $('.select-product').each(function () {
+                if ($(this).is(":checked")) {
+                    let id = $(this).val();
+                    ids.push(id);
+                }
+            });
+            $.post("/SaleProduct/ApproveProducts", { ids: ids })
+                .then(function (response) {
+                    alert(response);
+                    location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    alert(error.responseText);
+                })
+        }
+    })
 </script>

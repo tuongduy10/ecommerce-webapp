@@ -17,6 +17,7 @@ using ECommerce.Application.Services.User;
 using ECommerce.Application.Services.Bank;
 using ECommerce.Application.Services.Shop;
 using ECommerce.Application.Services.Rate;
+using ECommerce.Application.Services.Role;
 
 namespace ECommerce.WebApp
 {
@@ -77,7 +78,7 @@ namespace ECommerce.WebApp
 
             // User
             services.AddTransient<IUserService, UserService>();
-
+            services.AddTransient<IRoleService, RoleService>();
             // Shop
             services.AddTransient<IShopService, ShopService>();
 

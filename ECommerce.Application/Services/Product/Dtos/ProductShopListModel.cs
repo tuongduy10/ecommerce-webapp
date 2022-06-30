@@ -11,6 +11,7 @@ namespace ECommerce.Application.Services.Product.Dtos
     {
         public int ProductId { get; set; }
         public string ProductName { get; set; }
+        public DateTime? CreatedDate { get; set; }
         public byte? Status { get; set; }
         public string SubCategoryName { get; set; }
         public string CategoryName { get; set; }

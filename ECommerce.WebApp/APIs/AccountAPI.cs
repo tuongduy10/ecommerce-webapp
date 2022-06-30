@@ -20,7 +20,7 @@ namespace ECommerce.WebApp.APIs
     [Authorize(AuthenticationSchemes = "ClientAuth")]
     public class AccountAPI : ControllerBase
     {
-        private const string _cookieClientScheme = "ClientAuth";
+        private const string COOKIE_CLIENT_SCHEMA = "ClientAuth";
         private IUserService _userService;
         private IShopService _shopService;
         public AccountAPI(IUserService userService, IShopService shopService)
@@ -62,7 +62,7 @@ namespace ECommerce.WebApp.APIs
                 return BadRequest(result);
             }
             
-            SignInHttpContext(result, _cookieClientScheme);
+            SignInHttpContext(result, COOKIE_CLIENT_SCHEMA);
             return Ok(result);
         }
         [AllowAnonymous]
@@ -102,7 +102,7 @@ namespace ECommerce.WebApp.APIs
             var result = await _userService.UpdateUserProfile(request);
             if (!result.isSucceed) return BadRequest(result);
 
-            SignInHttpContext(result, _cookieClientScheme);
+            SignInHttpContext(result, COOKIE_CLIENT_SCHEMA);
 
             return Ok(result);
         }
@@ -116,7 +116,6 @@ namespace ECommerce.WebApp.APIs
 
             return Ok(result);
         }
-
         [AllowAnonymous]
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPassword([FromBody] UpdatePasswordRequest request)

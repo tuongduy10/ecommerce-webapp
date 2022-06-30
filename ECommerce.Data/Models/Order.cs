@@ -26,9 +26,7 @@ namespace ECommerce.Data.Models
         public string PhoneNumber { get; set; }
         public string Recipient { get; set; }
         public int? PaymentMethodId { get; set; }
-        public int? DiscountId { get; set; }
 
-        public virtual Discount Discount { get; set; }
         public virtual PaymentMethod PaymentMethod { get; set; }
         public virtual User User { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }

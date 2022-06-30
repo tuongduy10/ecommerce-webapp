@@ -1,0 +1,124 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary text-center">Thêm tài khoản</h6>
+    </div>
+    <div class="card-body p-2">
+        <form class="mx-auto">
+            <div class="row">
+                <div class="col-sm-6 mb-4">
+                    <div class="text-left mb-2 text-primary"><strong>Thông tin cơ bản</strong></div>
+                    <div class="form-group mb-4">
+                        <label>Tên người dùng</label>
+                        <input type="text" class="form-control user-fullname" value="">
+                    </div>
+                    <div class="form-group mb-4">
+                        <label>Email</label>
+                        <input type="text" class="form-control user-email" value="">
+                    </div>
+                    <div class="form-group mb-4">
+                        <div class="location mb-2">
+                            <label>Địa chỉ</label>
+                            <input type="text" class="form-control user-address" value="">
+                        </div>
+                        <div class="location mb-2">
+                            <select name="" id="" class="user-citycode city-select w-100 form-control">
+                                <option value="" disabled selected>Tỉnh/Thành...</option>
+                            </select>
+                        </div>
+                        <div class="location mb-2">
+                            <select name="" id="" class="user-districtcode district-select w-100 form-control">
+                                <option value="" disabled selected>Quận/Huyện...</option>
+                            </select>
+                        </div>
+                        <div class="location mb-2">
+                            <select name="" id="" class="user-wardcode ward-select w-100 form-control">
+                                <option value="" disabled selected>Phường/Xã...</option>
+                            </select>
+                        </div>
+                    </div>
+                    @*<div class="form-group mb-4">
+                        <div class="d-flex align-items-center">
+                            <input type="checkbox" class="user-active mr-2" id="isActive" checked>
+                            <label class="mb-0" for="isActive" style="color: green">Đã xác thực</label>
+                        </div>
+                    </div>*@
+                    <!-- Login info -->
+                    <div class="text-left mb-2 text-primary"><strong>Thông tin đăng nhập</strong></div>
+                    <div class="form-group mb-4">
+                        <label>Số điện thoại</label>
+                        <input type="text" class="form-control user-phone" value="">
+                    </div>
+                    <div class="form-group mb-4">
+                        <label>Mật khẩu</label>
+                        <input type="password" class="form-control user-password" value="">
+                    </div>
+                    <div class="form-group mb-4">
+                        <label>Nhập lại mật khẩu</label>
+                        <input type="password" class="form-control user-repassword" value="">
+                    </div>
+
+                    <div class="text-left mb-2 text-primary"><strong>Thông tin bán hàng</strong></div>
+                    <div class="form-group mb-4">
+                        <label>Cửa hàng</label>
+                        <div class="dropdown mb-2 mr-2">
+                            <button class="btn border dropdown-toggle brand_select-text" type="button" data-toggle="dropdown">
+                                Cửa hàng
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu px-2" style="max-height: 300px; overflow: auto;">
+                                <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm thương hiệu..." autocomplete="off" />
+                                @*@foreach (var item in Model)
+                                {
+                                    <li class="d-flex align-items-center">
+                                        <input name="brand" class="brand_select mr-2" id="sh_@item.ShopId" type="radio" value="@item.BrandId">
+                                        <label class="mb-0" for="sh_@item.ShopId">ID:@item.ShopId-@item.ShopName</label>
+                                    </li>
+                                }*@
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="button" class="btn btn-secondary discard-changes">Hủy</button>
+                <button type="button" class="btn btn-primary add-user">Lưu</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="~/js/main/provinces-rendering.js"></script>
+<script src="https://cdn.tiny.cloud/1/4ctr9pi6o8mlflu8si6gdszgl62tn4zl73knhf3tkqalszsx/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    $(".discard-changes").click(function () {
+        location.reload();
+    });
+    $(".add-user").click(function () {
+        var request = {
+            UserPhone: $('.user-phone').val(),
+            UserFullName: $('.user-fullname').val(),
+            UserMail: $('.user-email').val(),
+            UserAddress: $('.user-address').val(),
+            UserWardCode: $('.user-wardcode').val(),
+            UserDistrictCode: $('.user-districtcode').val(),
+            UserCityCode: $('.user-citycode').val(),
+            Password: $('.user-password').val(),
+            RePassword: $('.user-repassword').val()
+        };
+        $.post("/ManageUser/AddSeller", request)
+            .then(function (response) {
+                alert(response);
+                return;
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert(error.responseText);
+                return;
+            })
+    })
+</script>

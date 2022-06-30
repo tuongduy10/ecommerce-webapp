@@ -10,5 +10,7 @@ namespace ECommerce.Application.Services.Rate
     {
         Task<List<RateGetModel>> getRatesByProductId(int id);
         Task<ApiResponse> postComment(PostCommentRequest request);
+        Task<ApiResponse> deleteComment(int id);
+        Task<ApiResponse> deleteCommentByProductId(int id);
     }
 }

@@ -18,14 +18,14 @@ namespace ECommerce.Data.Models
         public int UserId { get; set; }
         public string UserMail { get; set; }
         public string UserFullName { get; set; }
-        public DateTime UserJoinDate { get; set; }
+        public DateTime? UserJoinDate { get; set; }
         public string UserAddress { get; set; }
         public string UserWardCode { get; set; }
         public string UserDistrictCode { get; set; }
         public string UserCityCode { get; set; }
         public string UserPhone { get; set; }
         public string Password { get; set; }
-        public bool Status { get; set; }
+        public bool? Status { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Rate> Rates { get; set; }

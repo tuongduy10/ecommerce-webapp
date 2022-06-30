@@ -119,25 +119,40 @@ namespace ECommerce.Application.Services.Brand
         }
         public async Task<List<BrandModel>> getAllManage()
         {
-            var query = from category in _DbContext.Categories
-                        join brand in _DbContext.Brands on category.CategoryId equals brand.CategoryId
-                        orderby brand.BrandName
-                        select new { brand, category };
+            //var query = from category in _DbContext.Categories
+            //            join brand in _DbContext.Brands on category.CategoryId equals brand.CategoryId
+            //            orderby brand.BrandName
+            //            select new { brand, category };
 
-            var list = await query.Select(i => new BrandModel()
-            {
-                BrandId = i.brand.BrandId,
-                BrandName = i.brand.BrandName,
-                BrandImagePath = i.brand.BrandImagePath,
-                Status = i.brand.Status,
-                CreatedDate = i.brand.CreatedDate,
-                Highlights = i.brand.Highlights,
-                New = i.brand.New,
-                Category = i.category.CategoryName,
-                CategoryId = i.category.CategoryId
-            }).ToListAsync();
+            //var list = await query.Select(i => new BrandModel()
+            //{
+            //    BrandId = i.brand.BrandId,
+            //    BrandName = i.brand.BrandName,
+            //    BrandImagePath = i.brand.BrandImagePath,
+            //    Status = i.brand.Status,
+            //    CreatedDate = i.brand.CreatedDate,
+            //    Highlights = i.brand.Highlights,
+            //    New = i.brand.New,
+            //    Category = i.category.CategoryName,
+            //    CategoryId = i.category.CategoryId,
+            //}).ToListAsync();
 
-            return list;
+            var result = await _DbContext.Brands
+                .Select(i => new BrandModel()
+                {
+                    BrandId = i.BrandId,
+                    BrandName = i.BrandName,
+                    BrandImagePath = i.BrandImagePath,
+                    Status = i.Status,
+                    CreatedDate = i.CreatedDate,
+                    Highlights = i.Highlights,
+                    New = i.New,
+                    Category = i.Category.CategoryName,
+                    CategoryId = i.Category.CategoryId,
+                    Shops = i.ShopBrands.Select(s => new ShopManage() { id = s.Shop.ShopId, name = s.Shop.ShopName }).ToList()
+                })
+                .ToListAsync();
+            return result;
         }
         public async Task<List<BrandModel>> getAllBrandInCategory(int CategoryId)
         {
@@ -159,6 +174,49 @@ namespace ECommerce.Application.Services.Brand
                 Category = i.category.CategoryName,
                 CategoryId = i.category.CategoryId
             }).ToListAsync();
+
+            return list;
+        }
+        public async Task<List<BrandModel>> getAllBrandInShop(int userId)
+        {
+            var roleName = await _DbContext.UserRoles.Where(i => i.UserId == userId).Select(i => i.Role.RoleName).FirstOrDefaultAsync();
+            var list = new List<BrandModel>();
+            if (roleName == "Admin")
+            {
+                list = await _DbContext.Brands
+                    .Select(i => new BrandModel()
+                    {
+                        BrandId = i.BrandId,
+                        BrandName = i.BrandName,
+                        BrandImagePath = i.BrandImagePath,
+                        Status = i.Status,
+                        CreatedDate = i.CreatedDate,
+                        Highlights = i.Highlights,
+                        New = i.New,
+                        Category = i.Category.CategoryName,
+                        CategoryId = i.Category.CategoryId
+                    })
+                    .ToListAsync();
+            }
+            else
+            {
+                var shopId = await _DbContext.Shops.Where(i => i.UserId == userId).Select(i => i.ShopId).FirstOrDefaultAsync();
+                list = await _DbContext.ShopBrands
+                    .Where(i => i.ShopId == shopId)
+                    .Select(i => new BrandModel()
+                    {
+                        BrandId = i.Brand.BrandId,
+                        BrandName = i.Brand.BrandName,
+                        BrandImagePath = i.Brand.BrandImagePath,
+                        Status = i.Brand.Status,
+                        CreatedDate = i.Brand.CreatedDate,
+                        Highlights = i.Brand.Highlights,
+                        New = i.Brand.New,
+                        Category = i.Brand.Category.CategoryName,
+                        CategoryId = i.Brand.Category.CategoryId
+                    })
+                    .ToListAsync();
+            }
 
             return list;
         }

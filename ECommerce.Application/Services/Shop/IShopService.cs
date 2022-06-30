@@ -7,12 +7,14 @@ namespace ECommerce.Application.Services.Shop
 {
     public interface IShopService
     {
+        Task<ApiResponse> AddShop(ShopAddRequest request);
         Task<List<ShopGetModel>> getShopList();
         Task<List<ShopGetModel>> getUnconfirmedShop();
-        Task<ShopDetailModel> getShopDetail(int ShopId);
         Task<ApiResponse> updateShopStatus(int ShopId, byte status);
         Task<ApiResponse> SaleRegistration(SaleRegistrationRequest request);
         Task<ApiResponse> isRegisted(int id);
         Task<ApiResponse> deleteShop(int id);
+        Task<ShopDetailManagedModel> getShopDetailManage(int shopId);
+        Task<ApiResponse> updateShop(ShopUpdateRequest request);
     }
 }

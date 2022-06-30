@@ -18,5 +18,6 @@ namespace ECommerce.Application.Services.User
         Task<ApiResponse> UpdateUserStatus(UserUpdateRequest request);
         Task<ApiResponse> ResetPassword(UpdatePasswordRequest request);
         Task<string> getUserRole(int userId);
+        Task<UserGetModel> getUserByShop(int shopId);
     }
 }

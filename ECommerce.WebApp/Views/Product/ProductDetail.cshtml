@@ -341,10 +341,13 @@
                             <ul class="detail-list d-flex mb-4 flex-wrap justify-content-between">
                                 @foreach (var attr in Model.product.Attributes)
                                 {
-                                    <li class="detail-item">
-                                        <span><b>@attr.AttrName</b></span>
-                                        <span>@attr.Value</span>
-                                    </li>
+                                    if (!string.IsNullOrEmpty(attr.Value))
+                                    {
+                                        <li class="detail-item">
+                                            <span><b>@attr.AttrName</b></span>
+                                            <span>@attr.Value</span>
+                                        </li>
+                                    }
                                 }
                             </ul>
                             <div class="title">Mô tả ngắn</div>
@@ -520,8 +523,8 @@
                                             }
                                             else
                                             {
-                                                <div class="product-subprice">@String.Format("{0:0,0} ₫", product.PriceOnSell)</div>
-                                                <div class="product-price">@String.Format("{0:0,0} ₫", product.Price)</div>
+                                                <div class="product-subprice">@String.Format("{0:0,0} ₫", product.Price)</div>
+                                                <div class="product-price">@String.Format("{0:0,0} ₫", product.PriceOnSell)</div>
                                             }
 
                                             <div class="product-btn">
@@ -610,7 +613,7 @@
         </div>
     </div>
 </div>
-<!-- Size guid modal -->
+<!-- Size guide modal -->
 <div class="modal fade" id="sizeguideModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -764,6 +767,7 @@
             }
         });
     }
+
     // Feature: post comment
     $('.post-comment').click(function () {
         var formData = new FormData();
@@ -795,6 +799,7 @@
             }
         });
     })
+
     // Feature: Add to cart
     $('.btn-addtocart').click(function () {
         // Product and options

@@ -24,7 +24,7 @@
                     @foreach (var shop in Model)
                     {
                         <tr>
-                            <td>@shop.ShopJoinDate.ToString("dd/MM/yyyy")</td>
+                            <td>@shop.ShopJoinDate.ToString("dd/MM/yyyy hh:mm:ss")</td>
                             <td>@shop.ShopName</td>
                             <td>@shop.ShopPhoneNumber</td>
                             <td>@shop.ShopMail</td>
@@ -38,6 +38,10 @@
                                 @if (shop.Status == 1)
                                 {
                                     <p class="text-success">Đã xác thực</p>
+                                }
+                                @if (shop.Status == 2)
+                                {
+                                    <p class="text-warning">Chờ xác nhận</p>
                                 }
                             </td>
                             <td class="d-flex">

@@ -33,7 +33,6 @@ namespace ECommerce.Application.Services.Rate
 
             return rate;
         }
-
         public async Task<ApiResponse> postComment(PostCommentRequest request)
         {
             try
@@ -43,12 +42,12 @@ namespace ECommerce.Application.Services.Rate
 
                 // Check if user haven't any order with this product
                 // get all order with productId and userId
-                var productInOrders = await _DbContext.OrderDetails
-                    .Where(i => i.ProductId == request.productId && i.Order.UserId == request.userId)
-                    .Select(i => i.OrderId)
-                    .ToListAsync();
-                var hasProduct = productInOrders.Count > 0;
-                if (!hasProduct) return new ApiFailResponse("Bạn cần mua sản phẩm này để đánh giá");
+                //var productInOrders = await _DbContext.OrderDetails
+                //    .Where(i => i.ProductId == request.productId && i.Order.UserId == request.userId)
+                //    .Select(i => i.OrderId)
+                //    .ToListAsync();
+                //var hasProduct = productInOrders.Count > 0;
+                //if (!hasProduct) return new ApiFailResponse("Bạn cần mua sản phẩm này để đánh giá");
 
                 // Check if user's shop is selling this product
                 // get user's shop by product id
@@ -83,6 +82,53 @@ namespace ECommerce.Application.Services.Rate
             catch
             {
                 return new ApiFailResponse("Đánh giá thất bại");
+            }
+        }
+        public async Task<ApiResponse> deleteComment(int id)
+        {
+            try
+            {
+                var commentImages = await _DbContext.RatingImages.Where(i => i.RateId == id).ToListAsync();
+                if (commentImages != null) _DbContext.RatingImages.RemoveRange(commentImages);
+
+                var comment = await _DbContext.Rates.Where(i => i.RateId == id).FirstOrDefaultAsync();
+                if (comment != null) _DbContext.Rates.Remove(comment);
+
+                await _DbContext.SaveChangesAsync();
+
+                return new ApiSuccessResponse("Xóa thành công");
+            }
+            catch (Exception error)
+            {
+                return new ApiFailResponse("Xóa không thành công: " + error);
+            }
+        }
+        public async Task<ApiResponse> deleteCommentByProductId(int id)
+        {
+            try
+            {
+                var comments = await _DbContext.Rates.Where(i => i.ProductId == id).ToListAsync();
+                if (comments.Count > 0)
+                {
+                    var commentIds = comments.Select(i => i.RateId).ToList();
+                    if (commentIds.Count > 0)
+                    {
+                        foreach (var commentId in commentIds)
+                        {
+                            var images = await _DbContext.RatingImages.Where(i => i.RateId == commentId).ToListAsync();
+                            _DbContext.RatingImages.RemoveRange(images);
+                        }
+                    }
+                    _DbContext.Rates.RemoveRange(comments);
+                }
+                
+                await _DbContext.SaveChangesAsync();
+
+                return new ApiSuccessResponse("Xóa thành công");
+            }
+            catch (Exception error)
+            {
+                return new ApiFailResponse("Xóa không thành công: " + error);
             }
         }
     }

@@ -9,6 +9,7 @@ namespace ECommerce.Data.Models
     {
         public Shop()
         {
+            OrderDetails = new HashSet<OrderDetail>();
             Products = new HashSet<Product>();
             ShopBanks = new HashSet<ShopBank>();
             ShopBrands = new HashSet<ShopBrand>();
@@ -22,14 +23,15 @@ namespace ECommerce.Data.Models
         public string ShopWardCode { get; set; }
         public string ShopDistrictCode { get; set; }
         public string ShopCityCode { get; set; }
-        public DateTime ShopJoinDate { get; set; }
-        public byte Tax { get; set; }
-        public int UserId { get; set; }
-        public byte Status { get; set; }
+        public DateTime? ShopJoinDate { get; set; }
+        public byte? Tax { get; set; }
+        public int? UserId { get; set; }
+        public byte? Status { get; set; }
         public int? DiscountId { get; set; }
 
         public virtual Discount Discount { get; set; }
         public virtual User User { get; set; }
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<Product> Products { get; set; }
         public virtual ICollection<ShopBank> ShopBanks { get; set; }
         public virtual ICollection<ShopBrand> ShopBrands { get; set; }

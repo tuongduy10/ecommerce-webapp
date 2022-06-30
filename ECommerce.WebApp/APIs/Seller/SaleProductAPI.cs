@@ -84,5 +84,6 @@ namespace ECommerce.WebApp.APIs.Seller
             }
             return BadRequest(result.Message);
         }
+        
     }
 }

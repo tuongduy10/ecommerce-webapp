@@ -156,6 +156,16 @@
                                 }
                             </td>
                             <td class="text-center">
+                                @if (item.Shops.Count > 0)
+                                {
+                                    <select class="form-control mb-2">
+                                        @foreach (var shop in item.Shops)
+                                        {
+                                            <option value="@shop.id">@shop.name</option>
+
+                                        }
+                                    </select>
+                                }
                                 <a class="btn btn-primary brand-update" value="@item.BrandId" onclick="updateBrand(@item.BrandId)">Cập nhật</a>
                                 <a class="btn btn-danger" onclick="deleteBrand(@item.BrandId)">Xóa</a>
                             </td>

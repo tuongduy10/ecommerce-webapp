@@ -90,16 +90,16 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#orderAdminManage"
+                    <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#orderAdminManage"
                        aria-expanded="true" aria-controls="orderAdminManage">
                         <i class="fas fa-fw fa-list"></i>
                         <span>Quản lý đơn hàng</span>
                     </a>
                     <div id="orderAdminManage" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
-                            <a class="collapse-item" href="admin-manageorder.html">Đơn đang giao...</a>
-                            <a class="collapse-item" href="admin-manageorder.html">Đơn hoàn thành</a>
-                            <a class="collapse-item" href="admin-manageorder.html">Đơn hủy</a>
+                            <a class="collapse-item" href="">Đơn đang giao...</a>
+                            <a class="collapse-item" href="">Đơn hoàn thành</a>
+                            <a class="collapse-item" href="">Đơn hủy</a>
                         </div>
                     </div>
                 </li>
@@ -114,7 +114,7 @@
                          data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                             <a class="collapse-item" href="@Url.Action("Index","ManageUser")">Danh sách người dùng</a>
-                            <a class="collapse-item" href="admin-managerole.html">Danh sách phân quyền</a>
+                            <a class="collapse-item" href="@Url.Action("AddSeller", "ManageUser")">Tạo tài khoản bán hàng</a>
                         </div>
                     </div>
                 </li>
@@ -129,9 +129,10 @@
                          data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                             <a class="collapse-item" href="@Url.Action("ShopList","ManageShop")">Danh sách cửa hàng</a>
+                            <a class="collapse-item" href="@Url.Action("AddShop","ManageShop")">Tạo cửa hàng mới</a>
                             <a class="collapse-item" href="@Url.Action("Index","ManageBrand")">Danh sách thương hiệu</a>
                             <a class="collapse-item" href="@Url.Action("Index","ManageCategory")">Danh sách danh mục</a>
-                            <a class="collapse-item" href="@Url.Action("","")">Bảng chọn size</a>
+                            <a class="collapse-item" href="@Url.Action("Index","ManageSizeGuide")">Bảng chọn size</a>
                         </div>
                     </div>
                 </li>

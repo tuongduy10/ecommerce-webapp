@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using ECommerce.Data.Models;
+using Attribute = ECommerce.Data.Models.Attribute;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 
@@ -20,7 +21,7 @@ namespace ECommerce.Data.Context
         {
         }
 
-        public virtual DbSet<Models.Attribute> Attributes { get; set; }
+        public virtual DbSet<Attribute> Attributes { get; set; }
         public virtual DbSet<Bank> Banks { get; set; }
         public virtual DbSet<Banner> Banners { get; set; }
         public virtual DbSet<Blog> Blogs { get; set; }
@@ -68,7 +69,7 @@ namespace ECommerce.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Models.Attribute>(entity =>
+            modelBuilder.Entity<Attribute>(entity =>
             {
                 entity.ToTable("Attribute");
 
@@ -276,7 +277,7 @@ namespace ECommerce.Data.Context
 
             modelBuilder.Entity<OrderDetail>(entity =>
             {
-                entity.HasKey(e => new { e.OrderDetailId, e.OrderId, e.ProductId });
+                entity.HasKey(e => new { e.OrderDetailId, e.OrderId, e.ShopId });
 
                 entity.ToTable("OrderDetail");
 
@@ -284,13 +285,17 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.AttributeValue).HasMaxLength(50);
 
-                entity.Property(e => e.OptionValue).HasMaxLength(50);
+                entity.Property(e => e.OptionValue)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.PayForAdmin).HasColumnType("decimal(18, 0)");
 
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
 
                 entity.Property(e => e.PriceOnSell).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.ProductName).HasMaxLength(100);
 
                 entity.Property(e => e.Total).HasColumnType("decimal(18, 0)");
 
@@ -302,11 +307,11 @@ namespace ECommerce.Data.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderDetail_Order");
 
-                entity.HasOne(d => d.Product)
+                entity.HasOne(d => d.Shop)
                     .WithMany(p => p.OrderDetails)
-                    .HasForeignKey(d => d.ProductId)
+                    .HasForeignKey(d => d.ShopId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OrderDetail_Product");
+                    .HasConstraintName("FK_OrderDetail_Shop");
             });
 
             modelBuilder.Entity<PaymentMethod>(entity =>
@@ -324,7 +329,9 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.Insurance).HasMaxLength(30);
 
-                entity.Property(e => e.ProductAddedDate).HasColumnType("date");
+                entity.Property(e => e.Note).HasMaxLength(500);
+
+                entity.Property(e => e.ProductAddedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.ProductDescription).HasColumnType("ntext");
 
@@ -333,8 +340,6 @@ namespace ECommerce.Data.Context
                 entity.Property(e => e.ProductName)
                     .IsRequired()
                     .HasMaxLength(100);
-
-                entity.Property(e => e.Note).HasMaxLength(500);
 
                 entity.HasOne(d => d.Brand)
                     .WithMany(p => p.Products)
@@ -512,7 +517,7 @@ namespace ECommerce.Data.Context
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ShopJoinDate).HasColumnType("date");
+                entity.Property(e => e.ShopJoinDate).HasColumnType("datetime");
 
                 entity.Property(e => e.ShopMail)
                     .HasMaxLength(50)
@@ -539,7 +544,6 @@ namespace ECommerce.Data.Context
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Shops)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Shop_User");
             });
 
@@ -673,9 +677,7 @@ namespace ECommerce.Data.Context
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.UserFullName)
-                    .IsRequired()
-                    .HasMaxLength(100);
+                entity.Property(e => e.UserFullName).HasMaxLength(100);
 
                 entity.Property(e => e.UserJoinDate).HasColumnType("date");
 

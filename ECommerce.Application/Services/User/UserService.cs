@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.User.Dtos;
+using ECommerce.Application.Services.User.Enums;
 using ECommerce.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -21,14 +22,14 @@ namespace ECommerce.Application.Services.User
             var list = await _DbContext.Users.Select(i => new UserGetModel() { 
                 UserId = i.UserId,
                 UserFullName = i.UserFullName,
-                UserJoinDate = i.UserJoinDate,
+                UserJoinDate = (DateTime)i.UserJoinDate,
                 UserMail = i.UserMail,
                 UserAddress = i.UserAddress,
                 UserWardCode = i.UserWardCode,
                 UserDistrictCode = i.UserDistrictCode,
                 UserCityCode = i.UserCityCode,
                 UserPhone = i.UserPhone,
-                Status = i.Status,
+                Status = (bool)i.Status,
             }).ToListAsync();
             return list;
         }
@@ -91,61 +92,81 @@ namespace ECommerce.Application.Services.User
         }
         public async Task<ApiResponse> SignUp(SignUpRequest request)
         {
-            if (string.IsNullOrEmpty(request.UserPhone)) return new ApiFailResponse("Số điện thoại không được để trống");
-            if (request.UserPhone.Contains("+84"))
+            try
             {
-                request.UserPhone = request.UserPhone.Replace("+84", "");
-                if (!request.UserPhone.StartsWith("0"))
+                if (string.IsNullOrEmpty(request.UserPhone)) return new ApiFailResponse("Số điện thoại không được để trống");
+                if (request.UserPhone.Contains("+84"))
                 {
-                    request.UserPhone = "0" + request.UserPhone;
+                    request.UserPhone = request.UserPhone.Replace("+84", "");
+                    if (!request.UserPhone.StartsWith("0"))
+                    {
+                        request.UserPhone = "0" + request.UserPhone;
+                    }
                 }
+
+                if (string.IsNullOrEmpty(request.UserFullName)) return new ApiFailResponse("Vui lòng nhập họ tên");
+                if (string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.RePassword)) return new ApiFailResponse("Vui lòng nhập mật khẩu");
+                if (request.Password != request.RePassword) return new ApiFailResponse("Mật khẩu không trùng");
+
+                var checkMail = await _DbContext.Users.Where(i => i.UserMail == request.UserMail).FirstOrDefaultAsync();
+                if (checkMail != null) return new ApiFailResponse("Mail đã tồn tại");
+
+                var checkPhone = await _DbContext.Users.Where(i => i.UserPhone == request.UserPhone).FirstOrDefaultAsync();
+                if (checkPhone != null) return new ApiFailResponse("Số điện thoại đã tồn tại");
+
+                Data.Models.User user = new Data.Models.User();
+                user.UserMail = request.UserMail.Trim();
+                user.UserJoinDate = DateTime.Now;
+                user.UserFullName = request.UserFullName.Trim();
+                user.UserPhone = request.UserPhone.Trim();
+                user.UserAddress = request.UserAddress.Trim();
+                user.UserDistrictCode = request.UserDistrictCode;
+                user.UserCityCode = request.UserCityCode;
+                user.UserWardCode = request.UserWardCode;
+                user.Password = request.RePassword.Trim();
+                user.Status = true;
+                await _DbContext.Users.AddAsync(user);
+                await _DbContext.SaveChangesAsync();
+
+                Data.Models.UserRole role = new Data.Models.UserRole();
+                role.RoleId = request.RoleId != 0 ? request.RoleId : (int)enumRole.Buyer;
+                role.UserId = user.UserId;
+                await _DbContext.UserRoles.AddAsync(role);
+                await _DbContext.SaveChangesAsync();
+
+                return new ApiSuccessResponse("Tạo tài khoản thành công");
             }
-
-            if (string.IsNullOrEmpty(request.UserFullName)) return new ApiFailResponse("Vui lòng nhập họ tên");
-            if (string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.RePassword)) return new ApiFailResponse("Vui lòng nhập mật khẩu");
-            if (request.Password != request.RePassword) return new ApiFailResponse("Mật khẩu không trùng");
-
-            var checkMail = await _DbContext.Users.Where(i => i.UserMail == request.UserMail).FirstOrDefaultAsync();
-            if(checkMail != null) return new ApiFailResponse("Mail đã tồn tại");
-
-            var checkPhone = await _DbContext.Users.Where(i => i.UserPhone == request.UserPhone).FirstOrDefaultAsync();
-            if (checkPhone != null) return new ApiFailResponse("Số điện thoại đã tồn tại");
-
-            Data.Models.User user = new Data.Models.User();
-            user.UserMail = request.UserMail;
-            user.UserJoinDate = DateTime.Now;
-            user.UserFullName = request.UserFullName;
-            user.UserPhone = request.UserPhone;
-            user.UserAddress = request.UserAddress;
-            user.UserDistrictCode = request.UserDistrictCode;
-            user.UserCityCode = request.UserCityCode;
-            user.UserWardCode = request.UserWardCode;
-            user.Password = request.RePassword;
-            user.Status = true;
-
-            await _DbContext.Users.AddAsync(user);
-            await _DbContext.SaveChangesAsync();
-            
-            return new ApiSuccessResponse("Tạo tài khoản thành công");
+            catch (Exception error)
+            {
+                return new ApiFailResponse("Tạo tài khoản không thành công, lỗi: " + error.Message);
+            }
         }
         public async Task<UserGetModel> UserProfile(int id)
         {
-            var user = await _DbContext.Users
+            try
+            {
+                var user = await _DbContext.Users
                                 .Where(i => i.UserId == id)
-                                .Select(i => new UserGetModel { 
+                                .Select(i => new UserGetModel
+                                {
                                     UserId = i.UserId,
                                     UserFullName = i.UserFullName,
-                                    UserJoinDate = i.UserJoinDate,
+                                    UserJoinDate = (DateTime)i.UserJoinDate,
                                     UserMail = i.UserMail,
                                     UserAddress = i.UserAddress,
                                     UserWardCode = i.UserWardCode,
                                     UserDistrictCode = i.UserDistrictCode,
                                     UserCityCode = i.UserCityCode,
                                     UserPhone = i.UserPhone,
-                                    Status = i.Status
+                                    Status = (bool)i.Status
                                 }).FirstOrDefaultAsync();
 
-            return user;
+                return user;
+            }
+            catch
+            {
+                return null;
+            }
         }
         public async Task<ApiResponse> UpdateUserProfile(UserUpdateRequest request)
         {
@@ -272,6 +293,38 @@ namespace ECommerce.Application.Services.User
                 .Select(i => i.Role.RoleName)
                 .FirstOrDefaultAsync();
             return role;
+        }
+        public async Task<UserGetModel> getUserByShop(int shopId)
+        {
+            // Get user id by shop id
+            var userId = await _DbContext.Shops
+                .Where(s => s.ShopId == shopId)
+                .Select(i => i.UserId)
+                .FirstOrDefaultAsync();
+
+            if (userId == null)
+            {
+                return null;
+            }
+
+            // get user id by user id
+            var user = await _DbContext.Users
+                .Where(u => u.UserId == userId)
+                .Select(i => new UserGetModel
+                {
+                    UserId = i.UserId,
+                    UserFullName = i.UserFullName,
+                    UserJoinDate = (DateTime)i.UserJoinDate,
+                    UserMail = i.UserMail,
+                    UserAddress = i.UserAddress,
+                    UserWardCode = i.UserWardCode,
+                    UserDistrictCode = i.UserDistrictCode,
+                    UserCityCode = i.UserCityCode,
+                    UserPhone = i.UserPhone,
+                    Status = (bool)i.Status
+                })
+                .FirstOrDefaultAsync();
+            return user;
         }
     }
 }

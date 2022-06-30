@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.Shop.Dtos;
+using ECommerce.Application.Services.Shop.Enums;
 using ECommerce.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,6 +18,61 @@ namespace ECommerce.Application.Services.Shop
         {
             _DbContext = DbContext;
         }
+        public async Task<ApiResponse> AddShop(ShopAddRequest request)
+        {
+            try
+            {
+                // Check null
+                if (string.IsNullOrEmpty(request.name.Trim())) return new ApiFailResponse("Thông tin không được để trống");
+                if (string.IsNullOrEmpty(request.phone.Trim())) return new ApiFailResponse("Thông tin không được để trống");
+
+                // Check already exist
+                var checkName = await _DbContext.Shops.Where(s => s.ShopName == request.name.Trim()).FirstOrDefaultAsync();
+                if (checkName != null) return new ApiFailResponse("Tên đã tồn tại");
+                var checkPhone = await _DbContext.Shops.Where(s => s.ShopPhoneNumber == request.phone.Trim()).FirstOrDefaultAsync();
+                if (checkPhone != null) return new ApiFailResponse("Số điện thoại đã tồn tại");
+                if (request.mail != null)
+                {
+                    var checkMail = await _DbContext.Shops.Where(s => s.ShopMail == request.mail.Trim()).FirstOrDefaultAsync();
+                    if (checkMail != null) return new ApiFailResponse("Mail đã tồn tại");
+                }
+
+                Data.Models.Shop shop = new Data.Models.Shop();
+                shop.ShopName = request.name.Trim();
+                shop.ShopPhoneNumber = request.phone.Trim();
+                shop.ShopAddress = request.address.Trim();
+                shop.ShopCityCode = request.cityCode;
+                shop.ShopDistrictCode = request.districtCode;
+                shop.ShopWardCode = request.wardCode;
+                shop.ShopMail = request.mail.Trim();
+                shop.ShopJoinDate = DateTime.Now;
+                shop.Tax = (byte)request.tax;
+                shop.Status = (int)enumShopStatus.Available; // Available..
+
+                await _DbContext.Shops.AddAsync(shop);
+                await _DbContext.SaveChangesAsync();
+
+                if (request.brandIds.Count > 0)
+                {
+                    foreach (var id in request.brandIds)
+                    {
+                        Data.Models.ShopBrand brand = new Data.Models.ShopBrand
+                        {
+                            BrandId = id,
+                            ShopId = shop.ShopId
+                        };
+                        await _DbContext.ShopBrands.AddAsync(brand);
+                    }
+                    await _DbContext.SaveChangesAsync();
+                }
+
+                return new ApiSuccessResponse("Thêm thành công");
+            }
+            catch (Exception error)
+            {
+                return new ApiFailResponse("Thêm thất bại, lỗi: " + error.Message);
+            }
+        }
         public async Task<List<ShopGetModel>> getShopList()
         {
             var list = await _DbContext.Shops
@@ -29,17 +85,17 @@ namespace ECommerce.Application.Services.Shop
                                         ShopAddress = i.ShopAddress,
                                         ShopCityCode = i.ShopCityCode,
                                         ShopDistrictCode = i.ShopDistrictCode,
-                                        ShopJoinDate = i.ShopJoinDate,
+                                        ShopJoinDate = (DateTime)i.ShopJoinDate,
                                         ShopWardCode = i.ShopWardCode,
-                                        Status = i.Status,
+                                        Status = (byte)i.Status,
                                         UserName = _DbContext.Users
                                                     .Where(u => u.UserId == i.UserId)
                                                     .Select(u => u.UserFullName)
                                                     .FirstOrDefault(),
                                     })
-                                    .OrderByDescending(i => i.ShopJoinDate)
                                     .ToListAsync();
-            return list;
+            var result = list.OrderByDescending(i => i.ShopId).ToList();
+            return result;
         }
         public async Task<List<ShopGetModel>> getUnconfirmedShop()
         {
@@ -54,9 +110,9 @@ namespace ECommerce.Application.Services.Shop
                                         ShopAddress = i.ShopAddress,
                                         ShopCityCode = i.ShopCityCode,
                                         ShopDistrictCode = i.ShopDistrictCode,
-                                        ShopJoinDate = i.ShopJoinDate,
+                                        ShopJoinDate = (DateTime)i.ShopJoinDate,
                                         ShopWardCode = i.ShopWardCode,
-                                        Status = i.Status,
+                                        Status = (byte)i.Status,
                                         UserName = _DbContext.Users
                                                         .Where(u => u.UserId == i.UserId)
                                                         .Select(u => u.UserFullName)
@@ -89,6 +145,7 @@ namespace ECommerce.Application.Services.Shop
             if (string.IsNullOrEmpty(request.ShopWardCode)) return new ApiFailResponse("Thông tin không được để trống");
             if (string.IsNullOrEmpty(request.ShopBankName)) return new ApiFailResponse("Thông tin không được để trống");
             if (string.IsNullOrEmpty(request.ShopAccountNumber)) return new ApiFailResponse("Thông tin không được để trống");
+            if (string.IsNullOrEmpty(request.ShopAccountName)) return new ApiFailResponse("Thông tin không được để trống");
 
             // Check already exist
             var checkName = await _DbContext.Shops.Where(s => s.ShopName == request.ShopName).FirstOrDefaultAsync();
@@ -110,7 +167,7 @@ namespace ECommerce.Application.Services.Shop
             shop.ShopMail = request.ShopMail;
             shop.ShopJoinDate = DateTime.Now;
             shop.UserId = request.UserId;
-            shop.Status = 2; // waiting..
+            shop.Status = (byte?)enumShopStatus.Pending; // waiting..
 
             Data.Models.ShopBank bank = new Data.Models.ShopBank();
             bank.ShopBankName = request.ShopBankName;
@@ -149,66 +206,117 @@ namespace ECommerce.Application.Services.Shop
             await _DbContext.SaveChangesAsync();
             return new ApiSuccessResponse("Xóa thành công");
         }
-        public async Task<ShopDetailModel> getShopDetail(int ShopId)
+        public async Task<ShopDetailManagedModel> getShopDetailManage(int shopId)
         {
             var shop = await _DbContext.Shops
-                                    .Where(i => i.Status != 4 && i.Status != 2)
-                                    .Select(i => new ShopDetailModel()
-                                    {
-                                        // Shop
-                                        ShopId = i.ShopId,
-                                        ShopName = i.ShopName,
-                                        ShopPhoneNumber = i.ShopPhoneNumber,
-                                        ShopMail = i.ShopMail,
-                                        ShopAddress = i.ShopAddress,
-                                        ShopCityCode = i.ShopCityCode,
-                                        ShopDistrictCode = i.ShopDistrictCode,
-                                        ShopJoinDate = i.ShopJoinDate,
-                                        ShopWardCode = i.ShopWardCode,
-                                        Status = i.Status,
-                                        Tax = i.Tax,
-
-                                        // Shop's owner
-                                        User = _DbContext.Users
-                                                    .Where(u => u.UserId == i.UserId)
-                                                    .Select(u => new Dtos.User()
-                                                    {
-                                                        UserId = u.UserId,
-                                                        UserName = u.UserFullName,
-                                                        UserJoinDate = u.UserJoinDate,
-                                                        UserMail = u.UserMail,
-                                                        UserPhone = u.UserPhone,
-                                                        UserAddress = u.UserAddress,
-                                                        UserWardCode = u.UserWardCode,
-                                                        UserDistrictCode = u.UserDistrictCode,
-                                                        UserCityCode = u.UserCityCode
-                                                    })
-                                                    .FirstOrDefault(),
-                                        // Shop's bank account
-                                        ShopBank = _DbContext.ShopBanks
-                                                        .Where(b => b.ShopId == i.ShopId)
-                                                        .Select(b => new ShopBank()
-                                                        {
-                                                            ShopAccountName = b.ShopAccountName,
-                                                            ShopBankName = b.ShopBankName,
-                                                            ShopAccountNumber = b.ShopAccountNumber
-                                                        })
-                                                        .FirstOrDefault(),
-                                        ShopBrands = _DbContext.ShopBrands
-                                                        .Where(br => br.ShopId == i.ShopId)
-                                                        .Select(br => br.BrandId)
-                                                        .ToList(),
-                                        Brands = _DbContext.Brands
-                                                        .Select(br => new Dtos.Brand()
-                                                        {
-                                                            BrandId = br.BrandId,
-                                                            BrandName = br.BrandName
-                                                        })
-                                                        .ToList()
-                                    })
-                                    .FirstOrDefaultAsync();
+                .Where(i => i.ShopId == shopId)
+                .Select(i => new ShopDetailManagedModel
+                {
+                    // Shop
+                    ShopId = i.ShopId,
+                    ShopName = i.ShopName,
+                    ShopPhoneNumber = i.ShopPhoneNumber,
+                    ShopMail = i.ShopMail,
+                    ShopAddress = i.ShopAddress,
+                    ShopCityCode = i.ShopCityCode,
+                    ShopDistrictCode = i.ShopDistrictCode,
+                    ShopJoinDate = (DateTime)i.ShopJoinDate,
+                    ShopWardCode = i.ShopWardCode,
+                    Status = (byte)i.Status,
+                    Tax = (byte)i.Tax,
+                    ShopBank = _DbContext.ShopBanks
+                        .Where(b => b.ShopId == shopId)
+                        .Select(b => new ShopBankModel()
+                        {
+                            ShopAccountName = b.ShopAccountName,
+                            ShopBankName = b.ShopBankName,
+                            ShopAccountNumber = b.ShopAccountNumber
+                        })
+                        .FirstOrDefault(),
+                    ShopBrands = _DbContext.ShopBrands
+                        .Where(br => br.ShopId == shopId)
+                        .Select(br => br.BrandId)
+                        .ToList()
+                })
+                .FirstOrDefaultAsync();
 
             return shop;
+        }
+        public async Task<ApiResponse> updateShop(ShopUpdateRequest request)
+        {
+            try
+            {
+                var shop = await _DbContext.Shops.Where(i => i.ShopId == request.id).FirstOrDefaultAsync();
+                if (shop == null) return new ApiFailResponse("Shop không tồn tại");
+                
+                if (shop.ShopName != request.name.Trim())
+                {
+                    var hasName = await _DbContext.Shops.Where(i => i.ShopName == request.name.Trim()).FirstOrDefaultAsync() != null;
+                    if (hasName) return new ApiFailResponse("Tên đã tồn tại");
+                }
+                if (shop.ShopPhoneNumber != request.phone.Trim())
+                {
+                    var hasPhone = await _DbContext.Shops.Where(i => i.ShopPhoneNumber == request.phone.Trim()).FirstOrDefaultAsync() != null;
+                    if (hasPhone) return new ApiFailResponse("Số điện thoại đã tồn tại");
+                }
+                if (shop.ShopMail != request.mail.Trim())
+                {
+                    var hasMail = await _DbContext.Shops.Where(i => i.ShopMail == request.mail.Trim()).FirstOrDefaultAsync() != null;
+                    if (hasMail) return new ApiFailResponse("Mail đã tồn tại");
+                }
+                
+                shop.ShopName = request.name.Trim();
+                shop.ShopPhoneNumber = request.phone.Trim();
+                shop.ShopMail = request.mail.Trim();
+                shop.ShopAddress = request.address.Trim();
+                shop.ShopCityCode = request.cityCode.Trim();
+                shop.ShopDistrictCode = request.districtCode.Trim();
+                shop.ShopWardCode = request.wardCode.Trim();
+                shop.Tax = (byte?)request.tax;
+                await _DbContext.SaveChangesAsync();
+
+                var bank = await _DbContext.ShopBanks.Where(i => i.ShopId == request.id).FirstOrDefaultAsync();
+                // Add new if not exist
+                if (bank == null)
+                {
+                    var newBank = new Data.Models.ShopBank {
+                        ShopAccountName = request.shopbank.ShopAccountName.Trim(),
+                        ShopBankName = request.shopbank.ShopBankName.Trim(),
+                        ShopAccountNumber = request.shopbank.ShopAccountNumber.Trim(),
+                        ShopId = shop.ShopId,
+                    };
+                    await _DbContext.ShopBanks.AddAsync(newBank);
+                }
+                // Update if it exist
+                else
+                {
+                    bank.ShopAccountName = request.shopbank.ShopAccountName.Trim();
+                    bank.ShopBankName = request.shopbank.ShopBankName.Trim();
+                    bank.ShopAccountNumber = request.shopbank.ShopAccountNumber.Trim();
+                }
+                await _DbContext.SaveChangesAsync();
+
+                var brands = await _DbContext.ShopBrands.Where(i => i.ShopId == request.id).ToListAsync();
+                // Remove previous brands if exist
+                if(brands.Count > 0) _DbContext.ShopBrands.RemoveRange(brands);
+                // Add new brands
+                foreach (var id in request.shopBrands)
+                {
+                    var brand = new Data.Models.ShopBrand
+                    {
+                        BrandId = id,
+                        ShopId = shop.ShopId
+                    };
+                    await _DbContext.ShopBrands.AddAsync(brand);
+                }
+                await _DbContext.SaveChangesAsync();
+
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            catch (Exception error)
+            {
+                return new ApiFailResponse("Cập nhật không thành công, lỗi: " + error.Message);
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using ECommerce.Application.Services.Brand.Dtos;
 using ECommerce.Application.Services.Category;
 using ECommerce.WebApp.Models.Brand;
+using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -15,14 +16,20 @@ namespace ECommerce.WebApp.Controllers.Admin
     [Authorize(Policy = "Admin")]
     public class ManageBrandController : Controller
     {
+        private const string FILE_PATH = "images/brand";
+        private const string FILE_PREFIX = "brand_";
+
         private IBrandService _brandService;
         private ICategoryService _categoryService;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        public ManageBrandController(IBrandService brandService, ICategoryService categoryService, IWebHostEnvironment webHostEnvironment)
+        private ManageFiles _manageFiles;
+        public ManageBrandController(
+            IBrandService brandService, 
+            ICategoryService categoryService, 
+            IWebHostEnvironment webHostEnvironment)
         {
             _brandService = brandService;
             _categoryService = categoryService;
-            _webHostEnvironment = webHostEnvironment;
+            _manageFiles = new ManageFiles(webHostEnvironment);
         }
         public async Task<IActionResult> Index()
         {
@@ -42,51 +49,37 @@ namespace ECommerce.WebApp.Controllers.Admin
             {
                 return BadRequest("Hình ảnh thương hiệu không được để trống");
             }
-            var fileName = Guid.NewGuid().ToString() + new FileInfo(request.ImagePath.FileName).Extension;
+
+            var fileName = _manageFiles.GetFileName(request.ImagePath, FILE_PREFIX);
             request.BrandImagePath = fileName;
             var result = await _brandService.Create(request);
             if (result.isSucceed)
             {
-                // Save images to folder
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images/brand");
-                string filePath = Path.Combine(uploadsFolder, fileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    request.ImagePath.CopyTo(fileStream);
-                }
+                _manageFiles.AddFile(request.ImagePath, fileName, FILE_PATH);
+
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);
         }
         public async Task<IActionResult> UpdateBrand(BrandUpdateRequest request)
         {
+            var newFileName = "";
             if (request.ImagePath != null)
             {
-                request.BrandImagePath = Guid.NewGuid().ToString() + new FileInfo(request.ImagePath.FileName).Extension;
+                newFileName = _manageFiles.GetFileName(request.ImagePath, "brand_");
+                request.BrandImagePath = newFileName;
             }
             var result = await _brandService.Update(request);
             if (result.isSucceed)
             {
                 if (result.Data.newFileName != null)
                 {
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images/brand");
                     // remove previous image
                     var previousFileName = result.Data.previousFileName;
-                    DirectoryInfo uploadDirectory = new DirectoryInfo(uploadsFolder);
-                    foreach (FileInfo file in uploadDirectory.GetFiles())
-                    {
-                        if (file.Name == previousFileName)
-                        {
-                            file.Delete();
-                        }
-                    }
+                    _manageFiles.DeleteFile(previousFileName, FILE_PATH);
 
                     // Save new images to folder
-                    string filePath = Path.Combine(uploadsFolder, result.Data.newFileName);
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        request.ImagePath.CopyTo(fileStream);
-                    }
+                    _manageFiles.AddFile(request.ImagePath, newFileName, FILE_PREFIX);
                 }
                 return Ok(result.Message);
             }
@@ -106,6 +99,10 @@ namespace ECommerce.WebApp.Controllers.Admin
             var result = await _brandService.DeleteBrand(id);
             if (result.isSucceed)
             {
+                // Delete file
+                var previousFileName = "";
+                _manageFiles.DeleteFile(previousFileName, FILE_PATH);
+
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);

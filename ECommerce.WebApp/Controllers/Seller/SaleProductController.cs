@@ -3,6 +3,7 @@ using ECommerce.Application.Services.Product;
 using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.SubCategory;
 using ECommerce.WebApp.Models.SaleProduct;
+using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,6 @@ namespace ECommerce.WebApp.Controllers.Seller
         private ISubCategoryService _subCategoryService;
         private IBrandService _brandService;
         private IWebHostEnvironment _webHostEnvironment;
-
         public SaleProductController(IProductService productService, ISubCategoryService subCategoryService, IBrandService brandService, IWebHostEnvironment webHostEnvironment)
         {
             _webHostEnvironment = webHostEnvironment;
@@ -50,7 +50,8 @@ namespace ECommerce.WebApp.Controllers.Seller
         [HttpGet]
         public async Task<IActionResult> AddProduct()
         {
-            var brands = await _brandService.getAll();
+            var userId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
+            var brands = await _brandService.getAllBrandInShop(userId);
             return View(brands);
         }
         [HttpPost]
@@ -66,9 +67,9 @@ namespace ECommerce.WebApp.Controllers.Seller
             var listSysFileName = new List<string>();
             for (int i = 0; i < request.systemImage.Count; i++)
             {
-                var file = request.userImage[i];
+                var file = request.systemImage[i];
                 var extension = new FileInfo(file.FileName).Extension;
-                var fileName = Guid.NewGuid().ToString() + extension;
+                var fileName = "product-" + Guid.NewGuid().ToString() + extension;
                 listSysFileName.Add(fileName);
             }
             var listUserFileName = new List<string>();
@@ -83,8 +84,8 @@ namespace ECommerce.WebApp.Controllers.Seller
             request.systemFileName = listSysFileName;
             request.userFileName = listUserFileName;
             request.userId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
-            var result = await _productService.AddProduct(request);
             // Result 
+            var result = await _productService.AddProduct(request);
             if (result.isSucceed)
             {
                 string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images/products");
@@ -105,6 +106,36 @@ namespace ECommerce.WebApp.Controllers.Seller
                     }
                 }
 
+                return Ok(result.Message);
+            }
+            return BadRequest(result.Message);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            var result = await _productService.DeleteProduct(id);
+            if (result.isSucceed)
+            {
+                return Ok(result.Message);
+            }
+            return BadRequest(result.Message);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DisableProducts(List<int> ids)
+        {
+            var result = await _productService.DisableProducts(ids);
+            if (result.isSucceed)
+            {
+                return Ok(result.Message);
+            }
+            return BadRequest(result.Message);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ApproveProducts(List<int> ids)
+        {
+            var result = await _productService.ApproveProducts(ids);
+            if (result.isSucceed)
+            {
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);

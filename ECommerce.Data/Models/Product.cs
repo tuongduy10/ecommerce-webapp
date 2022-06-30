@@ -9,7 +9,6 @@ namespace ECommerce.Data.Models
     {
         public Product()
         {
-            OrderDetails = new HashSet<OrderDetail>();
             ProductAttributes = new HashSet<ProductAttribute>();
             ProductImages = new HashSet<ProductImage>();
             ProductOptionValues = new HashSet<ProductOptionValue>();
@@ -23,7 +22,6 @@ namespace ECommerce.Data.Models
         public byte? DiscountPercent { get; set; }
         public DateTime? ProductAddedDate { get; set; }
         public string ProductDescription { get; set; }
-        public string Note { get; set; }
         public int? ProductStock { get; set; }
         public byte? Status { get; set; }
         public bool? New { get; set; }
@@ -37,11 +35,11 @@ namespace ECommerce.Data.Models
         public int BrandId { get; set; }
         public DateTime? ProductImportDate { get; set; }
         public byte? ProductRate { get; set; }
+        public string Note { get; set; }
 
         public virtual Brand Brand { get; set; }
         public virtual Shop Shop { get; set; }
         public virtual SubCategory SubCategory { get; set; }
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<ProductAttribute> ProductAttributes { get; set; }
         public virtual ICollection<ProductImage> ProductImages { get; set; }
         public virtual ICollection<ProductOptionValue> ProductOptionValues { get; set; }

@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.Category.Dtos;
+﻿using ECommerce.Application.Common;
+using ECommerce.Application.Services.Category.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,9 @@ namespace ECommerce.Application.Services.Category
 {
     public interface ICategoryService
     {
-        Task<int> Create(CategoryCreateRequest request);
-        Task<int> Update(CategoryModel request);
-        Task<int> Delete(int CategoryId);
+        Task<ApiResponse> Create(CategoryCreateRequest request);
+        Task<ApiResponse> Update(CategoryModel request);
+        Task<ApiResponse> Delete(int CategoryId);
         Task<List<CategoryModel>> getAll();
 
     }

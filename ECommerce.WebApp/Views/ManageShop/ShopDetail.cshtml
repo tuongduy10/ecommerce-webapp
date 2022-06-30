@@ -1,6 +1,7 @@
-﻿@{ 
+﻿@{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
+<script src="~/js/main/provinces-rendering.js"></script>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary text-center">Thông tin shop</h6>
@@ -22,32 +23,42 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>@Model.ShopName</td>
-                        <td>@Model.ShopJoinDate.ToString("dd/MM/yyyy")</td>
-                        <td>@Model.ShopPhoneNumber</td>
-                        <td>@Model.ShopMail</td>
-                        <td class="address">@Model.ShopAddress|@Model.ShopWardCode|@Model.ShopDistrictCode|@Model.ShopCityCode</td>
+                        <td><input type="text" class="form-control shop-name" value="@Model.Shop.ShopName" /></td>
+                        <td><input type="text" class="form-control" value="@Model.Shop.ShopJoinDate.ToString("dd/MM/yyyy dd:mm:ss")" disabled /></td>
+                        <td><input type="text" class="form-control shop-phone" value="@Model.Shop.ShopPhoneNumber" /></td>
+                        <td><input type="text" class="form-control shop-mail" value="@Model.Shop.ShopMail" /></td>
                         <td>
-                            @if(Model.Status == 0)
+                            <input type="text" class="form-control mb-2 shop-address" value="@Model.Shop.ShopAddress" />
+                            <select name="" id="" class="user-city form-control mb-2 shop-city">
+                                <option value="" disabled selected>Tỉnh/Thành...</option>
+                            </select>
+                            <select name="" id="" class="user-district form-control mb-2 shop-district">
+                                <option value="" disabled selected>Quận/Huyện...</option>
+                            </select>
+                            <select name="" id="" class="user-ward form-control shop-ward">
+                                <option value="" disabled selected>Phường/Xã...</option>
+                            </select>
+                        </td>
+                        <td>
+                            @if (Model.Shop.Status == 0)
                             {
                                 <p class="text-danger">Đã khóa</p>
                             }
-                            else
+                            @if (Model.Shop.Status == 1)
                             {
                                 <p class="text-success">Đã xác thực</p>
                             }
                         </td>
-                        <td>
-                            <div class="text-center">
-                                @if (Model.Status == 0)
-                                {
-                                    <a href="@Url.Action("UpdateShopStatus", "ManageShop", new { })" class="btn btn-success">Mở khóa</a>
-                                }
-                                else
-                                {
-                                    <a href="@Url.Action("UpdateShopStatus", "ManageShop", new { })" class="btn btn-danger">Khóa</a>
-                                }                                                            
-                            </div>
+                        <td class="text-center">
+                            <button class="btn btn-primary update-shop">Cập nhật</button>
+                            @if (Model.Shop.Status == 0)
+                            {
+                                <a href="@Url.Action("UpdateShopStatus", "ManageShop", new { id = Model.Shop.ShopId, status = 1 })" class="btn btn-success">Mở khóa</a>
+                            }
+                            @if (Model.Shop.Status == 1)
+                            {
+                                <a href="@Url.Action("UpdateShopStatus", "ManageShop", new { id = Model.Shop.ShopId, status = 0 })" class="btn btn-danger">Khóa</a>
+                            }
                         </td>
                     </tr>
                 </tbody>
@@ -67,16 +78,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>@Model.User.UserName</td>
-                        <td>@Model.User.UserJoinDate.ToString("dd/MM/yyyy")</td>
-                        <td>@Model.User.UserPhone</td>
-                        <td>@Model.User.UserMail</td>
-                        <td class="address">@Model.User.UserAddress|@Model.User.UserWardCode|@Model.User.UserDistrictCode|@Model.User.UserCityCode</td>
-                        <td>
-                            <a href="@Url.Action("UserDetail", "ManageUser", new { UserId = Model.User.UserId})">Chi tiết</a>
-                        </td>
-                    </tr>
+                    @if (Model.User != null)
+                    {
+                        <tr>
+                            <td>@Model.User.UserFullName</td>
+                            <td>@Model.User.UserJoinDate.ToString("dd/MM/yyyy dd:mm:ss")</td>
+                            <td>@Model.User.UserPhone</td>
+                            <td>@Model.User.UserMail</td>
+                            <td class="address">@Model.User.UserAddress|@Model.User.UserWardCode|@Model.User.UserDistrictCode|@Model.User.UserCityCode</td>
+                            <td>
+                                <a href="@Url.Action("UserDetail", "ManageUser", new { UserId = Model.User.UserId})">Chi tiết</a>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -88,24 +102,24 @@
                         <th>Ngân hàng</th>
                         <th>Tên</th>
                         <th>Số tài khoản</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>@Model.ShopBank.ShopBankName</td>
-                        <td>@Model.ShopBank.ShopAccountName</td>
-                        <td>
-                            <div class="d-flex">
-                                <span><u class="stk">@Model.ShopBank.ShopAccountNumber</u></span>
-                                <button class="--tooltip copy-stk" style="height: 22px; background: none; cursor: pointer; border: none;">
-                                    <span class="--tooltip-text">Sao chép</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-copy">
-                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
+                        @if (Model.Shop.ShopBank != null)
+                        {
+                            <td><input type="text" class="form-control shop-bank" value="@Model.Shop.ShopBank.ShopBankName" /></td>
+                            <td><input type="text" class="form-control shop-accountname" value="@Model.Shop.ShopBank.ShopAccountName" /></td>
+                            <td><input type="text" class="form-control shop-accountnum" value="@Model.Shop.ShopBank.ShopAccountNumber" /></td>
+                        }
+                        else
+                        {
+                            <td><input type="text" class="form-control shop-bank" value="" /></td>
+                            <td><input type="text" class="form-control shop-accountname" value="" /></td>
+                            <td><input type="text" class="form-control shop-accountnum" value="" /></td>
+                        }
+                        <td><button class="btn btn-primary update-shop">Cập nhật</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -115,7 +129,7 @@
             <div class="col-md-4">
                 <div class="form-group mb-2">
                     <label class="mr-2">Chiết khấu %</label>
-                    <input class="form-control" type="number" value="@Model.Tax">
+                    <input class="form-control shop-tax" type="number" value="@Model.Shop.Tax">
                 </div>
                 <div class="form-group mb-2">
                     <label class="mr-2">Thương hiệu</label>
@@ -128,12 +142,12 @@
                             <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm..." autocomplete="off">
                             @foreach (var brand in Model.Brands)
                             {
-                                @if (Model.ShopBrands.Contains(brand.BrandId))
+                                @if (Model.Shop.ShopBrands.Contains(brand.BrandId))
                                 {
                                     <li>
                                         <div>
-                                            <input class="mr-1" id="attr-@brand.BrandId" type="checkbox" checked>
-                                            <label for="attr1">@brand.BrandName</label>
+                                            <input class="mr-1 shop-brands" id="attr-@brand.BrandId" type="checkbox" value="@brand.BrandId" checked>
+                                            <label for="attr-@brand.BrandId">@brand.BrandName</label>
                                         </div>
                                     </li>
                                 }
@@ -141,8 +155,8 @@
                                 {
                                     <li>
                                         <div>
-                                            <input class="mr-1" id="attr-@brand.BrandId" type="checkbox">
-                                            <label for="attr1">@brand.BrandName</label>
+                                            <input class="mr-1 shop-brands" id="attr-@brand.BrandId" type="checkbox" value="@brand.BrandId">
+                                            <label for="attr-@brand.BrandId">@brand.BrandName</label>
                                         </div>
                                     </li>
                                 }
@@ -151,108 +165,123 @@
                     </div>
                 </div>
                 <div class="text-right">
-                    <button class="btn btn-success">Lưu</button>
+                    <button class="btn btn-primary update-shop">Cập nhật</button>
                 </div>
             </div>
         </div>
-        <div class="mb-4"><strong>Danh sách sản phẩm</strong></div>
-        <div class="table-responsive mb-4">
-            <table class="table table-bordered order-table" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Sản phẩm</th>
-                        <th>Giá đặt trước</th>
-                        <th>Giá có sẵn</th>
-                        <th>Trạng thái</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="d-flex">
-                                <div class="mr-2 d-flex align-items-center justify-content-between"
-                                     style="height: 100px; width: 100px;">
-                                    <img class="w-auto h-100"
-                                         src="../assets/images/products/jacket1.jpg" alt="">
+        @*<div class="mb-4"><strong>Danh sách sản phẩm</strong></div>
+            <div class="table-responsive mb-4">
+                <table class="table table-bordered order-table" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Giá đặt trước</th>
+                            <th>Giá có sẵn</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="d-flex">
+                                    <div class="mr-2 d-flex align-items-center justify-content-between"
+                                         style="height: 100px; width: 100px;">
+                                        <img class="w-auto h-100"
+                                             src="../assets/images/products/jacket1.jpg" alt="">
+                                    </div>
+                                    <div>
+                                        <div>Samsung Galaxy S22 Ultra 5G</div>
+                                        <div>Samsung</div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <div>Samsung Galaxy S22 Ultra 5G</div>
-                                    <div>Samsung</div>
+                            </td>
+                            <td>10,000,008 ₫</td>
+                            <td>10,000,008 ₫</td>
+                            <td style="color: var(--success); white-space: nowrap;">Đang bán</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="d-flex">
+                                    <div class="d-flex align-items-center justify-content-center mr-2"
+                                         style="height: 100px; width: 100px;">
+                                        <img class="mw-100 mh-100"
+                                             src="../assets/images/banner/snidel.jpg" alt="">
+                                    </div>
+                                    <div>
+                                        <div>Samsung Galaxy S22 Ultra 5G</div>
+                                        <div>Samsung</div>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>10,000,008 ₫</td>
-                        <td>10,000,008 ₫</td>
-                        <td style="color: var(--success); white-space: nowrap;">Đang bán</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="d-flex">
-                                <div class="d-flex align-items-center justify-content-center mr-2"
-                                     style="height: 100px; width: 100px;">
-                                    <img class="mw-100 mh-100"
-                                         src="../assets/images/banner/snidel.jpg" alt="">
+                            </td>
+                            <td>10,000,001 ₫</td>
+                            <td>10,000,008 ₫</td>
+                            <td style="white-space: nowrap;">Đã ẩn</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="d-flex">
+                                    <div class="d-flex align-items-center justify-content-center mr-2"
+                                         style="height: 100px; width: 100px;">
+                                        <img class="mw-100 mh-100"
+                                             src="../assets/images/products/pro1.png" alt="">
+                                    </div>
+                                    <div>
+                                        <div>Samsung Galaxy S22 Ultra 5G</div>
+                                        <div>Samsung</div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <div>Samsung Galaxy S22 Ultra 5G</div>
-                                    <div>Samsung</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>10,000,001 ₫</td>
-                        <td>10,000,008 ₫</td>
-                        <td style="white-space: nowrap;">Đã ẩn</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="d-flex">
-                                <div class="d-flex align-items-center justify-content-center mr-2"
-                                     style="height: 100px; width: 100px;">
-                                    <img class="mw-100 mh-100"
-                                         src="../assets/images/products/pro1.png" alt="">
-                                </div>
-                                <div>
-                                    <div>Samsung Galaxy S22 Ultra 5G</div>
-                                    <div>Samsung</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>10,000,002 ₫</td>
-                        <td>10,000,008 ₫</td>
-                        <td style="white-space: nowrap;">Đã ẩn</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                            </td>
+                            <td>10,000,002 ₫</td>
+                            <td>10,000,008 ₫</td>
+                            <td style="white-space: nowrap;">Đã ẩn</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>*@
     </div>
 </div>
 <script>
-    $('.address').each(function () {
-        let address = $(this).text().split('|')[0];
-        let ward = $(this).text().split('|')[1];
-        let district = $(this).text().split('|')[2];
-        let city = $(this).text().split('|')[3];
-        var ele = $(this);
+    function updateRequest() {
+        var brandIds = [];
+        $(".shop-brands").each(function () {
+            if ($(this).is(":checked")) {
+                brandIds.push($(this).val());
+            }
+        });
+        var request = {
+            id: @Model.Shop.ShopId,
+            name: $(".shop-name").val(),
+            phone: $(".shop-phone").val(),
+            mail: $(".shop-mail").val(),
+            address: $(".shop-address").val(),
+            cityCode: $(".shop-city").val(),
+            districtCode: $(".shop-district").val(),
+            wardCode: $(".shop-ward").val(),
+            tax: $(".shop-tax").val(),
+            shopbank: {
+                ShopBankName: $(".shop-bank").val(),
+                ShopAccountNumber: $(".shop-accountnum").val(),
+                ShopAccountName: $(".shop-accountname").val(),
+            },
+            shopBrands: brandIds,
+        };
+        return request;
+    }
 
-        $.get("/js/json/provinces-open-api.json", function (data) {
-            // Cities
-            data.forEach(c => {
-                if (city == c.codename) {
-                    c.districts.forEach(d => {
-                        if (district == d.codename) {
-                            d.wards.forEach(w => {
-                                if (ward == w.codename) {
-                                    address += ', ' + w.name + ', ' + d.name + ', ' + c.name;
-                                    ele.text(address);
-                                    return;
-                                }
-                            })
-                        }
-                    })
-                }
-            });
-        })
+    $(".update-shop").click(function () {
+        $.post("/ManageShop/UpdateShop", updateRequest())
+            .then(function (response) {
+                alert(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert(error.responseText);
+            })
     })
+</script>
+<script>
+    renderAddressString(".address");
+    renderAddressSelect('@Model.Shop.ShopCityCode', '@Model.Shop.ShopDistrictCode', '@Model.Shop.ShopWardCode');
     $(document).ready(function () {
         $("#myInput").on("keyup", function () {
             var value = $(this).val().toLowerCase();

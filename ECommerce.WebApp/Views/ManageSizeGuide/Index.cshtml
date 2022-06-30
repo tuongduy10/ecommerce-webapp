@@ -1,0 +1,90 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<script src="https://cdn.tiny.cloud/1/4ctr9pi6o8mlflu8si6gdszgl62tn4zl73knhf3tkqalszsx/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Quản lý bảng hướng dẫn chọn size</h6>
+    </div>
+    <div class="card-body">
+        <div class="mb-4">
+            <div class="form-group">
+                <label class="mr-2">Danh mục sản phẩm</label>
+                <div class="dropdown mb-2 mr-2">
+                    <button class="btn border dropdown-toggle" type="button" data-toggle="dropdown">
+                        Chọn danh mục sản phẩm
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu px-2" style="overflow: hidden scroll; max-height: 300px">
+                        <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm..." autocomplete="off">
+                        <li>
+                            <div>
+                                <input class="mr-1" id="attr-1" type="checkbox">
+                                <label for="attr-1">Tên danh mục</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <input class="mr-1" id="attr-2" type="checkbox">
+                                <label for="attr-2">Test</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <input class="mr-1" id="attr-3" type="checkbox">
+                                <label for="attr-3">New</label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group">
+                <textarea class="form-control" rows="8" cols="50"></textarea>
+            </div>
+            <button class="btn btn-primary add-sizechart">Thêm</button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered order-table" id="dataTable" width="100%"
+                   cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Danh mục</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td class="text-center">
+                            <a class="btn btn-primary" href="">Chi tiết</a>
+                            <a class="btn btn-danger" onclick="">Xóa</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    tinymce.init({
+        selector: 'textarea',
+        plugins: 'image autolink lists media table',
+        toolbar: 'addcomment showcomments code image pageembed permanentpen table tableofcontents',
+        toolbar_mode: 'floating',
+        tinycomments_mode: 'embedded',
+        tinycomments_author: 'Author name',
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $(".dropdown-menu li").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>

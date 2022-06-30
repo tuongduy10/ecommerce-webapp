@@ -403,8 +403,8 @@
                                                 }
                                                 else
                                                 {
-                                                    <div class="product-subprice">@String.Format("{0:0,0} ₫", product.PriceOnSell)</div>
-                                                    <div class="product-price">@String.Format("{0:0,0} ₫", product.Price)</div>
+                                                    <div class="product-subprice">@String.Format("{0:0,0} ₫", product.Price)</div>
+                                                    <div class="product-price">@String.Format("{0:0,0} ₫", product.PriceOnSell)</div>
                                                 }
 
                                                 <div class="product-btn">
@@ -860,8 +860,8 @@
         }
         else {
             htmlPrice = `
-                <div class="product-subprice">${(priceOnSell).toLocaleString()} ₫</div>
-                <div class="product-price">${(price).toLocaleString()} ₫</div>
+                <div class="product-subprice">${(price).toLocaleString()} ₫</div>
+                <div class="product-price">${(priceOnSell).toLocaleString()} ₫</div>
             `;
         }
 
