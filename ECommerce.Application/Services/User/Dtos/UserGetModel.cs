@@ -16,5 +16,6 @@ namespace ECommerce.Application.Services.User.Dtos
         public string UserPhone { get; set; }
         public List<string> UserRoles { get; set; }
         public bool Status { get; set; }
+        public bool isSystemAccount { get; set; }
     }
 }

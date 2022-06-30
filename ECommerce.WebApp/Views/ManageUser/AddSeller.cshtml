@@ -42,12 +42,6 @@
                             </select>
                         </div>
                     </div>
-                    @*<div class="form-group mb-4">
-                        <div class="d-flex align-items-center">
-                            <input type="checkbox" class="user-active mr-2" id="isActive" checked>
-                            <label class="mb-0" for="isActive" style="color: green">Đã xác thực</label>
-                        </div>
-                    </div>*@
                     <!-- Login info -->
                     <div class="text-left mb-2 text-primary"><strong>Thông tin đăng nhập</strong></div>
                     <div class="form-group mb-4">
@@ -72,7 +66,7 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu px-2" style="max-height: 300px; overflow: auto;">
-                                <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm thương hiệu..." autocomplete="off" />
+                                <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm cửa hàng..." autocomplete="off" />
                                 @*@foreach (var item in Model)
                                 {
                                     <li class="d-flex align-items-center">
@@ -113,6 +107,7 @@
         $.post("/ManageUser/AddSeller", request)
             .then(function (response) {
                 alert(response);
+                window.location = "/ManageUser";
                 return;
             })
             .catch(function (error) {

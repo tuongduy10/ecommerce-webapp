@@ -17,9 +17,9 @@ namespace ECommerce.WebApp.Controllers.Admin
         {
             _userService = userService;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(UserGetRequest request)
         {
-            var list = await _userService.getAll();
+            var list = await _userService.getUsersByFiltered(request);
             return View(list);
         }
         public async Task<IActionResult> UnConfirmUser()
@@ -28,7 +28,7 @@ namespace ECommerce.WebApp.Controllers.Admin
             return View(list);
         }
         [HttpGet]
-        public async Task<IActionResult> AddSeller()
+        public IActionResult AddSeller()
         {
             return View();
         }
@@ -36,12 +36,18 @@ namespace ECommerce.WebApp.Controllers.Admin
         public async Task<IActionResult> AddSeller(SignUpRequest request)
         {
             request.RoleId = (int)enumRole.Seller;
+            request.isSystemAccount = true;
             var result = await _userService.SignUp(request);
             if (result.isSucceed)
             {
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);
+        }
+        public async Task<IActionResult> UserProfile(int id)
+        {
+            var result = await _userService.UserProfile(id);
+            return View(result);
         }
     }
 }

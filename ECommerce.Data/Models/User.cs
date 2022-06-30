@@ -26,6 +26,7 @@ namespace ECommerce.Data.Models
         public string UserPhone { get; set; }
         public string Password { get; set; }
         public bool? Status { get; set; }
+        public bool? isSystemAccount { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Rate> Rates { get; set; }

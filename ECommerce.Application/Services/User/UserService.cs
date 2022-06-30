@@ -31,7 +31,31 @@ namespace ECommerce.Application.Services.User
                 UserPhone = i.UserPhone,
                 Status = (bool)i.Status,
             }).ToListAsync();
-            return list;
+            var result = list.OrderByDescending(i => i.UserJoinDate).ToList();
+            return result;
+        }
+        public async Task<List<UserGetModel>> getUsersByFiltered(UserGetRequest request)
+        {
+            var list = await _DbContext.Users.Select(i => new UserGetModel()
+            {
+                UserId = i.UserId,
+                UserFullName = i.UserFullName,
+                UserJoinDate = (DateTime)i.UserJoinDate,
+                UserMail = i.UserMail,
+                UserAddress = i.UserAddress,
+                UserWardCode = i.UserWardCode,
+                UserDistrictCode = i.UserDistrictCode,
+                UserCityCode = i.UserCityCode,
+                UserPhone = i.UserPhone,
+                isSystemAccount = (bool)i.isSystemAccount,
+                Status = (bool)i.Status,
+            }).ToListAsync();
+
+            if (request.all == true) list = list.ToList();
+            if (request.isSystemAccount == true) list = list.Where(i => i.isSystemAccount == true).ToList();
+            
+            var result = list.OrderByDescending(i => i.UserJoinDate).ToList();
+            return result;
         }
         public async Task<ApiResponse> CheckUserPhoneNumber(string PhoneNumber)
         {
@@ -125,6 +149,7 @@ namespace ECommerce.Application.Services.User
                 user.UserWardCode = request.UserWardCode;
                 user.Password = request.RePassword.Trim();
                 user.Status = true;
+                user.isSystemAccount = request.isSystemAccount;
                 await _DbContext.Users.AddAsync(user);
                 await _DbContext.SaveChangesAsync();
 

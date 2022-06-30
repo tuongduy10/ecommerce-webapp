@@ -8,6 +8,7 @@ namespace ECommerce.Application.Services.User
     public interface IUserService
     {
         Task<List<UserGetModel>> getAll();
+        Task<List<UserGetModel>> getUsersByFiltered(UserGetRequest request);
         Task<ApiResponse> SignIn(SignInRequest request);
         Task<ApiResponse> SignUp(SignUpRequest request);
         Task<UserGetModel> UserProfile(int id);

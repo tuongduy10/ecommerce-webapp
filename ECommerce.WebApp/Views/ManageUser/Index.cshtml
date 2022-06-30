@@ -1,22 +1,20 @@
 ﻿@{ 
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
-
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Thông tin khách hàng</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Danh sách người dùng</h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-bordered order-table" width="100%" id="dataTable" cellspacing="0">
                 <thead>
                     <tr>
-                        <th>Id</th>
+                        <th>Ngày tham gia</th>
                         <th>Tên</th>
                         <th>Địa chỉ</th>
                         <th>Email</th>
                         <th>Số điện thoại</th>
-                        <th>Ngày tham gia</th>
                         <th>Trạng thái</th>
                         <th></th>
                     </tr>
@@ -25,12 +23,11 @@
                     @foreach (var user in Model)
                     {
                         <tr>
-                            <td>@user.UserId</td>
+                            <td>@user.UserJoinDate.ToString("dd/MM/yyyy hh:mm:ss")</td>
                             <td>@user.UserFullName</td>
                             <td class="address">@user.UserAddress|@user.UserWardCode|@user.UserDistrictCode|@user.UserCityCode</td>
                             <td>@user.UserMail</td>
                             <td>@user.UserPhone</td>
-                            <td>@user.UserJoinDate.ToString("dd/MM/yyyy")</td>
                             <td class="status_@user.UserId">
                                 @if (user.Status == true)
                                 {
@@ -42,8 +39,8 @@
                                 }
                             </td>
                             <td class="action_@user.UserId text-center d-flex align-items-center">
-                                
-                                @if(user.Status == false)
+                                <a href="@Url.Action("UserProfile", "ManageUser", new { id = user.UserId })" class="mr-2">Chi tiết</a>
+                                @if (user.Status == false)
                                 {
                                     <button class="btn btn-success" onclick="unblockUser(@user.UserId)">Mở khóa</button>
                                 }

@@ -114,6 +114,7 @@
                          data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                             <a class="collapse-item" href="@Url.Action("Index","ManageUser")">Danh sách người dùng</a>
+                            <a class="collapse-item" href="@Url.Action("Index","ManageUser", new { isSystemAccount = true })">Tài khoản nội bộ</a>
                             <a class="collapse-item" href="@Url.Action("AddSeller", "ManageUser")">Tạo tài khoản bán hàng</a>
                         </div>
                     </div>

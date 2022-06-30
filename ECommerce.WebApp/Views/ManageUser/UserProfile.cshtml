@@ -1,0 +1,74 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Thông tin người dùng</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered order-table">
+                <thead>
+                    <tr>
+                        <th>Ngày tham gia</th>
+                        <th>Tên</th>
+                        <th>Địa chỉ</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" class="form-control" value=" @Model.UserJoinDate.ToString("dd/MM/yyyy hh:mm:ss")" disabled /></td>
+                        <td><input type="text" class="form-control user-fullname"  value=" @Model.UserFullName" /></td>
+                        <td>
+                            <select name="" id="" class="user-city form-control mb-2">
+                                <option value="" disabled selected>Tỉnh/Thành...</option>
+                            </select>
+                            <select name="" id="" class="user-district form-control mb-2">
+                                <option value="" disabled selected>Quận/Huyện...</option>
+                            </select>
+                            <select name="" id="" class="user-ward form-control">
+                                <option value="" disabled selected>Phường/Xã...</option>
+                            </select>
+                            <input type="text" class="form-control mb-2" value="@Model.UserAddress" />
+                        </td>
+                        <td><input type="text" class="form-control user-mail" value="@Model.UserMail" /></td>
+                        <td><input type="text" class="form-control user-phone" value="@Model.UserPhone" /></td>
+                        <td>
+                            @if (Model.Status == true)
+                            {
+                                <p class="text-success">Đã xác thực</p>
+                            }
+                            else
+                            {
+                                <p class="text-danger">Đã khóa</p>
+                            }
+                        </td>
+                        <td>
+                            <div class="text-center d-flex align-items-center">
+                                <button class="btn btn-primary mr-2">Cập nhật</button>
+                                @if (Model.Status == false)
+                                {
+                                    <button class="btn btn-success" onclick="unblockUser(@Model.UserId)">Mở khóa</button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-danger" onclick="blockUser(@Model.UserId)">Khóa</button>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="~/js/main/provinces-rendering.js"></script>
+<script>
+    renderAddressSelect('@Model.UserCityCode', '@Model.UserDistrictCode', '@Model.UserWardCode');
+</script>

@@ -12,6 +12,7 @@ namespace ECommerce.Application.Services.User.Dtos
         public string UserPhone { get; set; }
         public string Password { get; set; }
         public string RePassword { get; set; }
+        public bool isSystemAccount { get; set; }
         public int RoleId { get; set; }
     }
 }

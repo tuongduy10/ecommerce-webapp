@@ -679,7 +679,7 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.UserFullName).HasMaxLength(100);
 
-                entity.Property(e => e.UserJoinDate).HasColumnType("date");
+                entity.Property(e => e.UserJoinDate).HasColumnType("datetime");
 
                 entity.Property(e => e.UserMail)
                     .HasMaxLength(50)
