@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.Brand;
+﻿using ECommerce.Application.Constants;
+using ECommerce.Application.Services.Brand;
 using ECommerce.Application.Services.Product;
 using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.SubCategory;
@@ -24,14 +25,18 @@ namespace ECommerce.WebApp.Controllers.Seller
         private ISubCategoryService _subCategoryService;
         private IBrandService _brandService;
         private IWebHostEnvironment _webHostEnvironment;
+        private ManageFiles _manageFiles;
+        private string FILE_PATH = FilePathConstant.PRODUCT_FILEPATH;
+        private string FILE_PREFIX = FilePathConstant.PRODUCT_FILEPREFIX;
         public SaleProductController(IProductService productService, ISubCategoryService subCategoryService, IBrandService brandService, IWebHostEnvironment webHostEnvironment)
         {
             _webHostEnvironment = webHostEnvironment;
             _productService = productService;
             _subCategoryService = subCategoryService;
             _brandService = brandService;
+            _manageFiles = new ManageFiles(webHostEnvironment);
         }
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View();
         }
@@ -64,51 +69,25 @@ namespace ECommerce.WebApp.Controllers.Seller
             }
 
             // Get files name
-            var listSysFileName = new List<string>();
-            for (int i = 0; i < request.systemImage.Count; i++)
-            {
-                var file = request.systemImage[i];
-                var extension = new FileInfo(file.FileName).Extension;
-                var fileName = "product-" + Guid.NewGuid().ToString() + extension;
-                listSysFileName.Add(fileName);
-            }
-            var listUserFileName = new List<string>();
-            for (int i = 0; i < request.userImage.Count; i++)
-            {
-                var file = request.userImage[i];
-                var extension = new FileInfo(file.FileName).Extension;
-                var fileName = Guid.NewGuid().ToString() + extension;
-                listUserFileName.Add(fileName);
-            }
-
-            request.systemFileName = listSysFileName;
-            request.userFileName = listUserFileName;
+            request.systemFileName = _manageFiles.GetFilesName(request.systemImage, FILE_PREFIX);
+            request.userFileName = _manageFiles.GetFilesName(request.userImage, FILE_PREFIX);
             request.userId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
             // Result 
             var result = await _productService.AddProduct(request);
             if (result.isSucceed)
             {
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images/products");
-                for (int i = 0; i < request.systemImage.Count; i++)
-                {
-                    string filePath = Path.Combine(uploadsFolder, request.systemFileName[i]);
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        request.systemImage[i].CopyTo(fileStream);
-                    }
-                }
-                for (int i = 0; i < request.userImage.Count; i++)
-                {
-                    string filePath = Path.Combine(uploadsFolder, request.userFileName[i]);
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        request.userImage[i].CopyTo(fileStream);
-                    }
-                }
-
+                // Add file with files, files'name, path
+                _manageFiles.AddFiles(request.systemImage, request.systemFileName, FILE_PATH);
+                _manageFiles.AddFiles(request.userImage, request.userFileName, FILE_PATH);
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);
+        }
+        public async Task<IActionResult> ProductDetail(int id)
+        {
+            var userId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
+            var brands = await _brandService.getAllBrandInShop(userId);
+            return View(brands);
         }
         [HttpPost]
         public async Task<IActionResult> DeleteProduct(int id)
@@ -116,6 +95,8 @@ namespace ECommerce.WebApp.Controllers.Seller
             var result = await _productService.DeleteProduct(id);
             if (result.isSucceed)
             {
+                _manageFiles.DeleteFiles(result.Data.systemImages, FILE_PATH);
+                _manageFiles.DeleteFiles(result.Data.userImages, FILE_PATH);
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);

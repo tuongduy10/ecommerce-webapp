@@ -9,6 +9,7 @@ namespace ECommerce.Application.Services.Shop
     {
         Task<ApiResponse> AddShop(ShopAddRequest request);
         Task<List<ShopGetModel>> getShopList();
+        Task<List<ShopGetModel>> getShopListWithNoUser();
         Task<List<ShopGetModel>> getUnconfirmedShop();
         Task<ApiResponse> updateShopStatus(int ShopId, byte status);
         Task<ApiResponse> SaleRegistration(SaleRegistrationRequest request);

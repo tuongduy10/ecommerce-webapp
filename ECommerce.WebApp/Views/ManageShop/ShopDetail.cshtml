@@ -87,7 +87,7 @@
                             <td>@Model.User.UserMail</td>
                             <td class="address">@Model.User.UserAddress|@Model.User.UserWardCode|@Model.User.UserDistrictCode|@Model.User.UserCityCode</td>
                             <td>
-                                <a href="@Url.Action("UserDetail", "ManageUser", new { UserId = Model.User.UserId})">Chi tiết</a>
+                                <a href="@Url.Action("UserProfile", "ManageUser", new { id = Model.User.UserId})">Chi tiết</a>
                             </td>
                         </tr>
                     }

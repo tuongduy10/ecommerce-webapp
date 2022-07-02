@@ -12,6 +12,7 @@ namespace ECommerce.Application.Services.User
         Task<ApiResponse> SignIn(SignInRequest request);
         Task<ApiResponse> SignUp(SignUpRequest request);
         Task<UserGetModel> UserProfile(int id);
+        Task<ApiResponse> UpdateManageUserProfile(UserUpdateRequest request);
         Task<ApiResponse> CheckUserPhoneNumber(string PhoneNumber);
         Task<ApiResponse> UpdateUserProfile(UserUpdateRequest request);
         Task<ApiResponse> UpdateUserPhoneNumber(int UserId, string PhoneNumber);

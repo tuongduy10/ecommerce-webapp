@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.Brand;
+﻿using ECommerce.Application.Constants;
+using ECommerce.Application.Services.Brand;
 using ECommerce.Application.Services.Brand.Dtos;
 using ECommerce.Application.Services.Category;
 using ECommerce.WebApp.Models.Brand;
@@ -16,8 +17,8 @@ namespace ECommerce.WebApp.Controllers.Admin
     [Authorize(Policy = "Admin")]
     public class ManageBrandController : Controller
     {
-        private const string FILE_PATH = "images/brand";
-        private const string FILE_PREFIX = "brand_";
+        private string FILE_PATH = FilePathConstant.BRAND_FILEPATH;
+        private string FILE_PREFIX = FilePathConstant.BRAND_FILEPREFIX;
 
         private IBrandService _brandService;
         private ICategoryService _categoryService;
@@ -100,7 +101,7 @@ namespace ECommerce.WebApp.Controllers.Admin
             if (result.isSucceed)
             {
                 // Delete file
-                var previousFileName = "";
+                var previousFileName = result.Data;
                 _manageFiles.DeleteFile(previousFileName, FILE_PATH);
 
                 return Ok(result.Message);

@@ -92,6 +92,35 @@ namespace ECommerce.Application.Services.Shop
                                                     .Where(u => u.UserId == i.UserId)
                                                     .Select(u => u.UserFullName)
                                                     .FirstOrDefault(),
+                                        UserId = i.UserId == null ? 0 : (int)i.UserId
+                                    })
+                                    .ToListAsync();
+            var result = list.OrderByDescending(i => i.ShopId).ToList();
+            return result;
+        }
+        public async Task<List<ShopGetModel>> getShopListWithNoUser()
+        {
+            var list = await _DbContext.Shops
+                                    .Where(i => i.Status != 4 && 
+                                           i.Status != 2 &&
+                                           i.User == null
+                                    )
+                                    .Select(i => new ShopGetModel()
+                                    {
+                                        ShopId = i.ShopId,
+                                        ShopName = i.ShopName,
+                                        ShopPhoneNumber = i.ShopPhoneNumber,
+                                        ShopMail = i.ShopMail,
+                                        ShopAddress = i.ShopAddress,
+                                        ShopCityCode = i.ShopCityCode,
+                                        ShopDistrictCode = i.ShopDistrictCode,
+                                        ShopJoinDate = (DateTime)i.ShopJoinDate,
+                                        ShopWardCode = i.ShopWardCode,
+                                        Status = (byte)i.Status,
+                                        UserName = _DbContext.Users
+                                                    .Where(u => u.UserId == i.UserId)
+                                                    .Select(u => u.UserFullName)
+                                                    .FirstOrDefault(),
                                     })
                                     .ToListAsync();
             var result = list.OrderByDescending(i => i.ShopId).ToList();

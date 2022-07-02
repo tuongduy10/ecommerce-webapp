@@ -403,9 +403,9 @@
             processData: false,
             contentType: false,
             success: function (response) {
-                console.log(response)
+                console.log(response);
                 alert(response);
-                //location.reload();
+                window.location = "SaleProduct/ProductList";
             },
             error: function (error) {
                 console.log(error);

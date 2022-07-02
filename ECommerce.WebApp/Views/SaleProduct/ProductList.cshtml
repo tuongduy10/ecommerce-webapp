@@ -94,7 +94,9 @@
                                 <td style="white-space: nowrap;">Đã ẩn</td>
                             }
                             <td class="text-center">
-                                <a href="" style="color: var(--blue-dior);">Chi tiết</a>
+                                <a href="/SaleProduct/ProductDetail/@product.ProductId" class="mr-2">Chi tiết</a>
+
+                                <button class="btn btn-danger" onclick="deleteProduct(@product.ProductId)">Xóa</button>
                             </td>
                         </tr>
                     }
@@ -134,7 +136,6 @@
                 </div>
                 <a class="mr-2 btn btn-primary approve-product">Hiện</a>
                 <a class="mr-2 btn btn-secondary hide-product">Ẩn</a>
-                <a class="mr-2 btn btn-danger delete-product">Xóa</a>
             `);
             if (count == 0) {
                 $('.select-actions').html(``);
@@ -186,16 +187,9 @@
                 })
         }
     })
-    $(document).on('click', '.delete-product', function () {
+    function deleteProduct(id){
         if (confirm("Xác nhận xóa") == true) {
-            let ids = [];
-            $('.select-product').each(function () {
-                if ($(this).is(":checked")) {
-                    let id = $(this).val();
-                    ids.push(id);
-                }
-            });
-            $.post("/SaleProduct/ApproveProducts", { ids: ids })
+            $.post("/SaleProduct/DeleteProduct", { id: id })
                 .then(function (response) {
                     alert(response);
                     location.reload();
@@ -205,5 +199,5 @@
                     alert(error.responseText);
                 })
         }
-    })
+    }
 </script>

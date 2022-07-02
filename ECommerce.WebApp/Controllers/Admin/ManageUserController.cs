@@ -1,7 +1,9 @@
 ﻿using ECommerce.Application.Services.Role;
+using ECommerce.Application.Services.Shop;
 using ECommerce.Application.Services.User;
 using ECommerce.Application.Services.User.Dtos;
 using ECommerce.Application.Services.User.Enums;
+using ECommerce.WebApp.Models.ManageUser;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -13,9 +15,13 @@ namespace ECommerce.WebApp.Controllers.Admin
     public class ManageUserController : Controller
     {
         private IUserService _userService;
-        public ManageUserController(IUserService userService)
-        {
+        private IShopService _shopService;
+        public ManageUserController(
+            IUserService userService,
+            IShopService shopService
+        ) {
             _userService = userService;
+            _shopService = shopService;
         }
         public async Task<IActionResult> Index(UserGetRequest request)
         {
@@ -46,8 +52,23 @@ namespace ECommerce.WebApp.Controllers.Admin
         }
         public async Task<IActionResult> UserProfile(int id)
         {
-            var result = await _userService.UserProfile(id);
-            return View(result);
+            var user = await _userService.UserProfile(id);
+            var shop = await _shopService.getShopList();
+            var model = new ManageUserProfileViewModel
+            {
+                User = user,
+                Shops = shop
+            };
+            return View(model);
+        }
+        public async Task<IActionResult> UpdateUser(UserUpdateRequest request)
+        {
+            var result = await _userService.UpdateManageUserProfile(request);
+            if (result.isSucceed)
+            {
+                return Ok(result.Message);
+            }
+            return BadRequest(result.Message);
         }
     }
 }

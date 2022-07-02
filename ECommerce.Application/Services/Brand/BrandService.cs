@@ -119,24 +119,6 @@ namespace ECommerce.Application.Services.Brand
         }
         public async Task<List<BrandModel>> getAllManage()
         {
-            //var query = from category in _DbContext.Categories
-            //            join brand in _DbContext.Brands on category.CategoryId equals brand.CategoryId
-            //            orderby brand.BrandName
-            //            select new { brand, category };
-
-            //var list = await query.Select(i => new BrandModel()
-            //{
-            //    BrandId = i.brand.BrandId,
-            //    BrandName = i.brand.BrandName,
-            //    BrandImagePath = i.brand.BrandImagePath,
-            //    Status = i.brand.Status,
-            //    CreatedDate = i.brand.CreatedDate,
-            //    Highlights = i.brand.Highlights,
-            //    New = i.brand.New,
-            //    Category = i.category.CategoryName,
-            //    CategoryId = i.category.CategoryId,
-            //}).ToListAsync();
-
             var result = await _DbContext.Brands
                 .Select(i => new BrandModel()
                 {
@@ -243,7 +225,7 @@ namespace ECommerce.Application.Services.Brand
 
             return result;
         }
-        public async Task<ApiResponse> DeleteBrand(int id)
+        public async Task<Response<string>> DeleteBrand(int id)
         {
             try
             {
@@ -253,23 +235,23 @@ namespace ECommerce.Application.Services.Brand
                 var hasProduct = productCount > 0;
                 if (hasProduct)
                 {
-                    return new ApiFailResponse($"Thương hiệu này đang tồn tại { productCount } sản phẩm, không thể xóa");
+                    return new FailResponse<string>($"Thương hiệu này đang tồn tại { productCount } sản phẩm, không thể xóa");
                 }
 
                 var shopCount = await _DbContext.ShopBrands.Where(i => i.BrandId == id).CountAsync();
                 var hasShop = shopCount > 0;
                 if (hasShop)
                 {
-                    return new ApiFailResponse($"Thương hiệu đang được { shopCount } shop quản lý, không thể xóa");
+                    return new FailResponse<string>($"Thương hiệu đang được { shopCount } shop quản lý, không thể xóa");
                 }
                 _DbContext.Remove(brand);
                 _DbContext.SaveChangesAsync().Wait();
                  
-                return new ApiSuccessResponse("Xóa thành công");
+                return new SuccessResponse<string>("Xóa thành công", brand.BrandImagePath);
             }
             catch
             {
-                return new ApiSuccessResponse("Xóa thất bại");
+                return new FailResponse<string>("Xóa thất bại");
             }
         }
     }

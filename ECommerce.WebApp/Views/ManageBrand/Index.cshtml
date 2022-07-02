@@ -289,14 +289,16 @@
             })
     }
     function deleteBrand(id) {
-        $.post('/ManageBrand/DeleteBrand', { id: id })
-            .then(function (response) {
-                alert(response);
-                location.reload();
-            })
-            .catch(function (error) {
-                alert(error.responseText);
-            })
+        if (confirm("Xác nhận xóa")) {
+            $.post('/ManageBrand/DeleteBrand', { id: id })
+                .then(function (response) {
+                    alert(response);
+                    location.reload();
+                })
+                .catch(function (error) {
+                    alert(error.responseText);
+                })
+        }
     }
 </script>
 <script type="text/javascript">

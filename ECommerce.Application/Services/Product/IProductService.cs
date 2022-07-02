@@ -15,7 +15,7 @@ namespace ECommerce.Application.Services.Product
         Task<PageResult<ProductInBrandModel>> getProductInPagePaginated(ProductGetRequest request);
         Task<Price> getProductPirce(int productId, int typeId);
         Task<ApiResponse> AddProduct(ProductAddRequest request);
-        Task<ApiResponse> DeleteProduct(int id);
+        Task<Response<ProductDeleteResponse>> DeleteProduct(int id);
         Task<ApiResponse> DisableProducts(List<int> ids);
         Task<ApiResponse> ApproveProducts(List<int> ids);
     }

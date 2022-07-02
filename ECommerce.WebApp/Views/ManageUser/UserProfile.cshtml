@@ -17,14 +17,15 @@
                         <th>Địa chỉ</th>
                         <th>Email</th>
                         <th>Số điện thoại</th>
+                        <th>Cửa hàng đang quản lý</th>
                         <th>Trạng thái</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="text" class="form-control" value=" @Model.UserJoinDate.ToString("dd/MM/yyyy hh:mm:ss")" disabled /></td>
-                        <td><input type="text" class="form-control user-fullname"  value=" @Model.UserFullName" /></td>
+                        <td><input type="text" class="form-control" value=" @Model.User.UserJoinDate.ToString("dd/MM/yyyy hh:mm:ss")" disabled /></td>
+                        <td><input type="text" class="form-control user-fullname"  value=" @Model.User.UserFullName" /></td>
                         <td>
                             <select name="" id="" class="user-city form-control mb-2">
                                 <option value="" disabled selected>Tỉnh/Thành...</option>
@@ -32,15 +33,46 @@
                             <select name="" id="" class="user-district form-control mb-2">
                                 <option value="" disabled selected>Quận/Huyện...</option>
                             </select>
-                            <select name="" id="" class="user-ward form-control">
+                            <select name="" id="" class="user-ward form-control mb-2">
                                 <option value="" disabled selected>Phường/Xã...</option>
                             </select>
-                            <input type="text" class="form-control mb-2" value="@Model.UserAddress" />
+                            <input type="text" class="form-control user-address mb-2" value="@Model.User.UserAddress" />
                         </td>
-                        <td><input type="text" class="form-control user-mail" value="@Model.UserMail" /></td>
-                        <td><input type="text" class="form-control user-phone" value="@Model.UserPhone" /></td>
+                        <td><input type="text" class="form-control user-mail" value="@Model.User.UserMail" /></td>
+                        <td><input type="text" class="form-control user-phone" value="@Model.User.UserPhone" /></td>
                         <td>
-                            @if (Model.Status == true)
+                            <div class="form-group">
+                                @*<label>Thương hiệu quản lý</label>*@
+                                <div class="dropdown mb-2 mr-2">
+                                    <button class="btn border dropdown-toggle brand_select-text" type="button" data-toggle="dropdown">
+                                        Cửa hàng
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu px-2" style="max-height: 300px; overflow: auto;">
+                                        <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm..." autocomplete="off" />
+                                        @foreach (var item in Model.Shops)
+                                        {
+                                            if (item.UserId == Model.User.UserId)
+                                            {
+                                                <li class="d-flex align-items-center">
+                                                    <input name="shop" class="shop_select mr-2" id="shop_@item.ShopId" type="checkbox" value="@item.ShopId" checked>
+                                                    <label class="mb-0" for="shop_@item.ShopId">@item.ShopName</label>
+                                                </li>
+                                            }
+                                            else
+                                            {
+                                                <li class="d-flex align-items-center">
+                                                    <input name="shop" class="shop_select mr-2" id="shop_@item.ShopId" type="checkbox" value="@item.ShopId">
+                                                    <label class="mb-0" for="shop_@item.ShopId">@item.ShopName</label>
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            @if (Model.User.Status == true)
                             {
                                 <p class="text-success">Đã xác thực</p>
                             }
@@ -51,14 +83,14 @@
                         </td>
                         <td>
                             <div class="text-center d-flex align-items-center">
-                                <button class="btn btn-primary mr-2">Cập nhật</button>
-                                @if (Model.Status == false)
+                                <button class="btn btn-primary mr-2 update-user">Cập nhật</button>
+                                @if (Model.User.Status == false)
                                 {
-                                    <button class="btn btn-success" onclick="unblockUser(@Model.UserId)">Mở khóa</button>
+                                    <button class="btn btn-success" onclick="unblockUser(@Model.User.UserId)">Mở khóa</button>
                                 }
                                 else
                                 {
-                                    <button class="btn btn-danger" onclick="blockUser(@Model.UserId)">Khóa</button>
+                                    <button class="btn btn-danger" onclick="blockUser(@Model.User.UserId)">Khóa</button>
                                 }
                             </div>
                         </td>
@@ -70,5 +102,34 @@
 </div>
 <script src="~/js/main/provinces-rendering.js"></script>
 <script>
-    renderAddressSelect('@Model.UserCityCode', '@Model.UserDistrictCode', '@Model.UserWardCode');
+    renderAddressSelect('@Model.User.UserCityCode', '@Model.User.UserDistrictCode', '@Model.User.UserWardCode');
+</script>
+<script>
+    $(".update-user").click(function () {
+        var shopIds = [];
+        $(".shop_select").each(function () {
+            if ($(this).is(":checked")) {
+                shopIds.push($(this).val());
+            }
+        })
+        var request = {
+            UserId: @Model.User.UserId,
+            UserFullName: $('.user-fullname').val(),
+            UserMail: $('.user-mail').val(),
+            UserPhone: $('.user-phone').val(),
+            UserAddress: $('.user-address').val(),
+            UserWardCode: $('.user-ward').val(),
+            UserDistrictCode: $('.user-district').val(),
+            UserCityCode: $('.user-city').val(),
+            ShopIds: shopIds
+        };
+        $.post("/ManageUser/UpdateUser", request)
+            .then(function (response) {
+                alert(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert(error.responseText);
+            })
+    })
 </script>

@@ -227,6 +227,66 @@ namespace ECommerce.Application.Services.User
 
             return new ApiFailResponse("Cập nhật không thành công");
         }
+        public async Task<ApiResponse> UpdateManageUserProfile(UserUpdateRequest request)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.UserFullName)) return new ApiFailResponse("Họ tên không thể để trống");
+
+                var user = await _DbContext.Users
+                                .Where(i => i.UserId == request.UserId)
+                                .FirstOrDefaultAsync();
+
+                if (!string.IsNullOrEmpty(request.UserFullName)) user.UserFullName = request.UserFullName.Trim();
+
+                user.UserMail = null;
+                if (!string.IsNullOrEmpty(request.UserMail))
+                {
+                    var checkMail = await _DbContext.Users.Where(i => i.UserMail == request.UserMail.Trim() && i.UserId != request.UserId).FirstOrDefaultAsync();
+                    if (checkMail != null) return new ApiFailResponse("Mail đã tồn tại");
+                    user.UserMail = request.UserMail.Trim();
+                }
+
+                user.UserPhone = null;
+                if (!string.IsNullOrEmpty(request.UserPhone))
+                {
+                    var checkPhone = await _DbContext.Users.Where(i => i.UserPhone == request.UserPhone.Trim() && i.UserId != request.UserId).FirstOrDefaultAsync();
+                    if (checkPhone != null) return new ApiFailResponse("Số điện thoại đã tồn tại");
+                    user.UserPhone = request.UserPhone.Trim();
+                }
+
+                user.UserAddress = null;
+                if (!string.IsNullOrEmpty(request.UserAddress)) user.UserAddress = request.UserAddress.Trim();
+                if (!string.IsNullOrEmpty(request.UserWardCode)) user.UserWardCode = request.UserWardCode.Trim();
+                if (!string.IsNullOrEmpty(request.UserDistrictCode)) user.UserDistrictCode = request.UserDistrictCode.Trim();
+                if (!string.IsNullOrEmpty(request.UserCityCode)) user.UserCityCode = request.UserCityCode.Trim();
+
+                var shops = await _DbContext.Shops.Where(i => i.UserId == request.UserId).ToListAsync();
+                if (shops.Count > 0)
+                {
+                    foreach (var shop in shops)
+                    {
+                        shop.UserId = null;
+                    }
+                }
+                if (request.ShopIds != null)
+                {
+                    foreach (var id in request.ShopIds)
+                    {
+                        var shop = await _DbContext.Shops.Where(i => i.ShopId == id).FirstOrDefaultAsync();
+                        shop.UserId = request.UserId;
+                    }
+                }
+
+                await _DbContext.SaveChangesAsync();
+
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            catch (Exception error)
+            {
+                return new ApiFailResponse("Có lỗi xảy ra, thử lại sau: " + error.Message);
+            }
+        }
         public async Task<ApiResponse> UpdateUserPhoneNumber(int UserId, string PhoneNumber)
         {
             if (string.IsNullOrEmpty(PhoneNumber)) return new ApiFailResponse("Số điện thoại không được để trống");
