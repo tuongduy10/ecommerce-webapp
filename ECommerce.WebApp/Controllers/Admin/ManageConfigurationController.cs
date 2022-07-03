@@ -1,7 +1,9 @@
-﻿using ECommerce.Application.Services.Bank;
+﻿using ECommerce.Application.Constants;
+using ECommerce.Application.Services.Bank;
 using ECommerce.Application.Services.Configurations;
 using ECommerce.WebApp.Models.Configurations.Footer;
 using ECommerce.WebApp.Models.Configurations.Header;
+using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -21,7 +23,13 @@ namespace ECommerce.WebApp.Controllers.Admin
         private IHeaderService _headerService;
         private IConfigurationService _configurationService;
         private IBankService _bankService;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private ManageFiles _manageFiles;
+        private const string BANNER_FILEPATH = FilePathConstant.BANNER_FILEPATH;
+        private const string BANNER_FILEPREFIX = FilePathConstant.BANNER_FILEPREFIX;
+        private const string LOGO_FILEPATH = FilePathConstant.LOGO_FILEPATH;
+        private const string LOGO_FILEPREFIX = FilePathConstant.LOGO_FILEPREFIX;
+        private const string FAVICON_FILEPATH = FilePathConstant.FAVICON_FILEPATH;
+        private const string FAVICON_FILEPREFIX = FilePathConstant.FAVICON_FILEPREFIX;
         public ManageConfigurationController(IFooterService footerService, 
                                             IConfigurationService configurationService, 
                                             IBankService bankService, 
@@ -32,7 +40,7 @@ namespace ECommerce.WebApp.Controllers.Admin
             _configurationService = configurationService;
             _bankService = bankService;
             _headerService = headerService;
-            _webHostEnvironment = webHostEnvironment;
+            _manageFiles = new ManageFiles(webHostEnvironment);
         }
         public async Task<IActionResult> ManageHeader()
         {
@@ -82,26 +90,29 @@ namespace ECommerce.WebApp.Controllers.Admin
                 ViewBag.Message = "Vui lòng chọn thêm ảnh";
                 return RedirectToAction("ManageHeader", "ManageConfiguration");
             }
-            string fileName = Guid.NewGuid().ToString() + new FileInfo(image.FileName).Extension;
+            string fileName = _manageFiles.GetFileName(image, LOGO_FILEPREFIX);
             var result = await _headerService.updateLogo(fileName);
             if (result.isSucceed)
             {
-                string logoFolderStorage = Path.Combine(_webHostEnvironment.WebRootPath, "images/logo");
-                string faviconFolderStorage = Path.Combine(_webHostEnvironment.WebRootPath, "images/favicon");
+                _manageFiles.DeleteAllFiles(LOGO_FILEPATH);
+                _manageFiles.AddFile(image, fileName, LOGO_FILEPATH);
+            }
 
-                DirectoryInfo logoDirectory = new DirectoryInfo(logoFolderStorage);
-                DirectoryInfo faviconDirectory = new DirectoryInfo(faviconFolderStorage);
-
-                // Delete all previous logo and favicon
-                foreach (FileInfo file in logoDirectory.GetFiles()) file.Delete();
-                foreach (FileInfo file in faviconDirectory.GetFiles()) file.Delete();
-
-                // Add new logo
-                string logoPath = Path.Combine(logoFolderStorage, fileName);
-                string faviconPath = Path.Combine(faviconFolderStorage, fileName);
-
-                using (var fileStream = new FileStream(logoPath, FileMode.Create)) image.CopyTo(fileStream);
-                using (var fileStream = new FileStream(faviconPath, FileMode.Create)) image.CopyTo(fileStream);
+            return RedirectToAction("ManageHeader", "ManageConfiguration");
+        }
+        public async Task<IActionResult> UpdateFavicon(IFormFile image)
+        {
+            if (image == null)
+            {
+                ViewBag.Message = "Vui lòng chọn thêm ảnh";
+                return RedirectToAction("ManageHeader", "ManageConfiguration");
+            }
+            string fileName = _manageFiles.GetFileName(image, FAVICON_FILEPREFIX);
+            var result = await _headerService.updateFavicon(fileName);
+            if (result.isSucceed)
+            {
+                _manageFiles.DeleteAllFiles(FAVICON_FILEPATH);
+                _manageFiles.AddFile(image, fileName, FAVICON_FILEPATH);
             }
 
             return RedirectToAction("ManageHeader", "ManageConfiguration");
@@ -113,24 +124,13 @@ namespace ECommerce.WebApp.Controllers.Admin
                 ViewBag.Message = "Vui lòng chọn thêm ảnh";
                 return RedirectToAction("ManageHeader", "ManageConfiguration");
             }
-            var listName = new List<string>();
-            for (int i = 0; i < images.Count; i++)
-            {
-                listName.Add(Guid.NewGuid().ToString() + new FileInfo(images[i].FileName).Extension);
-            }
+
+            var listName = _manageFiles.GetFilesName(images, BANNER_FILEPREFIX);
             var result = await _headerService.addBanner(listName);
             if (result.isSucceed)
             {
                 // Save images to folder
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images/banner");
-                for (int i = 0; i < images.Count; i++)
-                {
-                    string filePath = Path.Combine(uploadsFolder, listName[i]);
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        images[i].CopyTo(fileStream);
-                    }
-                }
+                _manageFiles.AddFiles(images, listName, BANNER_FILEPATH);
             }
             ViewBag.Message = result.Message;
             return RedirectToAction("ManageHeader", "ManageConfiguration");

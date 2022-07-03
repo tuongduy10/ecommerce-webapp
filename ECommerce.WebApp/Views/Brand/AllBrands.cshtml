@@ -33,10 +33,10 @@
                             {
                                 if (listDist[i] == item.BrandName.Substring(0, 1))
                                 {
-                                    <div class="bran__list-item card">
-                                        <a href="">
-                                            <div class="bran__list-img py-2 px-4">
-                                                <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" class="card-img-top" alt="@item.BrandName">
+                                    <div class="bran__list-item card" style="border: .5px solid #ddd; padding: 12px;">
+                                        <a href="@Url.Action("ProductInBrand","Product", new { @BrandId = item.BrandId, @PageIndex = 1})">
+                                            <div class="border bran__list-img d-flex align-items-center justify-content-between py-2 px-4 mx-auto" style="background-color: #fff;">
+                                                <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" class="mw-100 mh-100 mx-auto" alt="@item.BrandName">
                                             </div>
                                             <div class="card-body text-center p-2 align-items-center justify-content-center">
                                                 <h5 class="bran__list-name card-title mb-0">@item.BrandName</h5>

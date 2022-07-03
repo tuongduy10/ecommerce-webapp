@@ -17,6 +17,9 @@ namespace ECommerce.Application.Constants
         public const string RATE_FILEPATH = "images/rates";
         public const string RATE_FILEPREFIX = "rate_";
 
+        public const string FAVICON_FILEPATH = "images/favicon";
+        public const string FAVICON_FILEPREFIX = "favicon_";
+
         public const string LOGO_FILEPATH = "images/logo";
         public const string LOGO_FILEPREFIX = "logo_";
 

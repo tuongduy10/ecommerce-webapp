@@ -202,6 +202,25 @@ namespace ECommerce.Application.Services.Brand
 
             return list;
         }
+        public async Task<List<BrandModel>> getBrandsByShop(int id)
+        {
+            var list = await _DbContext.ShopBrands
+                    .Where(i => i.ShopId == id)
+                    .Select(i => new BrandModel()
+                    {
+                        BrandId = i.Brand.BrandId,
+                        BrandName = i.Brand.BrandName,
+                        BrandImagePath = i.Brand.BrandImagePath,
+                        Status = i.Brand.Status,
+                        CreatedDate = i.Brand.CreatedDate,
+                        Highlights = i.Brand.Highlights,
+                        New = i.Brand.New,
+                        Category = i.Brand.Category.CategoryName,
+                        CategoryId = i.Brand.Category.CategoryId
+                    })
+                    .ToListAsync();
+            return list;
+        }
         public async Task<BrandModel> getBrandById(int BrandId)
         {
             var query = from category in _DbContext.Categories

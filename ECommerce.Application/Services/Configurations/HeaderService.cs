@@ -80,11 +80,27 @@ namespace ECommerce.Application.Services.Configurations
                 config.LogoPath = path;
                 config.FaviconPath = path;
                 await _DbContext.SaveChangesAsync();
-                return new ApiSuccessResponse("Thêm thành công");
+                return new ApiSuccessResponse("Cập nhật thành công");
             }
             catch
             {
-                return new ApiFailResponse("Thêm thất bại");
+                return new ApiFailResponse("Cập nhật thất bại");
+            }
+        }
+        public async Task<ApiResponse> updateFavicon(string path)
+        {
+            try
+            {
+                var config = await _DbContext.Configurations
+                                        .Where(i => i.Id == 1)
+                                        .FirstOrDefaultAsync();
+                config.FaviconPath = path;
+                await _DbContext.SaveChangesAsync();
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Cập nhật thất bại");
             }
         }
         public async Task<ApiResponse> addBanner(List<string> listName)

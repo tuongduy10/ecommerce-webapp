@@ -10,6 +10,7 @@ namespace ECommerce.Application.Services.Product.Dtos
     public class ProductAddRequest
     {
         // None relationship data
+        public int shopId { get; set; }
         public string name{ get;set; }
         public string description { get; set; }
         public string note { get; set; }

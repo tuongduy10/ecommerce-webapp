@@ -36,6 +36,12 @@ namespace ECommerce.WebApp.Utils
                 file.CopyTo(fileStream);
             }
         }
+        public void DeleteAllFiles(string path)
+        {
+            string pathInfo = Path.Combine(_webHostEnvironment.WebRootPath, path);
+            DirectoryInfo directInfo = new DirectoryInfo(pathInfo);
+            foreach (FileInfo file in directInfo.GetFiles()) file.Delete();
+        }
         public void DeleteFiles(List<string> fileNames, string path)
         {
             string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, path);

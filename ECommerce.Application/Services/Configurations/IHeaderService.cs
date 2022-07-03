@@ -13,5 +13,6 @@ namespace ECommerce.Application.Services.Configurations
         Task<ApiResponse> addBanner(List<string> listName);
         Task<ApiResponse> deleteBanner(int id);
         Task<ApiResponse> updateLogo(string path);
+        Task<ApiResponse> updateFavicon(string path);
     }
 }

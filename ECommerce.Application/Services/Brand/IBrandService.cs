@@ -19,5 +19,6 @@ namespace ECommerce.Application.Services.Brand
         Task<List<BrandModel>> getAllBrandInCategory(int CategoryId);
         Task<List<BrandModel>> getAllBrandInShop(int userId);
         Task<Response<string>> DeleteBrand(int id);
+        Task<List<BrandModel>> getBrandsByShop(int id);
     }
 }

@@ -2,6 +2,7 @@
 using ECommerce.Application.Services.Brand;
 using ECommerce.Application.Services.Product;
 using ECommerce.Application.Services.Product.Dtos;
+using ECommerce.Application.Services.Shop;
 using ECommerce.Application.Services.SubCategory;
 using ECommerce.WebApp.Models.SaleProduct;
 using ECommerce.WebApp.Utils;
@@ -24,17 +25,22 @@ namespace ECommerce.WebApp.Controllers.Seller
         private IProductService _productService;
         private ISubCategoryService _subCategoryService;
         private IBrandService _brandService;
-        private IWebHostEnvironment _webHostEnvironment;
+        private IShopService _shopService;
         private ManageFiles _manageFiles;
         private string FILE_PATH = FilePathConstant.PRODUCT_FILEPATH;
         private string FILE_PREFIX = FilePathConstant.PRODUCT_FILEPREFIX;
-        public SaleProductController(IProductService productService, ISubCategoryService subCategoryService, IBrandService brandService, IWebHostEnvironment webHostEnvironment)
+        public SaleProductController(
+            IProductService productService,
+            IShopService shopService,
+            ISubCategoryService subCategoryService, 
+            IBrandService brandService, 
+            IWebHostEnvironment webHostEnvironment)
         {
-            _webHostEnvironment = webHostEnvironment;
             _productService = productService;
             _subCategoryService = subCategoryService;
             _brandService = brandService;
             _manageFiles = new ManageFiles(webHostEnvironment);
+            _shopService = shopService;
         }
         public IActionResult Index()
         {

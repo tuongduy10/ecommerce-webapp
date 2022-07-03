@@ -104,10 +104,33 @@
                 </div>
             </div>
 
+            <div class="mb-2">Favicon</div>
+            <div class="mb-2">
+                <label for="favicon" class="input-tile mb-2">
+                    <div class="d-flex align-items-center">
+                        <a class="upload btn btn-secondary">Chọn ảnh</a>
+                        <div></div>
+                    </div>
+                </label>
+                <input id="favicon" type="file" hidden>
+            </div>
+            <div class="border mb-2" style="height: 300px; width: 300px;">
+                <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
+                    <img id="favicon-preview" class="mw-100 mh-100" src="@(Configuration["ImagePath:Favicon"] + Model.config.FaviconPath)" alt="">
+                </div>
+            </div>
+            <div class="text-right">
+                <button class="btn btn-primary" onclick="updateFavicon()">Cập nhật</button>
+            </div>
 
             <div class="mb-2">Logo</div>
             <div class="mb-2">
-                <label class="btn btn-secondary" for="logo">Chọn ảnh</label>
+                <label for="logo" class="input-tile mb-2">
+                    <div class="d-flex align-items-center">
+                        <a class="upload btn btn-secondary">Chọn ảnh</a>
+                        <div>(Kích thước ảnh: 700 x 200 px)</div>
+                    </div>
+                </label>
                 <input id="logo" type="file" hidden>
             </div>
             <div class="border mb-2" style="height: 300px; width: 300px;">
@@ -169,24 +192,11 @@
         var src = window.URL.createObjectURL(this.files[0])
         document.getElementById('logo-preview').src = src
     })
-    function addLogo() {
-        var formData = new FormData();
-        formData.append('image', $("#logo")[0].files[0])
-        $.ajax({
-            type: "POST",
-            url: "/ManageConfiguration/AddLogo",
-            data: formData, // In the controller it receives IFormFile image
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                alert("Thêm thành công");
-                location.reload();
-            },
-            error: function (errorMessage) {
-                console.log(errorMessage);
-            }
-        });
-    }
+    $('#favicon').change(function () {
+        var src = window.URL.createObjectURL(this.files[0])
+        document.getElementById('favicon-preview').src = src
+    })
+    
     document.querySelectorAll('.remove-upload').forEach(item => {
         item.addEventListener('click', event => {
             item.parentElement.parentElement.remove();
@@ -254,6 +264,44 @@
         }
     }
 
+    function addLogo() {
+        var formData = new FormData();
+        formData.append('image', $("#logo")[0].files[0])
+        $.ajax({
+            type: "POST",
+            url: "/ManageConfiguration/AddLogo",
+            data: formData, // In the controller it receives IFormFile image
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                alert("Thêm thành công");
+                location.reload();
+            },
+            error: function (errorMessage) {
+                console.log(errorMessage);
+                alert(errorMessage.responseText);
+            }
+        });
+    }
+    function updateFavicon() {
+        var formData = new FormData();
+        formData.append('image', $("#favicon")[0].files[0])
+        $.ajax({
+            type: "POST",
+            url: "/ManageConfiguration/UpdateFavicon",
+            data: formData, // In the controller it receives IFormFile image
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                alert("Cập nhật thành công");
+                location.reload();
+            },
+            error: function (error) {
+                console.log(error);
+                alert(error.responseText)
+            }
+        });
+    }
     function updateHeaderMenu(id) {
         var pos = $(`.header_position-${id}`).val();
         var name = $(`.header_name-${id}`).val();
@@ -350,4 +398,5 @@
             return;
         }
     }
+
 </script>

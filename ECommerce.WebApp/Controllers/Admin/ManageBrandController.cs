@@ -108,5 +108,11 @@ namespace ECommerce.WebApp.Controllers.Admin
             }
             return BadRequest(result.Message);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetBrandsByShop(int id)
+        {
+            var list = await _brandService.getBrandsByShop(id);
+            return Ok(list);
+        }
     }
 }

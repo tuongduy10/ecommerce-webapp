@@ -29,6 +29,5 @@ namespace ECommerce.WebApp.API
             var list = await _brandService.getAllBrandInCategory(id);
             return Ok(new { status = "success", data = list });
         }
-
     }
 }

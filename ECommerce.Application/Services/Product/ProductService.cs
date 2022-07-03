@@ -377,7 +377,7 @@ namespace ECommerce.Application.Services.Product
         public async Task<ApiResponse> AddProduct(ProductAddRequest request)
         {
             if(string.IsNullOrEmpty(request.name)) return new ApiFailResponse("Vui lòng nhập tên sản phẩm");
-            if (request.priceAvailable == null && request.pricePreorder == null)
+            if(request.priceAvailable == null && request.pricePreorder == null)
             {
                 return new ApiFailResponse("Vui lòng nhập giá sản phẩm");
             }
@@ -386,6 +386,10 @@ namespace ECommerce.Application.Services.Product
             {
                 var userRole = await _userService.getUserRole(request.userId);
                 var shopId = await _DbContext.Shops.Where(i => i.UserId == request.userId).Select(i => i.ShopId).FirstOrDefaultAsync();
+                
+                
+                shopId = request.shopId;
+                
                 /*
                  * None relationship data
                  */

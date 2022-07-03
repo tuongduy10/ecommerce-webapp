@@ -126,6 +126,34 @@ namespace ECommerce.Application.Services.Shop
             var result = list.OrderByDescending(i => i.ShopId).ToList();
             return result;
         }
+        public async Task<List<ShopGetModel>> getShopListBySystemUserAccount()
+        {
+            var list = await _DbContext.Shops
+                                    .Where(i => i.Status != 4 &&
+                                           i.Status != 2 &&
+                                           (i.User.isSystemAccount == true || i.UserId == null)
+                                    )
+                                    .Select(i => new ShopGetModel()
+                                    {
+                                        ShopId = i.ShopId,
+                                        ShopName = i.ShopName,
+                                        ShopPhoneNumber = i.ShopPhoneNumber,
+                                        ShopMail = i.ShopMail,
+                                        ShopAddress = i.ShopAddress,
+                                        ShopCityCode = i.ShopCityCode,
+                                        ShopDistrictCode = i.ShopDistrictCode,
+                                        ShopJoinDate = (DateTime)i.ShopJoinDate,
+                                        ShopWardCode = i.ShopWardCode,
+                                        Status = (byte)i.Status,
+                                        UserName = _DbContext.Users
+                                                    .Where(u => u.UserId == i.UserId)
+                                                    .Select(u => u.UserFullName)
+                                                    .FirstOrDefault(),
+                                    })
+                                    .ToListAsync();
+            var result = list.OrderByDescending(i => i.ShopId).ToList();
+            return result;
+        }
         public async Task<List<ShopGetModel>> getUnconfirmedShop()
         {
             var result = await _DbContext.Shops
@@ -275,32 +303,38 @@ namespace ECommerce.Application.Services.Shop
         {
             try
             {
+                if (string.IsNullOrEmpty(request.name)) return new ApiFailResponse("Tên không được để trống");
+                if (string.IsNullOrEmpty(request.phone)) return new ApiFailResponse("Số điện thoại không được để trống");
+
                 var shop = await _DbContext.Shops.Where(i => i.ShopId == request.id).FirstOrDefaultAsync();
                 if (shop == null) return new ApiFailResponse("Shop không tồn tại");
                 
-                if (shop.ShopName != request.name.Trim())
+                if (shop.ShopName != request.name)
                 {
-                    var hasName = await _DbContext.Shops.Where(i => i.ShopName == request.name.Trim()).FirstOrDefaultAsync() != null;
+                    var hasName = await _DbContext.Shops.Where(i => i.ShopName == request.name).FirstOrDefaultAsync() != null;
                     if (hasName) return new ApiFailResponse("Tên đã tồn tại");
                 }
-                if (shop.ShopPhoneNumber != request.phone.Trim())
+                if (shop.ShopPhoneNumber != request.phone)
                 {
-                    var hasPhone = await _DbContext.Shops.Where(i => i.ShopPhoneNumber == request.phone.Trim()).FirstOrDefaultAsync() != null;
+                    var hasPhone = await _DbContext.Shops.Where(i => i.ShopPhoneNumber == request.phone).FirstOrDefaultAsync() != null;
                     if (hasPhone) return new ApiFailResponse("Số điện thoại đã tồn tại");
                 }
-                if (shop.ShopMail != request.mail.Trim())
+                if (shop.ShopMail != request.mail)
                 {
-                    var hasMail = await _DbContext.Shops.Where(i => i.ShopMail == request.mail.Trim()).FirstOrDefaultAsync() != null;
+                    var hasMail = await _DbContext.Shops.Where(i => i.ShopMail == request.mail).FirstOrDefaultAsync() != null;
                     if (hasMail) return new ApiFailResponse("Mail đã tồn tại");
                 }
-                
-                shop.ShopName = request.name.Trim();
-                shop.ShopPhoneNumber = request.phone.Trim();
-                shop.ShopMail = request.mail.Trim();
-                shop.ShopAddress = request.address.Trim();
-                shop.ShopCityCode = request.cityCode.Trim();
-                shop.ShopDistrictCode = request.districtCode.Trim();
-                shop.ShopWardCode = request.wardCode.Trim();
+
+                shop.ShopName = request.name;
+                shop.ShopPhoneNumber = request.phone;
+
+                shop.ShopMail = null;
+                if(!string.IsNullOrEmpty(shop.ShopMail)) shop.ShopMail = request.mail;
+                shop.ShopAddress = null;
+                if(!string.IsNullOrEmpty(shop.ShopAddress)) shop.ShopAddress = request.address;
+                shop.ShopCityCode = request.cityCode;
+                shop.ShopDistrictCode = request.districtCode;
+                shop.ShopWardCode = request.wardCode;
                 shop.Tax = (byte?)request.tax;
                 await _DbContext.SaveChangesAsync();
 
@@ -308,20 +342,24 @@ namespace ECommerce.Application.Services.Shop
                 // Add new if not exist
                 if (bank == null)
                 {
-                    var newBank = new Data.Models.ShopBank {
-                        ShopAccountName = request.shopbank.ShopAccountName.Trim(),
-                        ShopBankName = request.shopbank.ShopBankName.Trim(),
-                        ShopAccountNumber = request.shopbank.ShopAccountNumber.Trim(),
-                        ShopId = shop.ShopId,
-                    };
-                    await _DbContext.ShopBanks.AddAsync(newBank);
+                    if(request.shopbank.ShopAccountName != null && request.shopbank.ShopBankName != null && request.shopbank.ShopAccountNumber != null)
+                    {
+                        var newBank = new Data.Models.ShopBank
+                        {
+                            ShopAccountName = request.shopbank.ShopAccountName,
+                            ShopBankName = request.shopbank.ShopBankName,
+                            ShopAccountNumber = request.shopbank.ShopAccountNumber,
+                            ShopId = shop.ShopId,
+                        };
+                        await _DbContext.ShopBanks.AddAsync(newBank);
+                    }
                 }
                 // Update if it exist
                 else
                 {
-                    bank.ShopAccountName = request.shopbank.ShopAccountName.Trim();
-                    bank.ShopBankName = request.shopbank.ShopBankName.Trim();
-                    bank.ShopAccountNumber = request.shopbank.ShopAccountNumber.Trim();
+                    bank.ShopAccountName = request.shopbank.ShopAccountName;
+                    bank.ShopBankName = request.shopbank.ShopBankName;
+                    bank.ShopAccountNumber = request.shopbank.ShopAccountNumber;
                 }
                 await _DbContext.SaveChangesAsync();
 

@@ -1,13 +1,14 @@
-﻿using ECommerce.Application.Services.Bank;
+﻿using ECommerce.Application.Constants;
+using ECommerce.Application.Services.Bank;
 using ECommerce.Application.Services.Bank.Dtos;
 using ECommerce.Application.Services.Configurations;
 using ECommerce.Application.Services.Configurations.Dtos;
 using ECommerce.Application.Services.Configurations.Dtos.Footer;
 using ECommerce.Application.Services.Configurations.Dtos.Header;
+using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.APIs.Admin
@@ -21,8 +22,9 @@ namespace ECommerce.WebApp.APIs.Admin
         private IConfigurationService _configurationService;
         private IFooterService _footerService;
         private IBankService _bankService;
-        private IWebHostEnvironment _webHostEnvironment;
+        private ManageFiles _manageFiles;
         private IHeaderService _headerService;
+        private const string BANNER_FILEPATH = FilePathConstant.BANNER_FILEPATH;
         public ManageConfigurationsAPI(IConfigurationService configurationService,
                                         IFooterService footerService,
                                         IBankService bankService,
@@ -33,7 +35,7 @@ namespace ECommerce.WebApp.APIs.Admin
             _configurationService = configurationService;
             _footerService = footerService;
             _bankService = bankService;
-            _webHostEnvironment = webHostEnvironment;
+            _manageFiles = new ManageFiles(webHostEnvironment);
         }
         [HttpPost("AddBlog")]
         public async Task<IActionResult> AddBlog(BlogModel request)
@@ -131,10 +133,7 @@ namespace ECommerce.WebApp.APIs.Admin
             var result = await _headerService.deleteBanner(banner.BannerId);
             if (result.isSucceed)
             {
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images/banner");
-                string filePath = Path.Combine(uploadsFolder, banner.BannerPath);
-                System.IO.File.Delete(filePath);
-
+                _manageFiles.DeleteFile(banner.BannerPath, BANNER_FILEPATH);
                 return Ok(result);
             }
 
