@@ -41,9 +41,8 @@ namespace ECommerce.WebApp.Controllers.Admin
         [HttpPost]
         public async Task<IActionResult> AddSeller(SignUpRequest request)
         {
-            request.RoleId = (int)enumRole.Seller;
             request.isSystemAccount = true;
-            var result = await _userService.SignUp(request);
+            var result = await _userService.AddSeller(request);
             if (result.isSucceed)
             {
                 return Ok(result.Message);

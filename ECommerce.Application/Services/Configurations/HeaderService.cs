@@ -78,7 +78,6 @@ namespace ECommerce.Application.Services.Configurations
                                         .Where(i => i.Id == 1)
                                         .FirstOrDefaultAsync();
                 config.LogoPath = path;
-                config.FaviconPath = path;
                 await _DbContext.SaveChangesAsync();
                 return new ApiSuccessResponse("Cập nhật thành công");
             }

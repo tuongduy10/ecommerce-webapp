@@ -3,6 +3,7 @@ using ECommerce.Application.Services.Brand;
 using ECommerce.Application.Services.Product;
 using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.Shop;
+using ECommerce.Application.Services.SubCategory;
 using ECommerce.WebApp.Models.SaleProduct;
 using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -25,6 +26,7 @@ namespace ECommerce.WebApp.Controllers.Admin
         private IProductService _productService;
         private IBrandService _brandService;
         private IShopService _shopService;
+        private ISubCategoryService _subCategoryService;
         private ManageFiles _manageFiles;
         private string FILE_PATH = FilePathConstant.PRODUCT_FILEPATH;
         private string FILE_PREFIX = FilePathConstant.PRODUCT_FILEPREFIX;
@@ -32,12 +34,23 @@ namespace ECommerce.WebApp.Controllers.Admin
             IProductService productService,
             IBrandService brandService,
             IShopService shopService,
-            IWebHostEnvironment webHostEnvironment)
-        {
+            IWebHostEnvironment webHostEnvironment,
+            ISubCategoryService subCategoryService
+        ) {
             _productService = productService;
             _brandService = brandService;
             _shopService = shopService;
+            _subCategoryService = subCategoryService;
             _manageFiles = new ManageFiles(webHostEnvironment);
+        }
+        public async Task<IActionResult> ProductList(int subCategoryId = 0)
+        {
+            var model = new ProductListViewModel()
+            {
+                products = await _productService.getAll(subCategoryId),
+                subCategories = await _subCategoryService.getAll(),
+            };
+            return View(model);
         }
         [HttpGet]
         public async Task<IActionResult> AddProduct()
@@ -61,10 +74,10 @@ namespace ECommerce.WebApp.Controllers.Admin
                 return BadRequest("Vui lòng chọn ảnh");
             }
 
+            request.userId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
             // Get files name
             request.systemFileName = _manageFiles.GetFilesName(request.systemImage, FILE_PREFIX);
             request.userFileName = _manageFiles.GetFilesName(request.userImage, FILE_PREFIX);
-            request.userId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
             // Result 
             var result = await _productService.AddProduct(request);
             if (result.isSucceed)

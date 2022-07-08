@@ -139,7 +139,7 @@
                 </div>
             </div>
             <div class="text-right">
-                <button class="btn btn-primary" onclick="addLogo()">Cập nhật</button>
+                <button class="btn btn-primary" onclick="updateLogo()">Cập nhật</button>
             </div>
 
 
@@ -264,7 +264,7 @@
         }
     }
 
-    function addLogo() {
+    function updateLogo() {
         var formData = new FormData();
         formData.append('image', $("#logo")[0].files[0])
         $.ajax({
@@ -274,8 +274,7 @@
             processData: false,
             contentType: false,
             success: function (data) {
-                alert("Thêm thành công");
-                location.reload();
+                alert("Cập nhật thành công");
             },
             error: function (errorMessage) {
                 console.log(errorMessage);
@@ -294,7 +293,6 @@
             contentType: false,
             success: function (data) {
                 alert("Cập nhật thành công");
-                location.reload();
             },
             error: function (error) {
                 console.log(error);

@@ -309,32 +309,39 @@ namespace ECommerce.Application.Services.Shop
                 var shop = await _DbContext.Shops.Where(i => i.ShopId == request.id).FirstOrDefaultAsync();
                 if (shop == null) return new ApiFailResponse("Shop không tồn tại");
                 
-                if (shop.ShopName != request.name)
+                if (shop.ShopName != request.name.Trim()) // required
                 {
                     var hasName = await _DbContext.Shops.Where(i => i.ShopName == request.name).FirstOrDefaultAsync() != null;
                     if (hasName) return new ApiFailResponse("Tên đã tồn tại");
+                    shop.ShopName = request.name.Trim(); 
                 }
-                if (shop.ShopPhoneNumber != request.phone)
+                if (shop.ShopPhoneNumber != request.phone.Trim()) // required
                 {
-                    var hasPhone = await _DbContext.Shops.Where(i => i.ShopPhoneNumber == request.phone).FirstOrDefaultAsync() != null;
+                    var hasPhone = await _DbContext.Shops.Where(i => i.ShopPhoneNumber == request.phone.Trim() && i.ShopId != request.id).FirstOrDefaultAsync() != null;
                     if (hasPhone) return new ApiFailResponse("Số điện thoại đã tồn tại");
+                    shop.ShopPhoneNumber = request.phone.Trim();
                 }
-                if (shop.ShopMail != request.mail)
-                {
-                    var hasMail = await _DbContext.Shops.Where(i => i.ShopMail == request.mail).FirstOrDefaultAsync() != null;
-                    if (hasMail) return new ApiFailResponse("Mail đã tồn tại");
-                }
-
-                shop.ShopName = request.name;
-                shop.ShopPhoneNumber = request.phone;
-
                 shop.ShopMail = null;
-                if(!string.IsNullOrEmpty(shop.ShopMail)) shop.ShopMail = request.mail;
+                if (!string.IsNullOrEmpty(request.mail))
+                {
+                    var hasMail = await _DbContext.Shops.Where(i => i.ShopMail == request.mail.Trim() && i.ShopId != request.id).FirstOrDefaultAsync() != null;
+                    if (hasMail) return new ApiFailResponse("Mail đã tồn tại");
+                    shop.ShopMail = request.mail.Trim();
+                }
+
                 shop.ShopAddress = null;
-                if(!string.IsNullOrEmpty(shop.ShopAddress)) shop.ShopAddress = request.address;
-                shop.ShopCityCode = request.cityCode;
-                shop.ShopDistrictCode = request.districtCode;
-                shop.ShopWardCode = request.wardCode;
+                if(!string.IsNullOrEmpty(request.address)) 
+                    shop.ShopAddress = request.address.Trim();
+                shop.ShopCityCode = null;
+                if(!string.IsNullOrEmpty(request.cityCode)) 
+                    shop.ShopCityCode = request.cityCode.Trim();
+                shop.ShopDistrictCode = null;
+                if(!string.IsNullOrEmpty(request.districtCode))
+                    shop.ShopDistrictCode = request.districtCode.Trim();
+                shop.ShopWardCode = null;
+                if(!string.IsNullOrEmpty(request.wardCode))
+                    shop.ShopWardCode = request.wardCode.Trim();
+
                 shop.Tax = (byte?)request.tax;
                 await _DbContext.SaveChangesAsync();
 
@@ -342,39 +349,55 @@ namespace ECommerce.Application.Services.Shop
                 // Add new if not exist
                 if (bank == null)
                 {
-                    if(request.shopbank.ShopAccountName != null && request.shopbank.ShopBankName != null && request.shopbank.ShopAccountNumber != null)
+                    string accountName = null;
+                    if (!string.IsNullOrEmpty(request.shopbank.ShopAccountName))
+                        accountName = request.shopbank.ShopAccountName.Trim();
+                    string bankName = null;
+                    if (!string.IsNullOrEmpty(request.shopbank.ShopBankName))
+                        bankName = request.shopbank.ShopBankName.Trim();
+                    string accountNumber = null;
+                    if (!string.IsNullOrEmpty(request.shopbank.ShopAccountNumber))
+                        accountNumber = request.shopbank.ShopAccountNumber.Trim();
+
+                    var newBank = new Data.Models.ShopBank
                     {
-                        var newBank = new Data.Models.ShopBank
-                        {
-                            ShopAccountName = request.shopbank.ShopAccountName,
-                            ShopBankName = request.shopbank.ShopBankName,
-                            ShopAccountNumber = request.shopbank.ShopAccountNumber,
-                            ShopId = shop.ShopId,
-                        };
-                        await _DbContext.ShopBanks.AddAsync(newBank);
-                    }
+                        ShopAccountName = accountName,
+                        ShopBankName = bankName,
+                        ShopAccountNumber = accountNumber,
+                        ShopId = shop.ShopId,
+                    };
+                    await _DbContext.ShopBanks.AddAsync(newBank);
                 }
                 // Update if it exist
                 else
                 {
-                    bank.ShopAccountName = request.shopbank.ShopAccountName;
-                    bank.ShopBankName = request.shopbank.ShopBankName;
-                    bank.ShopAccountNumber = request.shopbank.ShopAccountNumber;
+                    bank.ShopAccountName = null;
+                    if (!string.IsNullOrEmpty(request.shopbank.ShopAccountName))
+                        bank.ShopAccountName = request.shopbank.ShopAccountName.Trim();
+                    bank.ShopBankName = null;
+                    if (!string.IsNullOrEmpty(request.shopbank.ShopBankName))
+                        bank.ShopBankName = request.shopbank.ShopBankName.Trim();
+                    bank.ShopAccountNumber = null;
+                    if (!string.IsNullOrEmpty(request.shopbank.ShopAccountNumber))
+                        bank.ShopAccountNumber = request.shopbank.ShopAccountNumber.Trim();
                 }
                 await _DbContext.SaveChangesAsync();
 
                 var brands = await _DbContext.ShopBrands.Where(i => i.ShopId == request.id).ToListAsync();
                 // Remove previous brands if exist
                 if(brands.Count > 0) _DbContext.ShopBrands.RemoveRange(brands);
-                // Add new brands
-                foreach (var id in request.shopBrands)
+                // Add new brands if has items
+                if (request.shopBrands != null)
                 {
-                    var brand = new Data.Models.ShopBrand
+                    foreach (var id in request.shopBrands)
                     {
-                        BrandId = id,
-                        ShopId = shop.ShopId
-                    };
-                    await _DbContext.ShopBrands.AddAsync(brand);
+                        var brand = new Data.Models.ShopBrand
+                        {
+                            BrandId = id,
+                            ShopId = shop.ShopId
+                        };
+                        await _DbContext.ShopBrands.AddAsync(brand);
+                    }
                 }
                 await _DbContext.SaveChangesAsync();
 

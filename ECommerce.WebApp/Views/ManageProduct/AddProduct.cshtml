@@ -103,8 +103,8 @@
                                     @foreach (var item in Model.shops)
                                     {
                                         <li class="d-flex align-items-center">
-                                            <input name="brand" class="shop_select mr-2" id="br_@item.ShopId" type="radio" value="@item.ShopId">
-                                            <label class="mb-0" for="br_@item.ShopId">@item.ShopName</label>
+                                            <input name="shop" class="shop_select mr-2" id="sh_@item.ShopId" type="radio" value="@item.ShopId">
+                                            <label class="mb-0" for="sh_@item.ShopId">@item.ShopName</label>
                                         </li>
                                     }
                                 </ul>
@@ -233,7 +233,7 @@
                 alert(error.responseText);
             })
     })
-    // get attribute and options+
+    // get attribute and options
     $(document).on('change', '.sub-category', function () {
         var _id = $(this).val()
         $.get('/api/CategoryAPI/getAttributesBySubCategoryId', { id: _id })
@@ -327,6 +327,7 @@
         var description = tinymce.get("product-desciptions").getContent();
         var note = $(".pro-note").val();
         var brandId = $("input[name='brand']:checked").val();
+        var shopId = $("input[name='shop']:checked").val();
         var subCategoryId = $("input[name='subCategory']:checked").val();
         var isNew = $('.pro-new').is(":checked") ? true : false;
         var isLegit = $('.pro-legit').is(":checked") ? true : false;
@@ -397,6 +398,7 @@
         formData.append('isFreeDelivery', isFreeDelivery);
         formData.append('insurance', insurance);
         formData.append('discountPercent', discountPercent);
+        formData.append('shopId', shopId);
         // Relationship data
         formData.append('priceAvailable', JSON.stringify(priceAvailable));
         formData.append('pricePreorder', JSON.stringify(pricePreorder));
@@ -417,12 +419,12 @@
             processData: false,
             contentType: false,
             success: function (response) {
-                console.log(response);
                 alert(response);
                 window.location = "SaleProduct/ProductList";
             },
             error: function (error) {
                 console.log(error);
+                alert(error.responseText);
             }
         });
     })

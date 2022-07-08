@@ -24,7 +24,7 @@ namespace ECommerce.WebApp.APIs
         [HttpGet("GetProductPrice")]
         public async Task<IActionResult> GetProductPrice(int id, int type)
         {
-            var result = await _productService.getProductPirce(id, type);
+            var result = await _productService.getProductPrice(id, type);
             return Ok(result);
         }
         [HttpPost("getCartTotalPrice")]
@@ -33,7 +33,7 @@ namespace ECommerce.WebApp.APIs
             var sum = 0;
             foreach (var item in requests)
             {
-                var price = await _productService.getProductPirce(item.id, item.typeId);
+                var price = await _productService.getProductPrice(item.id, item.typeId);
                 var total = 0;
                 if (price.priceOnSell != null)
                 {

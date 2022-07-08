@@ -686,7 +686,6 @@ namespace ECommerce.Data.Context
                     .IsUnicode(false);
 
                 entity.Property(e => e.UserPhone)
-                    .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
 

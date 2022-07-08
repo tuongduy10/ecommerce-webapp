@@ -10,7 +10,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ECommerce.Application.Services.Product
@@ -25,6 +24,33 @@ namespace ECommerce.Application.Services.Product
             _DbContext = DbContext;
             _userService = userService;
             _rateService = rateService;
+        }
+        public async Task<List<ProductShopListModel>> getAll(int subcategoryId)
+        {
+            var query = from products in _DbContext.Products
+                        select products;
+            if (subcategoryId != 0)
+            {
+                query = query.Where(i => i.SubCategoryId == subcategoryId);
+            }
+
+            var result = await query
+                .Select(i => new ProductShopListModel()
+                {
+                    ProductId = i.ProductId,
+                    ProductName = i.ProductName,
+                    CreatedDate = i.ProductAddedDate,
+                    Status = i.Status,
+                    Stock = (int)i.ProductStock,
+                    SubCategoryName = i.SubCategory.SubCategoryName,
+                    CategoryName = i.SubCategory.Category.CategoryName,
+                    BrandName = i.Brand.BrandName,
+                    ProductImages = i.ProductImages.Select(i => i.ProductImagePath).FirstOrDefault(),
+                    Price = _DbContext.ProductPrices.Where(price => price.ProductId == i.ProductId).ToList()
+                })
+                .ToListAsync();
+            var list = result.OrderByDescending(i => i.ProductId).ToList();
+            return list;
         }
         public async Task<List<Dtos.Option>> getProductOption(int productId)
         {
@@ -59,7 +85,7 @@ namespace ECommerce.Application.Services.Product
 
             return result;
         }
-        public async Task<ProductDetailModel> getProductDeatil(int id)
+        public async Task<ProductDetailModel> getProductDetail(int id)
         {
             var attr = await _DbContext.ProductAttributes
                                             .Where(i => i.ProductId == id)
@@ -360,10 +386,10 @@ namespace ECommerce.Application.Services.Product
                     Price = _DbContext.ProductPrices.Where(price => price.ProductId == i.ProductId).ToList()
                 })
                 .ToListAsync();
-
-            return result;
+            var list = result.OrderByDescending(i => i.ProductId).ToList();
+            return list;
         }
-        public async Task<Price> getProductPirce(int productId, int typeId)
+        public async Task<Price> getProductPrice(int productId, int typeId)
         {
             var result = await _DbContext.ProductPrices
                 .Where(i => i.ProductId == productId && i.ProductTypeId == typeId)
@@ -376,40 +402,52 @@ namespace ECommerce.Application.Services.Product
         }
         public async Task<ApiResponse> AddProduct(ProductAddRequest request)
         {
-            if(string.IsNullOrEmpty(request.name)) return new ApiFailResponse("Vui lòng nhập tên sản phẩm");
-            if(request.priceAvailable == null && request.pricePreorder == null)
-            {
+            if (string.IsNullOrEmpty(request.name)) 
+                return new ApiFailResponse("Vui lòng nhập tên sản phẩm");
+            if (request.shopId == 0) 
+                return new ApiFailResponse("Vui lòng chọn cửa hàng");
+            if (request.brandId == 0) 
+                return new ApiFailResponse("Vui lòng chọn thương hiệu");
+            if (request.subCategoryId == 0)
+                return new ApiFailResponse("Vui lòng chọn danh mục sản phẩm");
+
+            Price priceAvailable = JsonConvert.DeserializeObject<Price>(request.priceAvailable);
+            Price pricePreorder = JsonConvert.DeserializeObject<Price>(request.pricePreorder);
+            if (priceAvailable.price == null && priceAvailable.priceOnSell == null && pricePreorder.price == null && pricePreorder.priceOnSell == null)
                 return new ApiFailResponse("Vui lòng nhập giá sản phẩm");
-            }
+            if (priceAvailable.price == null && priceAvailable.priceOnSell != null) 
+                return new ApiFailResponse("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
+            if (priceAvailable.price < priceAvailable.priceOnSell) 
+                return new ApiFailResponse("Giá giảm không thể lớn hơn giá gốc !");
+            if (pricePreorder.price == null && pricePreorder.priceOnSell != null) 
+                return new ApiFailResponse("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
+            if (pricePreorder.price < pricePreorder.priceOnSell) 
+                return new ApiFailResponse("Giá giảm không thể lớn hơn giá gốc !");
 
             try
             {
-                var userRole = await _userService.getUserRole(request.userId);
-                var shopId = await _DbContext.Shops.Where(i => i.UserId == request.userId).Select(i => i.ShopId).FirstOrDefaultAsync();
-                
-                
-                shopId = request.shopId;
+                var isAdmin = await _userService.getUserRole(request.userId) == "Admin";            
                 
                 /*
                  * None relationship data
                  */
                 var product = new Data.Models.Product
                 {
-                    ProductName = request.name,
-                    ProductDescription = request.description,
-                    Note = request.note,
+                    ProductName = request.name.Trim(), // required
+                    ProductDescription = request.description == null ? null : request.description.Trim(),
+                    Note = request.note == null ? null : request.note.Trim(),
                     DiscountPercent = request.discountPercent,
                     Legit = request.isLegit,
                     FreeDelivery = request.isFreeDelivery,
                     ProductStock = request.stock,
                     FreeReturn = request.isFreeReturn,
-                    Insurance = request.insurance,
+                    Insurance = request.insurance == null ? null : request.insurance.Trim(),
                     New = request.isNew,
-                    ShopId = shopId,
+                    ShopId = request.shopId,
                     BrandId = request.brandId,
-                    ProductAddedDate = DateTime.Now,
+                    ProductAddedDate = DateTime.Now, // default
                     SubCategoryId = request.subCategoryId,
-                    Status = userRole == "Admin" ? (byte?)enumProductStatus.Available : (byte?)enumProductStatus.Pending
+                    Status = isAdmin ? (byte?)enumProductStatus.Available : (byte?)enumProductStatus.Pending
                 };
                 await _DbContext.Products.AddAsync(product);
                 await _DbContext.SaveChangesAsync();
@@ -485,31 +523,37 @@ namespace ECommerce.Application.Services.Product
                         await _DbContext.SaveChangesAsync();
                     }
                 }
-                
-                // Prices
-                Price priceAvailable = JsonConvert.DeserializeObject<Price>(request.priceAvailable);
-                if (priceAvailable.price == null && priceAvailable.priceOnSell != null) return new ApiFailResponse("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
-                if (priceAvailable.price < priceAvailable.priceOnSell) return new ApiFailResponse("Giá giảm không thể lớn hơn giá gốc !");
-                var availablePrice = new ProductPrice
-                {
-                    ProductId = product.ProductId,
-                    Price = priceAvailable.price,
-                    PriceOnSell = priceAvailable.priceOnSell != null ? priceAvailable.priceOnSell : GetDiscountPrice(priceAvailable.price, request.discountPercent),
-                    ProductTypeId = (int)enumProductType.Available,
-                };
 
-                Price pricePreorder = JsonConvert.DeserializeObject<Price>(request.pricePreorder);
-                if (pricePreorder.price == null && pricePreorder.priceOnSell != null) return new ApiFailResponse("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
-                if (pricePreorder.price < pricePreorder.priceOnSell) return new ApiFailResponse("Giá giảm không thể lớn hơn giá gốc !");
-                var preOrderPrice = new ProductPrice
+                // Prices
+                decimal discountAvailable = 0;
+                decimal discountPreOrder = 0;
+                if (request.discountPercent != null)
                 {
-                    ProductId = product.ProductId,
-                    Price = pricePreorder.price,
-                    PriceOnSell = pricePreorder.priceOnSell != null ? pricePreorder.priceOnSell : GetDiscountPrice(pricePreorder.price, request.discountPercent),
-                    ProductTypeId = (int)enumProductType.PreOrder,
-                };
-                await _DbContext.ProductPrices.AddAsync(availablePrice);
-                await _DbContext.ProductPrices.AddAsync(preOrderPrice);
+                    discountAvailable = GetDiscountPrice(priceAvailable.price, request.discountPercent);
+                    discountPreOrder = GetDiscountPrice(pricePreorder.price, request.discountPercent);
+                }
+                if (priceAvailable.price != null)
+                {
+                    var availablePrice = new ProductPrice
+                    {
+                        ProductId = product.ProductId,
+                        Price = priceAvailable.price,
+                        PriceOnSell = discountAvailable == 0 ? null : discountAvailable,
+                        ProductTypeId = (int)enumProductType.Available,
+                    };
+                    await _DbContext.ProductPrices.AddAsync(availablePrice);
+                }
+                if (pricePreorder.price != null)
+                {
+                    var preOrderPrice = new ProductPrice
+                    {
+                        ProductId = product.ProductId,
+                        Price = pricePreorder.price,
+                        PriceOnSell = discountPreOrder == 0 ? null : discountPreOrder,
+                        ProductTypeId = (int)enumProductType.PreOrder,
+                    };
+                    await _DbContext.ProductPrices.AddAsync(preOrderPrice);
+                }               
                 await _DbContext.SaveChangesAsync();
 
                 // Images

@@ -166,6 +166,65 @@ namespace ECommerce.Application.Services.User
                 return new ApiFailResponse("Tạo tài khoản không thành công, lỗi: " + error.Message);
             }
         }
+        public async Task<ApiResponse> AddSeller(SignUpRequest request)
+        {
+            try
+            {
+                string phonenumber = null;
+                // Phone validate
+                if (!string.IsNullOrEmpty(request.UserPhone))
+                {
+                    phonenumber = request.UserPhone.Trim();
+                    if (phonenumber.Contains("+84"))
+                    {
+                        phonenumber = phonenumber.Replace("+84", "");
+                        if (!phonenumber.StartsWith("0"))
+                        {
+                            phonenumber = "0" + phonenumber;
+                        }
+                    }
+                }
+
+                if (string.IsNullOrEmpty(request.UserFullName)) return new ApiFailResponse("Vui lòng nhập họ tên");
+                if (string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.RePassword)) return new ApiFailResponse("Vui lòng nhập mật khẩu");
+                if (request.Password != request.RePassword) return new ApiFailResponse("Mật khẩu không trùng");
+
+                var checkMail = await _DbContext.Users.Where(i => i.UserMail == request.UserMail).FirstOrDefaultAsync();
+                if (checkMail != null) return new ApiFailResponse("Mail đã tồn tại");
+
+                var checkPhone = await _DbContext.Users.Where(i => i.UserPhone == request.UserPhone).FirstOrDefaultAsync();
+                if (checkPhone != null) return new ApiFailResponse("Số điện thoại đã tồn tại");
+
+                Data.Models.User user = new Data.Models.User();
+                user.UserMail = request.UserMail.Trim();
+                user.UserJoinDate = DateTime.Now;
+                user.UserFullName = request.UserFullName.Trim();
+                user.UserPhone = phonenumber;
+
+                user.UserPhone = request.UserPhone.Trim();
+                user.UserAddress = request.UserAddress.Trim();
+                user.UserDistrictCode = request.UserDistrictCode;
+                user.UserCityCode = request.UserCityCode;
+                user.UserWardCode = request.UserWardCode;
+                user.Password = request.RePassword.Trim();
+                user.Status = true;
+                user.isSystemAccount = request.isSystemAccount;
+                await _DbContext.Users.AddAsync(user);
+                await _DbContext.SaveChangesAsync();
+
+                Data.Models.UserRole role = new Data.Models.UserRole();
+                role.RoleId = (int)enumRole.Seller;
+                role.UserId = user.UserId;
+                await _DbContext.UserRoles.AddAsync(role);
+                await _DbContext.SaveChangesAsync();
+
+                return new ApiSuccessResponse("Tạo tài khoản thành công");
+            }
+            catch (Exception error)
+            {
+                return new ApiFailResponse("Tạo tài khoản không thành công, lỗi: " + error.Message);
+            }
+        }
         public async Task<UserGetModel> UserProfile(int id)
         {
             try
@@ -233,10 +292,7 @@ namespace ECommerce.Application.Services.User
             {
                 if (string.IsNullOrEmpty(request.UserFullName)) return new ApiFailResponse("Họ tên không thể để trống");
 
-                var user = await _DbContext.Users
-                                .Where(i => i.UserId == request.UserId)
-                                .FirstOrDefaultAsync();
-
+                var user = await _DbContext.Users.Where(i => i.UserId == request.UserId).FirstOrDefaultAsync();
                 if (!string.IsNullOrEmpty(request.UserFullName)) user.UserFullName = request.UserFullName.Trim();
 
                 user.UserMail = null;
@@ -252,13 +308,26 @@ namespace ECommerce.Application.Services.User
                 {
                     var checkPhone = await _DbContext.Users.Where(i => i.UserPhone == request.UserPhone.Trim() && i.UserId != request.UserId).FirstOrDefaultAsync();
                     if (checkPhone != null) return new ApiFailResponse("Số điện thoại đã tồn tại");
-                    user.UserPhone = request.UserPhone.Trim();
+                    // Phone validate
+                    string phonenumber = request.UserPhone.Trim();
+                    if (phonenumber.Contains("+84"))
+                    {
+                        phonenumber = phonenumber.Replace("+84", "");
+                        if (!phonenumber.StartsWith("0"))
+                        {
+                            phonenumber = "0" + phonenumber;
+                        }
+                    }
+                    user.UserPhone = phonenumber;
                 }
 
                 user.UserAddress = null;
                 if (!string.IsNullOrEmpty(request.UserAddress)) user.UserAddress = request.UserAddress.Trim();
+                user.UserWardCode = null;
                 if (!string.IsNullOrEmpty(request.UserWardCode)) user.UserWardCode = request.UserWardCode.Trim();
+                user.UserDistrictCode = null;
                 if (!string.IsNullOrEmpty(request.UserDistrictCode)) user.UserDistrictCode = request.UserDistrictCode.Trim();
+                user.UserCityCode = null;
                 if (!string.IsNullOrEmpty(request.UserCityCode)) user.UserCityCode = request.UserCityCode.Trim();
 
                 var shops = await _DbContext.Shops.Where(i => i.UserId == request.UserId).ToListAsync();

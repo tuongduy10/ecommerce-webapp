@@ -65,7 +65,7 @@ namespace ECommerce.WebApp.Controllers.Client
         }
         public async Task<IActionResult> ProductDetail(int ProductId)
         {
-            var product = await _productService.getProductDeatil(ProductId);
+            var product = await _productService.getProductDetail(ProductId);
             var rates = await _rateService.getRatesByProductId(ProductId);
             var suggestion = await _productService.getProductSuggestion();
             var phone = await _configurationService.getPhoneNumber();
