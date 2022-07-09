@@ -47,7 +47,7 @@ namespace ECommerce.Application.Services.User
                 UserDistrictCode = i.UserDistrictCode,
                 UserCityCode = i.UserCityCode,
                 UserPhone = i.UserPhone,
-                isSystemAccount = (bool)i.isSystemAccount,
+                isSystemAccount = (bool)i.IsSystemAccount,
                 Status = (bool)i.Status,
             }).ToListAsync();
 
@@ -149,7 +149,7 @@ namespace ECommerce.Application.Services.User
                 user.UserWardCode = request.UserWardCode;
                 user.Password = request.RePassword.Trim();
                 user.Status = true;
-                user.isSystemAccount = request.isSystemAccount;
+                user.IsSystemAccount = request.isSystemAccount;
                 await _DbContext.Users.AddAsync(user);
                 await _DbContext.SaveChangesAsync();
 
@@ -208,7 +208,7 @@ namespace ECommerce.Application.Services.User
                 user.UserWardCode = request.UserWardCode;
                 user.Password = request.RePassword.Trim();
                 user.Status = true;
-                user.isSystemAccount = request.isSystemAccount;
+                user.IsSystemAccount = request.isSystemAccount;
                 await _DbContext.Users.AddAsync(user);
                 await _DbContext.SaveChangesAsync();
 

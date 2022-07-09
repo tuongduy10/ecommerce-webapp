@@ -18,6 +18,9 @@ namespace ECommerce.Application.Services.Product.Dtos
         public string BrandName { get; set; }
         public int Stock { get; set; }
         public string ProductImages { get; set; }
+        public int ShopId { get; set; }
+        public int BrandId { get; set; }
+        public string ShopName { get; set; }
         public List<ProductPrice> Price { get; set; }
     }
 }

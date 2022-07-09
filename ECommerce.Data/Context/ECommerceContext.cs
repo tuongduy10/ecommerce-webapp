@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using ECommerce.Data.Models;
-using Attribute = ECommerce.Data.Models.Attribute;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 
@@ -21,7 +20,7 @@ namespace ECommerce.Data.Context
         {
         }
 
-        public virtual DbSet<Attribute> Attributes { get; set; }
+        public virtual DbSet<Models.Attribute> Attributes { get; set; }
         public virtual DbSet<Bank> Banks { get; set; }
         public virtual DbSet<Banner> Banners { get; set; }
         public virtual DbSet<Blog> Blogs { get; set; }
@@ -48,6 +47,7 @@ namespace ECommerce.Data.Context
         public virtual DbSet<Shop> Shops { get; set; }
         public virtual DbSet<ShopBank> ShopBanks { get; set; }
         public virtual DbSet<ShopBrand> ShopBrands { get; set; }
+        public virtual DbSet<SizeGuide> SizeGuides { get; set; }
         public virtual DbSet<Social> Socials { get; set; }
         public virtual DbSet<SubCategory> SubCategories { get; set; }
         public virtual DbSet<SubCategoryAttribute> SubCategoryAttributes { get; set; }
@@ -69,7 +69,7 @@ namespace ECommerce.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Attribute>(entity =>
+            modelBuilder.Entity<Models.Attribute>(entity =>
             {
                 entity.ToTable("Attribute");
 
@@ -226,6 +226,8 @@ namespace ECommerce.Data.Context
             modelBuilder.Entity<OptionValue>(entity =>
             {
                 entity.ToTable("OptionValue");
+
+                entity.Property(e => e.IsBaseValue).HasColumnName("isBaseValue");
 
                 entity.Property(e => e.OptionValueName).HasMaxLength(50);
 
@@ -590,6 +592,17 @@ namespace ECommerce.Data.Context
                     .HasConstraintName("FK_ShopBrand_Shop");
             });
 
+            modelBuilder.Entity<SizeGuide>(entity =>
+            {
+                entity.ToTable("SizeGuide");
+
+                entity.Property(e => e.IsBaseSizeGuide).HasColumnName("isBaseSizeGuide");
+
+                entity.Property(e => e.SizeGuide1)
+                    .HasColumnType("ntext")
+                    .HasColumnName("SizeGuide");
+            });
+
             modelBuilder.Entity<Social>(entity =>
             {
                 entity.ToTable("Social");
@@ -618,6 +631,11 @@ namespace ECommerce.Data.Context
                     .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SubCategory_Category");
+
+                entity.HasOne(d => d.SizeGuide)
+                    .WithMany(p => p.SubCategories)
+                    .HasForeignKey(d => d.SizeGuideId)
+                    .HasConstraintName("FK_SubCategory_SizeGuide");
             });
 
             modelBuilder.Entity<SubCategoryAttribute>(entity =>
@@ -661,6 +679,8 @@ namespace ECommerce.Data.Context
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("User");
+
+                entity.Property(e => e.IsSystemAccount).HasColumnName("isSystemAccount");
 
                 entity.Property(e => e.Password)
                     .IsRequired()

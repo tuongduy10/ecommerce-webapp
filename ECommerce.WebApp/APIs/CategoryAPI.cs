@@ -34,8 +34,8 @@ namespace ECommerce.WebApp.Controllers
             var result = await _subCategoryService.getSubCategoryInBrand(id);
             return Ok(result);
         }
-        [HttpGet("getOptionsBySubCategoryId")]
-        public async Task<IActionResult> getOptionsAndAttributeBySubCategoryId(int id)
+        [HttpGet("getBaseOptionsBySubCategoryId")] // Get
+        public async Task<IActionResult> getOptionsBySubCategoryId(int id)
         {
             var options = await _subCategoryService.getOptionBySubCategoryId(id);
             return Ok(options);

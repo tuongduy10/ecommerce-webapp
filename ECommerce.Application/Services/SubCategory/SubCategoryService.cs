@@ -30,9 +30,7 @@ namespace ECommerce.Application.Services.SubCategory
         }
         public async Task<List<SubCategoryModel>> getAll()
         {
-            var list = from c in _DbContext.SubCategories 
-                       select c;
-
+            var list = from c in _DbContext.SubCategories select c;
             return await list.Select(i => new SubCategoryModel()
             {
                 SubCategoryId = i.SubCategoryId,
@@ -146,15 +144,15 @@ namespace ECommerce.Application.Services.SubCategory
         public async Task<List<string>> getOptionValueNameByOptionId(int id)
         {
             var result = await _DbContext.OptionValues
-                .Where(i => i.OptionId == id)
+                .Where(i => i.OptionId == id && i.IsBaseValue == true)
                 .Select(i => i.OptionValueName)
                 .ToListAsync();
             return result;
         }
-        public async Task<List<OptionValueGetModel>> getOptionValueByOptionId(int id)
+        public async Task<List<OptionValueGetModel>> getBaseOptionValueByOptionId(int id)
         {
             var result = await _DbContext.OptionValues
-                .Where(i => i.OptionId == id)
+                .Where(i => i.OptionId == id && i.IsBaseValue == true)
                 .Select(i => new OptionValueGetModel { 
                     id = i.OptionValueId,
                     value = i.OptionValueName

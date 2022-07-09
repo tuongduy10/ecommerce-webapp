@@ -19,6 +19,6 @@ namespace ECommerce.Application.Services.SubCategory
         Task<List<OptionGetModel>> getOptionBySubCategoryId(int id);
         Task<List<AttributeGetModel>> getAttributeBySubCategoryId(int id);
         Task<List<string>> getOptionValueNameByOptionId(int id);
-        Task<List<OptionValueGetModel>> getOptionValueByOptionId(int id);
+        Task<List<OptionValueGetModel>> getBaseOptionValueByOptionId(int id);
     }
 }

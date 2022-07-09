@@ -19,24 +19,15 @@
                     </button>
                     <ul class="dropdown-menu px-2" style="overflow: hidden scroll; max-height: 300px">
                         <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm..." autocomplete="off">
-                        <li>
-                            <div>
-                                <input class="mr-1" id="attr-1" type="checkbox">
-                                <label for="attr-1">Tên danh mục</label>
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <input class="mr-1" id="attr-2" type="checkbox">
-                                <label for="attr-2">Test</label>
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <input class="mr-1" id="attr-3" type="checkbox">
-                                <label for="attr-3">New</label>
-                            </div>
-                        </li>
+                        @foreach(var item in Model)
+                        {
+                            <li>
+                                <div>
+                                    <input class="mr-1" id="attr-1" type="checkbox" value="@item.SubCategoryId">
+                                    <label for="attr-1">@item.SubCategoryName</label>
+                                </div>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

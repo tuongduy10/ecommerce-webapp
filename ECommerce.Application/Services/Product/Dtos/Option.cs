@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Services.Product.Dtos
 {
-    public class NewOption
+    public class Option
     {
         public int id { get; set; } // optionId
+        public string name { get; set; }
         public List<string> values { get; set; }
     }
 }

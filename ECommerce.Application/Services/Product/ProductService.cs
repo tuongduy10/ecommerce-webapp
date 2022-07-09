@@ -19,13 +19,16 @@ namespace ECommerce.Application.Services.Product
         private ECommerceContext _DbContext;
         private IUserService _userService;
         private IRateService _rateService;
-        public ProductService(ECommerceContext DbContext, IUserService userService, IRateService rateService)
-        {
+        public ProductService(
+            ECommerceContext DbContext, 
+            IUserService userService, 
+            IRateService rateService
+        ) {
             _DbContext = DbContext;
             _userService = userService;
             _rateService = rateService;
         }
-        public async Task<List<ProductShopListModel>> getAll(int subcategoryId)
+        public async Task<List<ProductShopListModel>> getAllManaged(int subcategoryId)
         {
             var query = from products in _DbContext.Products
                         select products;
@@ -46,7 +49,10 @@ namespace ECommerce.Application.Services.Product
                     CategoryName = i.SubCategory.Category.CategoryName,
                     BrandName = i.Brand.BrandName,
                     ProductImages = i.ProductImages.Select(i => i.ProductImagePath).FirstOrDefault(),
-                    Price = _DbContext.ProductPrices.Where(price => price.ProductId == i.ProductId).ToList()
+                    Price = _DbContext.ProductPrices.Where(price => price.ProductId == i.ProductId).ToList(),
+                    ShopName = i.Shop.ShopName,
+                    ShopId = i.ShopId,
+                    BrandId = i.BrandId,
                 })
                 .ToListAsync();
             var list = result.OrderByDescending(i => i.ProductId).ToList();
@@ -73,8 +79,8 @@ namespace ECommerce.Application.Services.Product
                 var opt_v = await _DbContext.Options
                                     .Where(i => i.OptionId == id)
                                     .Select(i => new Dtos.Option() {
-                                        Name = i.OptionName,
-                                        Value =_DbContext.ProductOptionValues
+                                        name = i.OptionName,
+                                        values =_DbContext.ProductOptionValues
                                                 .Where(pov => pov.ProductId == productId && pov.OptionValue.OptionId == i.OptionId)
                                                 .Select(pov => pov.OptionValue.OptionValueName)
                                                 .ToList()
@@ -135,6 +141,64 @@ namespace ECommerce.Application.Services.Product
                                                 Prices = _DbContext.ProductPrices.Where(price => price.ProductId == id).ToList(),
                                                 Types = _DbContext.ProductTypes
                                                                     .Select(type => new Dtos.Type() { 
+                                                                        ProductTypeName = type.ProductTypeName,
+                                                                        ProductTypeId = type.ProductTypeId
+                                                                    }).ToList(),
+
+                                                ProductImages = _DbContext.ProductImages.Where(img => img.ProductId == id).Select(img => img.ProductImagePath).ToList(),
+                                                ProductUserImages = _DbContext.ProductUserImages.Where(img => img.ProductId == id).Select(img => img.ProductUserImagePath).ToList()
+                                            })
+                                            .FirstOrDefaultAsync();
+
+            return product;
+        }
+        public async Task<ProductDetailModel> GetProductDetailManaged(int id)
+        {
+            var attr = await _DbContext.ProductAttributes
+                                .Where(i => i.ProductId == id)
+                                .Select(i => new Dtos.Attribute()
+                                {
+                                    Value = i.Value,
+                                    AttrName = i.Attribute.AttributeName
+                                })
+                                .ToListAsync();
+            var opts = await getProductOption(id);
+            var rate = await _DbContext.Rates.Where(i => i.ProductId == id).ToListAsync();
+            Dtos.Rate productRate = new Dtos.Rate()
+            {
+                Value = rate.Count == 0 ? 0 : (int)Math.Round((double)(rate.Sum(i => i.RateValue) / rate.Count)),
+                Total = rate.Count == 0 ? 0 : rate.Count
+            };
+
+            var product = await _DbContext.Products
+                                            .Where(i => i.ProductId == id)
+                                            .Select(i => new ProductDetailModel()
+                                            {
+                                                ProductId = i.ProductId,
+                                                ProductName = i.ProductName,
+                                                ProductDescription = i.ProductDescription,
+                                                Note = i.Note,
+                                                Stock = (int)i.ProductStock,
+                                                New = i.New,
+                                                Highlight = i.Highlights,
+                                                FreeDelivery = i.FreeDelivery,
+                                                FreeReturn = i.FreeReturn,
+                                                Legit = i.Legit,
+                                                Insurance = i.Insurance,
+
+                                                SubCategoryId = i.SubCategoryId,
+                                                BrandId = i.BrandId,                                                
+                                                ShopId = i.ShopId,
+                                                ProductRate = productRate,
+
+                                                Attributes = attr,
+                                                Options = opts,
+                                                ProductImportDate = i.ProductImportDate,
+                                                DiscountPercent = i.DiscountPercent,
+                                                Prices = _DbContext.ProductPrices.Where(price => price.ProductId == id).ToList(),
+                                                Types = _DbContext.ProductTypes
+                                                                    .Select(type => new Dtos.Type()
+                                                                    {
                                                                         ProductTypeName = type.ProductTypeName,
                                                                         ProductTypeId = type.ProductTypeId
                                                                     }).ToList(),
@@ -438,6 +502,7 @@ namespace ECommerce.Application.Services.Product
                     Note = request.note == null ? null : request.note.Trim(),
                     DiscountPercent = request.discountPercent,
                     Legit = request.isLegit,
+                    Highlights = request.isHighlight,
                     FreeDelivery = request.isFreeDelivery,
                     ProductStock = request.stock,
                     FreeReturn = request.isFreeReturn,
@@ -469,9 +534,9 @@ namespace ECommerce.Application.Services.Product
                         await _DbContext.ProductOptionValues.AddAsync(productOptionValue);
                     }
                 }
-                
+
                 // New option value
-                List<NewOption> newOptions = JsonConvert.DeserializeObject<List<NewOption>>(request.newOptions);
+                List<Dtos.Option> newOptions = JsonConvert.DeserializeObject<List<Dtos.Option>>(request.newOptions);
                 if (newOptions.Count > 0)
                 {
                     foreach (var option in newOptions)
@@ -490,6 +555,7 @@ namespace ECommerce.Application.Services.Product
                             {
                                 OptionId = option.id,
                                 OptionValueName = value,
+                                IsBaseValue = false
                             };
                             await _DbContext.OptionValues.AddAsync(optionValue); // Add new value
                             await _DbContext.SaveChangesAsync();

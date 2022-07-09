@@ -131,7 +131,7 @@ namespace ECommerce.Application.Services.Shop
             var list = await _DbContext.Shops
                                     .Where(i => i.Status != 4 &&
                                            i.Status != 2 &&
-                                           (i.User.isSystemAccount == true || i.UserId == null)
+                                           (i.User.IsSystemAccount == true || i.UserId == null)
                                     )
                                     .Select(i => new ShopGetModel()
                                     {

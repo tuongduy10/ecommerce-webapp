@@ -67,7 +67,7 @@ namespace ECommerce.WebApp.Controllers.Admin
             var newFileName = "";
             if (request.ImagePath != null)
             {
-                newFileName = _manageFiles.GetFileName(request.ImagePath, "brand_");
+                newFileName = _manageFiles.GetFileName(request.ImagePath, FILE_PREFIX);
                 request.BrandImagePath = newFileName;
             }
             var result = await _brandService.Update(request);
@@ -80,7 +80,7 @@ namespace ECommerce.WebApp.Controllers.Admin
                     _manageFiles.DeleteFile(previousFileName, FILE_PATH);
 
                     // Save new images to folder
-                    _manageFiles.AddFile(request.ImagePath, newFileName, FILE_PREFIX);
+                    _manageFiles.AddFile(request.ImagePath, newFileName, FILE_PATH);
                 }
                 return Ok(result.Message);
             }

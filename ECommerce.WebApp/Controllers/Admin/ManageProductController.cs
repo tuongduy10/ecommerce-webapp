@@ -4,6 +4,7 @@ using ECommerce.Application.Services.Product;
 using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.Shop;
 using ECommerce.Application.Services.SubCategory;
+using ECommerce.WebApp.Models.Products;
 using ECommerce.WebApp.Models.SaleProduct;
 using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -47,7 +48,7 @@ namespace ECommerce.WebApp.Controllers.Admin
         {
             var model = new ProductListViewModel()
             {
-                products = await _productService.getAll(subCategoryId),
+                products = await _productService.getAllManaged(subCategoryId),
                 subCategories = await _subCategoryService.getAll(),
             };
             return View(model);
@@ -88,6 +89,17 @@ namespace ECommerce.WebApp.Controllers.Admin
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);
+        }
+        public async Task<IActionResult> ProductDetail(ProductViewDetailRequest request)
+        {
+            var model = new ProductDetailViewModel
+            {
+                product = await _productService.GetProductDetailManaged(request.productId),
+                shops = await _shopService.getShopList(),
+                brands = await _brandService.getBrandsByShop(request.shopId),
+                subCategories = await _subCategoryService.getSubCategoryInBrand(request.brandId)
+            };
+            return View(model);
         }
     }
 }

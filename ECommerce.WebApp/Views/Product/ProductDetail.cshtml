@@ -163,12 +163,12 @@
                                     @foreach (var option in Model.options)
                                     {
                                         <div class="option-size d-flex mb-2 align-items-center">
-                                            <div class="option-title">@option.Name</div>
+                                            <div class="option-title">@option.name</div>
                                             <div class="options-wrapper">
                                                 <select class="options form-select w-100 pro-options"
                                                         aria-label="Default select example">
                                                     <option disabled selected>- Chọn -</option>
-                                                    @foreach (var value in option.Value)
+                                                    @foreach (var value in option.values)
                                                     {
                                                         <option value="@value">@value</option>
                                                     }

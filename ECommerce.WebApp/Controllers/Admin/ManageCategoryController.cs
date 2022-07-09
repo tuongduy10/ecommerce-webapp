@@ -23,9 +23,9 @@ namespace ECommerce.WebApp.Controllers.Admin
             var list = await _categoryService.getAll();
             return View(list);
         }
-        public async Task<IActionResult> GetOptionValue(int id)
+        public async Task<IActionResult> GetBaseOptionValue(int id)
         {
-            var result = await _subCategoryService.getOptionValueByOptionId(id);
+            var result = await _subCategoryService.getBaseOptionValueByOptionId(id);
             return Ok(result);
         }
         [HttpPost]

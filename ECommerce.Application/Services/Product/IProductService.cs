@@ -10,9 +10,10 @@ namespace ECommerce.Application.Services.Product
         Task<PageResult<ProductInBrandModel>> getProductPaginated(ProductGetRequest request);
         Task<List<ProductInBrandModel>> getProductSuggestion();
         Task<ProductDetailModel> getProductDetail(int id);
+        Task<ProductDetailModel> GetProductDetailManaged(int id);
         Task<List<Option>> getProductOption(int id);
         Task<List<ProductShopListModel>> getProductByUser(int shopId, int subcategoryId);
-        Task<List<ProductShopListModel>> getAll(int subcategoryId);
+        Task<List<ProductShopListModel>> getAllManaged(int subcategoryId);
         Task<PageResult<ProductInBrandModel>> getProductInPagePaginated(ProductGetRequest request);
         Task<Price> getProductPrice(int productId, int typeId);
         Task<ApiResponse> AddProduct(ProductAddRequest request);

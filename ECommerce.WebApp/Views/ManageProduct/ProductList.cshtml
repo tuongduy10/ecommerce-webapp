@@ -10,11 +10,18 @@
     </div>
     <div class="card-body">
         <div class="form-group mb-2">
-            <select class="form-control" aria-label="Default select example">
-                <option selected>Tất cả</option>
+            <select class="form-control get-products" aria-label="Default select example">
+                <option value="all">Tất cả</option>
                 @foreach (var sub in Model.subCategories)
                 {
-                    <option value="@sub.SubCategoryId">@sub.SubCategoryName</option>
+                    if (Context.Request.Query["subCategoryId"].ToString() == sub.SubCategoryId.ToString())
+                    {
+                        <option value="@sub.SubCategoryId" selected>@sub.SubCategoryName</option>
+                    }
+                    else
+                    {
+                        <option value="@sub.SubCategoryId">@sub.SubCategoryName</option>
+                    }
                 }
             </select>
         </div>
@@ -34,6 +41,7 @@
                         <th class="text-center"></th>
                         <th>Ngày thêm</th>
                         <th>Sản phẩm</th>
+                        <th>Shop</th>
                         <th>Giá có sẵn</th>
                         <th>Giá đặt trước</th>
                         <th>Loại sản phẩm</th>
@@ -64,6 +72,7 @@
                                     </div>
                                 </div>
                             </td>
+                            <td>@product.ShopName</td>
                             <td>
                                 @foreach (var price in product.Price)
                                 {
@@ -94,7 +103,7 @@
                                 <td style="white-space: nowrap;">Đã ẩn</td>
                             }
                             <td class="text-center">
-                                <a href="/SaleProduct/ProductDetail/@product.ProductId" class="mr-2">Chi tiết</a>
+                                <a href="@Url.Action("ProductDetail", "ManageProduct", new { productId = product.ProductId, shopId = product.ShopId, brandId = product.BrandId})" class="mr-2">Chi tiết</a>
 
                                 <button class="btn btn-danger" onclick="deleteProduct(@product.ProductId)">Xóa</button>
                             </td>
@@ -147,6 +156,11 @@
     });
 </script>
 <script>
+    $(document).on('change', '.get-products', function () {
+        var req = `?subCategoryId=${$(this).val()}`;
+        if ($(this).val() == 'all') req = '';
+        window.location = `/ManageProduct/ProductList${req}`;
+    })
     $(document).on('click', '.hide-product', function () {
         if (confirm("Xác nhận cập nhật") == true) {
             let ids = [];

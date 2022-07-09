@@ -17,11 +17,11 @@
                         <div class="text-left mb-2 text-primary"><strong>Thông tin cơ bản</strong></div>
                         <div class="form-group mb-4">
                             <label>Tên sản phẩm</label>
-                            <input type="text" class="form-control pro-name" value="">
+                            <input type="text" class="form-control pro-name" value="@Model.product.ProductName">
                         </div>
                         <div class="form-group mb-4">
                             <label>Số lượng trong kho</label>
-                            <input type="number" class="form-control pro-stock" value="">
+                            <input type="number" class="form-control pro-stock" value="@Model.product.Stock">
                         </div>
                         <!-- Price -->
                         <div class="form-group mb-4">
@@ -57,53 +57,102 @@
                         </div>
                         <div class="form-group mb-4">
                             <div class="d-flex align-items-center">
-                                <input type="checkbox" class="pro-new mr-2" id="new">
+                                @if (Model.product.New)
+                                {
+                                    <input type="checkbox" class="pro-new mr-2" id="new" checked>
+                                }
+                                else
+                                {
+                                    <input type="checkbox" class="pro-new mr-2" id="new">
+                                }
                                 <label class="mb-0" for="new">Mới</label>
                             </div>
                         </div>
                         <div class="form-group mb-4">
                             <div class="d-flex align-items-center">
-                                <input type="checkbox" class="pro-legit mr-2" id="legit">
+                                @if (Model.product.Legit)
+                                {
+                                    <input type="checkbox" class="pro-legit mr-2" id="legit" checked>
+                                }
+                                else
+                                {
+                                    <input type="checkbox" class="pro-legit mr-2" id="legit">
+                                }
                                 <label class="mb-0" for="legit">Chính hãng</label>
                             </div>
                         </div>
                         <div class="form-group mb-4">
                             <div class="d-flex align-items-center">
-                                <input type="checkbox" class="pro-highlight mr-2" id="highlight">
+                                @if (Model.product.Highlight)
+                                {
+                                    <input type="checkbox" class="pro-highlight mr-2" id="highlight" checked>
+                                }
+                                else
+                                {
+                                    <input type="checkbox" class="pro-highlight mr-2" id="highlight">
+
+                                }
                                 <label class="mb-0" for="highlight">Nổi bật</label>
                             </div>
                         </div>
                         <div class="form-group mb-4">
                             <div class="d-flex align-items-center">
-                                <input type="checkbox" class="pro-freereturn mr-2" id="return">
+                                @if (Model.product.FreeReturn)
+                                {
+                                    <input type="checkbox" class="pro-freereturn mr-2" id="return" checked>
+                                }
+                                else
+                                {
+                                    <input type="checkbox" class="pro-freereturn mr-2" id="return">
+                                }
                                 <label class="mb-0" for="return">Miễn phí giao hàng</label>
                             </div>
                         </div>
                         <div class="form-group mb-4">
                             <div class="d-flex align-items-center">
-                                <input type="checkbox" class="pro-freedelivery mr-2" id="delivery">
+                                @if (Model.product.FreeDelivery)
+                                {
+                                    <input type="checkbox" class="pro-freedelivery mr-2" id="delivery" checked>
+                                }
+                                else
+                                {
+                                    <input type="checkbox" class="pro-freedelivery mr-2" id="delivery">
+                                }
                                 <label class="mb-0" for="delivery">Đổi trả miễn phí</label>
                             </div>
                         </div>
                         <div class="form-group mb-4">
                             <label>Bảo hành</label>
                             <div class="d-flex align-items-center">
-                                <input type="text" class="form-control pro-insurance">
+                                <input type="text" class="form-control pro-insurance" value="@Model.product.Insurance">
                             </div>
                         </div>
                         <div class="form-group mb-4">
                             <label>Cửa hàng</label>
                             <div class="dropdown mb-2 mr-2">
                                 <button class="btn border dropdown-toggle shop_select-text" type="button" data-toggle="dropdown">
-                                    Cửa hàng
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-sh-menu px-2" style="max-height: 300px; overflow: auto;">
-                                    <input class="form-control mb-2" id="myInput-sh" type="text" placeholder="Tìm cửa hàng..." autocomplete="off" />
                                     @foreach (var item in Model.shops)
                                     {
-                                        <li class="d-flex align-items-center" value="@item.ShopName">
-                                            <input name="shop" class="shop_select mr-2" id="sh_@item.ShopId" type="radio" value="@item.ShopId">
+                                        @if (item.ShopId == Model.product.ShopId)
+                                        {
+                                            @Html.Raw(item.ShopName)
+                                        }
+                                    }
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu px-2" style="max-height: 300px; overflow: auto;">
+                                    <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm cửa hàng..." autocomplete="off" />
+                                    @foreach (var item in Model.shops)
+                                    {
+                                        <li class="d-flex align-items-center">
+                                            @if (item.ShopId == Model.product.ShopId)
+                                            {
+                                                <input name="shop" class="shop_select mr-2" id="sh_@item.ShopId" type="radio" value="@item.ShopId" checked>
+                                            }
+                                            else
+                                            {
+                                                <input name="shop" class="shop_select mr-2" id="sh_@item.ShopId" type="radio" value="@item.ShopId">
+                                            }
                                             <label class="mb-0" for="sh_@item.ShopId">@item.ShopName</label>
                                         </li>
                                     }
@@ -112,9 +161,40 @@
                         </div>
                         <div class="form-group mb-4 brand-form">
                             <!-- Brand data -->
+                            <label>Thương hiệu</label>
+                            <div class="dropdown mb-2 mr-2">
+                                <button class="btn border dropdown-toggle shop_select-text" type="button" data-toggle="dropdown">
+                                    @foreach (var item in Model.brands)
+                                    {
+                                        @if (item.BrandId == Model.product.BrandId)
+                                        {
+                                            @Html.Raw(item.BrandName)
+                                        }
+                                    }
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu px-2" style="max-height: 300px; overflow: auto;">
+                                    <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm..." autocomplete="off" />
+                                    @foreach (var item in Model.brands)
+                                    {
+                                        <li class="d-flex align-items-center">
+                                        @if (item.BrandId == Model.product.BrandId)
+                                        {
+                                            <input name="brand" class="br_select mr-2" id="br_@item.BrandId" type="radio" value="@item.BrandId" checked>
+                                        }
+                                        else
+                                        {
+                                            <input name="brand" class="br_select mr-2" id="br_@item.BrandId" type="radio" value="@item.BrandId">
+                                        }
+                                            <label class="mb-0" for="br_@item.BrandId">@item.BrandName</label>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
                         </div>
                         <div class="form-group subcategory-form">
                             <!-- SubCategory data -->
+
                         </div>
                     </div>
                     <div class="col-sm-6 mb-4">
@@ -168,7 +248,7 @@
                         <div class="text-left mb-2 text-primary"><strong>Mô tả</strong></div>
                         <div class="form-group mb-4">
                             <textarea class="form-control" id="product-desciptions" rows="8"
-                                      cols="50"></textarea>
+                                      cols="50">@Model.product.ProductDescription</textarea>
                         </div>
                         <!-- System's images -->
                         <div class="mb-2 text-primary"><strong>Ảnh sản phẩm</strong></div>
@@ -199,23 +279,24 @@
                         <!-- Note -->
                         <div class="mb-2 text-primary"><strong>Ghi chú</strong></div>
                         <div class="form-group mb-4">
-                            <input type="text" class="form-control pro-note" value="">
+                            <input type="text" class="form-control pro-note" value="@Model.product.Note">
                         </div>
                     </div>
                 </div>
                 <div class="text-center">
                     <button type="button" class="btn btn-secondary discard">Hủy</button>
-                    <button type="button" class="btn btn-primary add-product">Lưu</button>
+                    <button type="button" class="btn btn-primary add-product">Cập nhật</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 <script>
-    // get brand 
+    // get brand
     $(document).on('change', '.shop_select', function () {
         $.get('/ManageBrand/GetBrandsByShop', { id: $(this).val() })
             .then(function (response) {
+                console.log(response)
                 renderBrandForm(response);
             })
             .catch(function (error) {
@@ -319,7 +400,7 @@
     }
 
     // Add product
-    $('.add-product').click(function () {
+    $('.update-product').click(function () {
         // None relationship data
         var name = $(".pro-name").val();
         var stock = $(".pro-stock").val();
@@ -480,8 +561,8 @@
                     Thương hiệu
                     <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu dropdown-br-menu px-2 brand-list" style="max-height: 300px; overflow: auto;">
-                    <input class="form-control mb-2" id="myInput-br" type="text" placeholder="Tìm thương hiệu..." autocomplete="off"/>
+                <ul class="dropdown-menu px-2 brand-list" style="max-height: 300px; overflow: auto;">
+                    <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm thương hiệu..." autocomplete="off"/>
 
                 </ul>
             </div>
@@ -503,8 +584,8 @@
                     Danh mục
                     <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu dropdown-sub-menu px-2 subcate-list" style="max-height: 300px; overflow: auto;">
-                    <input class="form-control mb-2" id="myInput-sub" type="text" placeholder="Tìm danh mục.." autocomplete="off"/>
+                <ul class="dropdown-menu px-2 subcate-list" style="max-height: 300px; overflow: auto;">
+                    <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm danh mục.." autocomplete="off"/>
 
                 </ul>
             </div>
@@ -599,27 +680,14 @@
 </script>
 <script type="text/javascript">
     // Search input with autocomplete
-    $(document).on("keyup", "#myInput-sh", function () {
-        var value = $(this).val().toLowerCase();
-        $(".dropdown-sh-menu li label").filter(function () {
-            $(this).siblings("input").toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $(".dropdown-menu li").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
         });
-    })
-    $(document).on("keyup", "#myInput-br", function () {
-        var value = $(this).val().toLowerCase();
-        $(".dropdown-br-menu li label").filter(function () {
-            $(this).siblings("input").toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-    })
-    $(document).on("keyup", "#myInput-sub", function () {
-        var value = $(this).val().toLowerCase();
-        $(".dropdown-sub-menu li label").filter(function () {
-            $(this).siblings("input").toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-    })
+    });
 </script>
 <script type="text/javascript">
     $('.image-uploaded').change(function () {
