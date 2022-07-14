@@ -13,7 +13,7 @@
       "launchBrowser": true,
       "launchUrl": "ManageSizeGuide", // Change it when you're developing some features needed
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Production"
       }
     },
     "ECommerce.WebApp": {

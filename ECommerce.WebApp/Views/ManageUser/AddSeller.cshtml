@@ -66,14 +66,14 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu px-2" style="max-height: 300px; overflow: auto;">
-                                <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm cửa hàng..." autocomplete="off" />
-                                @*@foreach (var item in Model)
+                                <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm..." autocomplete="off" />
+                                @foreach (var item in Model)
                                 {
                                     <li class="d-flex align-items-center">
-                                        <input name="brand" class="brand_select mr-2" id="sh_@item.ShopId" type="radio" value="@item.BrandId">
-                                        <label class="mb-0" for="sh_@item.ShopId">ID:@item.ShopId-@item.ShopName</label>
+                                        <input name="brand" class="shop_select mr-2" id="sh_@item.ShopId" type="checkbox" value="@item.ShopId">
+                                        <label class="mb-0" for="sh_@item.ShopId">@item.ShopId-@item.ShopName</label>
                                     </li>
-                                }*@
+                                }
                             </ul>
                         </div>
                     </div>
@@ -89,10 +89,25 @@
 <script src="~/js/main/provinces-rendering.js"></script>
 <script src="https://cdn.tiny.cloud/1/4ctr9pi6o8mlflu8si6gdszgl62tn4zl73knhf3tkqalszsx/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
+    $(document).on("keyup", "#myInput", function () {
+        var value = $(this).val().toLowerCase();
+        $(".dropdown-menu li label").filter(function () {
+            $(this).siblings("input").toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    })
+</script>
+<script>
     $(".discard-changes").click(function () {
         location.reload();
     });
     $(".add-user").click(function () {
+        var shopIds = [];
+        $(".shop_select").each(function () {
+            if ($(this).is(":checked")) {
+                shopIds.push($(this).val());
+            }
+        })
         var request = {
             UserPhone: $('.user-phone').val(),
             UserFullName: $('.user-fullname').val(),
@@ -102,7 +117,8 @@
             UserDistrictCode: $('.user-districtcode').val(),
             UserCityCode: $('.user-citycode').val(),
             Password: $('.user-password').val(),
-            RePassword: $('.user-repassword').val()
+            RePassword: $('.user-repassword').val(),
+            shopIds: shopIds,
         };
         $.post("/ManageUser/AddSeller", request)
             .then(function (response) {

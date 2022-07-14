@@ -84,14 +84,7 @@
                         <td>
                             <div class="text-center d-flex align-items-center">
                                 <button class="btn btn-primary mr-2 update-user">Cập nhật</button>
-                                @if (Model.User.Status == false)
-                                {
-                                    <button class="btn btn-success" onclick="unblockUser(@Model.User.UserId)">Mở khóa</button>
-                                }
-                                else
-                                {
-                                    <button class="btn btn-danger" onclick="blockUser(@Model.User.UserId)">Khóa</button>
-                                }
+                                <button class="btn btn-danger delete-user">Xóa tài khoản</button>
                             </div>
                         </td>
                     </tr>
@@ -131,5 +124,18 @@
                 console.log(error);
                 alert(error.responseText);
             })
+    })
+    $(".delete-user").click(function () {
+        if (confirm("Xác nhận xóa tài khoản này")) {
+            $.post("/ManageUser/DeleteUser", { id: @Model.User.UserId })
+            .then(function (response) {
+                alert(response);
+                window.location = "/ManageUser/Index";
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert(error.responseText);
+            })
+        }
     })
 </script>

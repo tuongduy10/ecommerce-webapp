@@ -212,11 +212,23 @@ namespace ECommerce.Application.Services.User
                 await _DbContext.Users.AddAsync(user);
                 await _DbContext.SaveChangesAsync();
 
+                // Role
                 Data.Models.UserRole role = new Data.Models.UserRole();
                 role.RoleId = (int)enumRole.Seller;
                 role.UserId = user.UserId;
                 await _DbContext.UserRoles.AddAsync(role);
                 await _DbContext.SaveChangesAsync();
+
+                // Shop
+                if (request.shopIds != null)
+                {
+                    foreach (var id in request.shopIds)
+                    {
+                        var shop = await _DbContext.Shops.Where(i => i.ShopId == id).FirstOrDefaultAsync();
+                        shop.UserId = user.UserId;
+                        await _DbContext.SaveChangesAsync();
+                    }
+                }
 
                 return new ApiSuccessResponse("Tạo tài khoản thành công");
             }
@@ -479,6 +491,42 @@ namespace ECommerce.Application.Services.User
                 })
                 .FirstOrDefaultAsync();
             return user;
+        }
+        public async Task<ApiResponse> DeleteUser(int id)
+        {
+            try
+            {   
+                if (id == 0) return new ApiFailResponse("Vui lòng chọn User");
+                var userRole = await getUserRole(id);
+                if (userRole == "Admin") return new ApiFailResponse("Không thể xóa tài khoản này");
+
+                // User's roles
+                var roles = await _DbContext.UserRoles.Where(i => i.UserId == id).ToListAsync();
+                _DbContext.UserRoles.RemoveRange(roles);
+                _DbContext.SaveChangesAsync().Wait();
+
+                // User's comment
+                var rate = await _DbContext.Rates.Where(i => i.UserId == id).FirstOrDefaultAsync();
+                if (rate != null)
+                {
+                    var rateImages = await _DbContext.RatingImages.Where(i => i.RateId == rate.RateId).ToListAsync();
+                    _DbContext.RatingImages.RemoveRange(rateImages);
+                    _DbContext.SaveChangesAsync().Wait();
+                    _DbContext.Rates.Remove(rate);
+                    _DbContext.SaveChangesAsync().Wait();
+                }
+
+                // User
+                var user = await _DbContext.Users.Where(i => i.UserId == id).FirstOrDefaultAsync();
+                _DbContext.Users.Remove(user);
+                _DbContext.SaveChangesAsync().Wait();
+
+                return new ApiSuccessResponse("Đã xóa tài khoản");
+            }
+            catch
+            {
+                return new ApiFailResponse("Cập nhật thất bại, thử lại sau");
+            }
         }
     }
 }

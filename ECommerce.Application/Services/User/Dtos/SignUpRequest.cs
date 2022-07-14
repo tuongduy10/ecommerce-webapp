@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 namespace ECommerce.Application.Services.User.Dtos
 {
     public class SignUpRequest
@@ -14,5 +16,6 @@ namespace ECommerce.Application.Services.User.Dtos
         public string RePassword { get; set; }
         public bool isSystemAccount { get; set; }
         public int RoleId { get; set; }
+        public List<int> shopIds { get; set; }
     }
 }
