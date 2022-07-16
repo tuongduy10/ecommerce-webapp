@@ -11,9 +11,9 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "ManageSizeGuide", // Change it when you're developing some features needed
+      "launchUrl": "ManageCategory/Detail/2", // Change it when you're developing some features needed
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "ECommerce.WebApp": {

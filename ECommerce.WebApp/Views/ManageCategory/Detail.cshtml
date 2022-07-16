@@ -1,0 +1,324 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="container-fluid">
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary text-center">@Model.category.CategoryName</h6>
+        </div>
+        <div class="card-body p-2">
+            <form class="mx-auto">
+                <div class="row">
+                    <div class="col-sm-6 mb-4">
+                        <div class="text-left mb-2 text-primary"><strong>1. Thông tin tùy chọn</strong></div>
+                        <div class="form-group mb-4">
+                            <label>Danh mục</label>
+                            <div class="d-flex mb-2">
+                                <div class="dropdown mr-2">
+                                    <input class="form-control category-name" type="text" value="@Model.category.CategoryName">
+                                </div>
+                                <a class="update-category btn btn-primary">Cập nhật</a>
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label>Thêm loại sản phẩm</label>
+                            <div class="d-flex mb-2">
+                                <div class="dropdown mr-2">
+                                    <input class="form-control subcategory-value" type="text">
+                                </div>
+                                <a class="add-subcategory btn btn-primary">Thêm</a>
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label>Thêm tùy chọn</label>
+                            <div class="dropdown mb-2 mr-2">
+                                <button class="btn border dropdown-toggle brand_select-text" type="button" data-toggle="dropdown">
+                                    Loại sản phẩm
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-sub-menu px-2" style="max-height: 300px; overflow: auto;">
+                                    <input class="form-control mb-2" id="myInput-sub" type="text" placeholder="Tìm..." autocomplete="off" />
+                                    @if (Model.subcategories.Count > 0)
+                                    {
+                                        @foreach (var item in Model.subcategories)
+                                        {
+                                            <li class="d-flex align-items-center">
+                                                <input name="sub-opt" class="sub-opt-select mr-2" id="sub-opt-@item.SubCategoryId" type="checkbox" value="@item.SubCategoryId">
+                                                <label class="mb-0" for="sub-opt-@item.SubCategoryId">@item.SubCategoryName</label>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <div class="dropdown mr-2">
+                                    <input class="form-control option-name" type="text">
+                                </div>
+                                <a class="btn btn-primary add-option">Thêm</a>
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label>Thêm chi tiết</label>
+                            <div class="dropdown mb-2 mr-2">
+                                <button class="btn border dropdown-toggle brand_select-text" type="button" data-toggle="dropdown">
+                                    Loại sản phẩm
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-sub-menu px-2" style="max-height: 300px; overflow: auto;">
+                                    <input class="form-control mb-2" id="myInput-sub" type="text" placeholder="Tìm..." autocomplete="off" />
+                                    @if (Model.subcategories.Count > 0)
+                                    {
+                                        @foreach (var item in Model.subcategories)
+                                        {
+                                            <li class="d-flex align-items-center">
+                                                <input name="sub-attr" class="sub-attr-select mr-2" id="sub-attr-@item.SubCategoryId" type="checkbox" value="@item.SubCategoryId">
+                                                <label class="mb-0" for="sub-attr-@item.SubCategoryId">@item.SubCategoryName</label>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <div class="dropdown mr-2">
+                                    <input class="form-control attribute" type="text">
+                                </div>
+                                <a class="btn btn-primary add-attribute">Thêm</a>
+                            </div>
+                        </div>
+                        <div class="form-group mb-2">
+                            <a href="">Quản lý tùy chọn và chi tiết</a>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 mb-4">
+                        <div class="table-responsive">
+                            <table class="table table-bordered order-table" id="dataTable" width="100%"
+                                   cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Loại sản phẩm</th>
+                                        <th>Tùy chọn</th>
+                                        <th>Chi tiết</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.subcategories.Count > 0)
+                                    {
+                                        @foreach (var item in Model.subcategories)
+                                        {
+                                            <tr>
+                                                <td>@item.SubCategoryId</td>
+                                                <td>
+                                                    <input class="form-control" type="text" id="sub-@item.SubCategoryId-name" value="@item.SubCategoryName" />
+                                                </td>
+                                                <td style="max-width: 300px;">
+                                                    <div class="dropdown mb-2 mr-2">
+                                                        <button class="btn border dropdown-toggle brand_select-text" type="button" data-toggle="dropdown">
+                                                            Tùy chọn
+                                                            <span class="caret"></span>
+                                                        </button>
+                                                        <ul class="dropdown-sub-@item.SubCategoryId-menu dropdown-menu px-2" style="max-height: 300px; overflow: auto;">
+                                                            <input class="form-control mb-2" id="myInput-sub-@item.SubCategoryId" type="text" placeholder="Tìm..." autocomplete="off" />
+                                                            @if (item.options.Count > 0)
+                                                            {
+                                                                @foreach (var opt in item.options)
+                                                                {
+                                                                    <li class="d-flex align-items-center">
+                                                                        <input name="options" class="option_select mr-2" id="option-@opt.id" type="checkbox" value="@opt.id" checked>
+                                                                        <label class="mb-0" for="option-@opt.id">@opt.name</label>
+                                                                    </li>
+                                                                }
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                                <td style="max-width: 300px;">
+                                                    <div class="form-group mb-2">
+                                                        <ul class="pl-0 d-flex flex-wrap">
+                                                            @if (item.attributes.Count > 0)
+                                                            {
+                                                                @foreach (var attr in item.attributes)
+                                                                {
+                                                                    <li class="attr d-inline p-1 mr-2 mb-2"
+                                                                        style="background-color: #ddd; border-radius: 4px; white-space: nowrap;">
+                                                                        <span class="text">@attr.name</span>
+                                                                        <span class="remove-tag ml-2" style="cursor: pointer;">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                                 viewBox="0 0 24 24" fill="none" stroke="#333"
+                                                                                 stroke-width="1" stroke-linecap="round"
+                                                                                 stroke-linejoin="round" class="feather feather-x">
+                                                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                                            </svg>
+                                                                        </span>
+                                                                    </li>
+                                                                }
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center">
+                                                    <a class="btn btn-primary" onclick="updateSubcategory(@item.SubCategoryId)">Cập nhật</a>
+                                                    <a class="btn btn-danger" onclick="deleteSubCategory(@item.SubCategoryId)">Xóa</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function updateSubcategory(id) {
+        var request = {
+            id: id,
+            name: $(`#sub-${id}-name`).val(),
+        }
+        $.post("/ManageCategory/UpdateSubcategory", request)
+            .then(function (res) {
+                alert(res);
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert(error.responseText);
+            })
+    }
+    function deleteSubCategory(id) {
+        //var request = {
+        //    id: id,
+        //    name: $(`#sub-${id}-name`).val(),
+        //}
+        //$.post("/ManageCategory/UpdateSubcategory", request)
+        //    .then(function (res) {
+        //        alert(res);
+        //    })
+        //    .catch(function (error) {
+        //        console.log(error);
+        //        alert(error.responseText);
+        //    })
+    }
+    $(document).on('click', '.add-attribute', function () {
+        var ids = [];
+        $(".sub-attr-select").each(function () {
+            if ($(this).is(':checked')) {
+                ids.push($(this).val());
+            }
+        })
+        var request = {
+            ids: ids,
+            name: $(".attribute").val()
+        }
+        $.post("/ManageCategory/UpdateAttributeForSub", request)
+            .then(function (res) {
+                alert(res);
+                window.location.reload();
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert(error.responseText);
+            })
+    })
+    $(document).on('click', '.add-option', function () {
+        var ids = [];
+        $(".sub-opt-select").each(function () {
+            if ($(this).is(':checked')) {
+                ids.push($(this).val());
+            }
+        })
+        var request = {
+            ids: ids,
+            name: $(".option-name").val()
+        }
+        $.post("/ManageCategory/UpdateOptionForSub", request)
+            .then(function (res) {
+                alert(res);
+                window.location.reload();
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert(error.responseText);
+            })
+    })
+    $(document).on('click', '.add-subcategory', function () {
+        var request = {
+            SubCategoryName: $('.subcategory-value').val(),
+            CategoryId: @Model.category.CategoryId
+        };
+        $.post("/ManageCategory/AddSubcategory", request)
+            .then(function (res) {
+                alert(res);
+                window.location.reload();
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert(error.responseText);
+            })
+    })
+    $(document).on('click', '.update-category', function () {
+        var request = {
+            CategoryId: @Model.category.CategoryId,
+            CategoryName: $(".category-name").val()
+        }
+        $.post("/ManageCategory/Update", request)
+            .then(function (res) {
+                alert(res);
+                window.location.reload();
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert(error.responseText);
+            })
+    })
+</script>
+<script>
+    // Add
+    $(document).on('click', '.add-option', function () {
+        let val = $(this).siblings('.dropdown').find('input').val();
+        if (!val?.trim()) { return; }
+
+        $(this).parent().siblings('ul').append(`
+            <li class="d-inline p-1 mr-2 mb-2"
+                style="background-color: #ddd; border-radius: 4px;">
+                <span class="text">${val}</span>
+                <span class="remove-tag ml-2" style="cursor: pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        viewBox="0 0 24 24" fill="none" stroke="#333"
+                        stroke-width="1" stroke-linecap="round"
+                        stroke-linejoin="round" class="feather feather-x">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </span>
+            </li>
+        `)
+
+        $(this).siblings('.dropdown').find('input').val('');
+    })
+    // Remove attr or option
+    $(document).on('click', '.remove-tag', function () {
+        $(this).parent().remove();
+    })
+    // Search input with autocomplete
+    searchInput('dropdown-sub-menu', 'myInput-sub');
+    function searchInput(dropdown, input) {
+        $(document).on("keyup", `#${input}`, function () {
+            var value = $(this).val().toLowerCase();
+            $(`.${dropdown} li label`).filter(function () {
+                $(this).siblings("input").toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        })
+    }
+</script>
+@foreach (var item in Model.subcategories)
+{
+    <script>searchInput(`dropdown-sub-${@item.SubCategoryId}-menu`, `myInput-sub-${@item.SubCategoryId}`);</script>
+}

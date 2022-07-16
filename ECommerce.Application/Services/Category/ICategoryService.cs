@@ -14,6 +14,6 @@ namespace ECommerce.Application.Services.Category
         Task<ApiResponse> Update(CategoryModel request);
         Task<ApiResponse> Delete(int CategoryId);
         Task<List<CategoryModel>> getAll();
-
+        Task<CategoryModel> Detail(int id);
     }
 }

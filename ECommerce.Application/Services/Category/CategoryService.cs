@@ -64,7 +64,17 @@ namespace ECommerce.Application.Services.Category
         }
         public async Task<ApiResponse> Update(CategoryModel request)
         {
-            throw new NotImplementedException();
+            var category = await _DbContext.Categories
+                .Where(i => i.CategoryId == request.CategoryId)
+                .FirstOrDefaultAsync();
+
+            if (category == null) return new ApiFailResponse("Không tìm thấy danh mục");
+            if (string.IsNullOrEmpty(request.CategoryName)) return new ApiFailResponse("Tên không được để trống");
+
+            category.CategoryName = request.CategoryName.Trim();
+            await _DbContext.SaveChangesAsync();
+
+            return new ApiSuccessResponse("Cập nhật thành công");
         }
         public async Task<List<CategoryModel>> getAll()
         {
@@ -75,6 +85,21 @@ namespace ECommerce.Application.Services.Category
                 CategoryId = i.CategoryId,
                 CategoryName = i.CategoryName
             }).ToListAsync();
+        }
+        public async Task<CategoryModel> Detail(int id)
+        {
+            var category = await _DbContext.Categories
+                .Where(i => i.CategoryId == id)
+                .Select(i => new CategoryModel
+                {
+                    CategoryId = i.CategoryId,
+                    CategoryName = i.CategoryName
+                })
+                .FirstOrDefaultAsync();
+
+            if (category == null) return null;
+
+            return category;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.SubCategory.Dtos;
+﻿using ECommerce.Application.Common;
+using ECommerce.Application.Services.SubCategory.Dtos;
 using ECommerce.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,17 +17,60 @@ namespace ECommerce.Application.Services.SubCategory
         {
             _DbContext = DbContext;
         }
-        public async Task<int> Create(SubCategoryCreateRequest request)
+        public async Task<ApiResponse> Create(SubCategoryCreateRequest request)
+        {
+            try
+            {
+                if (request.CategoryId == 0) return new ApiFailResponse("Không tìm thấy danh mục");
+                if (string.IsNullOrEmpty(request.SubCategoryName)) return new ApiFailResponse("Tên không được để trống");
+
+
+                var subcate = new Data.Models.SubCategory
+                {
+                    SubCategoryName = request.SubCategoryName.Trim(),
+                    CategoryId = request.CategoryId
+                };
+                await _DbContext.SubCategories.AddAsync(subcate);
+                await _DbContext.SaveChangesAsync();
+                return new ApiSuccessResponse("Thêm thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Thêm thất bại, vui lòng thử lại sau");
+            }
+        }
+        public async Task<ApiResponse> Delete(int CategoryId)
         {
             throw new NotImplementedException();
         }
-        public async Task<int> Delete(int CategoryId)
+        public async Task<ApiResponse> Update(SubCategoryUpdateRequest request)
         {
-            throw new NotImplementedException();
-        }
-        public async Task<int> Update(SubCategoryCreateRequest request)
-        {
-            throw new NotImplementedException();
+            try
+            {
+                if (string.IsNullOrEmpty(request.name)) return new ApiSuccessResponse("Tên không được bỏ trống");
+
+                var subcategory = await _DbContext.SubCategories
+                    .Where(i => i.SubCategoryId == request.id)
+                    .FirstOrDefaultAsync();
+
+                subcategory.SubCategoryName = request.name.Trim();
+
+                if (request.opts != null && request.opts.Count > 0)
+                {
+                    
+                }
+                if (request.attrs != null && request.attrs.Count > 0)
+                {
+
+                }
+                await _DbContext.SaveChangesAsync();
+
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Cập nhật thất bại, vui lòng thử lại sau");
+            }
         }
         public async Task<List<SubCategoryModel>> getAll()
         {
@@ -117,6 +161,31 @@ namespace ECommerce.Application.Services.SubCategory
                 .ToListAsync();
             return result;
         }
+        public async Task<List<SubCategoryModel>> getSubCategoryByCategoryWithOptsAndAttrs(int id)
+        {
+            var subcategories = await _DbContext.SubCategories
+                .Where(i => i.CategoryId == id)
+                .Select(i => new SubCategoryModel {
+                    SubCategoryId = i.SubCategoryId,
+                    SubCategoryName = i.SubCategoryName,
+                    options = i.SubCategoryOptions
+                    .Where(sbo => sbo.SubCategoryId == i.SubCategoryId)
+                    .Select(sbo => new OptionGetModel { 
+                        id = sbo.OptionId,
+                        name = sbo.Option.OptionName
+                    })
+                    .ToList(),
+                    attributes = i.SubCategoryAttributes
+                    .Where(sba => sba.SubCategoryId == i.SubCategoryId)
+                    .Select(sba => new AttributeGetModel { 
+                        id = sba.AttributeId,
+                        name = sba.Attribute.AttributeName
+                    })
+                    .ToList()
+                })
+                .ToListAsync();
+            return subcategories;
+        }
         public async Task<List<OptionGetModel>> getOptionBySubCategoryId(int id)
         {
             var result = await _DbContext.SubCategoryOptions
@@ -159,6 +228,111 @@ namespace ECommerce.Application.Services.SubCategory
                 })
                 .ToListAsync();
             return result;
+        }
+        public async Task<ApiResponse> UpdateOptionForSub(SubListUpdateRequest request)
+        {
+            try
+            {
+                if (request.ids == null || request.ids.Count == 0) return new ApiFailResponse("Vui lòng chọn loại sản phẩm");
+                if (string.IsNullOrEmpty(request.name)) return new ApiFailResponse("Vui lòng nhập tên");
+
+                var subs_otps = await _DbContext.SubCategoryOptions.Where(i => request.ids.Contains(i.SubCategoryId)).ToListAsync();
+                var option = await _DbContext.Options.Where(i => i.OptionName == request.name.Trim()).FirstOrDefaultAsync();
+                if (subs_otps.Count == 0)
+                {
+                    
+                }
+                if (option == null) // Create new option and update option in subcategory
+                {
+                    var newOption = new Data.Models.Option
+                    {
+                        OptionName = request.name.Trim()
+                    };
+                    await _DbContext.Options.AddAsync(newOption);
+                    await _DbContext.SaveChangesAsync();
+
+                    foreach (var id in request.ids)
+                    {
+                        var newSubOpt = new Data.Models.SubCategoryOption
+                        {
+                            SubCategoryId = id,
+                            OptionId = newOption.OptionId
+                        };
+                        await _DbContext.SubCategoryOptions.AddAsync(newSubOpt);
+                    }
+                    await _DbContext.SaveChangesAsync();
+                }
+                if (option != null) // Update option in subcategory
+                {
+                    foreach (var id in request.ids)
+                    {
+                        var subs = await _DbContext.SubCategoryOptions
+                            .Where(i => i.SubCategoryId == id)
+                            .ToListAsync();
+                        if (subs.Count == 0)
+                        {
+                            
+                        }
+                        if (subs == null)
+                        {
+                            var newSubOpt = new Data.Models.SubCategoryOption
+                            {
+                                SubCategoryId = id,
+                                OptionId = option.OptionId
+                            };
+                            await _DbContext.SubCategoryOptions.AddAsync(newSubOpt);
+                            await _DbContext.SaveChangesAsync();
+                        }
+                    }
+                }
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Cập nhật thất bại, thử lại sau");
+            }
+        }
+        public async Task<ApiResponse> UpdateAttributeForSub(SubListUpdateRequest request)
+        {
+            try
+            {
+                if (request.ids == null || request.ids.Count == 0) return new ApiFailResponse("Vui lòng chọn loại sản phẩm");
+                if (string.IsNullOrEmpty(request.name)) return new ApiFailResponse("Vui lòng nhập tên");
+
+                var subcategories = await _DbContext.SubCategoryAttributes.Where(i => request.ids.Contains(i.SubCategoryId)).ToListAsync();
+                if (subcategories.Count == 0) return new ApiFailResponse("Không tìm thấy danh sách loại sản phẩm");
+
+                var attribute = await _DbContext.Attributes.Where(i => i.AttributeName == request.name.Trim()).FirstOrDefaultAsync();
+                if (attribute == null) // Create new attribute and update attribute in subcategory
+                {
+                    var newAttribute = new Data.Models.Attribute
+                    {
+                        AttributeName = request.name.Trim()
+                    };
+                    await _DbContext.Attributes.AddAsync(newAttribute);
+                    await _DbContext.SaveChangesAsync();
+
+                    foreach (var item in subcategories)
+                    {
+                        item.AttributeId = newAttribute.AttributeId;
+                    }
+                    await _DbContext.SaveChangesAsync();
+                }
+                if (attribute != null) // Update attribute in subcategory
+                {
+                    foreach (var item in subcategories)
+                    {
+                        item.AttributeId = attribute.AttributeId;
+                    }
+                    await _DbContext.SaveChangesAsync();
+                }
+
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Cập nhật thất bại, thử lại sau");
+            }
         }
     }
 }

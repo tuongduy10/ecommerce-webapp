@@ -30,7 +30,7 @@
                         <tr>
                             <td>@item.CategoryName</td>
                             <td class="text-center">
-                                <a class="btn btn-primary" href="">Chi tiết</a>
+                                <a class="btn btn-primary" href="@Url.Action("Detail", "ManageCategory", new { id = item.CategoryId })">Chi tiết</a>
                                 <a class="btn btn-danger" onclick="deleteCategory(@item.CategoryId)">Xóa</a>
                             </td>
                         </tr>
@@ -67,4 +67,28 @@
                 alert(error.responseText);
             })
     }
+</script>
+<script>
+    $(document).on('click', '.add-option', function () {
+        let val = $(this).siblings('.dropdown').find('input').val();
+        if (!val?.trim()) { return; }
+
+        $(this).parent().siblings('ul').append(`
+            <li class="d-inline p-1 mr-2 mb-2"
+                style="background-color: #ddd; border-radius: 4px;">
+                <span class="text">${val}</span>
+                <span class="remove-tag ml-2" style="cursor: pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        viewBox="0 0 24 24" fill="none" stroke="#333"
+                        stroke-width="1" stroke-linecap="round"
+                        stroke-linejoin="round" class="feather feather-x">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </span>
+            </li>
+        `)
+
+        $(this).siblings('.dropdown').find('input').val('');
+    })
 </script>

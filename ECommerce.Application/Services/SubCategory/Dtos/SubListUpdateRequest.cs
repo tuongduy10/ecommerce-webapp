@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Services.SubCategory.Dtos
 {
-    public class SubCategoryCreateRequest
+    public class SubListUpdateRequest
     {
-        public string SubCategoryName { get; set; }
-        public int CategoryId { get; set; }
-        public int SizeGuideId { get; set; }
+        public List<int> ids { get; set;} // subcategory ids
+        public string name { get; set; } // option name/attribute
     }
 }
