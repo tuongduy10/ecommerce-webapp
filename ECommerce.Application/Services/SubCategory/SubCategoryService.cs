@@ -23,7 +23,13 @@ namespace ECommerce.Application.Services.SubCategory
             {
                 if (request.CategoryId == 0) return new ApiFailResponse("Không tìm thấy danh mục");
                 if (string.IsNullOrEmpty(request.SubCategoryName)) return new ApiFailResponse("Tên không được để trống");
-
+                var hasSubName = await _DbContext.SubCategories
+                    .Where(i => i.CategoryId == request.CategoryId && i.SubCategoryName == request.SubCategoryName.Trim())
+                    .FirstOrDefaultAsync() != null;
+                if (hasSubName)
+                {
+                    return new ApiFailResponse("Đã tồn tại");
+                }
 
                 var subcate = new Data.Models.SubCategory
                 {
@@ -39,29 +45,100 @@ namespace ECommerce.Application.Services.SubCategory
                 return new ApiFailResponse("Thêm thất bại, vui lòng thử lại sau");
             }
         }
-        public async Task<ApiResponse> Delete(int CategoryId)
+        public async Task<ApiResponse> Delete(int id)
         {
-            throw new NotImplementedException();
+            if (id == 0) return new ApiFailResponse("Vui lòng chọn loại sản phẩm");
+
+            try
+            {
+                var products = await _DbContext.Products.Where(i => i.SubCategoryId == id).ToListAsync();
+                if (products.Count > 0)
+                {
+                    return new ApiFailResponse($"Hiện đang có {products.Count} sản phẩm đang chọn loại sản phẩm này, không thể xóa");
+                }
+                var opts = await _DbContext.SubCategoryOptions.Where(i => i.SubCategoryId == id).ToListAsync();
+                if (opts.Count > 0)
+                {
+                    _DbContext.SubCategoryOptions.RemoveRange(opts);
+                    await _DbContext.SaveChangesAsync();
+                }
+                var attrs = await _DbContext.SubCategoryAttributes.Where(i => i.SubCategoryId == id).ToListAsync();
+                if (attrs.Count > 0)
+                {
+                    _DbContext.SubCategoryAttributes.RemoveRange(attrs);
+                    await _DbContext.SaveChangesAsync();
+                }
+                var sub = await _DbContext.SubCategories.Where(i => i.SubCategoryId == id).FirstOrDefaultAsync();
+                if (sub != null)
+                {
+                    _DbContext.SubCategories.Remove(sub);
+                    await _DbContext.SaveChangesAsync();
+                }
+
+                return new ApiSuccessResponse("Xóa thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Xóa thật bại, vui lòng thử lại");
+            }
         }
         public async Task<ApiResponse> Update(SubCategoryUpdateRequest request)
         {
             try
             {
-                if (string.IsNullOrEmpty(request.name)) return new ApiSuccessResponse("Tên không được bỏ trống");
+                if (string.IsNullOrEmpty(request.name)) return new ApiSuccessResponse("Vui lòng nhập tên");
 
                 var subcategory = await _DbContext.SubCategories
                     .Where(i => i.SubCategoryId == request.id)
                     .FirstOrDefaultAsync();
-
                 subcategory.SubCategoryName = request.name.Trim();
 
-                if (request.opts != null && request.opts.Count > 0)
+                // Remove previous data
+                 var opts = await _DbContext.SubCategoryOptions
+                    .Where(i => i.SubCategoryId == request.id)
+                    .ToListAsync();
+                if (opts.Count > 0)
                 {
-                    
+                    _DbContext.SubCategoryOptions.RemoveRange(opts);
+                    await _DbContext.SaveChangesAsync();
                 }
-                if (request.attrs != null && request.attrs.Count > 0)
+                if (request.optIds != null && request.optIds.Count > 0)
                 {
+                    // Add new or re-add
+                    foreach (var id in request.optIds)
+                    {
+                        var newOpt = new Data.Models.SubCategoryOption
+                        {
+                            SubCategoryId = request.id,
+                            OptionId = id
+                        };
+                        await _DbContext.SubCategoryOptions.AddRangeAsync(newOpt);
+                        await _DbContext.SaveChangesAsync();
+                    }
+                }
 
+                // Remove previous data
+                var attrs = await _DbContext.SubCategoryAttributes
+                    .Where(i => i.SubCategoryId == request.id)
+                    .ToListAsync();
+                if (attrs.Count > 0)
+                {
+                    _DbContext.SubCategoryAttributes.RemoveRange(attrs);
+                    await _DbContext.SaveChangesAsync();
+                }
+                if (request.attrIds != null && request.attrIds.Count > 0)
+                {
+                    // Add new or re-add
+                    foreach (var attr in request.attrIds)
+                    {
+                        var newAttr = new Data.Models.SubCategoryAttribute
+                        {
+                            SubCategoryId = request.id,
+                            AttributeId = attr
+                        };
+                        await _DbContext.SubCategoryAttributes.AddRangeAsync(newAttr);
+                        await _DbContext.SaveChangesAsync();
+                    }
                 }
                 await _DbContext.SaveChangesAsync();
 
@@ -236,14 +313,10 @@ namespace ECommerce.Application.Services.SubCategory
                 if (request.ids == null || request.ids.Count == 0) return new ApiFailResponse("Vui lòng chọn loại sản phẩm");
                 if (string.IsNullOrEmpty(request.name)) return new ApiFailResponse("Vui lòng nhập tên");
 
-                var subs_otps = await _DbContext.SubCategoryOptions.Where(i => request.ids.Contains(i.SubCategoryId)).ToListAsync();
                 var option = await _DbContext.Options.Where(i => i.OptionName == request.name.Trim()).FirstOrDefaultAsync();
-                if (subs_otps.Count == 0)
-                {
-                    
-                }
                 if (option == null) // Create new option and update option in subcategory
                 {
+                    // Create new
                     var newOption = new Data.Models.Option
                     {
                         OptionName = request.name.Trim()
@@ -251,28 +324,32 @@ namespace ECommerce.Application.Services.SubCategory
                     await _DbContext.Options.AddAsync(newOption);
                     await _DbContext.SaveChangesAsync();
 
+                    // update option in subcategory
                     foreach (var id in request.ids)
                     {
-                        var newSubOpt = new Data.Models.SubCategoryOption
+                        var subs = await _DbContext.SubCategoryOptions
+                            .Where(i => i.SubCategoryId == id && i.OptionId == newOption.OptionId)
+                            .FirstOrDefaultAsync();
+                        if (subs == null)
                         {
-                            SubCategoryId = id,
-                            OptionId = newOption.OptionId
-                        };
-                        await _DbContext.SubCategoryOptions.AddAsync(newSubOpt);
+                            var newSubOpt = new Data.Models.SubCategoryOption
+                            {
+                                SubCategoryId = id,
+                                OptionId = newOption.OptionId
+                            };
+                            await _DbContext.SubCategoryOptions.AddAsync(newSubOpt);
+                            await _DbContext.SaveChangesAsync();
+                        }
                     }
-                    await _DbContext.SaveChangesAsync();
+                    
                 }
                 if (option != null) // Update option in subcategory
                 {
                     foreach (var id in request.ids)
                     {
                         var subs = await _DbContext.SubCategoryOptions
-                            .Where(i => i.SubCategoryId == id)
-                            .ToListAsync();
-                        if (subs.Count == 0)
-                        {
-                            
-                        }
+                            .Where(i => i.SubCategoryId == id && i.OptionId == option.OptionId)
+                            .FirstOrDefaultAsync();
                         if (subs == null)
                         {
                             var newSubOpt = new Data.Models.SubCategoryOption
@@ -299,12 +376,10 @@ namespace ECommerce.Application.Services.SubCategory
                 if (request.ids == null || request.ids.Count == 0) return new ApiFailResponse("Vui lòng chọn loại sản phẩm");
                 if (string.IsNullOrEmpty(request.name)) return new ApiFailResponse("Vui lòng nhập tên");
 
-                var subcategories = await _DbContext.SubCategoryAttributes.Where(i => request.ids.Contains(i.SubCategoryId)).ToListAsync();
-                if (subcategories.Count == 0) return new ApiFailResponse("Không tìm thấy danh sách loại sản phẩm");
-
                 var attribute = await _DbContext.Attributes.Where(i => i.AttributeName == request.name.Trim()).FirstOrDefaultAsync();
                 if (attribute == null) // Create new attribute and update attribute in subcategory
                 {
+                    // Create new
                     var newAttribute = new Data.Models.Attribute
                     {
                         AttributeName = request.name.Trim()
@@ -312,19 +387,42 @@ namespace ECommerce.Application.Services.SubCategory
                     await _DbContext.Attributes.AddAsync(newAttribute);
                     await _DbContext.SaveChangesAsync();
 
-                    foreach (var item in subcategories)
+                    // Update with new value
+                    foreach (var id in request.ids)
                     {
-                        item.AttributeId = newAttribute.AttributeId;
+                        var attrs = await _DbContext.SubCategoryAttributes
+                            .Where(i => i.SubCategoryId == id && i.AttributeId == newAttribute.AttributeId)
+                            .FirstOrDefaultAsync();
+                        if (attrs == null)
+                        {
+                            var attr = new Data.Models.SubCategoryAttribute
+                            {
+                                SubCategoryId = id,
+                                AttributeId = newAttribute.AttributeId
+                            };
+                            await _DbContext.SubCategoryAttributes.AddAsync(attr);
+                            await _DbContext.SaveChangesAsync();
+                        }
                     }
-                    await _DbContext.SaveChangesAsync();
                 }
                 if (attribute != null) // Update attribute in subcategory
                 {
-                    foreach (var item in subcategories)
+                    foreach (var id in request.ids)
                     {
-                        item.AttributeId = attribute.AttributeId;
+                        var attrIsNotExist = await _DbContext.SubCategoryAttributes
+                            .Where(i => i.SubCategoryId == id && i.AttributeId == attribute.AttributeId)
+                            .FirstOrDefaultAsync() == null;
+                        if (attrIsNotExist)
+                        {
+                            var attr = new Data.Models.SubCategoryAttribute
+                            {
+                                SubCategoryId = id,
+                                AttributeId = attribute.AttributeId
+                            };
+                            await _DbContext.SubCategoryAttributes.AddAsync(attr);
+                            await _DbContext.SaveChangesAsync();
+                        }
                     }
-                    await _DbContext.SaveChangesAsync();
                 }
 
                 return new ApiSuccessResponse("Cập nhật thành công");

@@ -81,7 +81,7 @@
                             </div>
                             <div class="d-flex mb-2">
                                 <div class="dropdown mr-2">
-                                    <input class="form-control attribute" type="text">
+                                    <input class="form-control attribute-name" type="text">
                                 </div>
                                 <a class="btn btn-primary add-attribute">Thêm</a>
                             </div>
@@ -127,7 +127,7 @@
                                                                 @foreach (var opt in item.options)
                                                                 {
                                                                     <li class="d-flex align-items-center">
-                                                                        <input name="options" class="option_select mr-2" id="option-@opt.id" type="checkbox" value="@opt.id" checked>
+                                                                        <input name="options" class="option-@item.SubCategoryId mr-2" id="option-@opt.id" type="checkbox" value="@opt.id" checked>
                                                                         <label class="mb-0" for="option-@opt.id">@opt.name</label>
                                                                     </li>
                                                                 }
@@ -142,7 +142,8 @@
                                                             {
                                                                 @foreach (var attr in item.attributes)
                                                                 {
-                                                                    <li class="attr d-inline p-1 mr-2 mb-2"
+                                                                    <li class="attr attribute-@item.SubCategoryId d-inline p-1 mr-2 mb-2"
+                                                                        value="@attr.id"
                                                                         style="background-color: #ddd; border-radius: 4px; white-space: nowrap;">
                                                                         <span class="text">@attr.name</span>
                                                                         <span class="remove-tag ml-2" style="cursor: pointer;">
@@ -178,13 +179,28 @@
 </div>
 <script>
     function updateSubcategory(id) {
+        var optionIds = [];
+        $(`.option-${id}`).each(function () {
+            if ($(this).is(":checked")) {
+                optionIds.push($(this).val());
+            }
+        })
+
+        var attributeIds = [];
+        $(`.attribute-${id}`).each(function () {
+            attributeIds.push($(this).val());
+        })
+
         var request = {
-            id: id,
+            optIds: optionIds,
+            attrIds: attributeIds,
             name: $(`#sub-${id}-name`).val(),
+            id: id
         }
         $.post("/ManageCategory/UpdateSubcategory", request)
             .then(function (res) {
                 alert(res);
+                window.location.reload();
             })
             .catch(function (error) {
                 console.log(error);
@@ -192,18 +208,15 @@
             })
     }
     function deleteSubCategory(id) {
-        //var request = {
-        //    id: id,
-        //    name: $(`#sub-${id}-name`).val(),
-        //}
-        //$.post("/ManageCategory/UpdateSubcategory", request)
-        //    .then(function (res) {
-        //        alert(res);
-        //    })
-        //    .catch(function (error) {
-        //        console.log(error);
-        //        alert(error.responseText);
-        //    })
+        $.post("/ManageCategory/DeleteSubCategory", { id: id })
+            .then(function (res) {
+                alert(res);
+                window.location.reload();
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert(error.responseText);
+            })
     }
     $(document).on('click', '.add-attribute', function () {
         var ids = [];
@@ -214,7 +227,7 @@
         })
         var request = {
             ids: ids,
-            name: $(".attribute").val()
+            name: $(".attribute-name").val()
         }
         $.post("/ManageCategory/UpdateAttributeForSub", request)
             .then(function (res) {

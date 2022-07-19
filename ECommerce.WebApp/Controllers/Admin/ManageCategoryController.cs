@@ -84,6 +84,12 @@ namespace ECommerce.WebApp.Controllers.Admin
             if (result.isSucceed) return Ok(result.Message);
             return BadRequest(result.Message);
         }
+        public async Task<IActionResult> DeleteSubCategory(int id)
+        {
+            var result = await _subCategoryService.Delete(id);
+            if (result.isSucceed) return Ok(result.Message);
+            return BadRequest(result.Message);
+        }
         public async Task<IActionResult> UpdateAttributeForSub(SubListUpdateRequest request)
         {
             var result = await _subCategoryService.UpdateAttributeForSub(request);

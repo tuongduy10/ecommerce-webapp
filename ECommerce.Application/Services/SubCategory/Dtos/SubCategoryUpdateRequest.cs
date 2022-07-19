@@ -10,7 +10,7 @@ namespace ECommerce.Application.Services.SubCategory.Dtos
     {
         public int id { get; set; }
         public string name { get; set; }
-        public List<AttributeGetModel> attrs { get; set; }
-        public List<OptionGetModel> opts { get; set; }
+        public List<int> attrIds { get; set; }
+        public List<int> optIds { get; set; }
     }
 }
