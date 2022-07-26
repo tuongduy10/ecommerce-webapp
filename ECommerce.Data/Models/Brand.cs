@@ -9,6 +9,7 @@ namespace ECommerce.Data.Models
     {
         public Brand()
         {
+            BrandCategories = new HashSet<BrandCategory>();
             Products = new HashSet<Product>();
             ShopBrands = new HashSet<ShopBrand>();
         }
@@ -18,13 +19,12 @@ namespace ECommerce.Data.Models
         public string BrandImagePath { get; set; }
         public bool Status { get; set; }
         public DateTime CreatedDate { get; set; }
-        public int CategoryId { get; set; }
         public bool? Highlights { get; set; }
         public bool? New { get; set; }
         public int? DiscountId { get; set; }
 
-        public virtual Category Category { get; set; }
         public virtual Discount Discount { get; set; }
+        public virtual ICollection<BrandCategory> BrandCategories { get; set; }
         public virtual ICollection<Product> Products { get; set; }
         public virtual ICollection<ShopBrand> ShopBrands { get; set; }
     }

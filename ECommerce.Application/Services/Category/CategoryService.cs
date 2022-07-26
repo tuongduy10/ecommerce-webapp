@@ -48,7 +48,7 @@ namespace ECommerce.Application.Services.Category
                 var hasSubcategory = subcategories.Count > 0;
                 if (hasSubcategory) return new ApiFailResponse($"Danh mục này tồn tại {subcategories.Count} danh mục sản phẩm");
 
-                var brands = await _DbContext.Brands.Where(i => i.CategoryId == categoryId).ToListAsync();
+                var brands = await _DbContext.BrandCategories.Where(i => i.CategoryId == categoryId).ToListAsync();
                 var hasShop = brands.Count > 0;
                 if (hasShop) return new ApiFailResponse($"Đang có {brands.Count} thương hiệu hoạt động trên danh mục này, không thể xóa");
 

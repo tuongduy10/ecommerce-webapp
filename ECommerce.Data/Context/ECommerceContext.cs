@@ -25,6 +25,7 @@ namespace ECommerce.Data.Context
         public virtual DbSet<Banner> Banners { get; set; }
         public virtual DbSet<Blog> Blogs { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
+        public virtual DbSet<BrandCategory> BrandCategories { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Configuration> Configurations { get; set; }
         public virtual DbSet<Discount> Discounts { get; set; }
@@ -126,16 +127,29 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.CreatedDate).HasColumnType("date");
 
-                entity.HasOne(d => d.Category)
-                    .WithMany(p => p.Brands)
-                    .HasForeignKey(d => d.CategoryId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Brand_Category");
-
                 entity.HasOne(d => d.Discount)
                     .WithMany(p => p.Brands)
                     .HasForeignKey(d => d.DiscountId)
                     .HasConstraintName("FK_Brand_Discount");
+            });
+
+            modelBuilder.Entity<BrandCategory>(entity =>
+            {
+                entity.HasKey(e => new { e.BrandId, e.CategoryId });
+
+                entity.ToTable("BrandCategory");
+
+                entity.HasOne(d => d.Brand)
+                    .WithMany(p => p.BrandCategories)
+                    .HasForeignKey(d => d.BrandId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_BrandCategory_Brand");
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.BrandCategories)
+                    .HasForeignKey(d => d.CategoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_BrandCategory_Category");
             });
 
             modelBuilder.Entity<Category>(entity =>

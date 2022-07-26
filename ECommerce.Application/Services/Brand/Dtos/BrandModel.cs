@@ -16,7 +16,7 @@ namespace ECommerce.Application.Services.Brand.Dtos
         public bool? Highlights { get; set; }
         public bool? New { get; set; }
         public string Category { get; set; }
-        public int CategoryId { get; set; }
+        public List<int> CategoryIds { get; set; }
         public List<ShopManage> Shops { get; set; }
     }
     public class ShopManage

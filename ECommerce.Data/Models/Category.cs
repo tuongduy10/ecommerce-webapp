@@ -9,14 +9,14 @@ namespace ECommerce.Data.Models
     {
         public Category()
         {
-            Brands = new HashSet<Brand>();
+            BrandCategories = new HashSet<BrandCategory>();
             SubCategories = new HashSet<SubCategory>();
         }
 
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
 
-        public virtual ICollection<Brand> Brands { get; set; }
+        public virtual ICollection<BrandCategory> BrandCategories { get; set; }
         public virtual ICollection<SubCategory> SubCategories { get; set; }
     }
 }

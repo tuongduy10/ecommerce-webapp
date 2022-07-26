@@ -102,5 +102,9 @@ namespace ECommerce.WebApp.Controllers.Admin
             if (result.isSucceed) return Ok(result.Message);
             return BadRequest(result.Message);
         }
+        public async Task<IActionResult> AttributeAndOption()
+        {
+            return View();
+        }
     }
 }

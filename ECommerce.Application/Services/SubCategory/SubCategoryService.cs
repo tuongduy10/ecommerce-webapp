@@ -162,7 +162,7 @@ namespace ECommerce.Application.Services.SubCategory
         public async Task<List<SubCategoryModel>> getSubCategoryInBrand(int BrandId)
         {
             var query = from subc in _DbContext.SubCategories
-                        from brand in _DbContext.Brands
+                        from brand in _DbContext.BrandCategories
                         where subc.CategoryId == brand.CategoryId && brand.BrandId == BrandId
                         select subc;
 
@@ -190,7 +190,7 @@ namespace ECommerce.Application.Services.SubCategory
             var categoryIds = new List<int>();
             foreach (var id in brandIds)
             {
-                var categoryId = await _DbContext.Brands
+                var categoryId = await _DbContext.BrandCategories
                     .Where(i => i.BrandId == id)
                     .Select(i => i.CategoryId)
                     .ToListAsync();

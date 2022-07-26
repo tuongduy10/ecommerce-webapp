@@ -57,15 +57,17 @@
     })
     
     function deleteCategory(id) {
-        $.post("ManageCategory/Delete", { id: id })
-            .then(function (response) {
-                alert(response);
-                location.reload();
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
-            })
+        if (confirm("Xác nhận xóa")) {
+            $.post("ManageCategory/Delete", { id: id })
+                .then(function (response) {
+                    alert(response);
+                    location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    alert(error.responseText);
+                })
+        }
     }
 </script>
 <script>

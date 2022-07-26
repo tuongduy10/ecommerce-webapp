@@ -13,7 +13,8 @@ namespace ECommerce.Application.Services.Brand.Dtos
         public string BrandName { get; set; }
         public string BrandImagePath { get; set; }
         public bool Status { get; set; }
-        public int CategoryId { get; set; }
+        //public int CategoryId { get; set; }
+        public List<int> CategoryIds { get; set; }
         public bool? Highlights { get; set; }
         public bool? New { get; set; }
         public IFormFile ImagePath { get; set; }

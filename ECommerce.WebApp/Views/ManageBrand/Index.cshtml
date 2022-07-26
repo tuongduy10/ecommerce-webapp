@@ -72,8 +72,9 @@
                         <th>Ảnh</th>
                         <th>Thương hiệu</th>
                         <th>Danh mục</th>
-                        <th>Nổi bật</th>
-                        <th>Trạng thái</th>
+                        <th class="text-center">Nổi bật</th>
+                        <th class="text-center">Trạng thái</th>
+                        <th style="max-width: 200px; width: 100%">Cửa hàng</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -119,20 +120,30 @@
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <select class="form-control brand-category-@item.BrandId" aria-label="Default select example">
-                                        <option selected disabled>Chọn danh mục</option>
-                                        @foreach (var category in Model.listCategory)
-                                        {
-                                            if (category.CategoryId == item.CategoryId)
+                                    <div class="dropdown mb-2 mr-2">
+                                        <button class="btn border dropdown-toggle category_select-text" type="button" data-toggle="dropdown">
+                                            Danh mục
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-cat-menu px-2" style="max-height: 300px; overflow: auto;">
+                                            <input class="form-control mb-2" id="myInput-cate" type="text" placeholder="Tìm..." autocomplete="off" />
+                                            @foreach (var category in Model.listCategory)
                                             {
-                                                <option value="@category.CategoryId" selected>@category.CategoryName</option>
+                                                <li class="d-flex align-items-center" value="@category.CategoryName">
+                                                    @if (item.CategoryIds.Contains(category.CategoryId))
+                                                    {
+                                                        <input name="category" class="category_select_@item.BrandId mr-2" id="category_@category.CategoryId" type="checkbox" value="@category.CategoryId" checked>
+                                                    }
+                                                    else
+                                                    {
+                                                        <input name="category" class="category_select_@item.BrandId mr-2" id="category_@category.CategoryId" type="checkbox" value="@category.CategoryId">
+
+                                                    }
+                                                    <label class="mb-0" for="category_@category.CategoryId">@category.CategoryName</label>
+                                                </li>
                                             }
-                                            else
-                                            {
-                                                <option value="@category.CategoryId">@category.CategoryName</option>
-                                            }
-                                        }
-                                    </select>
+                                        </ul>
+                                    </div>
                                 </div>
                             </td>
                             <td class="text-center">
@@ -155,17 +166,18 @@
                                     <input class="brand-status-@item.BrandId" type="checkbox" />
                                 }
                             </td>
-                            <td class="text-center">
-                                @if (item.Shops.Count > 0)
-                                {
-                                    <select class="form-control mb-2">
+                            <td>
+                                <div class="d-flex flex-wrap">
+                                    @if (item.Shops.Count > 0)
+                                    {
                                         @foreach (var shop in item.Shops)
                                         {
-                                            <option value="@shop.id">@shop.name</option>
-
+                                            <a class="mr-2" href="@Url.Action("ShopDetail","ManageShop", new { ShopId = shop.id})">@shop.name</a>
                                         }
-                                    </select>
-                                }
+                                    }
+                                </div>
+                            </td>
+                            <td class="text-center">
                                 <a class="btn btn-primary brand-update" value="@item.BrandId" onclick="updateBrand(@item.BrandId)">Cập nhật</a>
                                 <a class="btn btn-danger" onclick="deleteBrand(@item.BrandId)">Xóa</a>
                             </td>
@@ -250,14 +262,17 @@
     function updateBrand(id) {
         var name = $(`.brand-name-${id}`).val();
         var file = $(`.image-uploaded-${id}`).prop('files')[0];
-        var category = $(`.brand-category-${id}`).val();
         var hightlight = $(`.brand-highlight-${id}`).is(":checked") ? true : false;
         var status = $(`.brand-status-${id}`).is(":checked") ? true : false;
 
         var formData = new FormData();
         formData.append('ImagePath', file);
         formData.append('BrandName', name);
-        formData.append('CategoryId', category);
+        $(`.category_select_${id}`).each(function () {
+            if ($(this).is(":checked")) {
+                formData.append('CategoryIds', Number($(this).val()));
+            }
+        })
         formData.append('Highlights', hightlight);
         formData.append('Status', status);
         formData.append('BrandId', id);
@@ -274,7 +289,8 @@
             },
             error: function (error) {
                 console.log(error);
-                alert(error.responseText)
+                alert(error.responseText);
+                location.reload();
             }
         });
     }

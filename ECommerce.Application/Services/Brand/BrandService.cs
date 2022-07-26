@@ -22,21 +22,19 @@ namespace ECommerce.Application.Services.Brand
         {
             try
             {
-                if (string.IsNullOrEmpty(request.BrandImagePath) || string.IsNullOrEmpty(request.BrandName) || request.CategoryId == 0)
-                {
-                    return new ApiFailResponse("Thông tin không được để trống");
-                }
-                var name = await _DbContext.Brands.Where(i => i.BrandName == request.BrandName).ToListAsync();
+                if (string.IsNullOrEmpty(request.BrandImagePath)) return new ApiFailResponse("Vui lòng chọn ảnh");
+                if (string.IsNullOrEmpty(request.BrandName)) return new ApiFailResponse("Tên không được để trống");
+
+                var name = await _DbContext.Brands.Where(i => i.BrandName == request.BrandName.Trim()).ToListAsync();
                 if (name.Count() > 0) return new ApiFailResponse("Tên đã tồn tại");
 
                 // create new 
                 var brand = new Data.Models.Brand
                 {
-                    BrandName = request.BrandName,
-                    BrandImagePath = request.BrandImagePath,
+                    BrandName = request.BrandName.Trim(),
+                    BrandImagePath = request.BrandImagePath.Trim(),
                     CreatedDate = DateTime.Now,
                     Status = true,
-                    CategoryId = request.CategoryId,
                     Highlights = request.Highlights
                 };
 
@@ -51,10 +49,9 @@ namespace ECommerce.Application.Services.Brand
         }
         public async Task<Response<FileChangedResponse>> Update(BrandUpdateRequest request)
         {
-            if (string.IsNullOrEmpty(request.BrandName) || request.CategoryId == 0)
-            {
-                return new FailResponse<FileChangedResponse>("Thông tin không được để trống");
-            }
+            if (string.IsNullOrEmpty(request.BrandName)) return new FailResponse<FileChangedResponse>("Thông tin không được để trống");
+            if (request.CategoryIds == null || request.CategoryIds.Count == 0) return new FailResponse<FileChangedResponse>("Vui lòng chọn danh mục");
+
             try
             {
                 var brand = await _DbContext.Brands.Where(i => i.BrandId == request.BrandId).FirstOrDefaultAsync();
@@ -67,11 +64,29 @@ namespace ECommerce.Application.Services.Brand
                     brand.BrandImagePath = request.BrandImagePath;
                     fileChange.newFileName = brand.BrandImagePath;
                 }
-                brand.BrandName = request.BrandName;
+                brand.BrandName = request.BrandName.Trim();
                 brand.Highlights = request.Highlights;
                 brand.Status = request.Status;
-                brand.CategoryId = request.CategoryId;
                 await _DbContext.SaveChangesAsync();
+
+                var brandCategory = await _DbContext.BrandCategories
+                    .Where(i => i.BrandId == request.BrandId)
+                    .ToListAsync();
+                if (brandCategory.Count > 0)
+                {
+                    _DbContext.BrandCategories.RemoveRange(brandCategory);
+                    _DbContext.SaveChangesAsync().Wait();
+                }
+                foreach (var id in request.CategoryIds)
+                {
+                    var newBrandCategory = new BrandCategory
+                    {
+                        BrandId = request.BrandId,
+                        CategoryId = id,
+                    };
+                    await _DbContext.BrandCategories.AddAsync(newBrandCategory);
+                    await _DbContext.SaveChangesAsync();
+                }
 
                 return new SuccessResponse<FileChangedResponse>("Cập nhật thành công", fileChange);
             }
@@ -96,24 +111,20 @@ namespace ECommerce.Application.Services.Brand
         }
         public async Task<List<BrandModel>> getAll()
         {
-            var query = from category in _DbContext.Categories
-                        join brand in _DbContext.Brands on category.CategoryId equals brand.CategoryId
-                        orderby brand.BrandName
-                        where brand.Status == true
-                        select new { brand, category};
-
-            var list = await query.Select(i => new BrandModel()
-            {
-                BrandId = i.brand.BrandId,
-                BrandName = i.brand.BrandName,
-                BrandImagePath = i.brand.BrandImagePath,
-                Status = i.brand.Status,
-                CreatedDate = i.brand.CreatedDate,
-                Highlights = i.brand.Highlights,
-                New = i.brand.New,
-                Category = i.category.CategoryName,
-                CategoryId = i.category.CategoryId
-            }).ToListAsync();
+            var list = await _DbContext.Brands
+                .Select(i => new BrandModel() {
+                    BrandId = i.BrandId,
+                    BrandName = i.BrandName,
+                    BrandImagePath = i.BrandImagePath,
+                    Status = i.Status,
+                    CreatedDate = i.CreatedDate,
+                    Highlights = i.Highlights,
+                    New = i.New,
+                    Category = String.Join(", ", i.BrandCategories.Where(br => br.BrandId == i.BrandId).Select(br => br.Category.CategoryName).ToList()),
+                    //CategoryId = i.Category.CategoryId
+                })
+                .OrderBy(i => i.BrandName)
+                .ToListAsync();
 
             return list;
         }
@@ -129,8 +140,8 @@ namespace ECommerce.Application.Services.Brand
                     CreatedDate = i.CreatedDate,
                     Highlights = i.Highlights,
                     New = i.New,
-                    Category = i.Category.CategoryName,
-                    CategoryId = i.Category.CategoryId,
+                    //Category = i.Category.CategoryName,
+                    CategoryIds = i.BrandCategories.Where(bc => bc.BrandId == i.BrandId).Select(bc => bc.CategoryId).ToList(),
                     Shops = i.ShopBrands.Select(s => new ShopManage() { id = s.Shop.ShopId, name = s.Shop.ShopName }).ToList()
                 })
                 .ToListAsync();
@@ -138,24 +149,19 @@ namespace ECommerce.Application.Services.Brand
         }
         public async Task<List<BrandModel>> getAllBrandInCategory(int CategoryId)
         {
-            var query = from category in _DbContext.Categories
-                        join brand in _DbContext.Brands on category.CategoryId equals brand.CategoryId
-                        orderby brand.BrandName
-                        where brand.Status == true && category.CategoryId == CategoryId
-                        select new { brand, category };
-
-            var list = await query.Select(i => new BrandModel()
-            {
-                BrandId = i.brand.BrandId,
-                BrandName = i.brand.BrandName,
-                BrandImagePath = i.brand.BrandImagePath,
-                Status = i.brand.Status,
-                CreatedDate = i.brand.CreatedDate,
-                Highlights = i.brand.Highlights,
-                New = i.brand.New,
-                Category = i.category.CategoryName,
-                CategoryId = i.category.CategoryId
-            }).ToListAsync();
+            var list = await _DbContext.BrandCategories
+                .Where(i => i.CategoryId == CategoryId)
+                .Select(i => new BrandModel() {
+                    BrandId = i.Brand.BrandId,
+                    BrandName = i.Brand.BrandName,
+                    BrandImagePath = i.Brand.BrandImagePath,
+                    Status = i.Brand.Status,
+                    CreatedDate = i.Brand.CreatedDate,
+                    Highlights = i.Brand.Highlights,
+                    New = i.Brand.New,
+                    Category = i.Category.CategoryName,
+                    //CategoryId = i.Category.CategoryId
+                }).ToListAsync();
 
             return list;
         }
@@ -175,8 +181,8 @@ namespace ECommerce.Application.Services.Brand
                         CreatedDate = i.CreatedDate,
                         Highlights = i.Highlights,
                         New = i.New,
-                        Category = i.Category.CategoryName,
-                        CategoryId = i.Category.CategoryId
+                        //Category = i.Category.CategoryName,
+                        //CategoryId = i.Category.CategoryId
                     })
                     .ToListAsync();
             }
@@ -194,8 +200,8 @@ namespace ECommerce.Application.Services.Brand
                         CreatedDate = i.Brand.CreatedDate,
                         Highlights = i.Brand.Highlights,
                         New = i.Brand.New,
-                        Category = i.Brand.Category.CategoryName,
-                        CategoryId = i.Brand.Category.CategoryId
+                        //Category = i.Brand.Category.CategoryName,
+                        //CategoryId = i.Brand.Category.CategoryId
                     })
                     .ToListAsync();
             }
@@ -215,32 +221,26 @@ namespace ECommerce.Application.Services.Brand
                         CreatedDate = i.Brand.CreatedDate,
                         Highlights = i.Brand.Highlights,
                         New = i.Brand.New,
-                        Category = i.Brand.Category.CategoryName,
-                        CategoryId = i.Brand.Category.CategoryId
+                        //Category = i.Brand.Category.CategoryName,
+                        //CategoryId = i.Brand.Category.CategoryId
                     })
                     .ToListAsync();
             return list;
         }
         public async Task<BrandModel> getBrandById(int BrandId)
         {
-            var query = from category in _DbContext.Categories
-                        join brand in _DbContext.Brands on category.CategoryId equals brand.CategoryId
-                        orderby brand.BrandName
-                        where brand.Status == true && brand.BrandId == BrandId
-                        select new { brand, category };
-
-            var result = await query.Select(i => new BrandModel()
-            {
-                BrandId = i.brand.BrandId,
-                BrandName = i.brand.BrandName,
-                BrandImagePath = i.brand.BrandImagePath,
-                Status = i.brand.Status,
-                CreatedDate = i.brand.CreatedDate,
-                Highlights = i.brand.Highlights,
-                New = i.brand.New,
-                Category = i.category.CategoryName,
-                CategoryId = i.category.CategoryId
-            }).SingleOrDefaultAsync();
+            var result = await _DbContext.Brands
+                .Where(i => i.BrandId == BrandId)
+                .Select(i => new BrandModel() {
+                    BrandId = i.BrandId,
+                    BrandName = i.BrandName,
+                    BrandImagePath = i.BrandImagePath,
+                    Status = i.Status,
+                    CreatedDate = i.CreatedDate,
+                    Highlights = i.Highlights,
+                    New = i.New
+                })
+                .SingleOrDefaultAsync();
 
             return result;
         }
@@ -248,6 +248,8 @@ namespace ECommerce.Application.Services.Brand
         {
             try
             {
+                if (id == 0) return new FailResponse<string>("Vui lòng chọn thương hiệu"); 
+
                 var brand = await _DbContext.Brands.Where(i => i.BrandId == id).FirstOrDefaultAsync();
 
                 var productCount = await _DbContext.Products.Where(i => i.BrandId == id).CountAsync();
@@ -263,7 +265,12 @@ namespace ECommerce.Application.Services.Brand
                 {
                     return new FailResponse<string>($"Thương hiệu đang được { shopCount } shop quản lý, không thể xóa");
                 }
-                _DbContext.Remove(brand);
+
+                var brandCategories = await _DbContext.BrandCategories.Where(i => i.BrandId == id).ToListAsync();
+                _DbContext.BrandCategories.RemoveRange(brandCategories);
+                _DbContext.SaveChangesAsync().Wait();
+
+                _DbContext.Brands.Remove(brand);
                 _DbContext.SaveChangesAsync().Wait();
                  
                 return new SuccessResponse<string>("Xóa thành công", brand.BrandImagePath);
