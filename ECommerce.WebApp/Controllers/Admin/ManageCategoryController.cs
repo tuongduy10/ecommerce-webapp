@@ -30,6 +30,11 @@ namespace ECommerce.WebApp.Controllers.Admin
             var result = await _subCategoryService.getBaseOptionValueByOptionId(id);
             return Ok(result);
         }
+        public async Task<IActionResult> GetOptionValue(int id)
+        {
+            var result = await _subCategoryService.getOptionValueByOptionId(id);
+            return Ok(result);
+        }
         [HttpPost]
         public async Task<IActionResult> Add(CategoryCreateRequest request)
         {
@@ -104,7 +109,26 @@ namespace ECommerce.WebApp.Controllers.Admin
         }
         public async Task<IActionResult> AttributeAndOption()
         {
-            return View();
+            var options = await _subCategoryService.getAllOptions();
+            return View(options);
+        }
+        public async Task<IActionResult> AddOptionBaseValue(OptionBaseValueAddRequest request)
+        {
+            var result = await _subCategoryService.AddOptionBaseValue(request);
+            if (result.isSucceed) return Ok(result.Message);
+            return BadRequest(result.Message);
+        }
+        public async Task<IActionResult> UpdateOptionBaseValue(OptionBaseValueUpdateRequest request)
+        {
+            var result = await _subCategoryService.UpdateOptionBaseValue(request);
+            if (result.isSucceed) return Ok(result.Message);
+            return BadRequest(result.Message);
+        }
+        public async Task<IActionResult> DeleteOption(int id)
+        {
+            var result = await _subCategoryService.DeleteOption(id);
+            if (result.isSucceed) return Ok(result.Message);
+            return BadRequest(result.Message);
         }
     }
 }

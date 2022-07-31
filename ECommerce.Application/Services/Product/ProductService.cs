@@ -2,6 +2,7 @@
 using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.Product.Enum;
 using ECommerce.Application.Services.Rate;
+using ECommerce.Application.Services.SubCategory.Dtos;
 using ECommerce.Application.Services.User;
 using ECommerce.Data.Context;
 using ECommerce.Data.Models;
@@ -65,8 +66,8 @@ namespace ECommerce.Application.Services.Product
                        from opt_v in _DbContext.OptionValues
                        from pro_optv in _DbContext.ProductOptionValues
                        where pro_optv.ProductId == productId &&
-                            pro_optv.OptionValueId == opt_v.OptionValueId &&
-                            opt_v.OptionId == opt.OptionId
+                             pro_optv.OptionValueId == opt_v.OptionValueId &&
+                             opt_v.OptionId == opt.OptionId
                        select opt;
 
             // get option ids distincted
@@ -79,8 +80,9 @@ namespace ECommerce.Application.Services.Product
                 var opt_v = await _DbContext.Options
                                     .Where(i => i.OptionId == id)
                                     .Select(i => new Dtos.Option() {
+                                        id = i.OptionId,
                                         name = i.OptionName,
-                                        values =_DbContext.ProductOptionValues
+                                        values = _DbContext.ProductOptionValues
                                                 .Where(pov => pov.ProductId == productId && pov.OptionValue.OptionId == i.OptionId)
                                                 .Select(pov => pov.OptionValue.OptionValueName)
                                                 .ToList()
@@ -154,21 +156,19 @@ namespace ECommerce.Application.Services.Product
         }
         public async Task<ProductDetailModel> GetProductDetailManaged(int id)
         {
-            var attr = await _DbContext.ProductAttributes
-                                .Where(i => i.ProductId == id)
-                                .Select(i => new Dtos.Attribute()
-                                {
-                                    Value = i.Value,
-                                    AttrName = i.Attribute.AttributeName
-                                })
-                                .ToListAsync();
-            var opts = await getProductOption(id);
             var rate = await _DbContext.Rates.Where(i => i.ProductId == id).ToListAsync();
             Dtos.Rate productRate = new Dtos.Rate()
             {
                 Value = rate.Count == 0 ? 0 : (int)Math.Round((double)(rate.Sum(i => i.RateValue) / rate.Count)),
                 Total = rate.Count == 0 ? 0 : rate.Count
             };
+
+            var sysImages = await _DbContext.ProductImages
+                .Where(i => i.ProductId == id)
+                .ToListAsync();
+            var userImages = await _DbContext.ProductUserImages
+                .Where(i => i.ProductId == id)
+                .ToListAsync();
 
             var product = await _DbContext.Products
                                             .Where(i => i.ProductId == id)
@@ -191,23 +191,56 @@ namespace ECommerce.Application.Services.Product
                                                 ShopId = i.ShopId,
                                                 ProductRate = productRate,
 
-                                                Attributes = attr,
-                                                Options = opts,
+                                                //Attributes = attr,
+                                                Attributes = _DbContext.SubCategoryAttributes
+                                                    .Where(sub_attr => sub_attr.SubCategoryId == i.SubCategoryId)
+                                                    .Select(sub_attr => new Dtos.Attribute() {
+                                                        Id = sub_attr.AttributeId,
+                                                        AttrName = sub_attr.Attribute.AttributeName,
+                                                        Value = sub_attr.Attribute.ProductAttributes
+                                                        .Where(attr => attr.AttributeId == sub_attr.AttributeId && attr.ProductId == id)
+                                                        .Select(attr => attr.Value)
+                                                        .FirstOrDefault()
+                                                    })
+                                                    .ToList(),
+                                                //Options = opts,
+                                                Options = _DbContext.Options
+                                                    .Where(sub_opt => sub_opt.SubCategoryOptions.Any(so => so.SubCategoryId == i.SubCategoryId))
+                                                    .Select(sub_opt => new OptionGetModel()
+                                                    {
+                                                        id = sub_opt.OptionId,
+                                                        name = sub_opt.OptionName,
+                                                        values = sub_opt.OptionValues
+                                                            .Where( ov => 
+                                                                ov.OptionId == sub_opt.OptionId &&
+                                                                ov.ProductOptionValues.Any(pov => pov.ProductId == id && pov.OptionValueId == ov.OptionValueId)
+                                                            )
+                                                            .Select(ov => new OptionValueGetModel() { 
+                                                                id = ov.OptionValueId,
+                                                                value = ov.OptionValueName
+                                                            })
+                                                            .ToList()
+                                                    })
+                                                    .ToList(),
                                                 ProductImportDate = i.ProductImportDate,
                                                 DiscountPercent = i.DiscountPercent,
-                                                Prices = _DbContext.ProductPrices.Where(price => price.ProductId == id).ToList(),
+                                                Prices = _DbContext.ProductPrices
+                                                    .Where(price => price.ProductId == id)
+                                                    .ToList(),
                                                 Types = _DbContext.ProductTypes
-                                                                    .Select(type => new Dtos.Type()
-                                                                    {
-                                                                        ProductTypeName = type.ProductTypeName,
-                                                                        ProductTypeId = type.ProductTypeId
-                                                                    }).ToList(),
+                                                    .Select(type => new Dtos.Type()
+                                                    {
+                                                        ProductTypeName = type.ProductTypeName,
+                                                        ProductTypeId = type.ProductTypeId
+                                                    }).ToList(),
 
-                                                ProductImages = _DbContext.ProductImages.Where(img => img.ProductId == id).Select(img => img.ProductImagePath).ToList(),
-                                                ProductUserImages = _DbContext.ProductUserImages.Where(img => img.ProductId == id).Select(img => img.ProductUserImagePath).ToList()
+                                                ProductImages = _DbContext.ProductImages.Where(img => img.ProductId == id).Select(img => img.ProductImagePath).ToList(), // for view only
+                                                ProductUserImages = _DbContext.ProductUserImages.Where(img => img.ProductId == id).Select(img => img.ProductUserImagePath).ToList(), // for view only
+
+                                                SystemImages = sysImages,
+                                                UserImages = userImages
                                             })
                                             .FirstOrDefaultAsync();
-
             return product;
         }
         // Product in brand
@@ -498,7 +531,7 @@ namespace ECommerce.Application.Services.Product
                 var product = new Data.Models.Product
                 {
                     ProductName = request.name.Trim(), // required
-                    ProductDescription = request.description == null ? null : request.description.Trim(),
+                    ProductDescription = request.description == null ? null : request.description,
                     Note = request.note == null ? null : request.note.Trim(),
                     DiscountPercent = request.discountPercent,
                     Legit = request.isLegit,
@@ -521,10 +554,10 @@ namespace ECommerce.Application.Services.Product
                  * Relationship data
                  */
                 // Options
-                List<int> options = JsonConvert.DeserializeObject<List<int>>(request.currentOptions);
-                if (options.Count > 0)
+                List<int> optionValueIds = JsonConvert.DeserializeObject<List<int>>(request.currentOptions);
+                if (optionValueIds.Count > 0)
                 {
-                    foreach (var id in options)
+                    foreach (var id in optionValueIds)
                     {
                         var productOptionValue = new ProductOptionValue
                         {
@@ -535,6 +568,43 @@ namespace ECommerce.Application.Services.Product
                     }
                 }
 
+                // New option value
+                //List<Dtos.Option> newOptions = JsonConvert.DeserializeObject<List<Dtos.Option>>(request.newOptions);
+                //if (newOptions.Count > 0)
+                //{
+                //    foreach (var option in newOptions)
+                //    {
+                //        var optionValues = await _DbContext.OptionValues
+                //            .Where(i => i.OptionId == option.id)
+                //            .Select(i => i.OptionValueName)
+                //            .ToListAsync();
+
+                //        // Get new values of list;
+                //        // Lấy các giá trị khác với db;
+                //        var values = option.values.Except(optionValues).ToList();
+                //        foreach (var value in values)
+                //        {
+                //            var optionValue = new OptionValue
+                //            {
+                //                OptionId = option.id,
+                //                OptionValueName = value,
+                //                IsBaseValue = false
+                //            };
+                //            await _DbContext.OptionValues.AddAsync(optionValue); // Add new value
+                //            await _DbContext.SaveChangesAsync();
+
+                //            await AddOptionValueByProductId(product.ProductId, value);
+                //        }
+
+                //        // Get already existed values in db of list;
+                //        // Lấy các giá trị trùng với db;
+                //        var currentValues = option.values.Intersect(optionValues).ToList();
+                //        foreach (var value in currentValues)
+                //        {
+                //            await AddOptionValueByProductId(product.ProductId, value);
+                //        }
+                //    }
+                //}
                 // New option value
                 List<Dtos.Option> newOptions = JsonConvert.DeserializeObject<List<Dtos.Option>>(request.newOptions);
                 if (newOptions.Count > 0)
@@ -551,16 +621,16 @@ namespace ECommerce.Application.Services.Product
                         var values = option.values.Except(optionValues).ToList();
                         foreach (var value in values)
                         {
-                            var optionValue = new OptionValue
+                            var newOptionValue = new OptionValue
                             {
                                 OptionId = option.id,
                                 OptionValueName = value,
                                 IsBaseValue = false
                             };
-                            await _DbContext.OptionValues.AddAsync(optionValue); // Add new value
+                            await _DbContext.OptionValues.AddAsync(newOptionValue);
                             await _DbContext.SaveChangesAsync();
 
-                            await AddOptionValueByProductId(product.ProductId, value);
+                            await AddProductOptionValueByProductId(product.ProductId, newOptionValue.OptionValueId);
                         }
 
                         // Get already existed values in db of list;
@@ -568,25 +638,32 @@ namespace ECommerce.Application.Services.Product
                         var currentValues = option.values.Intersect(optionValues).ToList();
                         foreach (var value in currentValues)
                         {
-                            await AddOptionValueByProductId(product.ProductId, value);
+                            var optValue = await _DbContext.OptionValues
+                                .Where(i => i.OptionValueName == value && i.OptionId == option.id)
+                                .FirstOrDefaultAsync();
+
+                            await AddProductOptionValueByProductId(product.ProductId, optValue.OptionValueId);
                         }
                     }
                 }
-                
+
                 // Attributes
                 List<Dtos.ProductAttribute> attributes = JsonConvert.DeserializeObject<List<Dtos.ProductAttribute>>(request.attributes);
                 if (attributes.Count > 0)
                 {
                     foreach (var attr in attributes)
                     {
-                        var attribute = new Data.Models.ProductAttribute
+                        if (!string.IsNullOrEmpty(attr.value))
                         {
-                            ProductId = product.ProductId,
-                            AttributeId = attr.id,
-                            Value = attr.value
-                        };
-                        await _DbContext.ProductAttributes.AddAsync(attribute);
-                        await _DbContext.SaveChangesAsync();
+                            var attribute = new Data.Models.ProductAttribute
+                            {
+                                ProductId = product.ProductId,
+                                AttributeId = attr.id,
+                                Value = attr.value
+                            };
+                            await _DbContext.ProductAttributes.AddAsync(attribute);
+                            await _DbContext.SaveChangesAsync();
+                        }
                     }
                 }
 
@@ -633,17 +710,20 @@ namespace ECommerce.Application.Services.Product
                     await _DbContext.ProductImages.AddAsync(systemImage);
                     await _DbContext.SaveChangesAsync();
                 }
-                foreach (var file in request.userFileName)
+                if (request.userFileName != null)
                 {
-                    var userImage = new Data.Models.ProductUserImage
+                    foreach (var file in request.userFileName)
                     {
-                        ProductId = product.ProductId,
-                        ProductUserImagePath = file
-                    };
-                    await _DbContext.ProductUserImages.AddAsync(userImage);
-                    await _DbContext.SaveChangesAsync();
+                        var userImage = new Data.Models.ProductUserImage
+                        {
+                            ProductId = product.ProductId,
+                            ProductUserImagePath = file
+                        };
+                        await _DbContext.ProductUserImages.AddAsync(userImage);
+                        await _DbContext.SaveChangesAsync();
+                    }
                 }
-                
+                                
                 return new ApiSuccessResponse("Thêm thành công");
             }
             catch(Exception e)
@@ -651,17 +731,12 @@ namespace ECommerce.Application.Services.Product
                 return new ApiFailResponse(e.Message);
             }
         }
-        private async Task AddOptionValueByProductId(int productId, string value)
+        private async Task AddProductOptionValueByProductId(int productId, int optValId)
         {
-            var id = await _DbContext.OptionValues
-                            .Where(i => i.OptionValueName == value)
-                            .Select(i => i.OptionValueId)
-                            .FirstOrDefaultAsync();
-
             var productOptionValue = new ProductOptionValue
             {
                 ProductId = productId,
-                OptionValueId = id
+                OptionValueId = optValId
             };
 
             await _DbContext.ProductOptionValues.AddAsync(productOptionValue);
@@ -741,6 +816,100 @@ namespace ECommerce.Application.Services.Product
             catch (Exception error)
             {
                 return new ApiFailResponse("Cập nhật thất bại " + error);
+            }
+        }
+        public async Task<ApiResponse> AddSizeGuide(SizeGuideAddRequest request)
+        {
+            try
+            {
+                if (request.ids == null || request.ids.Count == 0) return new ApiFailResponse("Chọn loại sản phẩm");
+                if (string.IsNullOrEmpty(request.content)) return new ApiFailResponse("Chọn nội dung");
+
+                var newSizeGuide = new SizeGuide
+                {
+                    Content = request.content,
+                    IsBaseSizeGuide = true
+                };
+                await _DbContext.SizeGuides.AddAsync(newSizeGuide);
+                await _DbContext.SaveChangesAsync();
+
+                var subs = await _DbContext.SubCategories
+                    .Where(i => request.ids.Contains(i.SubCategoryId))
+                    .ToListAsync();
+                if (subs.Count > 0)
+                {
+                    foreach (var sub in subs)
+                    {
+                        sub.SizeGuideId = newSizeGuide.SizeGuideId;
+                        await _DbContext.SaveChangesAsync();
+                    }
+                }
+
+                return new ApiSuccessResponse("Thêm thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Thêm thất bại, vui lòng thử lại sau");
+            }
+        }
+        public async Task<Response<SizeGuide>> SizeGuideDetail(int id)
+        {
+            try
+            {
+                if (id == 0) return new FailResponse<SizeGuide>("Vui lòng chọn loại sản phẩm");
+
+                var sizeGuide = await _DbContext.SubCategories
+                    .Where(i => i.SubCategoryId == id)
+                    .Select(i => new SizeGuide {
+                        SizeGuideId = i.SizeGuide.SizeGuideId,
+                        Content = i.SizeGuide.Content,
+                        IsBaseSizeGuide = i.SizeGuide.IsBaseSizeGuide
+                    })
+                    .FirstOrDefaultAsync();
+                if (sizeGuide == null) return new FailResponse<SizeGuide>("Không tìm thấy");
+
+                return new SuccessResponse<SizeGuide>("Lấy thông tin thành công", sizeGuide);
+            }
+            catch
+            {
+                return new FailResponse<SizeGuide>("Lấy thông tin thất bại, thử lại sau");
+            }
+        }
+        public async Task<ApiResponse> UpdateSizeGuide(SizeGuideAddRequest request)
+        {
+            try
+            {
+                if (request.id == 0) return new ApiFailResponse("Vui lòng chọn bảng chọn size"); 
+                if (request.ids == null || request.ids.Count == 0) return new ApiFailResponse("Chọn loại sản phẩm");
+                if (string.IsNullOrEmpty(request.content)) return new ApiFailResponse("Chọn nội dung");
+
+                var sizeGuide = await _DbContext.SizeGuides
+                    .Where(i => i.SizeGuideId == request.id)
+                    .FirstOrDefaultAsync();
+                if (sizeGuide != null)
+                {
+                    sizeGuide.Content = request.content;
+                }
+                await _DbContext.SaveChangesAsync();
+
+
+                var subs = await _DbContext.SubCategories
+                    .Where(i => request.ids.Contains(i.SubCategoryId))
+                    .ToListAsync();
+                if (subs.Count > 0)
+                {
+                    foreach (var sub in subs)
+                    {
+                        sub.SizeGuideId = sizeGuide.SizeGuideId;
+                        await _DbContext.SaveChangesAsync();
+                    }
+                }
+
+                return new ApiSuccessResponse("Thêm thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Thêm thất bại, vui lòng thử lại sau");
             }
         }
         private decimal GetDiscountPrice(decimal? price, byte? percent)

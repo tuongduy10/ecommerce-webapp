@@ -612,7 +612,7 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.IsBaseSizeGuide).HasColumnName("isBaseSizeGuide");
 
-                entity.Property(e => e.SizeGuide1)
+                entity.Property(e => e.Content)
                     .HasColumnType("ntext")
                     .HasColumnName("SizeGuide");
             });

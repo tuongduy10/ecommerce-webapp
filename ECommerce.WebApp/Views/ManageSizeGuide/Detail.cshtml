@@ -6,7 +6,7 @@
 <script src="https://cdn.tiny.cloud/1/4ctr9pi6o8mlflu8si6gdszgl62tn4zl73knhf3tkqalszsx/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Quản lý bảng hướng dẫn chọn size</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Chi tiết bảng chọn size</h6>
     </div>
     <div class="card-body">
         <div class="mb-4">
@@ -19,66 +19,40 @@
                     </button>
                     <ul class="dropdown-menu px-2" style="overflow: hidden scroll; max-height: 300px">
                         <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm..." autocomplete="off">
-                        @if (Model.Count > 0)
+                        @if (Model.SubCategories.Count > 0)
                         {
-                            @foreach (var item in Model)
+                            @foreach (var item in Model.SubCategories)
                             {
-                                @if (item.SizeGuide == null)
-                                {
-                                    <li>
-                                        <div>
+                                <li>
+                                    <div>
+                                        @if (item.SizeGuide != null && item.SizeGuide.SizeGuideId == Model.SizeGuide.SizeGuideId)
+                                        {
+                                            <input class="mr-1 sub-select" id="sub-@item.SubCategoryId" type="checkbox" value="@item.SubCategoryId" checked>
+                                        }
+                                        else
+                                        {
                                             <input class="mr-1 sub-select" id="sub-@item.SubCategoryId" type="checkbox" value="@item.SubCategoryId">
-                                            <label for="sub-@item.SubCategoryId">@item.SubCategoryName</label>
-                                        </div>
-                                    </li>
-                                }
-
+                                        }
+                                        <label for="sub-@item.SubCategoryId">@item.SubCategoryName</label>
+                                    </div>
+                                </li>
                             }
                         }
                     </ul>
                 </div>
             </div>
             <div class="form-group">
-                <textarea class="form-control" id="size-content" rows="8" cols="50"></textarea>
+                <textarea class="form-control" id="size-content" rows="8" cols="50">
+                    @Model.SizeGuide.Content
+                </textarea>
             </div>
-            <button class="btn btn-primary add-sizechart">Thêm</button>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table table-bordered order-table" id="dataTable" width="100%"
-                   cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Danh mục</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model.Count > 0)
-                    {
-                        @foreach (var item in Model)
-                        {
-                            @if (item.SizeGuide != null)
-                            {
-                                <tr>
-                                    <td>@item.SubCategoryId</td>
-                                    <td>@item.SubCategoryName</td>
-                                    <td class="text-center">
-                                        <a class="btn btn-primary" href="@Url.Action("Detail","ManageSizeGuide", new { id = item.SubCategoryId })">Chi tiết</a>
-                                        <a class="btn btn-danger" onclick="deleteSizeGuide(@item.SubCategoryId)">Xóa</a>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    }
-                </tbody>
-            </table>
+            <button class="btn btn-primary update-sizechart">Cập nhật</button>
+            <button class="btn btn-danger delete-sizechart">Xóa</button>
         </div>
     </div>
 </div>
 <script>
-    $(".add-sizechart").click(function () {
+    $(".update-sizechart").click(function () {
         var ids = [];
         $(".sub-select").each(function () {
             if ($(this).is(":checked")) {
@@ -87,9 +61,10 @@
         })
         var request = {
             ids: ids,
-            content: tinymce.get("size-content").getContent()
+            content: tinymce.get("size-content").getContent(),
+            id: @Model.SizeGuide.SizeGuideId
         }
-        $.post("/ManageSizeGuide/AddSizeGuide", request)
+        $.post("/ManageSizeGuide/UpdateSizeGuide", request)
             .then(function (res) {
                 alert(res);
                 window.location.reload();
@@ -99,9 +74,17 @@
                 console.log(error)
             })
     })
-    function deleteSizeGuide(id) {
-
-    }
+    $(".update-sizechart").click(function () {
+        $.post("/ManageSizeGuide/DeleteSizeGuide", { id: @Model.SizeGuide.SizeGuideId})
+            .then(function (res) {
+                alert(res);
+                window.location = "/ManageSizeGuide/Index";
+            })
+            .catch(function (error) {
+                alert(error.responseText);
+                console.log(error)
+            })
+    })
 </script>
 <script>
     tinymce.init({

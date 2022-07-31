@@ -55,42 +55,49 @@
                                 <input type="number" class="form-control mb-2 d-none pro-discpreorder" placeholder="Giá đã giảm đặt trước" value="" min="0" step="1000" id="2">
                             </div>
                         </div>
+                        <!-- New -->
                         <div class="form-group mb-4">
                             <div class="d-flex align-items-center">
                                 <input type="checkbox" class="pro-new mr-2" id="new">
                                 <label class="mb-0" for="new">Mới</label>
                             </div>
                         </div>
+                        <!-- Legit -->
                         <div class="form-group mb-4">
                             <div class="d-flex align-items-center">
                                 <input type="checkbox" class="pro-legit mr-2" id="legit">
                                 <label class="mb-0" for="legit">Chính hãng</label>
                             </div>
                         </div>
+                        <!-- Highlight -->
                         <div class="form-group mb-4">
                             <div class="d-flex align-items-center">
                                 <input type="checkbox" class="pro-highlight mr-2" id="highlight">
                                 <label class="mb-0" for="highlight">Nổi bật</label>
                             </div>
                         </div>
+                        <!-- Free return -->
                         <div class="form-group mb-4">
                             <div class="d-flex align-items-center">
                                 <input type="checkbox" class="pro-freereturn mr-2" id="return">
                                 <label class="mb-0" for="return">Miễn phí giao hàng</label>
                             </div>
                         </div>
+                        <!-- Free delivery -->
                         <div class="form-group mb-4">
                             <div class="d-flex align-items-center">
                                 <input type="checkbox" class="pro-freedelivery mr-2" id="delivery">
                                 <label class="mb-0" for="delivery">Đổi trả miễn phí</label>
                             </div>
                         </div>
+                        <!-- Insurance -->
                         <div class="form-group mb-4">
                             <label>Bảo hành</label>
                             <div class="d-flex align-items-center">
                                 <input type="text" class="form-control pro-insurance">
                             </div>
                         </div>
+                        <!-- Shop -->
                         <div class="form-group mb-4">
                             <label>Cửa hàng</label>
                             <div class="dropdown mb-2 mr-2">
@@ -119,10 +126,10 @@
                     </div>
                     <div class="col-sm-6 mb-4">
                         <div class="attribute-form">
-
+                            <!-- Attributes -->
                         </div>
                         <div class="option-form">
-
+                            <!-- Options -->
                         </div>
                         <!-- Size guide -->
                         @*<div class="form-group mb-4">
@@ -694,11 +701,11 @@
     });
 </script>
 <script>
-    $('.brand_select').click(function () {
+    $(document).on('click', '.brand_select', function () {
         var brandName = $(this).siblings('label').text();
         $('.brand_select-text').text(brandName);
     })
-    $('.shop_select').click(function () {
+    $(document).on('click', '.shop_select', function () {
         var brandName = $(this).siblings('label').text();
         $('.shop_select-text').text(brandName);
     })

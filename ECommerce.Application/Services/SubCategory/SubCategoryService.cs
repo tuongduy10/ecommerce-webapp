@@ -151,13 +151,16 @@ namespace ECommerce.Application.Services.SubCategory
         }
         public async Task<List<SubCategoryModel>> getAll()
         {
-            var list = from c in _DbContext.SubCategories select c;
-            return await list.Select(i => new SubCategoryModel()
-            {
-                SubCategoryId = i.SubCategoryId,
-                SubCategoryName = i.SubCategoryName,
-                CategoryId = i.CategoryId,
-            }).ToListAsync();
+            var list = await _DbContext.SubCategories
+                .Select(i => new SubCategoryModel()
+                {
+                    SubCategoryId = i.SubCategoryId,
+                    SubCategoryName = i.SubCategoryName,
+                    CategoryId = i.CategoryId,
+                    SizeGuide = i.SizeGuide
+                }).ToListAsync();
+
+            return list;
         }
         public async Task<List<SubCategoryModel>> getSubCategoryInBrand(int BrandId)
         {
@@ -306,6 +309,18 @@ namespace ECommerce.Application.Services.SubCategory
                 .ToListAsync();
             return result;
         }
+        public async Task<List<OptionValueGetModel>> getOptionValueByOptionId(int id)
+        {
+            var result = await _DbContext.OptionValues
+                .Where(i => i.OptionId == id)
+                .Select(i => new OptionValueGetModel
+                {
+                    id = i.OptionValueId,
+                    value = i.OptionValueName
+                })
+                .ToListAsync();
+            return result;
+        }
         public async Task<ApiResponse> UpdateOptionForSub(SubListUpdateRequest request)
         {
             try
@@ -430,6 +445,186 @@ namespace ECommerce.Application.Services.SubCategory
             catch
             {
                 return new ApiFailResponse("Cập nhật thất bại, thử lại sau");
+            }
+        }
+        public async Task<List<OptionGetModel>> getAllOptions()
+        {
+            var result = await _DbContext.Options
+                .Select(i => new OptionGetModel {
+                    id = i.OptionId,
+                    name = i.OptionName,
+                    values = _DbContext.OptionValues
+                    .Where(v => v.OptionId == i.OptionId && v.IsBaseValue == true)
+                    .Select(v => new OptionValueGetModel { 
+                        id = v.OptionValueId,
+                        value = v.OptionValueName
+                    })
+                    .ToList(),
+                })
+                .ToListAsync();
+            return result;
+        }
+        public async Task<ApiResponse> AddOptionBaseValue(OptionBaseValueAddRequest request)
+        {
+            try
+            {
+                if (request.ids == null || request.ids.Count == 0) return new ApiFailResponse("Chọn tùy chọn");
+                if (string.IsNullOrEmpty(request.value)) return new ApiFailResponse("Nhập giá trị");
+
+                foreach (var id in request.ids)
+                {
+                    var value = await _DbContext.OptionValues
+                        .Where(i => i.OptionId == id && i.OptionValueName == request.value.Trim())
+                        .FirstOrDefaultAsync();
+                    if (value == null)
+                    {
+                        // Add new option value
+                        var newValue = new Data.Models.OptionValue
+                        {
+                            OptionValueName = request.value,
+                            OptionId = id,
+                            IsBaseValue = true
+                        };
+                        await _DbContext.OptionValues.AddAsync(newValue);
+                        await _DbContext.SaveChangesAsync();
+
+                        // Add new product option value from option, find sub, find products, add new.
+                        var sub_optIds = await _DbContext.SubCategoryOptions
+                            .Where(i => i.OptionId == id)
+                            .Select(i => i.SubCategoryId)
+                            .ToListAsync();
+                        var pros = await _DbContext.Products
+                            .Where(i => sub_optIds.Contains(i.SubCategoryId))
+                            .ToListAsync();
+                        if (pros.Count > 0)
+                        {
+                            foreach (var pro in pros)
+                            {
+                                var newProductOptionValue = new Data.Models.ProductOptionValue
+                                {
+                                    ProductId = pro.ProductId,
+                                    OptionValueId = newValue.OptionValueId
+                                };
+                                await _DbContext.ProductOptionValues.AddAsync(newProductOptionValue);
+                                await _DbContext.SaveChangesAsync();
+                            }
+                        }
+                    }
+                }
+                return new ApiSuccessResponse("Thêm thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Thêm bại vui lòng thử lại sau");
+            }
+        }
+        public async Task<ApiResponse> UpdateOptionBaseValue(OptionBaseValueUpdateRequest request)
+        {
+            try
+            {
+                if (request.id == 0) return new ApiFailResponse("Chọn tùy chọn");
+                if (string.IsNullOrEmpty(request.name)) return new ApiFailResponse("Nhập tên tùy chọn");
+
+                // Update option name
+                var option = await _DbContext.Options
+                    .Where(i => i.OptionId == request.id)
+                    .FirstOrDefaultAsync();
+                option.OptionName = request.name.Trim();
+                _DbContext.SaveChangesAsync().Wait();
+
+                // Update option value
+                var optionValues = await _DbContext.OptionValues
+                    .Where(i => i.OptionId == request.id && i.IsBaseValue == true)
+                    .ToListAsync();
+                if (optionValues.Count > 0)
+                {
+                    // Remove all
+                    if (request.ids == null)
+                    {
+                        var pro_optVals = await _DbContext.ProductOptionValues
+                            .Where(i => i.OptionValue.OptionId == request.id)
+                            .ToListAsync();
+                        _DbContext.ProductOptionValues.RemoveRange(pro_optVals);
+                        _DbContext.OptionValues.RemoveRange(optionValues);
+                        _DbContext.SaveChangesAsync().Wait();
+                    }
+                    // Remove option values not included in request list id
+                    else
+                    {
+                        foreach (var value in optionValues)
+                        {
+                            if (!request.ids.Contains(value.OptionValueId))
+                            {
+                                var pro_optVals = await _DbContext.ProductOptionValues
+                                    .Where(i => i.OptionValueId == value.OptionValueId)
+                                    .ToListAsync();
+                                _DbContext.ProductOptionValues.RemoveRange(pro_optVals);
+                                _DbContext.OptionValues.Remove(value);
+                                _DbContext.SaveChangesAsync().Wait();
+                            }
+                        }
+                    }
+                }
+
+
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Cập nhật thất bại vui lòng thử lại sau");
+            }
+        }
+        public async Task<ApiResponse> DeleteOption(int id)
+        {
+            try
+            {
+                if (id == 0) return new ApiFailResponse("Chọn tùy chọn");
+
+                // Remove subcategory option
+                var sub_options = await _DbContext.SubCategoryOptions
+                    .Where(i => i.OptionId == id)
+                    .ToListAsync();
+                if (sub_options.Count > 0)
+                {
+                    _DbContext.SubCategoryOptions.RemoveRange(sub_options);
+                    _DbContext.SaveChangesAsync().Wait();
+                }
+
+                // Remove product option
+                var pro_optionValues = await _DbContext.ProductOptionValues
+                    .Where(i => i.OptionValue.OptionId == id)
+                    .ToListAsync();
+                if (pro_optionValues.Count > 0)
+                {
+                    _DbContext.ProductOptionValues.RemoveRange(pro_optionValues);
+                    _DbContext.SaveChangesAsync().Wait();
+                }
+
+                // Remove option value
+                var optionValues = await _DbContext.OptionValues
+                    .Where(i => i.OptionId == id)
+                    .ToListAsync();
+                if (optionValues.Count > 0)
+                {
+                    _DbContext.OptionValues.RemoveRange(optionValues);
+                    _DbContext.SaveChangesAsync().Wait();
+                }
+
+                // Remove option
+                var option = await _DbContext.Options
+                    .Where(i => i.OptionId == id)
+                    .FirstOrDefaultAsync();
+                if (option != null)
+                {
+                    _DbContext.Options.Remove(option);
+                    _DbContext.SaveChangesAsync().Wait();
+                }
+
+                return new ApiSuccessResponse("Xóa thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Xóa thất bại vui lòng thử lại sau");
             }
         }
     }

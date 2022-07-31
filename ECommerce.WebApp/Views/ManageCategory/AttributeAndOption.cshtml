@@ -11,71 +11,30 @@
             <form class="mx-auto">
                 <div class="row">
                     <div class="col-sm-6 mb-4">
-                        <div class="text-left mb-2 text-primary"><strong>1. Thông tin tùy chọn</strong></div>
                         <div class="form-group mb-4">
-                            <label>Danh mục</label>
-                            <div class="d-flex mb-2">
-                                <div class="dropdown mr-2">
-                                    <input class="form-control category-name" type="text" value="">
-                                </div>
-                                <a class="update-category btn btn-primary">Cập nhật</a>
-                            </div>
-                        </div>
-                        <div class="form-group mb-4">
-                            <label>Thêm loại sản phẩm</label>
-                            <div class="d-flex mb-2">
-                                <div class="dropdown mr-2">
-                                    <input class="form-control subcategory-value" type="text">
-                                </div>
-                                <a class="add-subcategory btn btn-primary">Thêm</a>
-                            </div>
-                        </div>
-                        <div class="form-group mb-4">
-                            <label>Thêm tùy chọn</label>
+                            <label>Thêm giá trị</label>
                             <div class="dropdown mb-2 mr-2">
                                 <button class="btn border dropdown-toggle brand_select-text" type="button" data-toggle="dropdown">
-                                    Loại sản phẩm
+                                    Tùy chọn
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu dropdown-sub-menu px-2" style="max-height: 300px; overflow: auto;">
                                     <input class="form-control mb-2" id="myInput-sub" type="text" placeholder="Tìm..." autocomplete="off" />
-                                    <li class="d-flex align-items-center">
-                                        <input name="sub-opt" class="sub-opt-select mr-2" id="sub-opt-" type="checkbox" value="">
-                                        <label class="mb-0" for="sub-opt-"></label>
-                                    </li>
+                                    @foreach (var option in Model)
+                                    {
+                                        <li class="d-flex align-items-center">
+                                            <input name="sub-opt" class="sub-opt-select mr-2" id="sub-opt-@option.id" type="checkbox" value="@option.id">
+                                            <label class="mb-0" for="sub-opt-@option.id">@option.name</label>
+                                        </li>
+                                    }
                                 </ul>
                             </div>
                             <div class="d-flex mb-2">
                                 <div class="dropdown mr-2">
-                                    <input class="form-control option-name" type="text">
+                                    <input class="form-control option-value" type="text">
                                 </div>
-                                <a class="btn btn-primary add-option">Thêm</a>
+                                <a class="btn btn-primary" onclick="addValue()">Thêm</a>
                             </div>
-                        </div>
-                        <div class="form-group mb-4">
-                            <label>Thêm chi tiết</label>
-                            <div class="dropdown mb-2 mr-2">
-                                <button class="btn border dropdown-toggle brand_select-text" type="button" data-toggle="dropdown">
-                                    Loại sản phẩm
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-sub-menu px-2" style="max-height: 300px; overflow: auto;">
-                                    <input class="form-control mb-2" id="myInput-sub" type="text" placeholder="Tìm..." autocomplete="off" />
-                                    <li class="d-flex align-items-center">
-                                        <input name="sub-attr" class="sub-attr-select mr-2" id="sub-attr-" type="checkbox" value="">
-                                        <label class="mb-0" for="sub-attr-"></label>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <div class="dropdown mr-2">
-                                    <input class="form-control attribute-name" type="text">
-                                </div>
-                                <a class="btn btn-primary add-attribute">Thêm</a>
-                            </div>
-                        </div>
-                        <div class="form-group mb-2">
-                            <a href="">Quản lý tùy chọn và chi tiết</a>
                         </div>
                     </div>
 
@@ -85,106 +44,51 @@
                                    cellspacing="0">
                                 <thead>
                                     <tr>
+                                        <th hidden></th>
                                         <th>#</th>
                                         <th>Tùy chọn</th>
                                         <th>Giá trị</th>
-                                        <th>Số sản phẩm</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Loại dây</td>
-                                        <td style="max-width: 300px;">
-                                            <div class="form-group mb-2">
-                                                <ul class="pl-0 d-flex flex-wrap">
-                                                    <li class="attr attribute-1 d-inline p-1 mr-2 mb-2"
-                                                        value="1"
-                                                        style="background-color: #ddd; border-radius: 4px; white-space: nowrap;">
-                                                        <span class="text">Dây nhựa</span>
-                                                        <span class="remove-tag ml-2" style="cursor: pointer;">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                                 viewBox="0 0 24 24" fill="none" stroke="#333"
-                                                                 stroke-width="1" stroke-linecap="round"
-                                                                 stroke-linejoin="round" class="feather feather-x">
-                                                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                            </svg>
-                                                        </span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                        <td>100</td>
-                                        <td>
-                                            <a class="btn btn-primary" onclick="updateSubcategory(1)">Cập nhật</a>
-                                            <a class="btn btn-danger" onclick="deleteSubCategory(1)">Xóa</a>
-                                        </td>
-                                    </tr>
-                                    @*@if (Model.subcategories.Count > 0)
+                                    @foreach (var option in Model)
                                     {
-                                        @foreach (var item in Model.subcategories)
-                                        {
-                                            <tr>
-                                                <td>@item.SubCategoryId</td>
-                                                <td>
-                                                    <input class="form-control" type="text" id="sub-@item.SubCategoryId-name" value="@item.SubCategoryName" />
-                                                </td>
-                                                <td style="max-width: 300px;">
-                                                    <div class="dropdown mb-2 mr-2">
-                                                        <button class="btn border dropdown-toggle brand_select-text" type="button" data-toggle="dropdown">
-                                                            Tùy chọn
-                                                            <span class="caret"></span>
-                                                        </button>
-                                                        <ul class="dropdown-sub-@item.SubCategoryId-menu dropdown-menu px-2" style="max-height: 300px; overflow: auto;">
-                                                            <input class="form-control mb-2" id="myInput-sub-@item.SubCategoryId" type="text" placeholder="Tìm..." autocomplete="off" />
-                                                            @if (item.options.Count > 0)
-                                                            {
-                                                                @foreach (var opt in item.options)
-                                                                {
-                                                                    <li class="d-flex align-items-center">
-                                                                        <input name="options" class="option-@item.SubCategoryId mr-2" id="option-@opt.id" type="checkbox" value="@opt.id" checked>
-                                                                        <label class="mb-0" for="option-@opt.id">@opt.name</label>
-                                                                    </li>
-                                                                }
-                                                            }
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                                <td style="max-width: 300px;">
-                                                    <div class="form-group mb-2">
-                                                        <ul class="pl-0 d-flex flex-wrap">
-                                                            @if (item.attributes.Count > 0)
-                                                            {
-                                                                @foreach (var attr in item.attributes)
-                                                                {
-                                                                    <li class="attr attribute-@item.SubCategoryId d-inline p-1 mr-2 mb-2"
-                                                                        value="@attr.id"
-                                                                        style="background-color: #ddd; border-radius: 4px; white-space: nowrap;">
-                                                                        <span class="text">@attr.name</span>
-                                                                        <span class="remove-tag ml-2" style="cursor: pointer;">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                                                    viewBox="0 0 24 24" fill="none" stroke="#333"
-                                                                                    stroke-width="1" stroke-linecap="round"
-                                                                                    stroke-linejoin="round" class="feather feather-x">
-                                                                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                                            </svg>
-                                                                        </span>
-                                                                    </li>
-                                                                }
-                                                            }
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                                <td class="text-center">
-                                                    <a class="btn btn-primary" onclick="updateSubcategory(@item.SubCategoryId)">Cập nhật</a>
-                                                    <a class="btn btn-danger" onclick="deleteSubCategory(@item.SubCategoryId)">Xóa</a>
-                                                </td>
-                                            </tr>
-                                        }
-                                    }*@
+                                        <tr>
+                                            <td hidden>@option.name</td>
+                                            <td>@option.id</td>
+                                            <td>
+                                                <input class="form-control option-@option.id-name" type="text" value="@option.name" />
+                                            </td>
+                                            <td style="max-width: 300px;">
+                                                <div class="form-group mb-2">
+                                                    <ul class="pl-0 d-flex flex-wrap">
+                                                        @foreach (var value in option.values)
+                                                        {
+                                                            <li class="attr optionValue-@option.id d-inline p-1 mr-2 mb-2"
+                                                                value="@value.id"
+                                                                style="background-color: #ddd; border-radius: 4px; white-space: nowrap;">
+                                                                <span class="text">@value.value</span>
+                                                                <span class="remove-tag ml-2" style="cursor: pointer;">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                         viewBox="0 0 24 24" fill="none" stroke="#333"
+                                                                         stroke-width="1" stroke-linecap="round"
+                                                                         stroke-linejoin="round" class="feather feather-x">
+                                                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                                    </svg>
+                                                                </span>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-primary" onclick="updateOption(@option.id)">Cập nhật</a>
+                                                <a class="btn btn-danger" onclick="deleteOption(@option.id)">Xóa</a>
+                                            </td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -195,26 +99,52 @@
     </div>
 </div>
 <script>
-    function updateSubcategory(id) {
-        var optionIds = [];
-        $(`.option-${id}`).each(function () {
+    function updateOption(id) {
+        var ids = [];
+        $(`.optionValue-${id}`).each(function () {
+            ids.push($(this).val());
+        })
+
+        var request = {
+            id: id,
+            name: $(`.option-${id}-name`).val(),
+            ids: ids
+        }
+        $.post("/ManageCategory/UpdateOptionBaseValue", request)
+            .then(function (res) {
+                alert(res);
+                window.location.reload();
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert(error.responseText);
+            })
+    }
+    function deleteOption(id) {
+        if (confirm("Xác nhận xóa")) {
+            $.post("/ManageCategory/DeleteOption", { id: id })
+                .then(function (res) {
+                    alert(res);
+                    window.location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    alert(error.responseText);
+                })
+        }
+    }
+    function addValue() {
+        var ids = [];
+        $('.sub-opt-select').each(function () {
             if ($(this).is(":checked")) {
-                optionIds.push($(this).val());
-            }
+                ids.push($(this).val());
+            };
         })
-
-        var attributeIds = [];
-        $(`.attribute-${id}`).each(function () {
-            attributeIds.push($(this).val());
-        })
-
         var request = {
-            optIds: optionIds,
-            attrIds: attributeIds,
-            name: $(`#sub-${id}-name`).val(),
-            id: id
+            ids: ids,
+            value: $('.option-value').val()
         }
-        $.post("/ManageCategory/UpdateSubcategory", request)
+        $.post("/ManageCategory/AddOptionBaseValue", request)
             .then(function (res) {
                 alert(res);
                 window.location.reload();
@@ -224,113 +154,32 @@
                 alert(error.responseText);
             })
     }
-    function deleteSubCategory(id) {
-        $.post("/ManageCategory/", { id: id })
-            .then(function (res) {
-                alert(res);
-                window.location.reload();
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
-            })
-    }
-    $(document).on('click', '.', function () {
-        var ids = [];
-        $(".sub-attr-select").each(function () {
-            if ($(this).is(':checked')) {
-                ids.push($(this).val());
-            }
-        })
-        var request = {
-            ids: ids,
-            name: $(".attribute-name").val()
-        }
-        $.post("/ManageCategory/", request)
-            .then(function (res) {
-                alert(res);
-                window.location.reload();
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
-            })
-    })
-    $(document).on('click', '.add-option', function () {
-        var ids = [];
-        $(".sub-opt-select").each(function () {
-            if ($(this).is(':checked')) {
-                ids.push($(this).val());
-            }
-        })
-        var request = {
-            ids: ids,
-            name: $(".option-name").val()
-        }
-        $.post("/ManageCategory/", request)
-            .then(function (res) {
-                alert(res);
-                window.location.reload();
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
-            })
-    })
-    $(document).on('click', '.', function () {
-        var request = {
-
-        };
-        $.post("/ManageCategory/", request)
-            .then(function (res) {
-                alert(res);
-                window.location.reload();
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
-            })
-    })
-    $(document).on('click', '', function () {
-        var request = {
-
-        }
-        $.post("/ManageCategory/", request)
-            .then(function (res) {
-                alert(res);
-                window.location.reload();
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
-            })
-    })
 </script>
 <script>
-    // Add
-    $(document).on('click', '.add-option', function () {
-        let val = $(this).siblings('.dropdown').find('input').val();
-        if (!val?.trim()) { return; }
+    // Add tag
+    //$(document).on('click', '.add-option', function () {
+    //    let val = $(this).siblings('.dropdown').find('input').val();
+    //    if (!val?.trim()) { return; }
 
-        $(this).parent().siblings('ul').append(`
-            <li class="d-inline p-1 mr-2 mb-2"
-                style="background-color: #ddd; border-radius: 4px;">
-                <span class="text">${val}</span>
-                <span class="remove-tag ml-2" style="cursor: pointer;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                        viewBox="0 0 24 24" fill="none" stroke="#333"
-                        stroke-width="1" stroke-linecap="round"
-                        stroke-linejoin="round" class="feather feather-x">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </span>
-            </li>
-        `)
+    //    $(this).parent().siblings('ul').append(`
+    //        <li class="d-inline p-1 mr-2 mb-2"
+    //            style="background-color: #ddd; border-radius: 4px;">
+    //            <span class="text">${val}</span>
+    //            <span class="remove-tag ml-2" style="cursor: pointer;">
+    //                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+    //                    viewBox="0 0 24 24" fill="none" stroke="#333"
+    //                    stroke-width="1" stroke-linecap="round"
+    //                    stroke-linejoin="round" class="feather feather-x">
+    //                    <line x1="18" y1="6" x2="6" y2="18"></line>
+    //                    <line x1="6" y1="6" x2="18" y2="18"></line>
+    //                </svg>
+    //            </span>
+    //        </li>
+    //    `)
 
-        $(this).siblings('.dropdown').find('input').val('');
-    })
-    // Remove attr or option
+    //    $(this).siblings('.dropdown').find('input').val('');
+    //})
+    // Remove tag
     $(document).on('click', '.remove-tag', function () {
         $(this).parent().remove();
     })

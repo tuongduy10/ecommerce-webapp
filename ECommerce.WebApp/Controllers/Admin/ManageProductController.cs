@@ -70,7 +70,7 @@ namespace ECommerce.WebApp.Controllers.Admin
         public async Task<IActionResult> AddProduct(ProductAddRequest request)
         {
             // Image null check
-            if (request.systemImage == null || request.userImage == null)
+            if (request.systemImage == null)
             {
                 return BadRequest("Vui lòng chọn ảnh");
             }
@@ -78,14 +78,20 @@ namespace ECommerce.WebApp.Controllers.Admin
             request.userId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
             // Get files name
             request.systemFileName = _manageFiles.GetFilesName(request.systemImage, FILE_PREFIX);
-            request.userFileName = _manageFiles.GetFilesName(request.userImage, FILE_PREFIX);
+            if (request.userFileName != null)
+            {
+                request.userFileName = _manageFiles.GetFilesName(request.userImage, FILE_PREFIX);
+            }
             // Result 
             var result = await _productService.AddProduct(request);
             if (result.isSucceed)
             {
                 // Add file with files, files'name, path
                 _manageFiles.AddFiles(request.systemImage, request.systemFileName, FILE_PATH);
-                _manageFiles.AddFiles(request.userImage, request.userFileName, FILE_PATH);
+                if (request.userFileName != null)
+                {
+                    _manageFiles.AddFiles(request.userImage, request.userFileName, FILE_PATH);
+                }
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);

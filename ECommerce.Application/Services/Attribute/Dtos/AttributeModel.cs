@@ -9,8 +9,8 @@ namespace ECommerce.Application.Services.Attribute.Dtos
 {
     public class AttributeModel
     {
-        public int AttributeId { get; set; }
-        public string AttributeName { get; set; }
-
+        public int id { get; set; }
+        public string name { get; set; }
+        public string value { get; set; }
     }
 }

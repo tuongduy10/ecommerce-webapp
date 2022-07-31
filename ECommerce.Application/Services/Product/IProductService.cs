@@ -20,5 +20,8 @@ namespace ECommerce.Application.Services.Product
         Task<Response<ProductDeleteResponse>> DeleteProduct(int id);
         Task<ApiResponse> DisableProducts(List<int> ids);
         Task<ApiResponse> ApproveProducts(List<int> ids);
+        Task<ApiResponse> AddSizeGuide(SizeGuideAddRequest request);
+        Task<ApiResponse> UpdateSizeGuide(SizeGuideAddRequest request);
+        Task<Response<Data.Models.SizeGuide>> SizeGuideDetail(int id);
     }
 }

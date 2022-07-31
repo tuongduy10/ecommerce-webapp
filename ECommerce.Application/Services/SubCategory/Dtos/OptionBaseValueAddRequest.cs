@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Services.SubCategory.Dtos
 {
-    public class AttributeGetModel
+    public class OptionBaseValueAddRequest
     {
-        public int id { get; set; }
-        public string name { get; set; }
+        public List<int> ids { get; set; } // option ids
         public string value { get; set; }
     }
 }

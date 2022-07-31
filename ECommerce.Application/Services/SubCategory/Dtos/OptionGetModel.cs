@@ -8,7 +8,8 @@ namespace ECommerce.Application.Services.SubCategory.Dtos
 {
     public class OptionGetModel
     {
-        public int id { get; set; }
-        public string name { get; set; }
+        public int id { get; set; } // main and default
+        public string name { get; set; } // main and default
+        public List<OptionValueGetModel> values { get; set; }
     }
 }

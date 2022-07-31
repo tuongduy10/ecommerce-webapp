@@ -21,8 +21,13 @@ namespace ECommerce.Application.Services.SubCategory
         Task<List<AttributeGetModel>> getAttributeBySubCategoryId(int id);
         Task<List<string>> getOptionValueNameByOptionId(int id);
         Task<List<OptionValueGetModel>> getBaseOptionValueByOptionId(int id);
+        Task<List<OptionValueGetModel>> getOptionValueByOptionId(int id);
         Task<List<SubCategoryModel>> getSubCategoryByCategoryWithOptsAndAttrs(int id);
         Task<ApiResponse> UpdateOptionForSub(SubListUpdateRequest request);
         Task<ApiResponse> UpdateAttributeForSub(SubListUpdateRequest request);
+        Task<List<OptionGetModel>> getAllOptions();
+        Task<ApiResponse> AddOptionBaseValue(OptionBaseValueAddRequest request);
+        Task<ApiResponse> UpdateOptionBaseValue(OptionBaseValueUpdateRequest request);
+        Task<ApiResponse> DeleteOption(int id);
     }
 }
