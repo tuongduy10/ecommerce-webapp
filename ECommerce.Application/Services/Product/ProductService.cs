@@ -806,6 +806,11 @@ namespace ECommerce.Application.Services.Product
                 // Options
                 var opts = await _DbContext.ProductOptionValues.Where(i => ids.Contains(i.ProductId)).ToListAsync();
                 if (opts.Count > 0) _DbContext.ProductOptionValues.RemoveRange(opts);
+                // Product's comments
+                foreach (var id in ids)
+                {
+                    await _rateService.deleteCommentByProductId(id);
+                }
 
                 // Remove product and save changes
                 _DbContext.Products.RemoveRange(products);
@@ -818,9 +823,9 @@ namespace ECommerce.Application.Services.Product
                 };
                 return new SuccessResponse<ProductDeleteResponse>("Xóa thành công", data);
             }
-            catch
+            catch (Exception error)
             {
-                return new FailResponse<ProductDeleteResponse>("Xóa thất bại, vui lòng thử lại sau");
+                return new FailResponse<ProductDeleteResponse>("Xóa thất bại, vui lòng thử lại sau\n" + error.Message);
             }
         }
         public async Task<ApiResponse> DisableProducts(List<int> ids)
