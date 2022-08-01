@@ -18,6 +18,7 @@ namespace ECommerce.Application.Services.Product
         Task<Price> getProductPrice(int productId, int typeId);
         Task<ApiResponse> AddProduct(ProductAddRequest request);
         Task<Response<ProductDeleteResponse>> DeleteProduct(int id);
+        Task<Response<ProductDeleteResponse>> DeleteProducts(List<int> ids);
         Task<ApiResponse> DisableProducts(List<int> ids);
         Task<ApiResponse> ApproveProducts(List<int> ids);
         Task<ApiResponse> AddSizeGuide(SizeGuideAddRequest request);

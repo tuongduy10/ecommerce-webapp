@@ -145,6 +145,7 @@
                 </div>
                 <a class="mr-2 btn btn-primary approve-product">Hiện</a>
                 <a class="mr-2 btn btn-secondary hide-product">Ẩn</a>
+                <a class="mr-2 btn btn-danger delete-product">Xóa</a>
             `);
             if (count == 0) {
                 $('.select-actions').html(``);
@@ -201,7 +202,28 @@
                 })
         }
     })
-    function deleteProduct(id){
+    $(document).on('click', '.delete-product', function() {
+        if (confirm("Xác nhận xóa") == true) {
+            let ids = [];
+            $('.select-product').each(function () {
+                if ($(this).is(":checked")) {
+                    let id = $(this).val();
+                    ids.push(id);
+                }
+            });
+            $.post("/SaleProduct/DeleteProducts", { ids: ids })
+                .then(function (response) {
+                    alert(response);
+                    location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    alert(error.responseText);
+                })
+        }
+    })
+
+    function deleteProduct(id) {
         if (confirm("Xác nhận xóa") == true) {
             $.post("/SaleProduct/DeleteProduct", { id: id })
                 .then(function (response) {
@@ -214,4 +236,5 @@
                 })
         }
     }
+    
 </script>

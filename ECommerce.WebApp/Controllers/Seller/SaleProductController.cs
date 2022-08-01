@@ -127,5 +127,17 @@ namespace ECommerce.WebApp.Controllers.Seller
             }
             return BadRequest(result.Message);
         }
+        [HttpPost]
+        public async Task<IActionResult> DeleteProducts(List<int> ids)
+        {
+            var result = await _productService.DeleteProducts(ids);
+            if (result.isSucceed)
+            {
+                _manageFiles.DeleteFiles(result.Data.systemImages, FILE_PATH);
+                _manageFiles.DeleteFiles(result.Data.userImages, FILE_PATH);
+                return Ok(result.Message);
+            }
+            return BadRequest(result.Message);
+        }
     }
 }

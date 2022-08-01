@@ -749,6 +749,7 @@ namespace ECommerce.Application.Services.Product
                 // Check null product
                 var product = await _DbContext.Products.Where(i => i.ProductId == id).FirstOrDefaultAsync();
                 if (product == null) return new SuccessResponse<ProductDeleteResponse>("Sản phẩm không tồn tại");
+                
                 // System's iamges
                 var sysImages = await _DbContext.ProductImages.Where(i => i.ProductId == id).ToListAsync();
                 if (sysImages.Count > 0) _DbContext.ProductImages.RemoveRange(sysImages);
@@ -766,9 +767,10 @@ namespace ECommerce.Application.Services.Product
                 if (opts.Count > 0) _DbContext.ProductOptionValues.RemoveRange(opts);
                 // Product's comments
                 await _rateService.deleteCommentByProductId(id);
+                
                 // Remove product and save changes
                 _DbContext.Products.Remove(product);
-                await _DbContext.SaveChangesAsync();
+                _DbContext.SaveChangesAsync().Wait();
                 var data = new ProductDeleteResponse
                 {
                     systemImages = sysImages.Select(i => i.ProductImagePath).ToList(),
@@ -779,6 +781,46 @@ namespace ECommerce.Application.Services.Product
             catch (Exception error)
             {
                 return new FailResponse<ProductDeleteResponse>("Xóa thất bại " + error.Message);
+            }
+        }
+        public async Task<Response<ProductDeleteResponse>> DeleteProducts(List<int> ids)
+        {
+            try
+            {
+                // Check null product
+                var products = await _DbContext.Products.Where(i => ids.Contains(i.ProductId)).ToListAsync();
+                if (products == null || products.Count == 0) return new FailResponse<ProductDeleteResponse>("Sản phẩm không tồn tại");
+                
+                // System's iamges
+                var sysImages = await _DbContext.ProductImages.Where(i => ids.Contains(i.ProductId)).ToListAsync();
+                if (sysImages.Count > 0) _DbContext.ProductImages.RemoveRange(sysImages);
+                // User's images
+                var userImages = await _DbContext.ProductUserImages.Where(i => ids.Contains((int)i.ProductId)).ToListAsync();
+                if (userImages.Count > 0) _DbContext.ProductUserImages.RemoveRange(userImages);
+                // Prices
+                var productPrices = await _DbContext.ProductPrices.Where(i => ids.Contains(i.ProductId)).ToListAsync();
+                if (productPrices.Count > 0) _DbContext.ProductPrices.RemoveRange(productPrices);
+                // Attributes
+                var attrs = await _DbContext.ProductAttributes.Where(i => ids.Contains(i.ProductId)).ToListAsync();
+                if (attrs.Count > 0) _DbContext.ProductAttributes.RemoveRange(attrs);
+                // Options
+                var opts = await _DbContext.ProductOptionValues.Where(i => ids.Contains(i.ProductId)).ToListAsync();
+                if (opts.Count > 0) _DbContext.ProductOptionValues.RemoveRange(opts);
+
+                // Remove product and save changes
+                _DbContext.Products.RemoveRange(products);
+                _DbContext.SaveChangesAsync().Wait();
+
+                var data = new ProductDeleteResponse
+                {
+                    systemImages = sysImages.Select(i => i.ProductImagePath).ToList(),
+                    userImages = userImages.Select(i => i.ProductUserImagePath).ToList()
+                };
+                return new SuccessResponse<ProductDeleteResponse>("Xóa thành công", data);
+            }
+            catch
+            {
+                return new FailResponse<ProductDeleteResponse>("Xóa thất bại, vui lòng thử lại sau");
             }
         }
         public async Task<ApiResponse> DisableProducts(List<int> ids)

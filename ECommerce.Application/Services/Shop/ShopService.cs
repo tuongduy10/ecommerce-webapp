@@ -329,16 +329,16 @@ namespace ECommerce.Application.Services.Shop
                     shop.ShopMail = request.mail.Trim();
                 }
 
-                shop.ShopAddress = null;
+                shop.ShopAddress = "";
                 if(!string.IsNullOrEmpty(request.address)) 
                     shop.ShopAddress = request.address.Trim();
-                shop.ShopCityCode = null;
+                shop.ShopCityCode = "";
                 if(!string.IsNullOrEmpty(request.cityCode)) 
                     shop.ShopCityCode = request.cityCode.Trim();
-                shop.ShopDistrictCode = null;
+                shop.ShopDistrictCode = "";
                 if(!string.IsNullOrEmpty(request.districtCode))
                     shop.ShopDistrictCode = request.districtCode.Trim();
-                shop.ShopWardCode = null;
+                shop.ShopWardCode = "";
                 if(!string.IsNullOrEmpty(request.wardCode))
                     shop.ShopWardCode = request.wardCode.Trim();
 
@@ -349,13 +349,13 @@ namespace ECommerce.Application.Services.Shop
                 // Add new if not exist
                 if (bank == null)
                 {
-                    string accountName = null;
+                    string accountName = "";
                     if (!string.IsNullOrEmpty(request.shopbank.ShopAccountName))
                         accountName = request.shopbank.ShopAccountName.Trim();
-                    string bankName = null;
+                    string bankName = "";
                     if (!string.IsNullOrEmpty(request.shopbank.ShopBankName))
                         bankName = request.shopbank.ShopBankName.Trim();
-                    string accountNumber = null;
+                    string accountNumber = "";
                     if (!string.IsNullOrEmpty(request.shopbank.ShopAccountNumber))
                         accountNumber = request.shopbank.ShopAccountNumber.Trim();
 
@@ -366,26 +366,34 @@ namespace ECommerce.Application.Services.Shop
                         ShopAccountNumber = accountNumber,
                         ShopId = shop.ShopId,
                     };
+
                     await _DbContext.ShopBanks.AddAsync(newBank);
+                    await _DbContext.SaveChangesAsync();
                 }
                 // Update if it exist
                 else
                 {
-                    bank.ShopAccountName = null;
+                    bank.ShopAccountName = "";
                     if (!string.IsNullOrEmpty(request.shopbank.ShopAccountName))
                         bank.ShopAccountName = request.shopbank.ShopAccountName.Trim();
-                    bank.ShopBankName = null;
+                    bank.ShopBankName = "";
                     if (!string.IsNullOrEmpty(request.shopbank.ShopBankName))
                         bank.ShopBankName = request.shopbank.ShopBankName.Trim();
-                    bank.ShopAccountNumber = null;
+                    bank.ShopAccountNumber = "";
                     if (!string.IsNullOrEmpty(request.shopbank.ShopAccountNumber))
                         bank.ShopAccountNumber = request.shopbank.ShopAccountNumber.Trim();
+
+                    await _DbContext.SaveChangesAsync();
                 }
-                await _DbContext.SaveChangesAsync();
+                
 
                 var brands = await _DbContext.ShopBrands.Where(i => i.ShopId == request.id).ToListAsync();
                 // Remove previous brands if exist
-                if(brands.Count > 0) _DbContext.ShopBrands.RemoveRange(brands);
+                if (brands.Count > 0)
+                {
+                    _DbContext.ShopBrands.RemoveRange(brands);
+                    await _DbContext.SaveChangesAsync();
+                }
                 // Add new brands if has items
                 if (request.shopBrands != null)
                 {
@@ -398,9 +406,9 @@ namespace ECommerce.Application.Services.Shop
                         };
                         await _DbContext.ShopBrands.AddAsync(brand);
                     }
+                    await _DbContext.SaveChangesAsync();
                 }
-                await _DbContext.SaveChangesAsync();
-
+                
                 return new ApiSuccessResponse("Cập nhật thành công");
             }
             catch (Exception error)
