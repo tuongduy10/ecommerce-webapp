@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.Product.Dtos;
+using ECommerce.Application.Services.Product.Response;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,7 +17,8 @@ namespace ECommerce.Application.Services.Product
         Task<List<ProductShopListModel>> getAllManaged(int subcategoryId);
         Task<PageResult<ProductInBrandModel>> getProductInPagePaginated(ProductGetRequest request);
         Task<Price> getProductPrice(int productId, int typeId);
-        Task<ApiResponse> AddProduct(ProductAddRequest request);
+        Task<ApiResponse> AddProduct(ProductSaveRequest request);
+        Task<Response<ProductUpdateResponse>> UpdateProduct(ProductSaveRequest request);
         Task<Response<ProductDeleteResponse>> DeleteProduct(int id);
         Task<Response<ProductDeleteResponse>> DeleteProducts(List<int> ids);
         Task<ApiResponse> DisableProducts(List<int> ids);
@@ -24,5 +26,7 @@ namespace ECommerce.Application.Services.Product
         Task<ApiResponse> AddSizeGuide(SizeGuideAddRequest request);
         Task<ApiResponse> UpdateSizeGuide(SizeGuideAddRequest request);
         Task<Response<Data.Models.SizeGuide>> SizeGuideDetail(int id);
+        Task<Response<string>> DeleteProductImage(int id);
+        Task<Response<string>> DeleteProductUserImage(int id);
     }
 }

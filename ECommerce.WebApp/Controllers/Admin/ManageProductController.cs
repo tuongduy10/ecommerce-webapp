@@ -67,7 +67,7 @@ namespace ECommerce.WebApp.Controllers.Admin
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> AddProduct(ProductAddRequest request)
+        public async Task<IActionResult> AddProduct(ProductSaveRequest request)
         {
             // Image null check
             if (request.systemImage == null)
@@ -96,16 +96,68 @@ namespace ECommerce.WebApp.Controllers.Admin
             }
             return BadRequest(result.Message);
         }
+        [HttpPost]
+        public async Task<IActionResult> UpdateProduct(ProductSaveRequest request)
+        {
+            request.userId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
+
+            if (request.systemImage != null)
+                request.systemFileName = _manageFiles.GetFilesName(request.systemImage, FILE_PREFIX);
+            if (request.userFileName != null)
+                request.userFileName = _manageFiles.GetFilesName(request.userImage, FILE_PREFIX);
+            
+            // Result 
+            var result = await _productService.UpdateProduct(request);
+            if (result.isSucceed)
+            {
+                // Add file with files, files'name, path
+                if (request.systemImage != null)
+                    _manageFiles.AddFiles(request.systemImage, request.systemFileName, FILE_PATH);
+                if (request.userFileName != null)
+                    _manageFiles.AddFiles(request.userImage, request.userFileName, FILE_PATH);
+                
+                return Ok(result.Message);
+            }
+            return BadRequest(result.Message);
+        }
         public async Task<IActionResult> ProductDetail(ProductViewDetailRequest request)
         {
+            var product = await _productService.GetProductDetailManaged(request.productId);
+            var shops = await _shopService.getShopList();
+            var brands = await _brandService.getBrandsByShop(product.ShopId);
+            var subCategories = await _subCategoryService.getSubCategoryInBrand(request.brandId);
+
             var model = new ProductDetailViewModel
             {
-                product = await _productService.GetProductDetailManaged(request.productId),
-                shops = await _shopService.getShopList(),
-                brands = await _brandService.getBrandsByShop(request.shopId),
-                subCategories = await _subCategoryService.getSubCategoryInBrand(request.brandId)
+                product = product,
+                shops = shops,
+                brands = brands,
+                subCategories = subCategories
             };
             return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteProductImage(int id)
+        {
+            var result = await _productService.DeleteProductImage(id);
+            if (result.isSucceed) 
+            {
+                _manageFiles.DeleteFile(result.Data, FILE_PATH);
+                return Ok(result.Message);
+            }
+            return BadRequest(result.Message);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteProductUserImage(int id)
+        {
+            var result = await _productService.DeleteProductUserImage(id);
+            if (result.isSucceed) 
+            {
+                _manageFiles.DeleteFile(result.Data, FILE_PATH);
+                return Ok(result.Message);
+            }
+            
+            return BadRequest(result.Message);
         }
     }
 }
