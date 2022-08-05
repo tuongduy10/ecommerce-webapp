@@ -79,7 +79,10 @@
                             {
                                 @if (price.ProductTypeId == 1)
                                 {
-                                    @String.Format("{0:0,0} ₫", price.Price)
+                                    @if(price.Price != null)
+                                    {
+                                        @String.Format("{0:0,0} ₫", price.Price)
+                                    }
                                 }
                             }
                         </td>
@@ -88,7 +91,10 @@
                             {
                                 @if (price.ProductTypeId == 2)
                                 {
-                                    @String.Format("{0:0,0} ₫", price.Price)
+                                    @if (price.Price != null)
+                                    {
+                                        @String.Format("{0:0,0} ₫", price.Price)
+                                    }
                                 }
                             }
                         </td>
