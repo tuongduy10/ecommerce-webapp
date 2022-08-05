@@ -1466,7 +1466,7 @@ hr {
 }
 
 .detail-item {
-    flex: 1;
+    /*flex: 1;*/
     flex-basis: calc(50% - 35px / 2);
     display: flex;
     border-bottom: solid 1px #ddd;

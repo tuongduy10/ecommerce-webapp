@@ -66,7 +66,7 @@ namespace ECommerce.WebApp.Controllers.Seller
             return View(brands);
         }
         [HttpPost]
-        public async Task<IActionResult> AddProduct(ProductAddRequest request)
+        public async Task<IActionResult> AddProduct(ProductSaveRequest request)
         {
             // Image null check
             if (request.systemImage == null || request.userImage == null)

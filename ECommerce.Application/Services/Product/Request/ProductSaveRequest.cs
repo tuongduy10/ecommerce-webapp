@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Services.Product.Dtos
 {
-    public class ProductAddRequest
+    public class ProductSaveRequest
     {
         // None relationship data
+        public int id { get; set; }
         public int shopId { get; set; }
         public string name{ get;set; }
         public string description { get; set; }

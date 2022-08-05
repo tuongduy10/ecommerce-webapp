@@ -1,6 +1,7 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.Product.Enum;
+using ECommerce.Application.Services.Product.Response;
 using ECommerce.Application.Services.Rate;
 using ECommerce.Application.Services.SubCategory.Dtos;
 using ECommerce.Application.Services.User;
@@ -497,7 +498,7 @@ namespace ECommerce.Application.Services.Product
                 }).FirstOrDefaultAsync();
             return result;
         }
-        public async Task<ApiResponse> AddProduct(ProductAddRequest request)
+        public async Task<ApiResponse> AddProduct(ProductSaveRequest request)
         {
             if (string.IsNullOrEmpty(request.name)) 
                 return new ApiFailResponse("Vui lòng nhập tên sản phẩm");
@@ -506,7 +507,7 @@ namespace ECommerce.Application.Services.Product
             if (request.brandId == 0) 
                 return new ApiFailResponse("Vui lòng chọn thương hiệu");
             if (request.subCategoryId == 0)
-                return new ApiFailResponse("Vui lòng chọn danh mục sản phẩm");
+                return new ApiFailResponse("Vui lòng chọn loại sản phẩm");
 
             Price priceAvailable = JsonConvert.DeserializeObject<Price>(request.priceAvailable);
             Price pricePreorder = JsonConvert.DeserializeObject<Price>(request.pricePreorder);
@@ -532,14 +533,14 @@ namespace ECommerce.Application.Services.Product
                 {
                     ProductName = request.name.Trim(), // required
                     ProductDescription = request.description == null ? null : request.description,
-                    Note = request.note == null ? null : request.note.Trim(),
+                    Note = request.note == null ? "" : request.note.Trim(),
                     DiscountPercent = request.discountPercent,
                     Legit = request.isLegit,
                     Highlights = request.isHighlight,
                     FreeDelivery = request.isFreeDelivery,
                     ProductStock = request.stock,
                     FreeReturn = request.isFreeReturn,
-                    Insurance = request.insurance == null ? null : request.insurance.Trim(),
+                    Insurance = request.insurance == null ? "" : request.insurance.Trim(),
                     New = request.isNew,
                     ShopId = request.shopId,
                     BrandId = request.brandId,
@@ -567,44 +568,6 @@ namespace ECommerce.Application.Services.Product
                         await _DbContext.ProductOptionValues.AddAsync(productOptionValue);
                     }
                 }
-
-                // New option value
-                //List<Dtos.Option> newOptions = JsonConvert.DeserializeObject<List<Dtos.Option>>(request.newOptions);
-                //if (newOptions.Count > 0)
-                //{
-                //    foreach (var option in newOptions)
-                //    {
-                //        var optionValues = await _DbContext.OptionValues
-                //            .Where(i => i.OptionId == option.id)
-                //            .Select(i => i.OptionValueName)
-                //            .ToListAsync();
-
-                //        // Get new values of list;
-                //        // Lấy các giá trị khác với db;
-                //        var values = option.values.Except(optionValues).ToList();
-                //        foreach (var value in values)
-                //        {
-                //            var optionValue = new OptionValue
-                //            {
-                //                OptionId = option.id,
-                //                OptionValueName = value,
-                //                IsBaseValue = false
-                //            };
-                //            await _DbContext.OptionValues.AddAsync(optionValue); // Add new value
-                //            await _DbContext.SaveChangesAsync();
-
-                //            await AddOptionValueByProductId(product.ProductId, value);
-                //        }
-
-                //        // Get already existed values in db of list;
-                //        // Lấy các giá trị trùng với db;
-                //        var currentValues = option.values.Intersect(optionValues).ToList();
-                //        foreach (var value in currentValues)
-                //        {
-                //            await AddOptionValueByProductId(product.ProductId, value);
-                //        }
-                //    }
-                //}
                 // New option value
                 List<Dtos.Option> newOptions = JsonConvert.DeserializeObject<List<Dtos.Option>>(request.newOptions);
                 if (newOptions.Count > 0)
@@ -624,7 +587,7 @@ namespace ECommerce.Application.Services.Product
                             var newOptionValue = new OptionValue
                             {
                                 OptionId = option.id,
-                                OptionValueName = value,
+                                OptionValueName = value.Trim(),
                                 IsBaseValue = false
                             };
                             await _DbContext.OptionValues.AddAsync(newOptionValue);
@@ -659,7 +622,7 @@ namespace ECommerce.Application.Services.Product
                             {
                                 ProductId = product.ProductId,
                                 AttributeId = attr.id,
-                                Value = attr.value
+                                Value = attr.value.Trim()
                             };
                             await _DbContext.ProductAttributes.AddAsync(attribute);
                             await _DbContext.SaveChangesAsync();
@@ -729,6 +692,281 @@ namespace ECommerce.Application.Services.Product
             catch(Exception e)
             {
                 return new ApiFailResponse(e.Message);
+            }
+        }
+        public async Task<Response<ProductUpdateResponse>> UpdateProduct(ProductSaveRequest request)
+        {
+            try
+            {
+                if (request.id == 0)
+                    return new FailResponse<ProductUpdateResponse>("Vui lòng chọn sản phẩm cần cập nhật");
+                if (string.IsNullOrEmpty(request.name))
+                    return new FailResponse<ProductUpdateResponse>("Vui lòng nhập tên sản phẩm");
+                if (request.shopId == 0)
+                    return new FailResponse<ProductUpdateResponse>("Vui lòng chọn cửa hàng");
+                if (request.brandId == 0)
+                    return new FailResponse<ProductUpdateResponse>("Vui lòng chọn thương hiệu");
+                if (request.subCategoryId == 0)
+                    return new FailResponse<ProductUpdateResponse>("Vui lòng chọn loại sản phẩm");
+
+                Price priceAvailable = JsonConvert.DeserializeObject<Price>(request.priceAvailable);
+                Price pricePreorder = JsonConvert.DeserializeObject<Price>(request.pricePreorder);
+                if (priceAvailable.price == null && priceAvailable.priceOnSell == null && pricePreorder.price == null && pricePreorder.priceOnSell == null)
+                    return new FailResponse<ProductUpdateResponse>("Vui lòng nhập giá sản phẩm");
+                if (priceAvailable.price == null && priceAvailable.priceOnSell != null)
+                    return new FailResponse<ProductUpdateResponse>("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
+                if (priceAvailable.price < priceAvailable.priceOnSell)
+                    return new FailResponse<ProductUpdateResponse>("Giá giảm không thể lớn hơn giá gốc !");
+                if (pricePreorder.price == null && pricePreorder.priceOnSell != null)
+                    return new FailResponse<ProductUpdateResponse>("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
+                if (pricePreorder.price < pricePreorder.priceOnSell)
+                    return new FailResponse<ProductUpdateResponse>("Giá giảm không thể lớn hơn giá gốc !");
+
+                var product = await _DbContext.Products
+                    .Where(i => i.ProductId == request.id)
+                    .FirstOrDefaultAsync();
+                if (product == null)
+                    return new FailResponse<ProductUpdateResponse>("Sản phẩm không tồn tại");
+
+                var productImage = await _DbContext.ProductImages
+                    .Where(i => i.ProductId == request.id)
+                    .FirstOrDefaultAsync();
+                if (productImage == null && request.systemImage == null)
+                    return new FailResponse<ProductUpdateResponse>("Vui lòng chọn ảnh");
+
+
+                var isAdmin = await _userService.getUserRole(request.userId) == "Admin";
+                /*
+                 * None relationship data
+                 */
+                product.ProductName = request.name.Trim(); // required
+                product.ProductDescription = request.description == null ? null : request.description;
+                product.Note = request.note == null ? "" : request.note.Trim();
+                product.DiscountPercent = request.discountPercent;
+                product.Legit = request.isLegit;
+                product.Highlights = request.isHighlight;
+                product.FreeDelivery = request.isFreeDelivery;
+                product.ProductStock = request.stock;
+                product.FreeReturn = request.isFreeReturn;
+                product.Insurance = request.insurance == null ? "" : request.insurance.Trim();
+                product.New = request.isNew;
+                product.ShopId = request.shopId;
+                product.BrandId = request.brandId;
+                product.SubCategoryId = request.subCategoryId;
+                product.Status = isAdmin ? (byte?)enumProductStatus.Available : (byte?)enumProductStatus.Pending;
+
+                await _DbContext.SaveChangesAsync();
+
+                /*
+                 * Relationship data
+                 */
+                // Attribute
+                List<Dtos.ProductAttribute> attributes = JsonConvert.DeserializeObject<List<Dtos.ProductAttribute>>(request.attributes);
+                if (attributes.Count > 0)
+                {
+                    foreach (var attr in attributes)
+                    {
+                        if (!string.IsNullOrEmpty(attr.value))
+                        {
+                            var attribute = await _DbContext.ProductAttributes
+                                .Where(i => i.ProductId == product.ProductId && i.AttributeId == attr.id)
+                                .FirstOrDefaultAsync();
+                            if(attribute == null) // Add new if not existed
+                            {
+                                var newAttribute = new Data.Models.ProductAttribute
+                                {
+                                    ProductId = product.ProductId,
+                                    AttributeId = attr.id,
+                                    Value = attr.value.Trim()
+                                };
+                                await _DbContext.ProductAttributes.AddAsync(newAttribute);
+                            }
+                            else // Update if existed
+                            {
+                                attribute.Value = attr.value.Trim();
+                            }
+                            await _DbContext.SaveChangesAsync();
+                        }
+                    }      
+                }
+
+                //// Options
+                //List<int> optionValueIds = JsonConvert.DeserializeObject<List<int>>(request.currentOptions);
+                //if (optionValueIds.Count > 0)
+                //{
+                //    foreach (var id in optionValueIds)
+                //    {
+                //        var productOptionValue = new ProductOptionValue
+                //        {
+                //            ProductId = product.ProductId,
+                //            OptionValueId = id
+                //        };
+                //        await _DbContext.ProductOptionValues.AddAsync(productOptionValue);
+                //    }
+                //}
+                //// New option value
+                //List<Dtos.Option> newOptions = JsonConvert.DeserializeObject<List<Dtos.Option>>(request.newOptions);
+                //if (newOptions.Count > 0)
+                //{
+                //    foreach (var option in newOptions)
+                //    {
+                //        var optionValues = await _DbContext.OptionValues
+                //            .Where(i => i.OptionId == option.id)
+                //            .Select(i => i.OptionValueName)
+                //            .ToListAsync();
+
+                //        // Get new values of list;
+                //        // Lấy các giá trị khác với db;
+                //        var values = option.values.Except(optionValues).ToList();
+                //        foreach (var value in values)
+                //        {
+                //            var newOptionValue = new OptionValue
+                //            {
+                //                OptionId = option.id,
+                //                OptionValueName = value.Trim(),
+                //                IsBaseValue = false
+                //            };
+                //            await _DbContext.OptionValues.AddAsync(newOptionValue);
+                //            await _DbContext.SaveChangesAsync();
+
+                //            await AddProductOptionValueByProductId(product.ProductId, newOptionValue.OptionValueId);
+                //        }
+
+                //        // Get already existed values in db of list;
+                //        // Lấy các giá trị trùng với db;
+                //        var currentValues = option.values.Intersect(optionValues).ToList();
+                //        foreach (var value in currentValues)
+                //        {
+                //            var optValue = await _DbContext.OptionValues
+                //                .Where(i => i.OptionValueName == value && i.OptionId == option.id)
+                //                .FirstOrDefaultAsync();
+
+                //            await AddProductOptionValueByProductId(product.ProductId, optValue.OptionValueId);
+                //        }
+                //    }
+                //}
+
+                // Prices
+                decimal discountAvailable = 0;
+                decimal discountPreOrder = 0;
+                if (request.discountPercent != null)
+                {
+                    discountAvailable = GetDiscountPrice(priceAvailable.price, request.discountPercent);
+                    discountPreOrder = GetDiscountPrice(pricePreorder.price, request.discountPercent);
+                }
+                // Available price
+                var availablePrice = await _DbContext.ProductPrices
+                        .Where(i => i.ProductId == product.ProductId && i.ProductTypeId == (int)enumProductType.Available)
+                        .FirstOrDefaultAsync();
+                if (availablePrice != null)
+                {
+                    availablePrice.Price = priceAvailable.price == null ? null : priceAvailable.price;
+                    availablePrice.PriceOnSell = discountAvailable == 0 ? null : discountAvailable;
+                }
+                else
+                {
+                    var newAvailablePrice = new ProductPrice
+                    {
+                        ProductId = product.ProductId,
+                        Price = priceAvailable.price,
+                        PriceOnSell = discountAvailable == 0 ? null : discountAvailable,
+                        ProductTypeId = (int)enumProductType.Available,
+                    };
+                    await _DbContext.ProductPrices.AddAsync(newAvailablePrice);
+                }
+                await _DbContext.SaveChangesAsync();
+
+                // PreOrder Price
+                var preOrderPrice = await _DbContext.ProductPrices
+                        .Where(i => i.ProductId == product.ProductId && i.ProductTypeId == (int)enumProductType.PreOrder)
+                        .FirstOrDefaultAsync();
+                if (preOrderPrice != null)
+                {
+                    preOrderPrice.Price = pricePreorder.price == null ? null : pricePreorder.price;
+                    preOrderPrice.PriceOnSell = discountPreOrder == 0 ? null : discountPreOrder;
+                }
+                else
+                {
+                    var newPreOrderPrice = new ProductPrice
+                    {
+                        ProductId = product.ProductId,
+                        Price = pricePreorder.price,
+                        PriceOnSell = discountPreOrder == 0 ? null : discountPreOrder,
+                        ProductTypeId = (int)enumProductType.PreOrder,
+                    };
+                    await _DbContext.ProductPrices.AddAsync(newPreOrderPrice);
+                }
+                await _DbContext.SaveChangesAsync();
+
+                // Images
+                if (request.systemFileName != null)
+                {
+                    foreach (var file in request.systemFileName)
+                    {
+                        var systemImage = new Data.Models.ProductImage
+                        {
+                            ProductId = product.ProductId,
+                            ProductImagePath = file
+                        };
+                        await _DbContext.ProductImages.AddAsync(systemImage);
+                        await _DbContext.SaveChangesAsync();
+                    }
+                }
+                if (request.userFileName != null)
+                {
+                    foreach (var file in request.userFileName)
+                    {
+                        var userImage = new Data.Models.ProductUserImage
+                        {
+                            ProductId = product.ProductId,
+                            ProductUserImagePath = file
+                        };
+                        await _DbContext.ProductUserImages.AddAsync(userImage);
+                        await _DbContext.SaveChangesAsync();
+                    }
+                }
+
+                return new SuccessResponse<ProductUpdateResponse>("Cập nhật thành công");
+            }
+            catch(Exception e)
+            {
+                return new FailResponse<ProductUpdateResponse>(e.Message);
+            }
+        }
+        public async Task<Response<string>> DeleteProductImage(int id)
+        {
+            try
+            {
+                var image = await _DbContext.ProductImages
+                    .Where(i => i.ProductImageId == id)
+                    .FirstOrDefaultAsync();
+                if (image == null) return new FailResponse<string>("Không tìm thấy ảnh");
+
+                _DbContext.ProductImages.Remove(image);
+                _DbContext.SaveChangesAsync().Wait();
+                return new SuccessResponse<string>("Xóa thành công", image.ProductImagePath);
+            }
+            catch
+            {
+                return new FailResponse<string>("Xóa thất bại, vui lòng thử lại sau");
+            }
+        }
+        public async Task<Response<string>> DeleteProductUserImage(int id)
+        {
+            try
+            {
+                var image = await _DbContext.ProductUserImages
+                    .Where(i => i.ProductUserImageId == id)
+                    .FirstOrDefaultAsync();
+                if (image == null) return new FailResponse<string>("Không tìm thấy ảnh");
+
+                _DbContext.ProductUserImages.Remove(image);
+                _DbContext.SaveChangesAsync().Wait();
+                return new SuccessResponse<string>("Xóa thành công", image.ProductUserImagePath);
+            }
+            catch
+            {
+                return new FailResponse<string>("Xóa thất bại, vui lòng thử lại sau");
             }
         }
         private async Task AddProductOptionValueByProductId(int productId, int optValId)
