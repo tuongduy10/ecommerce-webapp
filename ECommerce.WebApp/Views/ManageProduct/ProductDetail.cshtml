@@ -384,7 +384,7 @@
                                                     <span class="position-absolute remove-upload"
                                                           style="right: 0; top: 0; cursor: pointer;" 
                                                           id="sys-image-@image.ProductImageId"
-                                                          onclick="deleteProductImage(@image.ProductImageId)">
+                                                          onclick="deleteProductImage(this,@image.ProductImageId)">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="18"
                                                              height="18" viewBox="0 0 24 24" fill="none"
                                                              stroke="red" stroke-width="1" stroke-linecap="round"
@@ -423,7 +423,7 @@
                                                     <span class="position-absolute remove-upload"
                                                           style="right: 0; top: 0; cursor: pointer;" 
                                                           id="user-image-@image.ProductUserImageId"
-                                                          onclick="deleteProductUserImage(@image.ProductUserImageId)">
+                                                          onclick="deleteProductUserImage(this,@image.ProductUserImageId)">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="18"
                                                              height="18" viewBox="0 0 24 24" fill="none"
                                                              stroke="red" stroke-width="1" stroke-linecap="round"
@@ -499,68 +499,132 @@
 
     // Upload file
     var arrFilesSystem = [];
+    var imageProductUpload = document.getElementById("imageProduct-upload");
+    imageProductUpload.addEventListener("change", function (event) {
+        console.log("trig 1")
+        handleUpload(event, "imageProduct-preview", arrFilesSystem);
+    })
     var arrFilesUser = [];
-    loadIamgesWithPreview("imageProduct-upload", "imageProduct-preview", arrFilesSystem);
-    loadIamgesWithPreview("imageUser-upload", "imageUser-preview", arrFilesUser);
-    function loadIamgesWithPreview(upload, preview, arr) {
-        if (window.File && window.FileList && window.FileReader) {
-            var filesInput = document.getElementById(upload);
-            filesInput.addEventListener("change", function (event) {
-                var files = event.target.files; //FileList object
-                var currentFiles = $('.image__upload-item').length + files.length
-                if (currentFiles > 10) {
-                    return;
-                }
-                var output = document.getElementById(preview);
-                for (var i = 0; i < files.length; i++) {
-                    var file = files[i];
-                    //Only pics
-                    if (!file.type.match('image'))
-                        continue;
+    var imageUserUpload = document.getElementById("imageUser-upload");
+    imageUserUpload.addEventListener("change", function (event) {
+        handleUpload(event, "imageUser-preview", arrFilesUser);
+    })
+    function handleUpload(event, preview, arr){
+        console.log("trig 2")
+        var files = event.target.files;
+        var currentFiles = $('.image__upload-item').length + files.length
+        if (currentFiles > 10) {
+            return;
+        }
+        var output = document.getElementById(preview);
+        for (var i = 0; i < files.length; i++){
+            var file = files[i];
+            //Only pics
+            if (!file.type.match('image'))
+                continue;
 
-                    arr.push(file);
+            arr.push(file);
 
-                    var picReader = new FileReader();
-                    picReader.fileName = file.name;
-                    picReader.addEventListener("load", function (event) {
-                        var picFile = event.target;
-                        var div = document.createElement("div");
-                        div.classList.add(`image__upload-item`, `mr-2`);
-                        div.innerHTML = `
-                            <div class="border mb-2 mx-auto" style="height: 100px; width: 100px;">
-                                <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
-                                    <img class="mw-100 mh-100" src="${picFile.result}" alt="${picFile.name}">
-                                    <span class="position-absolute remove-upload"
-                                        style="right: 0; top: 0; cursor: pointer;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18"
-                                            height="18" viewBox="0 0 24 24" fill="none"
-                                            stroke="red" stroke-width="1" stroke-linecap="round"
-                                            stroke-linejoin="round" class="feather feather-x">
-                                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                                        </svg>
-                                    </span>
-                                </div>
-                            </div>
-                        `;
-                        var removeUpload = div.querySelector(".remove-upload");
-                        removeUpload.addEventListener("click", function (evt) {
-                            arr.forEach(function (file, index) {
-                                if (file.name == event.target.fileName) {
-                                    arr.splice(index, 1);
-                                }
-                            });
-                            div.remove();
-                            console.log(arr)
-                        });
-                        output.insertBefore(div, null);
+            var picReader = new FileReader();
+            picReader.fileName = file.name;
+            picReader.addEventListener("load", function (event) {
+                var picFile = event.target;
+                var div = document.createElement("div");
+                div.classList.add(`image__upload-item`, `mr-2`);
+                div.innerHTML = `
+                    <div class="border mb-2 mx-auto" style="height: 100px; width: 100px;">
+                        <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
+                            <img class="mw-100 mh-100" src="${picFile.result}" alt="${picFile.name}">
+                            <span class="position-absolute remove-upload"
+                                style="right: 0; top: 0; cursor: pointer;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                    height="18" viewBox="0 0 24 24" fill="none"
+                                    stroke="red" stroke-width="1" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-x">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                `;
+                var removeUpload = div.querySelector(".remove-upload");
+                removeUpload.addEventListener("click", function (evt) {
+                    arr.forEach(function (file, index) {
+                        if (file.name == event.target.fileName) {
+                            arr.splice(index, 1);
+                        }
                     });
-                    //Read the image
-                    picReader.readAsDataURL(file);
-                }
+                    div.remove();
+                });
+                output.insertBefore(div, null);
             });
+            //Read the image
+            picReader.readAsDataURL(file);
         }
     }
+
+    //loadIamgesWithPreview("imageProduct-upload", "imageProduct-preview", arrFilesSystem);
+    //loadIamgesWithPreview("imageUser-upload", "imageUser-preview", arrFilesUser);
+    //function loadIamgesWithPreview(upload, preview, arr) {
+    //    if (window.File && window.FileList && window.FileReader) {
+    //        var filesInput = document.getElementById(upload);
+    //        filesInput.addEventListener("change", function (event) {
+    //            var files = event.target.files; //FileList object
+    //            var currentFiles = $('.image__upload-item').length + files.length
+    //            if (currentFiles > 10) {
+    //                return;
+    //            }
+                
+    //            var output = document.getElementById(preview);
+    //            for (var i = 0; i < files.length; i++) {
+    //                var file = files[i];
+    //                //Only pics
+    //                if (!file.type.match('image'))
+    //                    continue;
+                    
+    //                arr.push(file);
+
+    //                var picReader = new FileReader();
+    //                picReader.fileName = file.name;
+    //                picReader.addEventListener("load", function (event) {
+    //                    var picFile = event.target;
+    //                    var div = document.createElement("div");
+    //                    div.classList.add(`image__upload-item`, `mr-2`);
+    //                    div.innerHTML = `
+    //                        <div class="border mb-2 mx-auto" style="height: 100px; width: 100px;">
+    //                            <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
+    //                                <img class="mw-100 mh-100" src="${picFile.result}" alt="${picFile.name}">
+    //                                <span class="position-absolute remove-upload"
+    //                                    style="right: 0; top: 0; cursor: pointer;">
+    //                                    <svg xmlns="http://www.w3.org/2000/svg" width="18"
+    //                                        height="18" viewBox="0 0 24 24" fill="none"
+    //                                        stroke="red" stroke-width="1" stroke-linecap="round"
+    //                                        stroke-linejoin="round" class="feather feather-x">
+    //                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+    //                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+    //                                    </svg>
+    //                                </span>
+    //                            </div>
+    //                        </div>
+    //                    `;
+    //                    var removeUpload = div.querySelector(".remove-upload");
+    //                    removeUpload.addEventListener("click", function (evt) {
+    //                        arr.forEach(function (file, index) {
+    //                            if (file.name == event.target.fileName) {
+    //                                arr.splice(index, 1);
+    //                            }
+    //                        });
+    //                        div.remove();
+    //                    });
+    //                    output.insertBefore(div, null);
+    //                });
+    //                //Read the image
+    //                picReader.readAsDataURL(file);
+    //            }
+    //        });
+    //    }
+    //}
 
     // Update product
     $('.update-product').click(function () {
@@ -674,23 +738,34 @@
         });
     })
     // Delete Image
-    function deleteProductImage(id) {
+    function deleteProductImage(ele, id) {
         if (confirm("Xác nhận xóa ảnh")) {
             $.post("/ManageProduct/DeleteProductImage", { id: id })
                 .then(function (response) {
                     alert(response);
+
+                    // Remove Image
+                    $(ele).siblings('img').attr('src', '');
+                    // Hide image wrapper
+                    $(ele).parent().parent().parent().remove();
                 })
                 .catch(function (error) {
                     console.log(error);
                     alert(error.responseText);
                 })
+            
         }
     }
-    function deleteProductUserImage(id) {
+    function deleteProductUserImage(ele, id) {
         if (confirm("Xác nhận xóa ảnh")) {
             $.post("/ManageProduct/DeleteProductUserImage", { id: id })
                 .then(function (response) {
                     alert(response);
+
+                    // Remove Image
+                    $(ele).siblings('img').attr('src', '');
+                    // Hide image wrapper
+                    $(ele).parent().parent().parent().remove();
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -891,16 +966,16 @@
         $(this).siblings('.image-wrapper').removeClass('d-none');
         $(this).siblings('.image-wrapper').addClass('d-flex');
     })
-    $('.remove-upload').click(function () {
-        // Remove Image
-        $(this).siblings('img').attr('src', '');
-        // Hide image wrapper
-        $(this).parent().removeClass('d-flex');
-        $(this).parent().addClass('d-none');
-        // Display label
-        $(this).parent().siblings('label').removeClass('d-none');
-        $(this).parent().siblings('label').addClass('d-flex');
-    })
+    //$(document).on('click', '.remove-upload', function(){
+    //    // Remove Image
+    //    $(this).siblings('img').attr('src', '');
+    //    // Hide image wrapper
+    //    $(this).parent().removeClass('d-flex');
+    //    $(this).parent().addClass('d-none');
+    //    // Display label
+    //    $(this).parent().siblings('label').removeClass('d-none');
+    //    $(this).parent().siblings('label').addClass('d-flex');
+    //})
 </script>
 <script type="text/javascript">
     $(document).on('click', '.add-option', function () {
@@ -942,11 +1017,7 @@
     })
 </script>
 <script type="text/javascript">
-    // Remove current banner
-    $('.remove-tag').click(function () {
-        $(this).parent().remove();
-    })
-    // Remove new added banner
+    // Remove added banner
     $(document).on('click', ".remove-tag", function () {
         $(this).parent().remove();
     });
