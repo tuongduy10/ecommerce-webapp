@@ -8,9 +8,10 @@ namespace ECommerce.Application.Services.Rate
 {
     public interface IRateService
     {
+        Task<List<RateGetModel>> GetAll();
         Task<List<RateGetModel>> getRatesByProductId(int id);
         Task<ApiResponse> postComment(PostCommentRequest request);
-        Task<ApiResponse> deleteComment(int id);
+        Task<ApiResponse> DeleteComment(int id);
         Task<ApiResponse> deleteCommentByProductId(int id);
     }
 }

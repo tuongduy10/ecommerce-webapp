@@ -4,6 +4,7 @@ using ECommerce.Application.Services.Discount;
 using ECommerce.Application.Services.FilterProduct;
 using ECommerce.Application.Services.Product;
 using ECommerce.Application.Services.Product.Dtos;
+using ECommerce.Application.Services.Product.Enum;
 using ECommerce.Application.Services.Rate;
 using ECommerce.Application.Services.SubCategory;
 using ECommerce.WebApp.Models.Products;
@@ -141,54 +142,73 @@ namespace ECommerce.WebApp.Controllers.Client
                 pro.BrandName = item.BrandName;
                 pro.ProductImportDate = item.ProductImportDate;
 
-                if (item.Type.Count == 1)
+                foreach (var price in item.Price)
                 {
-                    pro.ProductTypeName = item.Type[0].ProductTypeName;
-                }
-                if (item.Type.Count == 2)
-                {
-                    foreach (var type in item.Type)
+                    if (price.ProductTypeId == (int)enumProductType.PreOrder && price.Price != null)
                     {
-                        if (type.ProductTypeId == 1)
-                        {
-                            pro.ProductTypeName = type.ProductTypeName;
-                        }
-                    }
-                }
-
-                // price
-                if (item.Price.Count == 2)
-                {
-                    foreach (var price in item.Price)
-                    {
-                        if (price.ProductTypeId == 2)
-                        {
-                            if (price.PriceOnSell == null)
-                            {
-                                pro.Price = price.Price;
-                                pro.PriceOnSell = null;
-                            }
-                            else
-                            {
-                                pro.Price = price.Price;
-                                pro.PriceOnSell = price.PriceOnSell;
-                            }
-                        }
-                    }
-                }
-                if (item.Price.Count == 1)
-                {
-                    if (item.Price[0].PriceOnSell == null)
-                    {
-                        pro.Price = item.Price[0].Price;
-                        pro.PriceOnSell = null;
+                        pro.ProductTypeName = ProductTypeConst.PreOrderName;
+                        pro.Price = price.Price;
+                        pro.PriceOnSell = price.PriceOnSell == null ? null : price.PriceOnSell;
                     }
                     else
                     {
-                        pro.Price = item.Price[0].Price;
-                        pro.PriceOnSell = item.Price[0].PriceOnSell;
-                    }
+                        if (price.ProductTypeId == (int)enumProductType.Available && price.Price != null)
+                        {
+                            pro.ProductTypeName = ProductTypeConst.PreOrderName;
+                            pro.Price = price.Price;
+                            pro.PriceOnSell = price.PriceOnSell == null ? null : price.PriceOnSell;
+                        }
+                    } 
                 }
+
+                //if (item.Type.Count == 1)
+                //{
+                //    pro.ProductTypeName = item.Type[0].ProductTypeName;
+                //}
+                //if (item.Type.Count == 2)
+                //{
+                //    foreach (var type in item.Type)
+                //    {
+                //        if (type.ProductTypeId == 1)
+                //        {
+                //            pro.ProductTypeName = type.ProductTypeName;
+                //        }
+                //    }
+                //}
+
+                //// price
+                //if (item.Price.Count == 2)
+                //{
+                //    foreach (var price in item.Price)
+                //    {
+                //        if (price.ProductTypeId == 2)
+                //        {
+                //            if (price.PriceOnSell == null)
+                //            {
+                //                pro.Price = price.Price;
+                //                pro.PriceOnSell = null;
+                //            }
+                //            else
+                //            {
+                //                pro.Price = price.Price;
+                //                pro.PriceOnSell = price.PriceOnSell;
+                //            }
+                //        }
+                //    }
+                //}
+                //if (item.Price.Count == 1)
+                //{
+                //    if (item.Price[0].PriceOnSell == null)
+                //    {
+                //        pro.Price = item.Price[0].Price;
+                //        pro.PriceOnSell = null;
+                //    }
+                //    else
+                //    {
+                //        pro.Price = item.Price[0].Price;
+                //        pro.PriceOnSell = item.Price[0].PriceOnSell;
+                //    }
+                //}
 
                 _list.Add(pro);
             }

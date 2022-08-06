@@ -78,7 +78,7 @@
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                             Bình luận trong ngày
                         </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.comments.Count</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -115,78 +115,36 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>12:30:00 - 31/12/2022</td>
-                                <td>Nguyễn Văn A</td>
-                                <td>Samsung Galaxy S22 Ultra 5G</td>
-                                <td>Shop Demo 01</td>
-                                <td style="max-width: 300px;">
-                                    <div class="d-flex flex-wrap mb-2">
-                                        <div class="d-flex align-items-center justify-content-between border p-1 mr-1" style="height: 100px; width: 100px;">
-                                            <img class="mw-100 mh-100 mx-auto" src="/images/products/black.jpg" alt="">
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-between border p-1 mr-1" style="height: 100px; width: 100px;">
-                                            <img class="mw-100 mh-100 mx-auto" src="/assets/images/products/black.jpg" alt="">
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-between border p-1 mr-1" style="height: 100px; width: 100px;">
-                                            <img class="mw-100 mh-100 mx-auto" src="/assets/images/products/pro1.png" alt="">
-                                        </div>
-                                    </div>
-                                    <p style="white-space: pre-line;">Hi shop.sao chai mình lại có thêm dòng chữ “ Eau De Toilette” trên thân chai vậy shop. Nhờ shop phản hồi lại dùm</p>
-                                </td>
-                                <td>5/5</td>
-                                <td>
-                                    <button class="btn btn-danger">Xóa</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>12:30:00 - 31/12/2022</td>
-                                <td>Nguyễn Văn A</td>
-                                <td>Samsung Galaxy S22 Ultra 5G</td>
-                                <td>Shop Demo 01</td>
-                                <td style="max-width: 300px;">
-                                    <div class="d-flex flex-wrap mb-2">
-                                        <div class="d-flex align-items-center justify-content-between border p-1 mr-1" style="height: 100px; width: 100px;">
-                                            <img class="mw-100 mh-100 mx-auto" src="/assets/images/products/black.jpg" alt="">
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-between border p-1 mr-1" style="height: 100px; width: 100px;">
-                                            <img class="mw-100 mh-100 mx-auto" src="/assets/images/products/black.jpg" alt="">
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-between border p-1 mr-1" style="height: 100px; width: 100px;">
-                                            <img class="mw-100 mh-100 mx-auto" src="/assets/images/products/pro1.png" alt="">
-                                        </div>
-                                    </div>
-                                    <p style="white-space: pre-line;">Hi shop.sao chai mình lại có thêm dòng chữ “ Eau De Toilette” trên thân chai vậy shop. Nhờ shop phản hồi lại dùm</p>
-                                </td>
-                                <td>5/5</td>
-                                <td>
-                                    <button class="btn btn-danger">Xóa</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>12:30:00 - 31/12/2022</td>
-                                <td>Nguyễn Văn A</td>
-                                <td>Samsung Galaxy S22 Ultra 5G</td>
-                                <td>Shop Demo 01</td>
-                                <td style="max-width: 300px;">
-                                    <div class="d-flex flex-wrap mb-2">
-                                        <div class="d-flex align-items-center justify-content-between border p-1 mr-1" style="height: 100px; width: 100px;">
-                                            <img class="mw-100 mh-100 mx-auto" src="/assets/images/products/black.jpg" alt="">
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-between border p-1 mr-1" style="height: 100px; width: 100px;">
-                                            <img class="mw-100 mh-100 mx-auto" src="/assets/images/products/black.jpg" alt="">
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-between border p-1 mr-1" style="height: 100px; width: 100px;">
-                                            <img class="mw-100 mh-100 mx-auto" src="/assets/images/products/pro1.png" alt="">
-                                        </div>
-                                    </div>
-                                    <p style="white-space: pre-line;">Hi shop.sao chai mình lại có thêm dòng chữ “ Eau De Toilette” trên thân chai vậy shop. Nhờ shop phản hồi lại dùm</p>
-                                </td>
-                                <td>5/5</td>
-                                <td>
-                                    <button class="btn btn-danger">Xóa</button>
-                                </td>
-                            </tr>
+                            @if (Model.comments.Count > 0)
+                            {
+                                @foreach (var item in Model.comments)
+                                {
+                                    <tr>
+                                        <td>@item.CreateDate.ToString("HH:mm:ss - dd/MM/yyyy")</td>
+                                        <td>@item.UserName</td>
+                                        <td>@item.ProductName</td>
+                                        <td>@item.ShopName</td>
+                                        <td style="max-width: 300px;">
+                                            <div class="d-flex flex-wrap mb-2">
+                                                @if (item.Images.Count > 0)
+                                                {
+                                                    @foreach (var image in item.Images)
+                                                    {
+                                                        <div class="d-flex align-items-center justify-content-between border p-1 mr-1" style="height: 100px; width: 100px;">
+                                                            <img class="mw-100 mh-100 mx-auto" src="@(Configuration["ImagePath:Rate"] + image)" alt="">
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                            <p style="white-space: pre-line;">@item.Comment</p>
+                                        </td>
+                                        <td>@item.Value/5</td>
+                                        <td>
+                                            <button class="btn btn-danger" onclick="deleteComment(@item.Id)">Xóa</button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -194,3 +152,16 @@
         </div>
     </div>
 </div>
+<script>
+    function deleteComment(id) {
+        $.post("/Admin/DeleteComment", { id: id })
+            .then(function (response) {
+                alert(response);
+                window.location.reload();
+            })
+            .catch(function (error) {
+                alert(error.responseText);
+                console.log(error);
+            })
+    }
+</script>

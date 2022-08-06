@@ -1,6 +1,7 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.Product.Enum;
+using ECommerce.Application.Services.Product.Models;
 using ECommerce.Application.Services.Product.Response;
 using ECommerce.Application.Services.Rate;
 using ECommerce.Application.Services.SubCategory.Dtos;
@@ -715,12 +716,12 @@ namespace ECommerce.Application.Services.Product
                     return new FailResponse<ProductUpdateResponse>("Vui lòng nhập giá sản phẩm");
                 if (priceAvailable.price == null && priceAvailable.priceOnSell != null)
                     return new FailResponse<ProductUpdateResponse>("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
-                if (priceAvailable.price < priceAvailable.priceOnSell)
-                    return new FailResponse<ProductUpdateResponse>("Giá giảm không thể lớn hơn giá gốc !");
+                if (priceAvailable.price <= priceAvailable.priceOnSell)
+                    return new FailResponse<ProductUpdateResponse>("Giá giảm không thể bằng hoặc lớn hơn giá gốc !");
                 if (pricePreorder.price == null && pricePreorder.priceOnSell != null)
                     return new FailResponse<ProductUpdateResponse>("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
-                if (pricePreorder.price < pricePreorder.priceOnSell)
-                    return new FailResponse<ProductUpdateResponse>("Giá giảm không thể lớn hơn giá gốc !");
+                if (pricePreorder.price <= pricePreorder.priceOnSell)
+                    return new FailResponse<ProductUpdateResponse>("Giá giảm không thể bằng hoặc lớn hơn giá gốc !");
 
                 var product = await _DbContext.Products
                     .Where(i => i.ProductId == request.id)
@@ -766,98 +767,106 @@ namespace ECommerce.Application.Services.Product
                 {
                     foreach (var attr in attributes)
                     {
-                        if (!string.IsNullOrEmpty(attr.value))
-                        {
-                            var attribute = await _DbContext.ProductAttributes
+                        var attribute = await _DbContext.ProductAttributes
                                 .Where(i => i.ProductId == product.ProductId && i.AttributeId == attr.id)
                                 .FirstOrDefaultAsync();
-                            if(attribute == null) // Add new if not existed
+                        if (attribute == null) // Add new if not existed
+                        {
+                            var newAttribute = new Data.Models.ProductAttribute
                             {
-                                var newAttribute = new Data.Models.ProductAttribute
-                                {
-                                    ProductId = product.ProductId,
-                                    AttributeId = attr.id,
-                                    Value = attr.value.Trim()
-                                };
-                                await _DbContext.ProductAttributes.AddAsync(newAttribute);
-                            }
-                            else // Update if existed
-                            {
-                                attribute.Value = attr.value.Trim();
-                            }
-                            await _DbContext.SaveChangesAsync();
+                                ProductId = product.ProductId,
+                                AttributeId = attr.id,
+                                Value = attr.value.Trim()
+                            };
+                            await _DbContext.ProductAttributes.AddAsync(newAttribute);
                         }
+                        else // Update if existed
+                        {
+                            attribute.Value = attr.value.Trim();
+                        }
+                        await _DbContext.SaveChangesAsync();
                     }      
                 }
 
-                //// Options
-                //List<int> optionValueIds = JsonConvert.DeserializeObject<List<int>>(request.currentOptions);
-                //if (optionValueIds.Count > 0)
-                //{
-                //    foreach (var id in optionValueIds)
-                //    {
-                //        var productOptionValue = new ProductOptionValue
-                //        {
-                //            ProductId = product.ProductId,
-                //            OptionValueId = id
-                //        };
-                //        await _DbContext.ProductOptionValues.AddAsync(productOptionValue);
-                //    }
-                //}
-                //// New option value
-                //List<Dtos.Option> newOptions = JsonConvert.DeserializeObject<List<Dtos.Option>>(request.newOptions);
-                //if (newOptions.Count > 0)
-                //{
-                //    foreach (var option in newOptions)
-                //    {
-                //        var optionValues = await _DbContext.OptionValues
-                //            .Where(i => i.OptionId == option.id)
-                //            .Select(i => i.OptionValueName)
-                //            .ToListAsync();
+                // Options
+                List<int> optionValueIds = JsonConvert.DeserializeObject<List<int>>(request.currentOptions);
+                // Remove previous option value to add new
+                var previousOptVals = await _DbContext.ProductOptionValues
+                    .Where(i => i.ProductId == product.ProductId)
+                    .ToListAsync();
+                _DbContext.ProductOptionValues.RemoveRange(previousOptVals);
+                _DbContext.SaveChangesAsync().Wait();
+                if (optionValueIds.Count > 0)
+                {
+                    // Add new for each option value
+                    foreach (var id in optionValueIds)
+                    {
+                        var productOptionValue = new ProductOptionValue
+                        {
+                            ProductId = product.ProductId,
+                            OptionValueId = id
+                        };
+                        await _DbContext.ProductOptionValues.AddAsync(productOptionValue);
+                    }
+                }
+                // New option value
+                List<Dtos.Option> newOptions = JsonConvert.DeserializeObject<List<Dtos.Option>>(request.newOptions);
+                if (newOptions.Count > 0)
+                {
+                    foreach (var option in newOptions)
+                    {
+                        var optionValues = await _DbContext.OptionValues
+                            .Where(i => i.OptionId == option.id)
+                            .Select(i => i.OptionValueName)
+                            .ToListAsync();
 
-                //        // Get new values of list;
-                //        // Lấy các giá trị khác với db;
-                //        var values = option.values.Except(optionValues).ToList();
-                //        foreach (var value in values)
-                //        {
-                //            var newOptionValue = new OptionValue
-                //            {
-                //                OptionId = option.id,
-                //                OptionValueName = value.Trim(),
-                //                IsBaseValue = false
-                //            };
-                //            await _DbContext.OptionValues.AddAsync(newOptionValue);
-                //            await _DbContext.SaveChangesAsync();
+                        // Get new values of list;
+                        // Lấy các giá trị khác với db;
+                        var values = option.values.Except(optionValues).ToList();
+                        foreach (var value in values)
+                        {
+                            var newOptionValue = new OptionValue
+                            {
+                                OptionId = option.id,
+                                OptionValueName = value.Trim(),
+                                IsBaseValue = false
+                            };
+                            await _DbContext.OptionValues.AddAsync(newOptionValue);
+                            await _DbContext.SaveChangesAsync();
 
-                //            await AddProductOptionValueByProductId(product.ProductId, newOptionValue.OptionValueId);
-                //        }
+                            await AddProductOptionValueByProductId(product.ProductId, newOptionValue.OptionValueId);
+                        }
 
-                //        // Get already existed values in db of list;
-                //        // Lấy các giá trị trùng với db;
-                //        var currentValues = option.values.Intersect(optionValues).ToList();
-                //        foreach (var value in currentValues)
-                //        {
-                //            var optValue = await _DbContext.OptionValues
-                //                .Where(i => i.OptionValueName == value && i.OptionId == option.id)
-                //                .FirstOrDefaultAsync();
+                        // Get already existed values in db of list;
+                        // Lấy các giá trị trùng với db;
+                        var currentValues = option.values.Intersect(optionValues).ToList();
+                        foreach (var value in currentValues)
+                        {
+                            var optValue = await _DbContext.OptionValues
+                                .Where(i => i.OptionValueName == value && i.OptionId == option.id)
+                                .FirstOrDefaultAsync();
 
-                //            await AddProductOptionValueByProductId(product.ProductId, optValue.OptionValueId);
-                //        }
-                //    }
-                //}
+                            await AddProductOptionValueByProductId(product.ProductId, optValue.OptionValueId);
+                        }
+                    }
+                }
 
                 // Prices
+                // Discount
                 decimal discountAvailable = 0;
                 decimal discountPreOrder = 0;
-                if (request.discountPercent != null)
-                {
+                if (request.discountPercent != null && priceAvailable.price != null)
                     discountAvailable = GetDiscountPrice(priceAvailable.price, request.discountPercent);
+                if (request.discountPercent != null && pricePreorder.price != null)
                     discountPreOrder = GetDiscountPrice(pricePreorder.price, request.discountPercent);
-                }
+                if (request.discountPercent == null && priceAvailable.price != null && priceAvailable.priceOnSell != null)
+                    discountAvailable = (decimal)priceAvailable.priceOnSell;
+                if (request.discountPercent == null && pricePreorder.price != null && pricePreorder.priceOnSell != null)
+                    discountPreOrder = (decimal)pricePreorder.priceOnSell;
                 // Available price
                 var availablePrice = await _DbContext.ProductPrices
-                        .Where(i => i.ProductId == product.ProductId && i.ProductTypeId == (int)enumProductType.Available)
-                        .FirstOrDefaultAsync();
+                    .Where(i => i.ProductId == product.ProductId && i.ProductTypeId == (int)enumProductType.Available)
+                    .FirstOrDefaultAsync();
                 if (availablePrice != null)
                 {
                     availablePrice.Price = priceAvailable.price == null ? null : priceAvailable.price;
@@ -875,7 +884,6 @@ namespace ECommerce.Application.Services.Product
                     await _DbContext.ProductPrices.AddAsync(newAvailablePrice);
                 }
                 await _DbContext.SaveChangesAsync();
-
                 // PreOrder Price
                 var preOrderPrice = await _DbContext.ProductPrices
                         .Where(i => i.ProductId == product.ProductId && i.ProductTypeId == (int)enumProductType.PreOrder)
@@ -1137,18 +1145,45 @@ namespace ECommerce.Application.Services.Product
                 return new ApiFailResponse("Thêm thất bại, vui lòng thử lại sau");
             }
         }
+        public async Task<List<SizeGuideModel>> SizeGuideList()
+        {
+            try
+            {
+                var list = await _DbContext.SizeGuides
+                    .Select(i => new SizeGuideModel
+                    {
+                        id = i.SizeGuideId,
+                        content = i.Content,
+                        subCategories = i.SubCategories
+                        .Where(sc => sc.SizeGuideId == i.SizeGuideId)
+                        .Select(sc => new SubCategoryModel {
+                            SubCategoryId = sc.SubCategoryId,
+                            SubCategoryName = sc.SubCategoryName,
+                            SizeGuide = sc.SizeGuide
+                        })
+                        .ToList()
+                    })
+                    .ToListAsync();
+
+                return list;
+            }
+            catch
+            {
+                return null;
+            }
+        }
         public async Task<Response<SizeGuide>> SizeGuideDetail(int id)
         {
             try
             {
                 if (id == 0) return new FailResponse<SizeGuide>("Vui lòng chọn loại sản phẩm");
 
-                var sizeGuide = await _DbContext.SubCategories
-                    .Where(i => i.SubCategoryId == id)
+                var sizeGuide = await _DbContext.SizeGuides
+                    .Where(i => i.SizeGuideId == id)
                     .Select(i => new SizeGuide {
-                        SizeGuideId = i.SizeGuide.SizeGuideId,
-                        Content = i.SizeGuide.Content,
-                        IsBaseSizeGuide = i.SizeGuide.IsBaseSizeGuide
+                        SizeGuideId = i.SizeGuideId,
+                        Content = i.Content,
+                        IsBaseSizeGuide = i.IsBaseSizeGuide
                     })
                     .FirstOrDefaultAsync();
                 if (sizeGuide == null) return new FailResponse<SizeGuide>("Không tìm thấy");
@@ -1164,33 +1199,45 @@ namespace ECommerce.Application.Services.Product
         {
             try
             {
-                if (request.id == 0) return new ApiFailResponse("Vui lòng chọn bảng chọn size"); 
-                if (request.ids == null || request.ids.Count == 0) return new ApiFailResponse("Chọn loại sản phẩm");
-                if (string.IsNullOrEmpty(request.content)) return new ApiFailResponse("Chọn nội dung");
+                if (request.id == 0) 
+                    return new ApiFailResponse("Vui lòng chọn bảng chọn size"); 
+                if (request.ids == null || request.ids.Count == 0) 
+                    return new ApiFailResponse("Chọn loại sản phẩm");
+                if (string.IsNullOrEmpty(request.content)) 
+                    return new ApiFailResponse("Chọn nội dung");
 
+                // Update size content
                 var sizeGuide = await _DbContext.SizeGuides
                     .Where(i => i.SizeGuideId == request.id)
                     .FirstOrDefaultAsync();
                 if (sizeGuide != null)
-                {
                     sizeGuide.Content = request.content;
-                }
                 await _DbContext.SaveChangesAsync();
 
-
+                // Remove previous size id in subcategories
                 var subs = await _DbContext.SubCategories
-                    .Where(i => request.ids.Contains(i.SubCategoryId))
+                    .Where(i => i.SizeGuideId == request.id)
                     .ToListAsync();
-                if (subs.Count > 0)
+                foreach (var sub in subs)
                 {
-                    foreach (var sub in subs)
-                    {
-                        sub.SizeGuideId = sizeGuide.SizeGuideId;
-                        await _DbContext.SaveChangesAsync();
-                    }
+                    sub.SizeGuideId = null;
+                    await _DbContext.SaveChangesAsync();
                 }
 
-                return new ApiSuccessResponse("Thêm thành công");
+                // Update size id for Subcategory
+                var _subs = await _DbContext.SubCategories
+                    .Where(i => request.ids.Contains(i.SubCategoryId))
+                    .ToListAsync();
+                if (_subs.Count > 0)
+                {
+                    foreach (var sub in _subs)
+                    {
+                        sub.SizeGuideId = sizeGuide.SizeGuideId;
+                    }
+                    await _DbContext.SaveChangesAsync();
+                }
+
+                return new ApiSuccessResponse("Cập nhật thành công");
             }
             catch
             {

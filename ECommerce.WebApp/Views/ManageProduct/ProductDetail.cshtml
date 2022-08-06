@@ -62,19 +62,46 @@
                         <div class="form-group mb-4">
                             <label>Giảm giá</label>
                             <div class="form-check mb-4">
-                                <input class="form-check-input pro-discpercent-select" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <input class="form-check-input pro-discpercent-select" type="radio" name="flexRadioDefault" id="flexRadioDefault1" @if (Model.product.DiscountPercent != null) { @Html.Raw("checked"); }>
                                 <label class="form-check-label" for="flexRadioDefault1">
                                     Giảm theo %
                                 </label>
-                                <input type="number" class="form-control mb-2 d-none pro-discpercent" placeholder="% giảm" value="" min="0" max="100">
+                                @if (Model.product.DiscountPercent != null)
+                                {
+                                    <input type="number" class="form-control mb-2 pro-discpercent" placeholder="% giảm" value="@Model.product.DiscountPercent" min="0" max="100">
+                                }
+                                else
+                                {
+                                    <input type="number" class="form-control mb-2 d-none pro-discpercent" placeholder="% giảm" value="" min="0" max="100">
+                                }
                             </div>
                             <div class="form-check mb-4">
-                                <input class="form-check-input pro-disc-select" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                                <input class="form-check-input pro-disc-select" type="radio" name="flexRadioDefault" id="flexRadioDefault2" @if (Model.product.DiscountPercent == null && (Model.product.Prices[0].PriceOnSell != null || Model.product.Prices[1].PriceOnSell != null)) { @Html.Raw("checked"); }>
                                 <label class="form-check-label" for="flexRadioDefault2">
                                     Giảm theo giá
                                 </label>
-                                <input type="number" class="form-control mb-2 d-none pro-discavailable" placeholder="Giá đã giảm có sẵn" value="" min="0" step="1000" id="1">
-                                <input type="number" class="form-control mb-2 d-none pro-discpreorder" placeholder="Giá đã giảm đặt trước" value="" min="0" step="1000" id="2">
+                                @foreach (var price in Model.product.Prices)
+                                {
+                                    @if (price.ProductTypeId == 1 && price.PriceOnSell != null)
+                                    {
+                                        <input type="number" class="form-control mb-2 pro-discavailable @if (Model.product.DiscountPercent != null) { @Html.Raw("d-none"); }" placeholder="Giá đã giảm có sẵn" value="@if (Model.product.DiscountPercent == null) { @price.PriceOnSell; }" min="0" step="1000" id="1">
+                                    }
+                                    @if (price.ProductTypeId == 1 && price.PriceOnSell == null)
+                                    {
+                                        <input type="number" class="form-control mb-2 pro-discavailable @if (Model.product.DiscountPercent != null || price.PriceOnSell == null) { @Html.Raw("d-none"); }" placeholder="Giá đã giảm có sẵn" value="" min="0" step="1000" id="1">
+                                    }
+                                }
+                                @foreach (var price in Model.product.Prices)
+                                {
+                                    @if (price.ProductTypeId == 2 && price.PriceOnSell != null)
+                                    {
+                                        <input type="number" class="form-control mb-2 pro-discpreorder @if (Model.product.DiscountPercent != null) { @Html.Raw("d-none"); }" placeholder="Giá đã giảm đặt trước" value="@if (Model.product.DiscountPercent == null) { @price.PriceOnSell; }" min="0" step="1000" id="2">
+                                    }
+                                    @if (price.ProductTypeId == 2 && price.PriceOnSell == null)
+                                    { 
+                                        <input type="number" class="form-control mb-2 pro-discpreorder @if (Model.product.DiscountPercent != null || price.PriceOnSell == null) { @Html.Raw("d-none"); }" placeholder="Giá đã giảm đặt trước" value="" min="0" step="1000" id="2">
+                                    }
+                                }
                             </div>
                         </div>
                         <!-- New -->
@@ -209,11 +236,11 @@
                                         <li class="d-flex align-items-center">
                                             @if (item.BrandId == Model.product.BrandId)
                                             {
-                                                <input name="brand" class="br_select mr-2" id="br_@item.BrandId" type="radio" value="@item.BrandId" checked>
+                                                <input name="brand" class="brand_select mr-2" id="br_@item.BrandId" type="radio" value="@item.BrandId" checked>
                                             }
                                             else
                                             {
-                                                <input name="brand" class="br_select mr-2" id="br_@item.BrandId" type="radio" value="@item.BrandId">
+                                                <input name="brand" class="brand_select mr-2" id="br_@item.BrandId" type="radio" value="@item.BrandId">
                                             }
                                             <label class="mb-0" for="br_@item.BrandId">@item.BrandName</label>
                                         </li>
@@ -295,7 +322,7 @@
                                                     {
                                                         <li class="d-inline p-1 mr-2 mb-2"
                                                             style="background-color: #ddd; border-radius: 4px;">
-                                                            <span class="text" id="">@value.value</span>
+                                                            <span class="text" id="@value.id">@value.value</span>
                                                             <span class="remove-tag ml-2" style="cursor: pointer;">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                      viewBox="0 0 24 24" fill="none" stroke="#333"
@@ -499,18 +526,16 @@
 
     // Upload file
     var arrFilesSystem = [];
-    var imageProductUpload = document.getElementById("imageProduct-upload");
-    imageProductUpload.addEventListener("change", function (event) {
-        console.log("trig 1")
+    $(document).on("change", "#imageProduct-upload", function (event) {
         handleUpload(event, "imageProduct-preview", arrFilesSystem);
+        event.target.value = "";
     })
     var arrFilesUser = [];
-    var imageUserUpload = document.getElementById("imageUser-upload");
-    imageUserUpload.addEventListener("change", function (event) {
+    $(document).on("change", "#imageUser-upload", function (event) {
         handleUpload(event, "imageUser-preview", arrFilesUser);
+        event.target.value = "";
     })
     function handleUpload(event, preview, arr){
-        console.log("trig 2")
         var files = event.target.files;
         var currentFiles = $('.image__upload-item').length + files.length
         if (currentFiles > 10) {
@@ -563,68 +588,6 @@
             picReader.readAsDataURL(file);
         }
     }
-
-    //loadIamgesWithPreview("imageProduct-upload", "imageProduct-preview", arrFilesSystem);
-    //loadIamgesWithPreview("imageUser-upload", "imageUser-preview", arrFilesUser);
-    //function loadIamgesWithPreview(upload, preview, arr) {
-    //    if (window.File && window.FileList && window.FileReader) {
-    //        var filesInput = document.getElementById(upload);
-    //        filesInput.addEventListener("change", function (event) {
-    //            var files = event.target.files; //FileList object
-    //            var currentFiles = $('.image__upload-item').length + files.length
-    //            if (currentFiles > 10) {
-    //                return;
-    //            }
-                
-    //            var output = document.getElementById(preview);
-    //            for (var i = 0; i < files.length; i++) {
-    //                var file = files[i];
-    //                //Only pics
-    //                if (!file.type.match('image'))
-    //                    continue;
-                    
-    //                arr.push(file);
-
-    //                var picReader = new FileReader();
-    //                picReader.fileName = file.name;
-    //                picReader.addEventListener("load", function (event) {
-    //                    var picFile = event.target;
-    //                    var div = document.createElement("div");
-    //                    div.classList.add(`image__upload-item`, `mr-2`);
-    //                    div.innerHTML = `
-    //                        <div class="border mb-2 mx-auto" style="height: 100px; width: 100px;">
-    //                            <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
-    //                                <img class="mw-100 mh-100" src="${picFile.result}" alt="${picFile.name}">
-    //                                <span class="position-absolute remove-upload"
-    //                                    style="right: 0; top: 0; cursor: pointer;">
-    //                                    <svg xmlns="http://www.w3.org/2000/svg" width="18"
-    //                                        height="18" viewBox="0 0 24 24" fill="none"
-    //                                        stroke="red" stroke-width="1" stroke-linecap="round"
-    //                                        stroke-linejoin="round" class="feather feather-x">
-    //                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-    //                                        <line x1="6" y1="6" x2="18" y2="18"></line>
-    //                                    </svg>
-    //                                </span>
-    //                            </div>
-    //                        </div>
-    //                    `;
-    //                    var removeUpload = div.querySelector(".remove-upload");
-    //                    removeUpload.addEventListener("click", function (evt) {
-    //                        arr.forEach(function (file, index) {
-    //                            if (file.name == event.target.fileName) {
-    //                                arr.splice(index, 1);
-    //                            }
-    //                        });
-    //                        div.remove();
-    //                    });
-    //                    output.insertBefore(div, null);
-    //                });
-    //                //Read the image
-    //                picReader.readAsDataURL(file);
-    //            }
-    //        });
-    //    }
-    //}
 
     // Update product
     $('.update-product').click(function () {
@@ -690,7 +653,8 @@
         if ($(".pro-discpercent-select").is(":checked")) {
             discountPercent = $(".pro-discpercent").val() ?? null;
         }
-
+        console.log(priceAvailable.priceOnSell);
+        console.log(pricePreorder.priceOnSell);
         var formData = new FormData();
         // None relationship data
         formData.append('id', id);

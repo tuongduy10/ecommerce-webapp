@@ -74,7 +74,7 @@
                 console.log(error)
             })
     })
-    $(".update-sizechart").click(function () {
+    $(".delete-sizechart").click(function () {
         $.post("/ManageSizeGuide/DeleteSizeGuide", { id: @Model.SizeGuide.SizeGuideId})
             .then(function (res) {
                 alert(res);

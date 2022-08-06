@@ -1,6 +1,8 @@
 ﻿using ECommerce.Application.Common;
+using ECommerce.Application.Services.Rate;
 using ECommerce.Application.Services.User;
 using ECommerce.Application.Services.User.Dtos;
+using ECommerce.WebApp.Models.Admin;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,13 +20,20 @@ namespace ECommerce.WebApp.Controllers.Admin
     {
         private const string _cookieAdminScheme = "AdminAuth";
         private IUserService _userService;
-        public AdminController(IUserService userService)
+        private IRateService _rateService;
+        public AdminController(IUserService userService, IRateService rateService)
         {
             _userService = userService;
+            _rateService = rateService;
         }
         public async Task<IActionResult> Index()
         {
-            return View();
+            var comments = await _rateService.GetAll();
+            var model = new AdminIndexViewModel
+            {
+                comments = comments
+            };
+            return View(model);
         }
 
         [AllowAnonymous]
@@ -100,6 +109,12 @@ namespace ECommerce.WebApp.Controllers.Admin
             var id = User.Claims.FirstOrDefault(i => i.Type == "UserId").Value;
             var user = await _userService.UserProfile(Int32.Parse(id));
             return View(user);
+        }
+        public async Task<IActionResult> DeleteComment(int id)
+        {
+            var result = await _rateService.DeleteComment(id);
+            if (result.isSucceed) return Ok(result.Message);
+            return BadRequest(result.Message);
         }
 
         [AllowAnonymous]

@@ -24,8 +24,14 @@ namespace ECommerce.WebApp.Controllers.Admin
         }
         public async Task<IActionResult> Index()
         {
-            var subCategories = await _subCategoryService.getAll();
-            return View(subCategories);
+            var subs = await _subCategoryService.getAll();
+            var sizes = await _productService.SizeGuideList();
+            var model = new SizeGuideListViewModel
+            {
+                sizeGuides = sizes,
+                subCategories = subs,
+            };
+            return View(model);
         }
         public async Task<IActionResult> AddSizeGuide(SizeGuideAddRequest request)
         {

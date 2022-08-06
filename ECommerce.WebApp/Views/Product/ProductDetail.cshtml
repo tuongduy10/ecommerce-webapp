@@ -194,7 +194,7 @@
 
                                     @foreach (var item in Model.product.Prices)
                                     {
-                                        if (item.ProductTypeId == 1)
+                                        if (item.ProductTypeId == 1 && item.Price != null)
                                         {
                                             <div class="option-price form-check form-check-inline w-100">
                                                 <div class="option-title">
@@ -220,7 +220,7 @@
                                                 </label>
                                             </div>
                                         }
-                                        if (item.ProductTypeId == 2)
+                                        if (item.ProductTypeId == 2 && item.Price != null)
                                         {
                                             <div class="option-price form-check form-check-inline w-100">
                                                 <div class="option-title">

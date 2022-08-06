@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.Product.Dtos;
+using ECommerce.Application.Services.Product.Models;
 using ECommerce.Application.Services.Product.Response;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ namespace ECommerce.Application.Services.Product
         Task<Response<ProductDeleteResponse>> DeleteProducts(List<int> ids);
         Task<ApiResponse> DisableProducts(List<int> ids);
         Task<ApiResponse> ApproveProducts(List<int> ids);
+        Task<List<SizeGuideModel>> SizeGuideList();
         Task<ApiResponse> AddSizeGuide(SizeGuideAddRequest request);
         Task<ApiResponse> UpdateSizeGuide(SizeGuideAddRequest request);
         Task<Response<Data.Models.SizeGuide>> SizeGuideDetail(int id);

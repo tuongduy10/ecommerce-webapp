@@ -11,6 +11,7 @@ namespace ECommerce.Data.Models
         public int OrderId { get; set; }
         public int ShopId { get; set; }
         public DateTime? VerifiedDate { get; set; }
+        public int ProductId { get; set; }
         public string ProductName { get; set; }
         public string AttributeValue { get; set; }
         public string OptionValue { get; set; }

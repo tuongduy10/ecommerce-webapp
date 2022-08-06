@@ -18,6 +18,25 @@ namespace ECommerce.Application.Services.Rate
         {
             _DbContext = DbContext;
         }
+        public async Task<List<RateGetModel>> GetAll()
+        {
+            var rate = await _DbContext.Rates
+                .Select(rate => new RateGetModel()
+                {
+                    Id = rate.RateId,
+                    ProductName = rate.Product.ProductName,
+                    ShopName = rate.Product.Shop.ShopName,
+                    Value = (int)rate.RateValue,
+                    UserName = rate.User.UserFullName,
+                    Comment = rate.Comment,
+                    CreateDate = (DateTime)rate.CreateDate,
+                    Images = _DbContext.RatingImages.Where(img => img.RateId == rate.RateId).Select(i => i.RatingImagePath).ToList()
+                })
+                .OrderByDescending(i => i.CreateDate)
+                .ToListAsync();
+
+            return rate;
+        }
         public async Task<List<RateGetModel>> getRatesByProductId(int id)
         {
             var rate = await _DbContext.Rates
@@ -29,6 +48,7 @@ namespace ECommerce.Application.Services.Rate
                     CreateDate = (DateTime)rate.CreateDate,
                     Images = _DbContext.RatingImages.Where(img => img.RateId == rate.RateId).Select(i=>i.RatingImagePath).ToList()
                 })
+                .OrderByDescending(i => i.CreateDate)
                 .ToListAsync();
 
             return rate;
@@ -57,6 +77,7 @@ namespace ECommerce.Application.Services.Rate
                 var isOwner = shops != null;
                 if (isOwner) return new ApiFailResponse("Bạn không thể đánh giá sản phẩm của mình");
 
+                // Add comment content
                 var comment = new Data.Models.Rate()
                 {
                     Comment = request.comment,
@@ -67,6 +88,8 @@ namespace ECommerce.Application.Services.Rate
                 };
                 await _DbContext.Rates.AddAsync(comment);
                 await _DbContext.SaveChangesAsync();
+
+                // Add image
                 foreach (var filename in request.fileNames)
                 {
                     var image = new Data.Models.RatingImage()
@@ -84,14 +107,14 @@ namespace ECommerce.Application.Services.Rate
                 return new ApiFailResponse("Đánh giá thất bại");
             }
         }
-        public async Task<ApiResponse> deleteComment(int id)
+        public async Task<ApiResponse> DeleteComment(int id)
         {
             try
             {
-                var commentImages = await _DbContext.RatingImages.Where(i => i.RateId == id).ToListAsync();
-                if (commentImages != null) _DbContext.RatingImages.RemoveRange(commentImages);
-
                 var comment = await _DbContext.Rates.Where(i => i.RateId == id).FirstOrDefaultAsync();
+                var commentImages = await _DbContext.RatingImages.Where(i => i.RateId == id).ToListAsync();
+
+                if (commentImages != null) _DbContext.RatingImages.RemoveRange(commentImages);
                 if (comment != null) _DbContext.Rates.Remove(comment);
 
                 await _DbContext.SaveChangesAsync();
