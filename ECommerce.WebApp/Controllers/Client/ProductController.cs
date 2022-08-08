@@ -71,7 +71,7 @@ namespace ECommerce.WebApp.Controllers.Client
             var suggestion = await _productService.getProductSuggestion();
             var phone = await _configurationService.getPhoneNumber();
             var options = await _productService.getProductOption(ProductId);
-            var discount = await _discountService.getDisount(product.ShopId, product.BrandId);
+            var discount = await _discountService.getDisount(product.ShopId, product.BrandId); // issue has been found
             var model = new ProductDetailViewModel
             {
                 product = product,
@@ -141,6 +141,7 @@ namespace ECommerce.WebApp.Controllers.Client
                 pro.ProductName = item.ProductName;
                 pro.BrandName = item.BrandName;
                 pro.ProductImportDate = item.ProductImportDate;
+                pro.Status = item.Status;
 
                 foreach (var price in item.Price)
                 {

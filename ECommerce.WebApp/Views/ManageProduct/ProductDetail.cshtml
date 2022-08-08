@@ -35,7 +35,7 @@
                                     {
                                         <input type="number" class="form-control pro-priceavailable" value="@price.Price" min="0" step="1000" id="1">
                                     }
-                                    @if (price.ProductTypeId == 1 && price.Price == null)
+                                    else if (price.ProductTypeId == 1 && price.Price == null)
                                     {
                                         <input type="number" class="form-control pro-priceavailable" value="" min="0" step="1000" id="1">
                                     }
@@ -51,7 +51,7 @@
                                     {
                                         <input type="number" class="form-control pro-pricepreorder" value="@price.Price" min="0" step="1000" id="1">
                                     }
-                                    @if (price.ProductTypeId == 2 && price.Price == null)
+                                    else if (price.ProductTypeId == 2 && price.Price == null)
                                     {
                                         <input type="number" class="form-control pro-pricepreorder" value="" min="0" step="1000" id="1">
                                     }
@@ -76,7 +76,25 @@
                                 }
                             </div>
                             <div class="form-check mb-4">
-                                <input class="form-check-input pro-disc-select" type="radio" name="flexRadioDefault" id="flexRadioDefault2" @if (Model.product.DiscountPercent == null && (Model.product.Prices[0].PriceOnSell != null || Model.product.Prices[1].PriceOnSell != null)) { @Html.Raw("checked"); }>
+                                @{
+                                    var isChecked = false;
+                                    var hasPriceOnSell1 = false;
+                                    var hasPriceOnSell2 = false;
+
+                                    foreach (var price in Model.product.Prices)
+                                    {
+                                        if (price.ProductTypeId == 1 && price.PriceOnSell != null)
+                                        {
+                                            hasPriceOnSell1 = true;
+                                        }
+                                        if (price.ProductTypeId == 2 && price.PriceOnSell != null)
+                                        {
+                                            hasPriceOnSell2 = true;
+                                        }
+                                    }
+                                    isChecked = Model.product.DiscountPercent == null && (hasPriceOnSell1 || hasPriceOnSell2);
+                                }
+                                <input class="form-check-input pro-disc-select" type="radio" name="flexRadioDefault" id="flexRadioDefault2" @if (isChecked) { @Html.Raw("checked") ; }>
                                 <label class="form-check-label" for="flexRadioDefault2">
                                     Giảm theo giá
                                 </label>
@@ -84,22 +102,22 @@
                                 {
                                     @if (price.ProductTypeId == 1 && price.PriceOnSell != null)
                                     {
-                                        <input type="number" class="form-control mb-2 pro-discavailable @if (Model.product.DiscountPercent != null) { @Html.Raw("d-none"); }" placeholder="Giá đã giảm có sẵn" value="@if (Model.product.DiscountPercent == null) { @price.PriceOnSell; }" min="0" step="1000" id="1">
+                                        <input type="number" class="form-control mb-2 pro-discavailable @if (!isChecked) { @Html.Raw("d-none"); }" placeholder="Giá đã giảm có sẵn" value="@if (Model.product.DiscountPercent == null) { @price.PriceOnSell; }" min="0" step="1000" id="1">
                                     }
                                     @if (price.ProductTypeId == 1 && price.PriceOnSell == null)
                                     {
-                                        <input type="number" class="form-control mb-2 pro-discavailable @if (Model.product.DiscountPercent != null || price.PriceOnSell == null) { @Html.Raw("d-none"); }" placeholder="Giá đã giảm có sẵn" value="" min="0" step="1000" id="1">
+                                        <input type="number" class="form-control mb-2 pro-discavailable @if (!isChecked) { @Html.Raw("d-none"); }" placeholder="Giá đã giảm có sẵn" value="" min="0" step="1000" id="1">
                                     }
                                 }
                                 @foreach (var price in Model.product.Prices)
                                 {
                                     @if (price.ProductTypeId == 2 && price.PriceOnSell != null)
                                     {
-                                        <input type="number" class="form-control mb-2 pro-discpreorder @if (Model.product.DiscountPercent != null) { @Html.Raw("d-none"); }" placeholder="Giá đã giảm đặt trước" value="@if (Model.product.DiscountPercent == null) { @price.PriceOnSell; }" min="0" step="1000" id="2">
+                                        <input type="number" class="form-control mb-2 pro-discpreorder @if (!isChecked) { @Html.Raw("d-none"); }" placeholder="Giá đã giảm đặt trước" value="@if (Model.product.DiscountPercent == null) { @price.PriceOnSell; }" min="0" step="1000" id="2">
                                     }
                                     @if (price.ProductTypeId == 2 && price.PriceOnSell == null)
-                                    { 
-                                        <input type="number" class="form-control mb-2 pro-discpreorder @if (Model.product.DiscountPercent != null || price.PriceOnSell == null) { @Html.Raw("d-none"); }" placeholder="Giá đã giảm đặt trước" value="" min="0" step="1000" id="2">
+                                    {
+                                        <input type="number" class="form-control mb-2 pro-discpreorder @if (!isChecked) { @Html.Raw("d-none"); }" placeholder="Giá đã giảm đặt trước" value="" min="0" step="1000" id="2">
                                     }
                                 }
                             </div>

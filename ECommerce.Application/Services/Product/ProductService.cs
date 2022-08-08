@@ -568,6 +568,7 @@ namespace ECommerce.Application.Services.Product
                         };
                         await _DbContext.ProductOptionValues.AddAsync(productOptionValue);
                     }
+                    await _DbContext.SaveChangesAsync();
                 }
                 // New option value
                 List<Dtos.Option> newOptions = JsonConvert.DeserializeObject<List<Dtos.Option>>(request.newOptions);
@@ -1120,7 +1121,7 @@ namespace ECommerce.Application.Services.Product
 
                 var newSizeGuide = new SizeGuide
                 {
-                    Content = request.content,
+                    SizeContent = request.content,
                     IsBaseSizeGuide = true
                 };
                 await _DbContext.SizeGuides.AddAsync(newSizeGuide);
@@ -1153,7 +1154,7 @@ namespace ECommerce.Application.Services.Product
                     .Select(i => new SizeGuideModel
                     {
                         id = i.SizeGuideId,
-                        content = i.Content,
+                        content = i.SizeContent,
                         subCategories = i.SubCategories
                         .Where(sc => sc.SizeGuideId == i.SizeGuideId)
                         .Select(sc => new SubCategoryModel {
@@ -1182,7 +1183,7 @@ namespace ECommerce.Application.Services.Product
                     .Where(i => i.SizeGuideId == id)
                     .Select(i => new SizeGuide {
                         SizeGuideId = i.SizeGuideId,
-                        Content = i.Content,
+                        SizeContent = i.SizeContent,
                         IsBaseSizeGuide = i.IsBaseSizeGuide
                     })
                     .FirstOrDefaultAsync();
@@ -1211,7 +1212,7 @@ namespace ECommerce.Application.Services.Product
                     .Where(i => i.SizeGuideId == request.id)
                     .FirstOrDefaultAsync();
                 if (sizeGuide != null)
-                    sizeGuide.Content = request.content;
+                    sizeGuide.SizeContent = request.content;
                 await _DbContext.SaveChangesAsync();
 
                 // Remove previous size id in subcategories

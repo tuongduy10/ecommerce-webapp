@@ -142,7 +142,13 @@ namespace ECommerce.Application.Services.Brand
                     New = i.New,
                     //Category = i.Category.CategoryName,
                     CategoryIds = i.BrandCategories.Where(bc => bc.BrandId == i.BrandId).Select(bc => bc.CategoryId).ToList(),
-                    Shops = i.ShopBrands.Select(s => new ShopManage() { id = s.Shop.ShopId, name = s.Shop.ShopName }).ToList()
+                    Shops = i.ShopBrands
+                    .Select(s => new ShopManage() { 
+                        id = s.Shop.ShopId,
+                        name = s.Shop.ShopName,
+                        status = (int)s.Shop.Status
+                    })
+                    .ToList()
                 })
                 .ToListAsync();
             return result;

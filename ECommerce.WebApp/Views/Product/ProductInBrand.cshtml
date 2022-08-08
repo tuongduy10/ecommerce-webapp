@@ -344,75 +344,79 @@
                             <div class="product__grid-inner w-100 d-flex flex-wrap">
                                 @foreach (var product in Model.listProduct.Items)
                                 {
-                                    <div class="product product-3">
-                                        <a class="product-img" href="@Url.Action("ProductDetail", "Product", new { ProductId = product.ProductId })">
-                                            <img src="@(Configuration["ImagePath:Product"] + product.ProductImages)" alt="">
-                                        </a>
-                                        <div class="product-label d-flex justify-content-end align-items-center w-100" style="background-color: #fff; padding: 3px 0;">
-                                            @if (product.DiscountPercent != null)
-                                            {
-                                                <span class="label-sales">-@product.DiscountPercent%</span>
-                                            }
-                                            @if (product.New == true)
-                                            {
-                                                <span class="label-new">Mới</span>
-                                            }
-                                            @if (product.Highlights == true)
-                                            {
-                                                <span class="label-hot">Hot</span>
-                                            }
-
-                                            <!--Add to wishlist-->
-                                            <a class="product-heart" style="cursor: pointer;">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                     viewBox="0 0 24 24" fill="none" stroke="#333"
-                                                     stroke-width="1" stroke-linecap="round"
-                                                     stroke-linejoin="round"
-                                                     class="add-to-wishlist feather feather-heart">
-                                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                                                    </path>
-                                                </svg>
+                                    @if (product.Status != 0)
+                                    {
+                                        <div class="product product-3">
+                                            <a class="product-img" href="@Url.Action("ProductDetail", "Product", new { ProductId = product.ProductId })">
+                                                <img src="@(Configuration["ImagePath:Product"] + product.ProductImages)" alt="">
                                             </a>
-                                        </div>
-                                        <hr style="width: 50%; margin: 0 auto;">
-                                        <div class="product__info">
-                                            <div class="product__info-detail text-center">
-                                                <div class="product-brand align-items-center">
-                                                    @product.ShopName
-                                                </div>
-                                                <div class="product-name mb-0">
-                                                    @product.ProductName
-                                                </div>
-                                                @if (product.ProductImportDate != null)
+                                            <div class="product-label d-flex justify-content-end align-items-center w-100" style="background-color: #fff; padding: 3px 0;">
+                                                @if (product.DiscountPercent != null)
                                                 {
-                                                    <div class="product-name">
-                                                        Tạm hết đến @product.ProductImportDate.ToString("dd/MM/yyyy")
-                                                    </div>
+                                                    <span class="label-sales">-@product.DiscountPercent%</span>
                                                 }
-                                                @if (product.ProductImportDate == null)
+                                                @if (product.New == true)
                                                 {
-                                                    <div class="product-name">
-                                                        (@product.ProductTypeName)
-                                                    </div>
+                                                    <span class="label-new">Mới</span>
+                                                }
+                                                @if (product.Highlights == true)
+                                                {
+                                                    <span class="label-hot">Hot</span>
                                                 }
 
-                                                @if (product.PriceOnSell == null)
-                                                {
-                                                    <div class="product-subprice" style="visibility: hidden">@String.Format("{0:0,0} ₫", product.Price)</div>
-                                                    <div class="product-price">@String.Format("{0:0,0} ₫", product.Price)</div>
-                                                }
-                                                else
-                                                {
-                                                    <div class="product-subprice">@String.Format("{0:0,0} ₫", product.Price)</div>
-                                                    <div class="product-price">@String.Format("{0:0,0} ₫", product.PriceOnSell)</div>
-                                                }
+                                                <!--Add to wishlist-->
+                                                <a class="product-heart" style="cursor: pointer;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="#333"
+                                                         stroke-width="1" stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         class="add-to-wishlist feather feather-heart">
+                                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                                        </path>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                            <hr style="width: 50%; margin: 0 auto;">
+                                            <div class="product__info">
+                                                <div class="product__info-detail text-center">
+                                                    <div class="product-brand align-items-center">
+                                                        @product.ShopName
+                                                    </div>
+                                                    <div class="product-name mb-0">
+                                                        @product.ProductName
+                                                    </div>
+                                                    @if (product.ProductImportDate != null)
+                                                    {
+                                                        <div class="product-name">
+                                                            Tạm hết đến @product.ProductImportDate.ToString("dd/MM/yyyy")
+                                                        </div>
+                                                    }
+                                                    @if (product.ProductImportDate == null)
+                                                    {
+                                                        <div class="product-name">
+                                                            (@product.ProductTypeName)
+                                                        </div>
+                                                    }
 
-                                                <div class="product-btn">
-                                                    <a href="@Url.Action("ProductDetail", "Product", new { ProductId = product.ProductId })">Xem nhanh</a>
+                                                    @if (product.PriceOnSell == null)
+                                                    {
+                                                        <div class="product-subprice" style="visibility: hidden">@String.Format("{0:0,0} ₫", product.Price)</div>
+                                                        <div class="product-price">@String.Format("{0:0,0} ₫", product.Price)</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="product-subprice">@String.Format("{0:0,0} ₫", product.Price)</div>
+                                                        <div class="product-price">@String.Format("{0:0,0} ₫", product.PriceOnSell)</div>
+                                                    }
+
+                                                    <div class="product-btn">
+                                                        <a href="@Url.Action("ProductDetail", "Product", new { ProductId = product.ProductId })">Xem nhanh</a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    }
+
                                 }
                             </div>
                         }

@@ -9,7 +9,6 @@ namespace ECommerce.Data.Models
     {
         public Shop()
         {
-            OrderDetails = new HashSet<OrderDetail>();
             Products = new HashSet<Product>();
             ShopBanks = new HashSet<ShopBank>();
             ShopBrands = new HashSet<ShopBrand>();
@@ -31,7 +30,6 @@ namespace ECommerce.Data.Models
 
         public virtual Discount Discount { get; set; }
         public virtual User User { get; set; }
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<Product> Products { get; set; }
         public virtual ICollection<ShopBank> ShopBanks { get; set; }
         public virtual ICollection<ShopBrand> ShopBrands { get; set; }

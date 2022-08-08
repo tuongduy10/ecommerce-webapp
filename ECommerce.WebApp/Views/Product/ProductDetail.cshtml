@@ -254,12 +254,14 @@
                                             <div class="product__sale-code w-100 justify-content-between d-flex align-items-center">
                                                 <span class="circle-left"></span>
                                                 <div class="product__sale-content">
-                                                    @if(Model.discount.IsPercent)
+                                                    @if (Model.discount.IsPercent)
                                                     {
                                                         <div class="text">
                                                             Nhập mã <strong>@Model.discount.DiscountCode</strong> giảm @Model.discount.DiscountValue%
                                                         </div>
-                                                    } else {
+                                                    }
+                                                    else
+                                                    {
                                                         <div class="text">
                                                             Nhập mã <strong>@Model.discount.DiscountCode</strong> giảm @String.Format("{0:0,0} ₫", Model.discount.DiscountValue)
                                                         </div>
@@ -310,18 +312,21 @@
                 </div>
             </div>
             <!-- Product user images -->
-            <div class="product__images-slider">
-                <h1 class="detail-title mb-0"><strong>HÌNH ẢNH THỰC TẾ</strong></h1>
-                <hr class="mt-0">
-                <ul id="content-slider">
-                    @foreach (var item in Model.product.ProductUserImages)
-                    {
-                        <li>
-                            <img class="pop" src="@(Configuration["ImagePath:Product"] + item)" alt="">
-                        </li>
-                    }
-                </ul>
-            </div>
+            @if (Model.product.ProductUserImages.Count > 0)
+            {
+                <div class="product__images-slider">
+                    <h1 class="detail-title mb-0"><strong>HÌNH ẢNH THỰC TẾ</strong></h1>
+                    <hr class="mt-0">
+                    <ul id="content-slider">
+                        @foreach (var item in Model.product.ProductUserImages)
+                        {
+                            <li>
+                                <img class="pop" src="@(Configuration["ImagePath:Product"] + item)" alt="">
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
             <!-- Attributes and desciption -->
             <div class="product__detail-tab">
                 <div class="product__tab-control">

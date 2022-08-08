@@ -313,6 +313,8 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.ProductName).HasMaxLength(100);
 
+                entity.Property(e => e.ShopName).HasMaxLength(100);
+
                 entity.Property(e => e.Total).HasColumnType("decimal(18, 0)");
 
                 entity.Property(e => e.VerifiedDate).HasColumnType("datetime");
@@ -322,12 +324,6 @@ namespace ECommerce.Data.Context
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderDetail_Order");
-
-                entity.HasOne(d => d.Shop)
-                    .WithMany(p => p.OrderDetails)
-                    .HasForeignKey(d => d.ShopId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OrderDetail_Shop");
             });
 
             modelBuilder.Entity<PaymentMethod>(entity =>
@@ -612,9 +608,7 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.IsBaseSizeGuide).HasColumnName("isBaseSizeGuide");
 
-                entity.Property(e => e.Content)
-                    .HasColumnType("ntext")
-                    .HasColumnName("SizeGuide");
+                entity.Property(e => e.SizeContent).HasColumnType("ntext");
             });
 
             modelBuilder.Entity<Social>(entity =>

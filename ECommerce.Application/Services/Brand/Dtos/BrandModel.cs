@@ -23,5 +23,6 @@ namespace ECommerce.Application.Services.Brand.Dtos
     {
         public int id { get; set; }
         public string name { get; set; }
+        public int status { get; set; }
     }
 }

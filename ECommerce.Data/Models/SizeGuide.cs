@@ -13,7 +13,7 @@ namespace ECommerce.Data.Models
         }
 
         public int SizeGuideId { get; set; }
-        public string Content { get; set; }
+        public string SizeContent { get; set; }
         public bool? IsBaseSizeGuide { get; set; }
 
         public virtual ICollection<SubCategory> SubCategories { get; set; }

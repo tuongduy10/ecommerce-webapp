@@ -172,7 +172,7 @@
                                     {
                                         @foreach (var shop in item.Shops)
                                         {
-                                            <a class="mr-2" href="@Url.Action("ShopDetail","ManageShop", new { ShopId = shop.id})">@shop.name</a>
+                                            <a class="mr-2 @if (shop.status == 0) { @Html.Raw("text-danger"); }" href="@Url.Action("ShopDetail","ManageShop", new { ShopId = shop.id})">@shop.name</a>
                                         }
                                     }
                                 </div>

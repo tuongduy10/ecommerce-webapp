@@ -10,6 +10,7 @@ namespace ECommerce.Data.Models
         public int OrderDetailId { get; set; }
         public int OrderId { get; set; }
         public int ShopId { get; set; }
+        public string ShopName { get; set; }
         public DateTime? VerifiedDate { get; set; }
         public int ProductId { get; set; }
         public string ProductName { get; set; }
@@ -24,6 +25,5 @@ namespace ECommerce.Data.Models
         public decimal? PayForAdmin { get; set; }
 
         public virtual Order Order { get; set; }
-        public virtual Shop Shop { get; set; }
     }
 }
