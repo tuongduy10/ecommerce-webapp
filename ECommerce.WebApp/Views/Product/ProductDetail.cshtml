@@ -32,10 +32,13 @@
                                     }
                                 </ul>
                             </div>
-                            <a class="product__detail-link" style="text-decoration: underline; cursor: pointer;" data-toggle="modal"
-                               data-target="#sizeguideModal">
-                                Hướng dẫn chọn size
-                            </a>
+                            @if (!string.IsNullOrEmpty(Model.product.SizeGuide))
+                            {
+                                <a class="product__detail-link" style="text-decoration: underline; cursor: pointer;" data-toggle="modal"
+                                    data-target="#sizeguideModal">
+                                    Hướng dẫn chọn size
+                                </a>
+                            }
                         </div>
                     </div>
                     <div class="product__detail-info col-md-7">
@@ -44,7 +47,14 @@
                                 <div class="product__detail-id d-flex flex-wrap align-items-center">
                                     <a class="product-id d-flex">
                                         <span>Mã sản phẩm:</span>
-                                        <span>@Model.product.ProductId</span>
+                                        @if (!string.IsNullOrEmpty(Model.product.ProductCode))
+                                        {
+                                            <span>@Model.product.ProductCode</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@Model.product.ProductId</span>
+                                        }
                                     </a>
                                     <a class="product-rating d-flex">
                                         <div class="stars">
@@ -629,64 +639,68 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered order-table" id="dataTable" width="100%" cellspacing="0">
-                        <thead style="">
-                            <tr>
-                                <th>Size</th>
-                                <th>UK</th>
-                                <th>DE</th>
-                                <th>US</th>
-                                <th>FR</th>
-                                <th>IT</th>
-                                <th>ES</th>
-                                <th>Length</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>36</td>
-                                <td>3</td>
-                                <td>35.5</td>
-                                <td>5.5</td>
-                                <td>35.5</td>
-                                <td>35.5</td>
-                                <td>35.5</td>
-                                <td>22cm</td>
-                            </tr>
-                            <tr>
-                                <td>36</td>
-                                <td>3</td>
-                                <td>35.5</td>
-                                <td>5.5</td>
-                                <td>35.5</td>
-                                <td>35.5</td>
-                                <td>35.5</td>
-                                <td>22cm</td>
-                            </tr>
-                            <tr>
-                                <td>36</td>
-                                <td>3</td>
-                                <td>35.5</td>
-                                <td>5.5</td>
-                                <td>35.5</td>
-                                <td>35.5</td>
-                                <td>35.5</td>
-                                <td>22cm</td>
-                            </tr>
-                            <tr>
-                                <td>36</td>
-                                <td>3</td>
-                                <td>35.5</td>
-                                <td>5.5</td>
-                                <td>35.5</td>
-                                <td>35.5</td>
-                                <td>35.5</td>
-                                <td>22cm</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="w-100">
+                    @Html.Raw(Model.product.SizeGuide)
                 </div>
+                
+                @*<div class="table-responsive">
+            <table class="table table-bordered order-table" id="dataTable" width="100%" cellspacing="0">
+                <thead style="">
+                    <tr>
+                        <th>Size</th>
+                        <th>UK</th>
+                        <th>DE</th>
+                        <th>US</th>
+                        <th>FR</th>
+                        <th>IT</th>
+                        <th>ES</th>
+                        <th>Length</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>36</td>
+                        <td>3</td>
+                        <td>35.5</td>
+                        <td>5.5</td>
+                        <td>35.5</td>
+                        <td>35.5</td>
+                        <td>35.5</td>
+                        <td>22cm</td>
+                    </tr>
+                    <tr>
+                        <td>36</td>
+                        <td>3</td>
+                        <td>35.5</td>
+                        <td>5.5</td>
+                        <td>35.5</td>
+                        <td>35.5</td>
+                        <td>35.5</td>
+                        <td>22cm</td>
+                    </tr>
+                    <tr>
+                        <td>36</td>
+                        <td>3</td>
+                        <td>35.5</td>
+                        <td>5.5</td>
+                        <td>35.5</td>
+                        <td>35.5</td>
+                        <td>35.5</td>
+                        <td>22cm</td>
+                    </tr>
+                    <tr>
+                        <td>36</td>
+                        <td>3</td>
+                        <td>35.5</td>
+                        <td>5.5</td>
+                        <td>35.5</td>
+                        <td>35.5</td>
+                        <td>35.5</td>
+                        <td>22cm</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>*@
             </div>
             <div class="modal-footer pt-0" style="border: unset;">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>

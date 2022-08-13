@@ -28,6 +28,7 @@ namespace ECommerce.Application.Services.Product
         Task<ApiResponse> AddSizeGuide(SizeGuideAddRequest request);
         Task<ApiResponse> UpdateSizeGuide(SizeGuideAddRequest request);
         Task<Response<Data.Models.SizeGuide>> SizeGuideDetail(int id);
+        Task<Response<Data.Models.SizeGuide>> GetSizeGuideBySub(int id);
         Task<Response<string>> DeleteProductImage(int id);
         Task<Response<string>> DeleteProductUserImage(int id);
     }

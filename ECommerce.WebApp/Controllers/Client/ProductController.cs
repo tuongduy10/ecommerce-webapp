@@ -52,7 +52,7 @@ namespace ECommerce.WebApp.Controllers.Client
             listProduct.CurrentRecord = products.CurrentRecord;
             listProduct.TotalPage = products.TotalPage;
             listProduct.TotalRecord = products.TotalRecord;
-            listProduct.Items = productListFormated(products.Items);
+            listProduct.Items = ProductListFormated(products.Items);
 
             var model = new ProductInBrandViewModel()
             {
@@ -72,14 +72,17 @@ namespace ECommerce.WebApp.Controllers.Client
             var phone = await _configurationService.getPhoneNumber();
             var options = await _productService.getProductOption(ProductId);
             var discount = await _discountService.getDisount(product.ShopId, product.BrandId); // issue has been found
+            var sizeGuides = await _productService.SizeGuideList();
+
             var model = new ProductDetailViewModel
             {
                 product = product,
                 rates = rates,
-                suggestion = productListFormated(suggestion),
+                suggestion = ProductListFormated(suggestion),
                 phone = phone,
                 options = options,
-                discount = discount
+                discount = discount,
+                sizeGuides = sizeGuides
             };
             return View(model);
         }
@@ -99,7 +102,7 @@ namespace ECommerce.WebApp.Controllers.Client
             listProduct.CurrentRecord = products.CurrentRecord;
             listProduct.TotalPage = products.TotalPage;
             listProduct.TotalRecord = products.TotalRecord;
-            listProduct.Items = productListFormated(products.Items);
+            listProduct.Items = ProductListFormated(products.Items);
 
             var model = new ProductInBrandViewModel()
             {
@@ -116,7 +119,7 @@ namespace ECommerce.WebApp.Controllers.Client
             listProduct.CurrentRecord = products.CurrentRecord;
             listProduct.TotalPage = products.TotalPage;
             listProduct.TotalRecord = products.TotalRecord;
-            listProduct.Items = productListFormated(products.Items);
+            listProduct.Items = ProductListFormated(products.Items);
 
             var model = new ProductInBrandViewModel()
             {
@@ -126,7 +129,7 @@ namespace ECommerce.WebApp.Controllers.Client
             return View(model);
         }
         
-        private List<ProductModel> productListFormated(List<ProductInBrandModel> list)
+        private List<ProductModel> ProductListFormated(List<ProductInBrandModel> list)
         {
             var _list = new List<ProductModel>();
             foreach (var item in list)

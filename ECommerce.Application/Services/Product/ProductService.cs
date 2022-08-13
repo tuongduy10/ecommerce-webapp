@@ -98,14 +98,16 @@ namespace ECommerce.Application.Services.Product
         public async Task<ProductDetailModel> getProductDetail(int id)
         {
             var attr = await _DbContext.ProductAttributes
-                                            .Where(i => i.ProductId == id)
-                                            .Select(i => new Dtos.Attribute() { 
-                                                Value = i.Value,
-                                                AttrName = i.Attribute.AttributeName
-                                            })
-                                            .ToListAsync();
+                .Where(i => i.ProductId == id)
+                .Select(i => new Dtos.Attribute() { 
+                    Value = i.Value,
+                    AttrName = i.Attribute.AttributeName
+                })
+                .ToListAsync();
 
-            var rate = await _DbContext.Rates.Where(i => i.ProductId == id).ToListAsync();
+            var rate = await _DbContext.Rates
+                .Where(i => i.ProductId == id)
+                .ToListAsync();
 
             int value = 0;
             int total = 0;
@@ -121,38 +123,49 @@ namespace ECommerce.Application.Services.Product
             };
 
             var product = await _DbContext.Products
-                                            .Where(i => i.ProductId == id && i.Status == 1)
-                                            .Select(i => new ProductDetailModel()
-                                            {
-                                                ProductId = i.ProductId,
-                                                ProductName = i.ProductName,
-                                                ProductDescription = i.ProductDescription,
+                .Where(i => i.ProductId == id && i.Status == 1)
+                .Select(i => new ProductDetailModel()
+                {
+                    ProductId = i.ProductId,
+                    ProductCode = i.ProductCode,
+                    ProductName = i.ProductName,
+                    ProductDescription = i.ProductDescription,
+                    SizeGuide = i.SizeGuide,
 
-                                                FreeDelivery = i.FreeDelivery,
-                                                FreeReturn = i.FreeReturn,
-                                                Legit = i.Legit,
-                                                Insurance = i.Insurance,
+                    FreeDelivery = i.FreeDelivery,
+                    FreeReturn = i.FreeReturn,
+                    Legit = i.Legit,
+                    Insurance = i.Insurance,
 
-                                                BrandId = i.Brand.BrandId,
-                                                BrandName = i.Brand.BrandName,
-                                                ShopName = i.Shop.ShopName,
-                                                ShopId = i.Shop.ShopId,
-                                                ProductRate = productRate,
+                    SubCategoryId = i.SubCategoryId,
+                    BrandId = i.Brand.BrandId,
+                    BrandName = i.Brand.BrandName,
+                    ShopName = i.Shop.ShopName,
+                    ShopId = i.Shop.ShopId,
+                    ProductRate = productRate,
 
-                                                Attributes = attr,
-                                                ProductImportDate = i.ProductImportDate,
-                                                DiscountPercent = i.DiscountPercent,
-                                                Prices = _DbContext.ProductPrices.Where(price => price.ProductId == id).ToList(),
-                                                Types = _DbContext.ProductTypes
-                                                                    .Select(type => new Dtos.Type() { 
-                                                                        ProductTypeName = type.ProductTypeName,
-                                                                        ProductTypeId = type.ProductTypeId
-                                                                    }).ToList(),
+                    Attributes = attr,
+                    ProductImportDate = i.ProductImportDate,
+                    DiscountPercent = i.DiscountPercent,
+                    Prices = _DbContext.ProductPrices
+                        .Where(price => price.ProductId == id)
+                        .ToList(),
+                    Types = _DbContext.ProductTypes
+                        .Select(type => new Dtos.Type() { 
+                            ProductTypeName = type.ProductTypeName,
+                            ProductTypeId = type.ProductTypeId
+                        }).ToList(),
 
-                                                ProductImages = _DbContext.ProductImages.Where(img => img.ProductId == id).Select(img => img.ProductImagePath).ToList(),
-                                                ProductUserImages = _DbContext.ProductUserImages.Where(img => img.ProductId == id).Select(img => img.ProductUserImagePath).ToList()
-                                            })
-                                            .FirstOrDefaultAsync();
+                    ProductImages = _DbContext.ProductImages
+                        .Where(img => img.ProductId == id)
+                        .Select(img => img.ProductImagePath)
+                        .ToList(),
+                    ProductUserImages = _DbContext.ProductUserImages
+                        .Where(img => img.ProductId == id)
+                        .Select(img => img.ProductUserImagePath)
+                        .ToList()
+                })
+                .FirstOrDefaultAsync();
 
             return product;
         }
@@ -173,76 +186,78 @@ namespace ECommerce.Application.Services.Product
                 .ToListAsync();
 
             var product = await _DbContext.Products
-                                            .Where(i => i.ProductId == id)
-                                            .Select(i => new ProductDetailModel()
-                                            {
-                                                ProductId = i.ProductId,
-                                                ProductName = i.ProductName,
-                                                ProductDescription = i.ProductDescription,
-                                                Note = i.Note,
-                                                Stock = (int)i.ProductStock,
-                                                New = i.New,
-                                                Highlight = i.Highlights,
-                                                FreeDelivery = i.FreeDelivery,
-                                                FreeReturn = i.FreeReturn,
-                                                Legit = i.Legit,
-                                                Insurance = i.Insurance,
+                .Where(i => i.ProductId == id)
+                .Select(i => new ProductDetailModel()
+                {
+                    ProductId = i.ProductId,
+                    ProductCode = i.ProductCode,
+                    ProductName = i.ProductName,
+                    ProductDescription = i.ProductDescription,
+                    SizeGuide = i.SizeGuide,
+                    Note = i.Note,
+                    Stock = (int)i.ProductStock,
+                    New = i.New,
+                    Highlight = i.Highlights,
+                    FreeDelivery = i.FreeDelivery,
+                    FreeReturn = i.FreeReturn,
+                    Legit = i.Legit,
+                    Insurance = i.Insurance,
 
-                                                SubCategoryId = i.SubCategoryId,
-                                                BrandId = i.BrandId,                                                
-                                                ShopId = i.ShopId,
-                                                ProductRate = productRate,
+                    SubCategoryId = i.SubCategoryId,
+                    BrandId = i.BrandId,                                                
+                    ShopId = i.ShopId,
+                    ProductRate = productRate,
 
-                                                //Attributes = attr,
-                                                Attributes = _DbContext.SubCategoryAttributes
-                                                    .Where(sub_attr => sub_attr.SubCategoryId == i.SubCategoryId)
-                                                    .Select(sub_attr => new Dtos.Attribute() {
-                                                        Id = sub_attr.AttributeId,
-                                                        AttrName = sub_attr.Attribute.AttributeName,
-                                                        Value = sub_attr.Attribute.ProductAttributes
-                                                        .Where(attr => attr.AttributeId == sub_attr.AttributeId && attr.ProductId == id)
-                                                        .Select(attr => attr.Value)
-                                                        .FirstOrDefault()
-                                                    })
-                                                    .ToList(),
-                                                //Options = opts,
-                                                Options = _DbContext.Options
-                                                    .Where(sub_opt => sub_opt.SubCategoryOptions.Any(so => so.SubCategoryId == i.SubCategoryId))
-                                                    .Select(sub_opt => new OptionGetModel()
-                                                    {
-                                                        id = sub_opt.OptionId,
-                                                        name = sub_opt.OptionName,
-                                                        values = sub_opt.OptionValues
-                                                            .Where( ov => 
-                                                                ov.OptionId == sub_opt.OptionId &&
-                                                                ov.ProductOptionValues.Any(pov => pov.ProductId == id && pov.OptionValueId == ov.OptionValueId)
-                                                            )
-                                                            .Select(ov => new OptionValueGetModel() { 
-                                                                id = ov.OptionValueId,
-                                                                value = ov.OptionValueName
-                                                            })
-                                                            .ToList()
-                                                    })
-                                                    .ToList(),
-                                                ProductImportDate = i.ProductImportDate,
-                                                DiscountPercent = i.DiscountPercent,
-                                                Prices = _DbContext.ProductPrices
-                                                    .Where(price => price.ProductId == id)
-                                                    .ToList(),
-                                                Types = _DbContext.ProductTypes
-                                                    .Select(type => new Dtos.Type()
-                                                    {
-                                                        ProductTypeName = type.ProductTypeName,
-                                                        ProductTypeId = type.ProductTypeId
-                                                    }).ToList(),
+                    //Attributes = attr,
+                    Attributes = _DbContext.SubCategoryAttributes
+                        .Where(sub_attr => sub_attr.SubCategoryId == i.SubCategoryId)
+                        .Select(sub_attr => new Dtos.Attribute() {
+                            Id = sub_attr.AttributeId,
+                            AttrName = sub_attr.Attribute.AttributeName,
+                            Value = sub_attr.Attribute.ProductAttributes
+                                .Where(attr => attr.AttributeId == sub_attr.AttributeId && attr.ProductId == id)
+                                .Select(attr => attr.Value)
+                                .FirstOrDefault()
+                        })
+                        .ToList(),
+                    //Options = opts,
+                    Options = _DbContext.Options
+                        .Where(sub_opt => sub_opt.SubCategoryOptions.Any(so => so.SubCategoryId == i.SubCategoryId))
+                        .Select(sub_opt => new OptionGetModel()
+                        {
+                            id = sub_opt.OptionId,
+                            name = sub_opt.OptionName,
+                            values = sub_opt.OptionValues
+                                .Where( ov => 
+                                    ov.OptionId == sub_opt.OptionId &&
+                                    ov.ProductOptionValues.Any(pov => pov.ProductId == id && pov.OptionValueId == ov.OptionValueId)
+                                )
+                                .Select(ov => new OptionValueGetModel() { 
+                                    id = ov.OptionValueId,
+                                    value = ov.OptionValueName
+                                })
+                                .ToList()
+                        })
+                        .ToList(),
+                    ProductImportDate = i.ProductImportDate,
+                    DiscountPercent = i.DiscountPercent,
+                    Prices = _DbContext.ProductPrices
+                        .Where(price => price.ProductId == id)
+                        .ToList(),
+                    Types = _DbContext.ProductTypes
+                        .Select(type => new Dtos.Type()
+                        {
+                            ProductTypeName = type.ProductTypeName,
+                            ProductTypeId = type.ProductTypeId
+                        }).ToList(),
 
-                                                ProductImages = _DbContext.ProductImages.Where(img => img.ProductId == id).Select(img => img.ProductImagePath).ToList(), // for view only
-                                                ProductUserImages = _DbContext.ProductUserImages.Where(img => img.ProductId == id).Select(img => img.ProductUserImagePath).ToList(), // for view only
+                    ProductImages = _DbContext.ProductImages.Where(img => img.ProductId == id).Select(img => img.ProductImagePath).ToList(), // for view only
+                    ProductUserImages = _DbContext.ProductUserImages.Where(img => img.ProductId == id).Select(img => img.ProductUserImagePath).ToList(), // for view only
 
-                                                SystemImages = sysImages,
-                                                UserImages = userImages
-                                            })
-                                            .FirstOrDefaultAsync();
+                    SystemImages = sysImages,
+                    UserImages = userImages
+                })
+                .FirstOrDefaultAsync();
             return product;
         }
         // Product in brand
@@ -256,13 +271,13 @@ namespace ECommerce.Application.Services.Product
                 int pageindex = request.PageIndex;
                 int pagesize = request.PageSize;
                 string orderBy = request.OrderBy;
-                List<int> listOptionValueId = request.listOptionValueId;
+                List<listOptionValueReq> listOptionValueId = request.listOptionValueId;
 
                 // Query
                 var query = (from product in _DbContext.Products
                              join brand in _DbContext.Brands on product.BrandId equals brand.BrandId
                              join shop in _DbContext.Shops on product.ShopId equals shop.ShopId
-                             where product.BrandId == BrandId
+                             where product.BrandId == BrandId && product.Status == (int)enumProductStatus.Available
                              orderby product.SubCategoryId
                              select new { product, brand, shop }).AsQueryable();
 
@@ -274,8 +289,10 @@ namespace ECommerce.Application.Services.Product
                 // Query get products by optionvalue
                 if (BrandId > 0 && listOptionValueId != null)
                 {
+
                     // product ids from ProductOptionValues
                     var optProIds = await _DbContext.ProductOptionValues
+                        .Where(i => listOptionValueId.All(l => l.subId == i.Product.SubCategoryId))
                         .Select(i => i.ProductId)
                         .ToListAsync();
                     optProIds = optProIds.Distinct().ToList(); // 
@@ -287,7 +304,7 @@ namespace ECommerce.Application.Services.Product
                             .Where(i => i.ProductId == id)
                             .Select(i => i.OptionValueId)
                             .ToListAsync();
-                        var hasProduct = listOptionValueId.All(i => optValIds.Any(j => j == i));
+                        var hasProduct = listOptionValueId.All(i => optValIds.Any(j => j == i.optValId));
                         if (hasProduct) listProIdsQuery.Add(id);
                     }
                     listProIdsQuery = listProIdsQuery.Distinct().ToList();
@@ -523,6 +540,12 @@ namespace ECommerce.Application.Services.Product
             if (pricePreorder.price < pricePreorder.priceOnSell) 
                 return new ApiFailResponse("Giá giảm không thể lớn hơn giá gốc !");
 
+            var code = await _DbContext.Products
+                .Where(i => request.code != null && i.ProductCode == request.code.Trim())
+                .FirstOrDefaultAsync();
+            if(code != null)
+                return new ApiFailResponse("Mã này đã tồn tại !");
+
             try
             {
                 var isAdmin = await _userService.getUserRole(request.userId) == "Admin";            
@@ -532,8 +555,10 @@ namespace ECommerce.Application.Services.Product
                  */
                 var product = new Data.Models.Product
                 {
+                    ProductCode = request.code.Trim(),
                     ProductName = request.name.Trim(), // required
                     ProductDescription = request.description == null ? null : request.description,
+                    SizeGuide = request.size == null ? null : request.size,
                     Note = request.note == null ? "" : request.note.Trim(),
                     DiscountPercent = request.discountPercent,
                     Legit = request.isLegit,
@@ -635,33 +660,32 @@ namespace ECommerce.Application.Services.Product
                 // Prices
                 decimal discountAvailable = 0;
                 decimal discountPreOrder = 0;
-                if (request.discountPercent != null)
+                if (request.discountPercent != null && priceAvailable.price != null)
                 {
                     discountAvailable = GetDiscountPrice(priceAvailable.price, request.discountPercent);
+                }
+                if (request.discountPercent != null && pricePreorder.price != null)
+                {
                     discountPreOrder = GetDiscountPrice(pricePreorder.price, request.discountPercent);
                 }
-                if (priceAvailable.price != null)
+                // Available Price
+                var availablePrice = new ProductPrice
                 {
-                    var availablePrice = new ProductPrice
-                    {
-                        ProductId = product.ProductId,
-                        Price = priceAvailable.price,
-                        PriceOnSell = discountAvailable == 0 ? null : discountAvailable,
-                        ProductTypeId = (int)enumProductType.Available,
-                    };
-                    await _DbContext.ProductPrices.AddAsync(availablePrice);
-                }
-                if (pricePreorder.price != null)
+                    Price = priceAvailable.price == null ? null : priceAvailable.price,
+                    PriceOnSell = discountAvailable == 0 ? null : discountAvailable,
+                    ProductId = product.ProductId,
+                    ProductTypeId = (int)enumProductType.Available,
+                };
+                await _DbContext.ProductPrices.AddAsync(availablePrice);
+                // Pre Order Price
+                var preOrderPrice = new ProductPrice
                 {
-                    var preOrderPrice = new ProductPrice
-                    {
-                        ProductId = product.ProductId,
-                        Price = pricePreorder.price,
-                        PriceOnSell = discountPreOrder == 0 ? null : discountPreOrder,
-                        ProductTypeId = (int)enumProductType.PreOrder,
-                    };
-                    await _DbContext.ProductPrices.AddAsync(preOrderPrice);
-                }               
+                    Price = pricePreorder.price == null ? null : pricePreorder.price,
+                    PriceOnSell = discountPreOrder == 0 ? null : discountPreOrder,
+                    ProductId = product.ProductId,
+                    ProductTypeId = (int)enumProductType.PreOrder,
+                };
+                await _DbContext.ProductPrices.AddAsync(preOrderPrice);
                 await _DbContext.SaveChangesAsync();
 
                 // Images
@@ -736,13 +760,22 @@ namespace ECommerce.Application.Services.Product
                 if (productImage == null && request.systemImage == null)
                     return new FailResponse<ProductUpdateResponse>("Vui lòng chọn ảnh");
 
+                var code = await _DbContext.Products
+                    .Where(i => request.code != null && i.ProductCode == request.code.Trim() && i.ProductId != request.id)
+                    .FirstOrDefaultAsync();
+                if (code != null)
+                    return new FailResponse<ProductUpdateResponse>("Mã này đã tồn tại !");
+
+
 
                 var isAdmin = await _userService.getUserRole(request.userId) == "Admin";
                 /*
                  * None relationship data
                  */
+                product.ProductCode = request.code.Trim();
                 product.ProductName = request.name.Trim(); // required
                 product.ProductDescription = request.description == null ? null : request.description;
+                product.SizeGuide = request.size == null ? null : request.size;
                 product.Note = request.note == null ? "" : request.note.Trim();
                 product.DiscountPercent = request.discountPercent;
                 product.Legit = request.isLegit;
@@ -1195,6 +1228,20 @@ namespace ECommerce.Application.Services.Product
             {
                 return new FailResponse<SizeGuide>("Lấy thông tin thất bại, thử lại sau");
             }
+        }
+        public async Task<Response<SizeGuide>> GetSizeGuideBySub(int id)
+        {
+            var size = await _DbContext.SubCategories
+                .Where(i => i.SubCategoryId == id)
+                .Select(i => new SizeGuide
+                {
+                    SizeGuideId = i.SizeGuide.SizeGuideId,
+                    SizeContent = i.SizeGuide.SizeContent,
+                    IsBaseSizeGuide = i.SizeGuide.IsBaseSizeGuide
+                })
+                .FirstOrDefaultAsync();
+            return new SuccessResponse<SizeGuide>("Lấy thông tin thành công", size);
+
         }
         public async Task<ApiResponse> UpdateSizeGuide(SizeGuideAddRequest request)
         {

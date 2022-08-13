@@ -15,10 +15,17 @@
                 <div class="row">
                     <div class="col-sm-6 mb-4">
                         <div class="text-left mb-2 text-primary"><strong>Thông tin cơ bản</strong></div>
+                        <!-- Code -->
+                        <div class="form-group mb-4">
+                            <label>Mã sản phẩm</label>
+                            <input type="text" class="form-control pro-code" value="">
+                        </div>
+                        <!-- Name -->
                         <div class="form-group mb-4">
                             <label>Tên sản phẩm</label>
                             <input type="text" class="form-control pro-name" value="">
                         </div>
+                        <!-- Stock -->
                         <div class="form-group mb-4">
                             <label>Số lượng trong kho</label>
                             <input type="number" class="form-control pro-stock" value="">
@@ -92,7 +99,7 @@
                         </div>
                         <!-- Insurance -->
                         <div class="form-group mb-4">
-                            <label>Bảo hành</label>
+                            <label class="required">Bảo hành</label>
                             <div class="d-flex align-items-center">
                                 <input type="text" class="form-control pro-insurance">
                             </div>
@@ -177,6 +184,35 @@
                             <textarea class="form-control" id="product-desciptions" rows="8"
                                       cols="50"></textarea>
                         </div>
+                        <!-- Size Guide -->
+                        <div class="text-left mb-2 text-primary">
+                            <strong>Hướng dẫn chọn size</strong>
+                            <div class="form-group">
+                                <div class="dropdown mb-2 mr-2">
+                                    <button class="btn border dropdown-toggle size_select-text" type="button" data-toggle="dropdown">
+                                        Chọn size theo loại
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-size-menu px-2" style="max-height: 300px; overflow: auto;">
+                                        <input class="form-control mb-2" id="myInput-size" type="text" placeholder="Tìm..." autocomplete="off" />
+                                        @foreach (var item in Model.subCategories)
+                                        {
+                                            @if (item.SizeGuide != null)
+                                            {
+                                                <li class="d-flex align-items-center" value="@item.SubCategoryId">
+                                                    <input name="size" class="size_select mr-2" id="size_@item.SubCategoryId" type="radio" value="@item.SubCategoryId" onclick="getSize(@item.SubCategoryId)">
+                                                    <label class="mb-0" for="size_@item.SubCategoryId">@item.SubCategoryName</label>
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <textarea class="form-control" id="product-sizeguide" rows="8"
+                                      cols="50"></textarea>
+                        </div>
                         <!-- System's images -->
                         <div class="mb-2 text-primary"><strong>Ảnh sản phẩm</strong></div>
                         <div class="form-group mb-4">
@@ -236,6 +272,15 @@
                 renderSubCategoryForm(response);
             })
             .catch(function (error) {
+                console.log(error);
+                alert(error.responseText);
+            })
+        $.get('/api/ProductAPI/GetSizeGuideBySub', { id: $(this).val() })
+            .then(function (response) {
+                renderSubCategoryForm(response);
+            })
+            .catch(function (error) {
+                console.log(error);
                 alert(error.responseText);
             })
     })
@@ -248,7 +293,6 @@
             })
             .catch(function (error) {
                 console.log(error);
-                alert(error.responseText);
             })
         $.get('/api/CategoryAPI/getBaseOptionsBySubCategoryId', { id: _id })
             .then(function (response) {
@@ -256,9 +300,18 @@
             })
             .catch(function (error) {
                 console.log(error);
-                alert(error.responseText);
             })
     })
+
+    function getSize(_id) {
+        $.get('/api/ProductAPI/GetSizeGuideBySub', { id: _id })
+            .then(function (response) {
+                renderSize(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
 
     // Upload file
     var arrFilesSystem = [];
@@ -328,9 +381,11 @@
     // Add product
     $('.add-product').click(function () {
         // None relationship data
+        var code = $(".pro-code").val();
         var name = $(".pro-name").val();
         var stock = $(".pro-stock").val();
         var description = tinymce.get("product-desciptions").getContent();
+        var size = tinymce.get("product-sizeguide").getContent();
         var note = $(".pro-note").val();
         var brandId = $("input[name='brand']:checked").val();
         var shopId = $("input[name='shop']:checked").val();
@@ -391,9 +446,11 @@
 
         var formData = new FormData();
         // None relationship data
+        formData.append('code', code);
         formData.append('name', name);
         formData.append('stock', stock);
         formData.append('description', description);
+        formData.append('size', size);
         formData.append('note', note);
         formData.append('brandId', brandId);
         formData.append('subCategoryId', subCategoryId);
@@ -476,6 +533,9 @@
                 $('.option-list').append(htmlOption(item));
             })
         }
+    }
+    function renderSize(data) {
+        tinymce.get("product-sizeguide").setContent(data.data.sizeContent);
     }
 
     // html
@@ -627,6 +687,13 @@
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     })
+    $(document).on("keyup", "#myInput-size", function () {
+        var value = $(this).val().toLowerCase();
+        $(".dropdown-size-menu li label").filter(function () {
+            $(this).siblings("input").toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    })
 </script>
 <script type="text/javascript">
     $('.image-uploaded').change(function () {
@@ -712,5 +779,9 @@
     $(document).on('click', '.subcategory_select', function () {
         var subcategoryName = $(this).siblings('label').text();
         $('.subcategory_select-text').text(subcategoryName);
+    })
+    $(document).on('click', '.size_select', function () {
+        var name = $(this).siblings('label').text();
+        $('.size_select-text').text(name);
     })
 </script>

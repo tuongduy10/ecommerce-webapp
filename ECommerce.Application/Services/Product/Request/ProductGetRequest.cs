@@ -12,7 +12,12 @@ namespace ECommerce.Application.Services.Product.Dtos
         public int BrandId { get; set; }
         public int SubCategoryId { get; set; }
         public string OrderBy { get; set; }
-        public List<int> listOptionValueId { get; set; }
+        public List<listOptionValueReq> listOptionValueId { get; set; }
         public string GetBy { get; set; }
+    }
+    public class listOptionValueReq
+    {
+        public int optValId { get; set; }
+        public int subId { get; set; }
     }
 }

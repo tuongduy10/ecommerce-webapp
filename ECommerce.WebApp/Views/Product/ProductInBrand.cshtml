@@ -39,7 +39,7 @@
                                                             {
                                                                 <li class="filter__sub-item">
                                                                     <div class="checkbox d-flex align-items-center">
-                                                                        <input id="check__sub-item_@productOption.OptionValueId" class="checkboxFilter" type="checkbox" value="@productOption.OptionValueId">
+                                                                        <input id="check__sub-item_@productOption.OptionValueId" class="checkboxFilter" type="checkbox" value="@productOption.OptionValueId" onclick="filterByOption(evt, @productOption.OptionValueId, @filter.SubCategoryId)">
                                                                         <label for="check__sub-item_@productOption.OptionValueId" class="d-flex align-items-center mb-0">
                                                                             <div class="sub-item-cate">@productOption.OptionValueName</div>
                                                                             <span class="sub-item-cate">(@productOption.TotalRecord)</span>
@@ -173,7 +173,7 @@
                                                                             if (productOption.TotalRecord > 0)
                                                                             {
                                                                                 <li class="d-flex align-items-center">
-                                                                                    <input class="checkboxFilter mr-2" id="checkbox__mobile-@productOption.OptionValueId" type="checkbox" value="@productOption.OptionValueId">
+                                                                                    <input class="checkboxFilter mr-2" id="checkbox__mobile-@productOption.OptionValueId" type="checkbox" value="@productOption.OptionValueId" onclick="filterByOption(evt, @productOption.OptionValueId, @filter.SubCategoryId)">
                                                                                     <label for="checkbox__mobile-@productOption.OptionValueId" class="d-flex align-items-center mb-0">
                                                                                         <div class="mr-1">@productOption.OptionValueName</div>
                                                                                         <span>(@productOption.TotalRecord)</span>
@@ -597,7 +597,26 @@
             getProductByOptionValue(@Model.brand.BrandId, listOptionValueIdRequest, pageIndex); return;
         }
     })
-    $('.checkboxFilter').click(function () {
+
+    function filterByOption(ele, optionValId, subId) {
+        var req = {
+            optValId: optionValId,
+            subId: subId
+        }
+        if ($(ele).is(":checked")) {
+            listOptionValueIdRequest.push(req);
+        }
+        if (!$(ele).is(":checked")) {
+            listOptionValueIdRequest.splice($.inArray(req, listOptionValueIdRequest), 1);
+        }
+        if (listOptionValueIdRequest.length == 0) {
+            getProductBySubCategory(@Model.brand.BrandId, SubCategoryIdRequest, SubCategoryNameRequest, 1);
+            return;
+        }
+        getProductByOptionValue(@Model.brand.BrandId, listOptionValueIdRequest, 1);
+    }
+
+    @*$('.checkboxFilter').click(function () {
         if ($(this).is(":checked")) {
             listOptionValueIdRequest.push($(this).val());
         }
@@ -609,7 +628,7 @@
             return;
         }
         getProductByOptionValue(@Model.brand.BrandId, listOptionValueIdRequest, 1);
-    })
+    })*@
     $('.orderby-newest').click(function () {
         var order = "Newest";
         orderBy(order, 1);
@@ -1045,5 +1064,5 @@
             </li>
         `
         return html;
-    } 
+    }
 </script>

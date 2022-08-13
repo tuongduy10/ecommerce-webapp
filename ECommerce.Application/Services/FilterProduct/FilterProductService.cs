@@ -44,7 +44,7 @@ namespace ECommerce.Application.Services.FilterProduct
                     ).Select(lop => new OptionValue() { 
                         OptionValueId = lop.OptionValueId,
                         OptionValueName = lop.OptionValueName,
-                        TotalRecord = _DbContext.ProductOptionValues.Where(ov => ov.OptionValueId == lop.OptionValueId).Select(ov => ov.ProductId).Count(),
+                        TotalRecord = _DbContext.ProductOptionValues.Where(ov => ov.OptionValueId == lop.OptionValueId && ov.Product.SubCategoryId == i.SubCategoryId).Select(ov => ov.ProductId).Count(),
                     }).ToList(),
                 }).ToList(),
             }).ToListAsync();

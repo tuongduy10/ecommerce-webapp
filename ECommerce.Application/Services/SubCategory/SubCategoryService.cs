@@ -510,6 +510,11 @@ namespace ECommerce.Application.Services.SubCategory
                             }
                         }
                     }
+                    else
+                    {
+                        value.IsBaseValue = true;
+                        await _DbContext.SaveChangesAsync();
+                    }
                 }
                 return new ApiSuccessResponse("Thêm thành công");
             }

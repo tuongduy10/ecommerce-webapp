@@ -8,8 +8,10 @@ namespace ECommerce.Application.Services.Product.Dtos
     public class ProductDetailModel
     {
         public int ProductId { get; set; } //
+        public string ProductCode { get; set; }
         public string ProductName { get; set; } //
         public string ProductDescription { get; set; } //
+        public string SizeGuide { get; set; }
         public string Note { get; set; }
         public int Stock { get; set; }
         public bool? New { get; set; }

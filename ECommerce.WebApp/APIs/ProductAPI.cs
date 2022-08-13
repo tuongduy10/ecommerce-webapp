@@ -2,6 +2,7 @@
 using ECommerce.Application.Services.FilterProduct;
 using ECommerce.Application.Services.Product;
 using ECommerce.Application.Services.Product.Dtos;
+using ECommerce.Application.Services.Product.Enum;
 using ECommerce.Application.Services.SubCategory;
 using ECommerce.WebApp.Models.Products;
 using Microsoft.AspNetCore.Mvc;
@@ -34,7 +35,7 @@ namespace ECommerce.WebApp.APIs
             var brand = await _brandService.getBrandById(request.BrandId);
             var filter = await _filterService.listFilterModel(request.BrandId);
 
-            var list = productListFormated(products.Items);
+            var list = ProductListFormated(products.Items);
             if (request.OrderBy == "Descending") list = list.OrderByDescending(i => i.Price).ToList();
             if (request.OrderBy == "Ascending") list = list.OrderBy(i => i.Price).ToList();
             
@@ -60,7 +61,7 @@ namespace ECommerce.WebApp.APIs
         {
             var products = await _productService.getProductInPagePaginated(new ProductGetRequest() { OrderBy = request.OrderBy, GetBy = request.GetBy, PageIndex = request.PageIndex });
 
-            var list = productListFormated(products.Items);
+            var list = ProductListFormated(products.Items);
             if (request.OrderBy == "Descending") list = list.OrderByDescending(i => i.Price).ToList();
             if (request.OrderBy == "Ascending") list = list.OrderBy(i => i.Price).ToList();
 
@@ -78,7 +79,13 @@ namespace ECommerce.WebApp.APIs
 
             return Ok(new { status = "success", data = model });
         }
-        private List<ProductModel> productListFormated(List<ProductInBrandModel> list)
+        [HttpGet("GetSizeGuideBySub")]
+        public async Task<IActionResult> GetSizeGuideBySub(int id)
+        {
+            var size = await _productService.GetSizeGuideBySub(id);
+            return Ok(size);
+        }
+        private List<ProductModel> ProductListFormated(List<ProductInBrandModel> list)
         {
             var _list = new List<ProductModel>();
             foreach (var item in list)
@@ -94,52 +101,22 @@ namespace ECommerce.WebApp.APIs
                 pro.BrandName = item.BrandName;
                 pro.ProductImportDate = item.ProductImportDate;
 
-                if (item.Type.Count == 1)
+                foreach (var price in item.Price)
                 {
-                    pro.ProductTypeName = item.Type[0].ProductTypeName;
-                }
-                if (item.Type.Count == 2)
-                {
-                    foreach (var type in item.Type)
+                    if (price.ProductTypeId == (int)enumProductType.PreOrder && price.Price != null)
                     {
-                        if (type.ProductTypeId == 1)
-                        {
-                            pro.ProductTypeName = type.ProductTypeName;
-                        }
-                    }
-                }
-
-                // price
-                if (item.Price.Count == 2)
-                {
-                    foreach (var price in item.Price)
-                    {
-                        if (price.ProductTypeId == 2)
-                        {
-                            if (price.PriceOnSell == null)
-                            {
-                                pro.Price = price.Price;
-                                pro.PriceOnSell = null;
-                            }
-                            else
-                            {
-                                pro.Price = price.Price;
-                                pro.PriceOnSell = price.PriceOnSell;
-                            }
-                        }
-                    }
-                }
-                if (item.Price.Count == 1)
-                {
-                    if (item.Price[0].PriceOnSell == null)
-                    {
-                        pro.Price = item.Price[0].Price;
-                        pro.PriceOnSell = null;
+                        pro.ProductTypeName = ProductTypeConst.PreOrderName;
+                        pro.Price = price.Price;
+                        pro.PriceOnSell = price.PriceOnSell == null ? null : price.PriceOnSell;
                     }
                     else
                     {
-                        pro.Price = item.Price[0].Price;
-                        pro.PriceOnSell = item.Price[0].PriceOnSell;
+                        if (price.ProductTypeId == (int)enumProductType.Available && price.Price != null)
+                        {
+                            pro.ProductTypeName = ProductTypeConst.PreOrderName;
+                            pro.Price = price.Price;
+                            pro.PriceOnSell = price.PriceOnSell == null ? null : price.PriceOnSell;
+                        }
                     }
                 }
 

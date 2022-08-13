@@ -12,5 +12,6 @@ namespace ECommerce.WebApp.Models.SaleProduct
     {
         public List<BrandModel> brands { get; set; }
         public List<ShopGetModel> shops { get; set; }
+        public List<SubCategoryModel> subCategories { get; set; }
     }
 }

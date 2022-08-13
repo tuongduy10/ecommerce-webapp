@@ -59,10 +59,12 @@ namespace ECommerce.WebApp.Controllers.Admin
             var userId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
             var brands = await _brandService.getAllBrandInShop(userId);
             var shops = await _shopService.getShopListBySystemUserAccount();
+            var subs = await _subCategoryService.getAll();
             var model = new AddProductViewModel
             {
                 brands = brands,
-                shops = shops
+                shops = shops,
+                subCategories = subs
             };
             return View(model);
         }
@@ -103,7 +105,7 @@ namespace ECommerce.WebApp.Controllers.Admin
 
             if (request.systemImage != null)
                 request.systemFileName = _manageFiles.GetFilesName(request.systemImage, FILE_PREFIX);
-            if (request.userFileName != null)
+            if (request.userImage != null)
                 request.userFileName = _manageFiles.GetFilesName(request.userImage, FILE_PREFIX);
             
             // Result 
@@ -113,7 +115,7 @@ namespace ECommerce.WebApp.Controllers.Admin
                 // Add file with files, files'name, path
                 if (request.systemImage != null)
                     _manageFiles.AddFiles(request.systemImage, request.systemFileName, FILE_PATH);
-                if (request.userFileName != null)
+                if (request.userImage != null)
                     _manageFiles.AddFiles(request.userImage, request.userFileName, FILE_PATH);
                 
                 return Ok(result.Message);
@@ -123,16 +125,19 @@ namespace ECommerce.WebApp.Controllers.Admin
         public async Task<IActionResult> ProductDetail(ProductViewDetailRequest request)
         {
             var product = await _productService.GetProductDetailManaged(request.productId);
+            if (product == null) return NotFound();
+
             var shops = await _shopService.getShopList();
             var brands = await _brandService.getBrandsByShop(product.ShopId);
             var subCategories = await _subCategoryService.getSubCategoryInBrand(product.BrandId);
-
+            var subSizes = await _subCategoryService.getAll();
             var model = new ProductDetailViewModel
             {
                 product = product,
                 shops = shops,
                 brands = brands,
-                subCategories = subCategories
+                subCategories = subCategories,
+                subSizes = subSizes
             };
             return View(model);
         }

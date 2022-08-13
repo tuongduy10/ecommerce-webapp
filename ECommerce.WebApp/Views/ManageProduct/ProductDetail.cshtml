@@ -15,6 +15,11 @@
                 <div class="row">
                     <div class="col-sm-6 mb-4">
                         <div class="text-left mb-2 text-primary"><strong>Thông tin cơ bản</strong></div>
+                        <!-- Mã -->
+                        <div class="form-group mb-4">
+                            <label>Mã sản phẩm</label>
+                            <input type="text" class="form-control pro-code" value="@Model.product.ProductCode">
+                        </div>
                         <!-- Name -->
                         <div class="form-group mb-4">
                             <label>Tên sản phẩm</label>
@@ -62,7 +67,7 @@
                         <div class="form-group mb-4">
                             <label>Giảm giá</label>
                             <div class="form-check mb-4">
-                                <input class="form-check-input pro-discpercent-select" type="radio" name="flexRadioDefault" id="flexRadioDefault1" @if (Model.product.DiscountPercent != null) { @Html.Raw("checked"); }>
+                                <input class="form-check-input pro-discpercent-select" type="radio" name="flexRadioDefault" id="flexRadioDefault1" @if (Model.product.DiscountPercent != null) { @Html.Raw("checked") ; }>
                                 <label class="form-check-label" for="flexRadioDefault1">
                                     Giảm theo %
                                 </label>
@@ -214,8 +219,8 @@
                                     }
                                     <span class="caret"></span>
                                 </button>
-                                <ul class="dropdown-menu px-2" style="max-height: 300px; overflow: auto;">
-                                    <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm cửa hàng..." autocomplete="off" />
+                                <ul class="dropdown-menu dropdown-sh-menu px-2" style="max-height: 300px; overflow: auto;">
+                                    <input class="form-control mb-2" id="myInput-sh" type="text" placeholder="Tìm cửa hàng..." autocomplete="off" />
                                     @foreach (var item in Model.shops)
                                     {
                                         <li class="d-flex align-items-center">
@@ -359,46 +364,7 @@
                                     }
                                 </div>
                             }
-
                         </div>
-                        <!-- Size guide -->
-                        @*<div class="form-group mb-4">
-            <label>Hướng dẫn chọn kích thước</label>
-            <div class="d-flex flex-wrap">
-                <div class="">
-                    <div class="border" style="height: 100px; width: 100px;">
-                        <label class="mb-0 w-100 h-100 d-flex align-items-center justify-content-center"
-                               for="pic-size" style="cursor: pointer">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                 height="24" viewBox="0 0 24 24" fill="none"
-                                 stroke="#ddd" stroke-width="1" stroke-linecap="round"
-                                 stroke-linejoin="round"
-                                 class="feather feather-plus-circle">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="8" x2="12" y2="16"></line>
-                                <line x1="8" y1="12" x2="16" y2="12"></line>
-                            </svg>
-                        </label>
-                        <input type="file" class="form-control-file image-uploaded"
-                               id="pic-size" hidden>
-                        <div class="image-wrapper w-100 h-100 position-relative d-none align-items-center justify-content-center">
-                            <img class="mw-100 mh-100"
-                                 src="../assets/images/products/pro1.png" alt="">
-                            <span class="position-absolute remove-upload"
-                                  style="right: 0; top: 0; cursor: pointer;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18"
-                                     height="18" viewBox="0 0 24 24" fill="none"
-                                     stroke="red" stroke-width="1" stroke-linecap="round"
-                                     stroke-linejoin="round" class="feather feather-x">
-                                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                                </svg>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>*@
                     </div>
                     <div class="col-sm-12 mb-4">
                         <!-- Description -->
@@ -406,6 +372,35 @@
                         <div class="form-group mb-4">
                             <textarea class="form-control" id="product-desciptions" rows="8"
                                       cols="50">@Model.product.ProductDescription</textarea>
+                        </div>
+                        <!-- Size Guide -->
+                        <div class="text-left mb-2 text-primary">
+                            <strong>Hướng dẫn chọn size</strong>
+                            <div class="form-group">
+                                <div class="dropdown mb-2 mr-2">
+                                    <button class="btn border dropdown-toggle size_select-text" type="button" data-toggle="dropdown">
+                                        Chọn size theo loại
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-size-menu px-2" style="max-height: 300px; overflow: auto;">
+                                        <input class="form-control mb-2" id="myInput-size" type="text" placeholder="Tìm..." autocomplete="off" />
+                                        @foreach (var item in Model.subSizes)
+                                        {
+                                            @if (item.SizeGuide != null)
+                                            {
+                                                <li class="d-flex align-items-center" value="@item.SubCategoryId">
+                                                    <input name="size" class="size_select mr-2" id="size_@item.SubCategoryId" type="radio" value="@item.SubCategoryId" onclick="getSize(@item.SubCategoryId)">
+                                                    <label class="mb-0" for="size_@item.SubCategoryId">@item.SubCategoryName</label>
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>                        
+                        <div class="form-group mb-4">
+                            <textarea class="form-control" id="product-sizeguide" rows="8"
+                                      cols="50">@Model.product.SizeGuide</textarea>
                         </div>
                         <!-- System's images -->
                         <div class="mb-2 text-primary"><strong>Ảnh sản phẩm</strong></div>
@@ -427,7 +422,7 @@
                                                 <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
                                                     <img class="mw-100 mh-100" src="@(Configuration["ImagePath:Product"] + image.ProductImagePath)" alt="@image.ProductImagePath">
                                                     <span class="position-absolute remove-upload"
-                                                          style="right: 0; top: 0; cursor: pointer;" 
+                                                          style="right: 0; top: 0; cursor: pointer;"
                                                           id="sys-image-@image.ProductImageId"
                                                           onclick="deleteProductImage(this,@image.ProductImageId)">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="18"
@@ -466,7 +461,7 @@
                                                 <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
                                                     <img class="mw-100 mh-100" src="@(Configuration["ImagePath:Product"] + image.ProductUserImagePath)" alt="@image.ProductUserImagePath">
                                                     <span class="position-absolute remove-upload"
-                                                          style="right: 0; top: 0; cursor: pointer;" 
+                                                          style="right: 0; top: 0; cursor: pointer;"
                                                           id="user-image-@image.ProductUserImageId"
                                                           onclick="deleteProductUserImage(this,@image.ProductUserImageId)">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="18"
@@ -606,14 +601,24 @@
             picReader.readAsDataURL(file);
         }
     }
-
+    function getSize(_id) {
+        $.get('/api/ProductAPI/GetSizeGuideBySub', { id: _id })
+            .then(function (response) {
+                renderSize(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
     // Update product
     $('.update-product').click(function () {
         // None relationship data
         var id = @Model.product.ProductId;
+        var code = $(".pro-code").val();
         var name = $(".pro-name").val();
         var stock = $(".pro-stock").val();
         var description = tinymce.get("product-desciptions").getContent();
+        var size = tinymce.get("product-sizeguide").getContent();
         var note = $(".pro-note").val();
         var brandId = $("input[name='brand']:checked").val();
         var shopId = $("input[name='shop']:checked").val();
@@ -676,9 +681,11 @@
         var formData = new FormData();
         // None relationship data
         formData.append('id', id);
+        formData.append('code', code);
         formData.append('name', name);
         formData.append('stock', stock);
         formData.append('description', description);
+        formData.append('size', size);
         formData.append('note', note);
         formData.append('brandId', brandId);
         formData.append('subCategoryId', subCategoryId);
@@ -797,6 +804,9 @@
                 $('.option-list').append(htmlOption(item));
             })
         }
+    }
+    function renderSize(data) {
+        tinymce.get("product-sizeguide").setContent(data.data.sizeContent);
     }
 
     // html
@@ -927,14 +937,36 @@
 </script>
 <script type="text/javascript">
     // Search input with autocomplete
-    $(document).ready(function () {
-        $("#myInput").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $(".dropdown-menu li").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
+    // Search input with autocomplete
+    $(document).on("keyup", "#myInput-sh", function () {
+        var value = $(this).val().toLowerCase();
+        $(".dropdown-sh-menu li label").filter(function () {
+            $(this).siblings("input").toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
-    });
+    })
+    $(document).on("keyup", "#myInput-br", function () {
+        var value = $(this).val().toLowerCase();
+        $(".dropdown-br-menu li label").filter(function () {
+            $(this).siblings("input").toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    })
+    $(document).on("keyup", "#myInput-sub", function () {
+        var value = $(this).val().toLowerCase();
+        $(".dropdown-sub-menu li label").filter(function () {
+            $(this).siblings("input").toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    })
+    $(document).on("keyup", "#myInput-size", function () {
+        var value = $(this).val().toLowerCase();
+        $(".dropdown-size-menu li label").filter(function () {
+            $(this).siblings("input").toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    })
+
 </script>
 <script type="text/javascript">
     $('.image-uploaded').change(function () {
@@ -1016,5 +1048,9 @@
     $(document).on('click', '.sub_select', function () {
         var subcategoryName = $(this).siblings('label').text();
         $('.subcategory_select-text').text(subcategoryName);
+    })
+    $(document).on('click', '.size_select', function () {
+        var name = $(this).siblings('label').text();
+        $('.size_select-text').text(name);
     })
 </script>
