@@ -30,7 +30,7 @@ namespace ECommerce.WebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var _listBrand = await _brandService.getAll();
+            var _listBrand = await _brandService.GetAllAvailable();
             var _listCategory = await _categoryService.getAll();
 
             var model = new HomeViewModel()

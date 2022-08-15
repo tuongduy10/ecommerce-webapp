@@ -23,10 +23,16 @@ namespace ECommerce.WebApp.API
             var list = await _brandService.getAll();
             return Ok(new { status = "success", data = list });
         }
-        [HttpGet("getAllBrandInCategory")]
-        public async Task<IActionResult> getAllBrandInCategory([FromQuery]int id)
+        [HttpGet("getAllAvailable")]
+        public async Task<IActionResult> getAllAvailable()
         {
-            var list = await _brandService.getAllBrandInCategory(id);
+            var list = await _brandService.GetAllAvailable();
+            return Ok(new { status = "success", data = list });
+        }
+        [HttpGet("getAllAvailableInCategory")]
+        public async Task<IActionResult> getAllAvailableInCategory([FromQuery]int id)
+        {
+            var list = await _brandService.getAllAvailableInCategory(id);
             return Ok(new { status = "success", data = list });
         }
     }

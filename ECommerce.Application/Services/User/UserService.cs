@@ -498,7 +498,15 @@ namespace ECommerce.Application.Services.User
             {   
                 if (id == 0) return new ApiFailResponse("Vui lòng chọn User");
                 var userRole = await getUserRole(id);
-                if (userRole == "Admin") return new ApiFailResponse("Không thể xóa tài khoản này");
+                if (userRole == RoleConst.Admin) return new ApiFailResponse("Không thể xóa tài khoản này");
+
+                // User's shops
+                var shops = await _DbContext.Shops.Where(i => i.UserId == id).ToListAsync();
+                foreach (var shop in shops)
+                {
+                    shop.UserId = null;
+                    _DbContext.SaveChangesAsync().Wait();
+                }
 
                 // User's roles
                 var roles = await _DbContext.UserRoles.Where(i => i.UserId == id).ToListAsync();
@@ -506,13 +514,13 @@ namespace ECommerce.Application.Services.User
                 _DbContext.SaveChangesAsync().Wait();
 
                 // User's comment
-                var rate = await _DbContext.Rates.Where(i => i.UserId == id).FirstOrDefaultAsync();
-                if (rate != null)
+                var rates = await _DbContext.Rates.Where(i => i.UserId == id).FirstOrDefaultAsync();
+                if (rates != null)
                 {
-                    var rateImages = await _DbContext.RatingImages.Where(i => i.RateId == rate.RateId).ToListAsync();
+                    var rateImages = await _DbContext.RatingImages.Where(i => i.RateId == rates.RateId).ToListAsync();
                     _DbContext.RatingImages.RemoveRange(rateImages);
                     _DbContext.SaveChangesAsync().Wait();
-                    _DbContext.Rates.Remove(rate);
+                    _DbContext.Rates.Remove(rates);
                     _DbContext.SaveChangesAsync().Wait();
                 }
 

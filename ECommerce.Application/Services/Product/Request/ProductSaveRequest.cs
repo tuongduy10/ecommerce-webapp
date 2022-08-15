@@ -12,11 +12,13 @@ namespace ECommerce.Application.Services.Product.Dtos
         // None relationship data
         public int id { get; set; }
         public string code { get; set; }
+        public string ppc { get; set; }
         public int shopId { get; set; }
         public string name{ get;set; }
         public string description { get; set; }
         public string size { get; set; }
         public string note { get; set; }
+        public string link { get; set; }
         public byte? discountPercent { get; set; }
         public int stock { get; set; }
         public int subCategoryId { get; set; }

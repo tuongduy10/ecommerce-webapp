@@ -19,14 +19,22 @@
                 <input class="brand-highlights" type="checkbox">
             </div>
             <div class="form-group">
-                <label>Danh mục</label>
-                <select class="form-control brand-category" aria-label="Default select example">
-                    <option selected disabled>Chọn danh mục</option>
-                    @foreach (var item in Model.listCategory)
-                    {
-                        <option value="@item.CategoryId">@item.CategoryName</option>
-                    }
-                </select>
+                <div class="dropdown mb-2 mr-2">
+                    <button class="btn border dropdown-toggle category_select-text" type="button" data-toggle="dropdown">
+                        Danh mục
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-cat-menu px-2" style="max-height: 300px; overflow: auto;">
+                        <input class="form-control mb-2" id="myInput-cate" type="text" placeholder="Tìm..." autocomplete="off" />
+                        @foreach (var category in Model.listCategory)
+                        {
+                            <li class="d-flex align-items-center" value="@category.CategoryName">
+                                <input name="category" class="add-brand_category mr-2" id="category_@category.CategoryId" type="checkbox" value="@category.CategoryId">
+                                <label class="mb-0" for="category_@category.CategoryId">@category.CategoryName</label>
+                            </li>
+                        }
+                    </ul>
+                </div>
             </div>
             <div class="form-group">
                 <label>Ảnh thương hiệu</label>
@@ -196,16 +204,22 @@
         var name = $('.brand-name').val();
         var file = $('.image-uploaded').prop('files')[0];
         var highlight = $('.brand-highlights').is(":checked") ? true : false;
-        var category = $('.brand-category').val();
 
+        // data
         var formData = new FormData();
         formData.append('ImagePath', file);
         formData.append('BrandName', name);
         formData.append('Highlights', highlight);
-        formData.append('CategoryId', category);
 
         // Add new brand
         if (!id) {
+            // for add 
+            $(`.add-brand_category`).each(function () {
+                if ($(this).is(":checked")) {
+                    formData.append('CategoryIds', Number($(this).val()));
+                }
+            })
+
             $.ajax({
                 type: "POST",
                 url: "/ManageBrand/AddBrand",
@@ -235,7 +249,7 @@
                     location.reload();
                 },
                 error: function (errorMessage) {
-                    console.log(errorMessage);
+                    alert(errorMessage.responseText);
                 }
             });
         }

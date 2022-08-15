@@ -9,10 +9,12 @@ namespace ECommerce.Application.Services.Product.Dtos
     {
         public int ProductId { get; set; } //
         public string ProductCode { get; set; }
+        public string PPC { get; set; }
         public string ProductName { get; set; } //
         public string ProductDescription { get; set; } //
         public string SizeGuide { get; set; }
         public string Note { get; set; }
+        public string Link { get; set; }
         public int Stock { get; set; }
         public bool? New { get; set; }
         public bool? Highlight { get; set; }

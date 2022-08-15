@@ -24,11 +24,14 @@
                         <div class="product__detail-card">
                             <div class="product__detail-slider mb-2">
                                 <ul class="lightSlider h-100">
-                                    @foreach (var img in Model.product.ProductImages)
+                                    @if (Model.product.ProductImages.Count > 0)
                                     {
-                                        <li class="h-100" data-thumb="@(Configuration["ImagePath:Product"] + img)">
-                                            <img class="pop h-100" src="@(Configuration["ImagePath:Product"] + img)" />
-                                        </li>
+                                        @foreach (var img in Model.product.ProductImages)
+                                        {
+                                            <li class="h-100" data-thumb="@(Configuration["ImagePath:Product"] + img)">
+                                                <img class="pop h-100" src="@(Configuration["ImagePath:Product"] + img)" />
+                                            </li>
+                                        }
                                     }
                                 </ul>
                             </div>
@@ -47,14 +50,7 @@
                                 <div class="product__detail-id d-flex flex-wrap align-items-center">
                                     <a class="product-id d-flex">
                                         <span>Mã sản phẩm:</span>
-                                        @if (!string.IsNullOrEmpty(Model.product.ProductCode))
-                                        {
-                                            <span>@Model.product.ProductCode</span>
-                                        }
-                                        else
-                                        {
-                                            <span>@Model.product.ProductId</span>
-                                        }
+                                        <span>@Model.product.PPC</span>
                                     </a>
                                     <a class="product-rating d-flex">
                                         <div class="stars">
@@ -165,10 +161,10 @@
                                     <div class="option-quality d-flex mb-2 align-items-center">
                                         <div class="option-title">Chọn số lượng </div>
                                         <input class="text-center mr-2 pro-qty" type="number" value="1" min="1" max="50">
-                                        <a class="product__detail-link" style="text-decoration: underline; cursor: pointer;" data-toggle="modal"
+                                        @*<a class="product__detail-link" style="text-decoration: underline; cursor: pointer;" data-toggle="modal"
                                            data-target="#wholesaleModal">
                                             Xem giá mua sỉ
-                                        </a>
+                                        </a>*@
                                     </div>
                                     @foreach (var option in Model.options)
                                     {
@@ -629,8 +625,8 @@
 </div>
 <!-- Size guide modal -->
 <div class="modal fade" id="sizeguideModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-    <div class="modal-dialog" role="document">
+        aria-hidden="true" style="padding-left: 17px !important;">
+    <div class="modal-dialog" role="document" style="width: unset !important;">
         <div class="modal-content">
             <div class="modal-header pb-0" style="border: unset;">
                 <h5 class="modal-title" id="exampleModalLabel">Hướng dẫn chọn size</h5>
@@ -638,69 +634,14 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            <style type="text/css">
+                div.modal-body * {
+                    max-width: 100%;
+                    height: auto;
+                }
+            </style>
             <div class="modal-body">
-                <div class="w-100">
-                    @Html.Raw(Model.product.SizeGuide)
-                </div>
-                
-                @*<div class="table-responsive">
-            <table class="table table-bordered order-table" id="dataTable" width="100%" cellspacing="0">
-                <thead style="">
-                    <tr>
-                        <th>Size</th>
-                        <th>UK</th>
-                        <th>DE</th>
-                        <th>US</th>
-                        <th>FR</th>
-                        <th>IT</th>
-                        <th>ES</th>
-                        <th>Length</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>36</td>
-                        <td>3</td>
-                        <td>35.5</td>
-                        <td>5.5</td>
-                        <td>35.5</td>
-                        <td>35.5</td>
-                        <td>35.5</td>
-                        <td>22cm</td>
-                    </tr>
-                    <tr>
-                        <td>36</td>
-                        <td>3</td>
-                        <td>35.5</td>
-                        <td>5.5</td>
-                        <td>35.5</td>
-                        <td>35.5</td>
-                        <td>35.5</td>
-                        <td>22cm</td>
-                    </tr>
-                    <tr>
-                        <td>36</td>
-                        <td>3</td>
-                        <td>35.5</td>
-                        <td>5.5</td>
-                        <td>35.5</td>
-                        <td>35.5</td>
-                        <td>35.5</td>
-                        <td>22cm</td>
-                    </tr>
-                    <tr>
-                        <td>36</td>
-                        <td>3</td>
-                        <td>35.5</td>
-                        <td>5.5</td>
-                        <td>35.5</td>
-                        <td>35.5</td>
-                        <td>35.5</td>
-                        <td>22cm</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>*@
+                @Html.Raw(Model.product.SizeGuide)
             </div>
             <div class="modal-footer pt-0" style="border: unset;">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
@@ -828,8 +769,11 @@
         var product = {
             id: @Model.product.ProductId,
             name: '@Model.product.ProductName',
-            img: '@(Configuration["ImagePath:Product"] + Model.product.ProductImages[0])',
-
+            img: '@if (Model.product.ProductImages.Count > 0) { 
+                    @Html.Raw(Configuration["ImagePath:Product"] + Model.product.ProductImages[0])
+                  } else { 
+                    @Html.Raw("")
+                  }',
             qty: Number($('.pro-qty').val()),
             opts: options,
             type: document.querySelector('input[name="pro-type"]:checked').value

@@ -19,6 +19,7 @@ namespace ECommerce.Data.Models
 
         public int ProductId { get; set; }
         public string ProductCode { get; set; }
+        public string PPC { get; set; }
         public string ProductName { get; set; }
         public byte? DiscountPercent { get; set; }
         public DateTime? ProductAddedDate { get; set; }
@@ -37,6 +38,7 @@ namespace ECommerce.Data.Models
         public DateTime? ProductImportDate { get; set; }
         public byte? ProductRate { get; set; }
         public string Note { get; set; }
+        public string Link { get; set; }
         public string SizeGuide { get; set; }
 
         public virtual Brand Brand { get; set; }

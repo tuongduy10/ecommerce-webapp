@@ -39,7 +39,7 @@
                                                             {
                                                                 <li class="filter__sub-item">
                                                                     <div class="checkbox d-flex align-items-center">
-                                                                        <input id="check__sub-item_@productOption.OptionValueId" class="checkboxFilter" type="checkbox" value="@productOption.OptionValueId" onclick="filterByOption(evt, @productOption.OptionValueId, @filter.SubCategoryId)">
+                                                                        <input id="check__sub-item_@productOption.OptionValueId" class="checkboxFilter" type="checkbox" value="@productOption.OptionValueId" onclick="filterByOption(this, @productOption.OptionValueId, @filter.SubCategoryId)">
                                                                         <label for="check__sub-item_@productOption.OptionValueId" class="d-flex align-items-center mb-0">
                                                                             <div class="sub-item-cate">@productOption.OptionValueName</div>
                                                                             <span class="sub-item-cate">(@productOption.TotalRecord)</span>
@@ -173,7 +173,7 @@
                                                                             if (productOption.TotalRecord > 0)
                                                                             {
                                                                                 <li class="d-flex align-items-center">
-                                                                                    <input class="checkboxFilter mr-2" id="checkbox__mobile-@productOption.OptionValueId" type="checkbox" value="@productOption.OptionValueId" onclick="filterByOption(evt, @productOption.OptionValueId, @filter.SubCategoryId)">
+                                                                                    <input class="checkboxFilter mr-2" id="checkbox__mobile-@productOption.OptionValueId" type="checkbox" value="@productOption.OptionValueId" onclick="filterByOption(this, @productOption.OptionValueId, @filter.SubCategoryId)">
                                                                                     <label for="checkbox__mobile-@productOption.OptionValueId" class="d-flex align-items-center mb-0">
                                                                                         <div class="mr-1">@productOption.OptionValueName</div>
                                                                                         <span>(@productOption.TotalRecord)</span>
@@ -347,10 +347,7 @@
                                     @if (product.Status != 0)
                                     {
                                         <div class="product product-3">
-                                            <a class="product-img" href="@Url.Action("ProductDetail", "Product", new { ProductId = product.ProductId })">
-                                                <img src="@(Configuration["ImagePath:Product"] + product.ProductImages)" alt="">
-                                            </a>
-                                            <div class="product-label d-flex justify-content-end align-items-center w-100" style="background-color: #fff; padding: 3px 0;">
+                                            <div class="product-label d-flex justify-content-end align-items-center w-100" style="background-color: #fff; padding: 3px 0; position: unset;">
                                                 @if (product.DiscountPercent != null)
                                                 {
                                                     <span class="label-sales">-@product.DiscountPercent%</span>
@@ -376,6 +373,9 @@
                                                     </svg>
                                                 </a>
                                             </div>
+                                            <a class="product-img" href="@Url.Action("ProductDetail", "Product", new { ProductId = product.ProductId })">
+                                                <img src="@(Configuration["ImagePath:Product"] + product.ProductImages)" alt="">
+                                            </a>
                                             <hr style="width: 50%; margin: 0 auto;">
                                             <div class="product__info">
                                                 <div class="product__info-detail text-center">
@@ -599,21 +599,19 @@
     })
 
     function filterByOption(ele, optionValId, subId) {
-        var req = {
-            optValId: optionValId,
-            subId: subId
+        if (ele.checked) {
+            console.log(optionValId)
+            listOptionValueIdRequest.push(optionValId);
         }
-        if ($(ele).is(":checked")) {
-            listOptionValueIdRequest.push(req);
-        }
-        if (!$(ele).is(":checked")) {
-            listOptionValueIdRequest.splice($.inArray(req, listOptionValueIdRequest), 1);
+        if (!ele.checked) {
+            listOptionValueIdRequest.splice($.inArray(optionValId, listOptionValueIdRequest), 1);
         }
         if (listOptionValueIdRequest.length == 0) {
             getProductBySubCategory(@Model.brand.BrandId, SubCategoryIdRequest, SubCategoryNameRequest, 1);
             return;
         }
-        getProductByOptionValue(@Model.brand.BrandId, listOptionValueIdRequest, 1);
+        
+        getProductByOptionValue(@Model.brand.BrandId, listOptionValueIdRequest, subId, 1);
     }
 
     @*$('.checkboxFilter').click(function () {
@@ -674,9 +672,10 @@
         SubCategoryNameRequest = SubCategoryName;
         orderRequest = '';
     }
-    function getProductByOptionValue(BrandId, listOptionValueId, pageIndex) {
+    function getProductByOptionValue(BrandId, listOptionValueId, subId, pageIndex) {
         var request = {
             BrandId: BrandId,
+            SubCategoryId: subId,
             listOptionValueId: listOptionValueId,
             PageIndex: pageIndex
         }
@@ -890,10 +889,7 @@
 
         var html = `
             <div class="product product-3">
-                <a class="product-img" href="/Product/ProductDetail?ProductId=${id}">
-                    <img src="@Configuration["ImagePath:Product"]${image}" alt="">
-                </a>
-                <div class="product-label d-flex justify-content-end align-items-center w-100" style="background-color: #fff; padding: 3px 0;">
+                <div class="product-label d-flex justify-content-end align-items-center w-100" style="background-color: #fff; padding: 3px 0; position: unset;">
                     ${htmlDiscountPercent}
                     ${htmlNew}
                     ${htmlHighlights}
@@ -910,6 +906,9 @@
                         </svg>
                     </a>
                 </div>
+                <a class="product-img" href="/Product/ProductDetail?ProductId=${id}">
+                    <img src="@Configuration["ImagePath:Product"]${image}" alt="">
+                </a>
                 <hr style="width: 50%; margin: 0 auto;">
                 <div class="product__info">
                     <div class="product__info-detail text-center">

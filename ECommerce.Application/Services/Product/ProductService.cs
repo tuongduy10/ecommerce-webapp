@@ -45,6 +45,8 @@ namespace ECommerce.Application.Services.Product
                 {
                     ProductId = i.ProductId,
                     ProductName = i.ProductName,
+                    PPC = i.PPC,
+                    ProductCode = i.ProductCode,
                     CreatedDate = i.ProductAddedDate,
                     Status = i.Status,
                     Stock = (int)i.ProductStock,
@@ -56,6 +58,8 @@ namespace ECommerce.Application.Services.Product
                     ShopName = i.Shop.ShopName,
                     ShopId = i.ShopId,
                     BrandId = i.BrandId,
+                    Note = i.Note,
+                    Link = i.Link
                 })
                 .ToListAsync();
             var list = result.OrderByDescending(i => i.ProductId).ToList();
@@ -128,6 +132,7 @@ namespace ECommerce.Application.Services.Product
                 {
                     ProductId = i.ProductId,
                     ProductCode = i.ProductCode,
+                    PPC = i.PPC,
                     ProductName = i.ProductName,
                     ProductDescription = i.ProductDescription,
                     SizeGuide = i.SizeGuide,
@@ -191,10 +196,12 @@ namespace ECommerce.Application.Services.Product
                 {
                     ProductId = i.ProductId,
                     ProductCode = i.ProductCode,
+                    PPC = i.PPC,
                     ProductName = i.ProductName,
                     ProductDescription = i.ProductDescription,
                     SizeGuide = i.SizeGuide,
                     Note = i.Note,
+                    Link = i.Link,
                     Stock = (int)i.ProductStock,
                     New = i.New,
                     Highlight = i.Highlights,
@@ -271,7 +278,7 @@ namespace ECommerce.Application.Services.Product
                 int pageindex = request.PageIndex;
                 int pagesize = request.PageSize;
                 string orderBy = request.OrderBy;
-                List<listOptionValueReq> listOptionValueId = request.listOptionValueId;
+                List<int> listOptionValueId = request.listOptionValueId;
 
                 // Query
                 var query = (from product in _DbContext.Products
@@ -292,24 +299,17 @@ namespace ECommerce.Application.Services.Product
 
                     // product ids from ProductOptionValues
                     var optProIds = await _DbContext.ProductOptionValues
-                        .Where(i => listOptionValueId.All(l => l.subId == i.Product.SubCategoryId))
+                        .Where(i => listOptionValueId.Contains(i.OptionValueId))
                         .Select(i => i.ProductId)
                         .ToListAsync();
                     optProIds = optProIds.Distinct().ToList(); // 
 
-                    var listProIdsQuery = new List<int>();
-                    foreach(var id in optProIds)
-                    {
-                        var optValIds = await _DbContext.ProductOptionValues
-                            .Where(i => i.ProductId == id)
-                            .Select(i => i.OptionValueId)
-                            .ToListAsync();
-                        var hasProduct = listOptionValueId.All(i => optValIds.Any(j => j == i.optValId));
-                        if (hasProduct) listProIdsQuery.Add(id);
-                    }
-                    listProIdsQuery = listProIdsQuery.Distinct().ToList();
+                    var proIds = await _DbContext.Products
+                        .Where(i => optProIds.Contains(i.ProductId) && i.BrandId == BrandId && i.SubCategoryId == SubCategoryId)
+                        .Select(i => i.ProductId)
+                        .ToListAsync();
 
-                    query = query.Where(q => listProIdsQuery.Any(l => l == q.product.ProductId));
+                    query = query.Where(q => proIds.Contains(q.product.ProductId));
                 }
 
                 // Order by... request
@@ -548,8 +548,8 @@ namespace ECommerce.Application.Services.Product
 
             try
             {
-                var isAdmin = await _userService.getUserRole(request.userId) == "Admin";            
-                
+                var isAdmin = await _userService.getUserRole(request.userId) == "Admin";
+
                 /*
                  * None relationship data
                  */
@@ -557,16 +557,18 @@ namespace ECommerce.Application.Services.Product
                 {
                     ProductCode = request.code.Trim(),
                     ProductName = request.name.Trim(), // required
+                    PPC = await GetNewPPC(),
                     ProductDescription = request.description == null ? null : request.description,
                     SizeGuide = request.size == null ? null : request.size,
-                    Note = request.note == null ? "" : request.note.Trim(),
+                    Note = string.IsNullOrEmpty(request.note) ? "" : request.note.Trim(),
+                    Link = string.IsNullOrEmpty(request.link) ? "" : request.link.Trim(),
                     DiscountPercent = request.discountPercent,
                     Legit = request.isLegit,
                     Highlights = request.isHighlight,
                     FreeDelivery = request.isFreeDelivery,
                     ProductStock = request.stock,
                     FreeReturn = request.isFreeReturn,
-                    Insurance = request.insurance == null ? "" : request.insurance.Trim(),
+                    Insurance = string.IsNullOrEmpty(request.insurance) ? "" : request.insurance.Trim(),
                     New = request.isNew,
                     ShopId = request.shopId,
                     BrandId = request.brandId,
@@ -777,6 +779,7 @@ namespace ECommerce.Application.Services.Product
                 product.ProductDescription = request.description == null ? null : request.description;
                 product.SizeGuide = request.size == null ? null : request.size;
                 product.Note = request.note == null ? "" : request.note.Trim();
+                product.Link = request.link == null ? "" : request.link.Trim();
                 product.DiscountPercent = request.discountPercent;
                 product.Legit = request.isLegit;
                 product.Highlights = request.isHighlight;
@@ -982,7 +985,8 @@ namespace ECommerce.Application.Services.Product
                 var image = await _DbContext.ProductImages
                     .Where(i => i.ProductImageId == id)
                     .FirstOrDefaultAsync();
-                if (image == null) return new FailResponse<string>("Không tìm thấy ảnh");
+                if (image == null) 
+                    return new FailResponse<string>("Không tìm thấy ảnh");
 
                 _DbContext.ProductImages.Remove(image);
                 _DbContext.SaveChangesAsync().Wait();
@@ -1296,6 +1300,21 @@ namespace ECommerce.Application.Services.Product
         {
             var priceDiscounted = price - (price * percent / 100);
             return (decimal)priceDiscounted;
+        }
+        private async Task<string> GetNewPPC()
+        {
+            var newestId = await _DbContext.Products
+                .OrderByDescending(s => s.ProductId)
+                .Select(i => i.ProductId)
+                .FirstOrDefaultAsync();
+            
+            byte[] buffer = Guid.NewGuid().ToByteArray();
+            string guid = BitConverter.ToUInt32(buffer, 8).ToString();
+
+            int len = (newestId + 1).ToString().Length;
+            var ppc = guid.Substring(0, 8 - len) + (newestId + 1).ToString();
+
+            return ppc;
         }
     }
 }

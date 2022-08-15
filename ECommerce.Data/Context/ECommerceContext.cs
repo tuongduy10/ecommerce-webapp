@@ -341,9 +341,13 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.ProductCode).HasMaxLength(50);
 
+                entity.Property(e => e.PPC).HasMaxLength(8);
+
                 entity.Property(e => e.Insurance).HasMaxLength(30);
 
                 entity.Property(e => e.Note).HasMaxLength(500);
+
+                entity.Property(e => e.Link).HasColumnType("ntext");
 
                 entity.Property(e => e.ProductAddedDate).HasColumnType("datetime");
 

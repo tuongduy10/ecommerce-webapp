@@ -12,4 +12,10 @@ namespace ECommerce.Application.Services.User.Enums
         Seller = 2,
         Buyer = 3,
     }
+    public class RoleConst
+    {
+        public const string Admin = "Admin";
+        public const string Seller = "Seller";
+        public const string Buyer = "Buyer";
+    }
 }

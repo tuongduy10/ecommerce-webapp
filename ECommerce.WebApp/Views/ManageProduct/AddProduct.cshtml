@@ -244,10 +244,15 @@
                         <div class="form-group mb-4">
                             <input type="text" class="form-control pro-note" value="">
                         </div>
+                        <!-- Link -->
+                        <div class="mb-2 text-primary"><strong>Link</strong></div>
+                        <div class="form-group mb-4">
+                            <input type="text" class="form-control pro-link" value="">
+                        </div>
                     </div>
                 </div>
                 <div class="text-center">
-                    <button type="button" class="btn btn-secondary discard">Hủy</button>
+                    <button type="button" class="btn btn-secondary discard" onclick="history.back()">Quay lại</button>
                     <button type="button" class="btn btn-primary add-product">Lưu</button>
                 </div>
             </form>
@@ -387,6 +392,7 @@
         var description = tinymce.get("product-desciptions").getContent();
         var size = tinymce.get("product-sizeguide").getContent();
         var note = $(".pro-note").val();
+        var link = $(".pro-link").val();
         var brandId = $("input[name='brand']:checked").val();
         var shopId = $("input[name='shop']:checked").val();
         var subCategoryId = $("input[name='subCategory']:checked").val();
@@ -452,6 +458,7 @@
         formData.append('description', description);
         formData.append('size', size);
         formData.append('note', note);
+        formData.append('link', link);
         formData.append('brandId', brandId);
         formData.append('subCategoryId', subCategoryId);
         formData.append('isNew', isNew);

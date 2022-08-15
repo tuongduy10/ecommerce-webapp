@@ -10,6 +10,8 @@ namespace ECommerce.Application.Services.Product.Dtos
     public class ProductShopListModel
     {
         public int ProductId { get; set; }
+        public string ProductCode { get; set; }
+        public string PPC { get; set; }
         public string ProductName { get; set; }
         public DateTime? CreatedDate { get; set; }
         public byte? Status { get; set; }
@@ -21,6 +23,8 @@ namespace ECommerce.Application.Services.Product.Dtos
         public int ShopId { get; set; }
         public int BrandId { get; set; }
         public string ShopName { get; set; }
+        public string Note { get; set; }
+        public string Link { get; set; }
         public List<ProductPrice> Price { get; set; }
     }
 }

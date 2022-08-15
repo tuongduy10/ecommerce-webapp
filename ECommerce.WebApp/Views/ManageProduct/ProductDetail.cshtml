@@ -15,6 +15,11 @@
                 <div class="row">
                     <div class="col-sm-6 mb-4">
                         <div class="text-left mb-2 text-primary"><strong>Thông tin cơ bản</strong></div>
+                        <!-- PPC -->
+                        <div class="form-group mb-4">
+                            <label>Mã tự động</label>
+                            <input type="text" class="form-control" value="@Model.product.PPC" disabled>
+                        </div>
                         <!-- Mã -->
                         <div class="form-group mb-4">
                             <label>Mã sản phẩm</label>
@@ -397,7 +402,7 @@
                                     </ul>
                                 </div>
                             </div>
-                        </div>                        
+                        </div>
                         <div class="form-group mb-4">
                             <textarea class="form-control" id="product-sizeguide" rows="8"
                                       cols="50">@Model.product.SizeGuide</textarea>
@@ -483,6 +488,12 @@
                         <div class="mb-2 text-primary"><strong>Ghi chú</strong></div>
                         <div class="form-group mb-4">
                             <input type="text" class="form-control pro-note" value="@Model.product.Note">
+                        </div>
+                        <!-- Link -->
+                        <div class="mb-2 text-primary"><strong>Link</strong></div>
+                        <div class="form-group mb-4">
+                            <a href="@Model.product.Link" target="_blank">Truy cập</a>
+                            <input type="text" class="form-control pro-link" value="@Model.product.Link">
                         </div>
                     </div>
                 </div>
@@ -610,6 +621,12 @@
                 console.log(error);
             })
     }
+
+    // Discard
+    $('.discard').click(function () {
+        window.location.reload();
+    })
+
     // Update product
     $('.update-product').click(function () {
         // None relationship data
@@ -620,6 +637,7 @@
         var description = tinymce.get("product-desciptions").getContent();
         var size = tinymce.get("product-sizeguide").getContent();
         var note = $(".pro-note").val();
+        var link = $(".pro-link").val();
         var brandId = $("input[name='brand']:checked").val();
         var shopId = $("input[name='shop']:checked").val();
         var subCategoryId = $("input[name='subCategory']:checked").val();
@@ -687,6 +705,7 @@
         formData.append('description', description);
         formData.append('size', size);
         formData.append('note', note);
+        formData.append('link', link);
         formData.append('brandId', brandId);
         formData.append('subCategoryId', subCategoryId);
         formData.append('isNew', isNew);
