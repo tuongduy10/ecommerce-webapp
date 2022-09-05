@@ -1,8 +1,12 @@
 ﻿@using Microsoft.Extensions.Configuration
+@using ECommerce.Application.Services.Configurations;
 @inject IConfiguration Configuration
-@{ 
+@inject IConfigurationService _configurationService
+@{
     Layout = "~/Views/Shared/_LayoutClientNoBanner.cshtml";
+    var config = await _configurationService.getConfiguration();
 }
+
 <!-- Main contain -->
 <div class="custom-container">
     <div class="content__wrapper products__content-wrapper">
@@ -38,7 +42,7 @@
                             @if (!string.IsNullOrEmpty(Model.product.SizeGuide))
                             {
                                 <a class="product__detail-link" style="text-decoration: underline; cursor: pointer;" data-toggle="modal"
-                                    data-target="#sizeguideModal">
+                                   data-target="#sizeguideModal">
                                     Hướng dẫn chọn size
                                 </a>
                             }
@@ -162,9 +166,9 @@
                                         <div class="option-title">Chọn số lượng </div>
                                         <input class="text-center mr-2 pro-qty" type="number" value="1" min="1" max="50">
                                         @*<a class="product__detail-link" style="text-decoration: underline; cursor: pointer;" data-toggle="modal"
-                                           data-target="#wholesaleModal">
-                                            Xem giá mua sỉ
-                                        </a>*@
+                                               data-target="#wholesaleModal">
+                                                Xem giá mua sỉ
+                                            </a>*@
                                     </div>
                                     @foreach (var option in Model.options)
                                     {
@@ -178,7 +182,6 @@
                                                     {
                                                         <option value="@value">@value</option>
                                                     }
-
                                                 </select>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
@@ -410,7 +413,7 @@
                                     <div class="upload-image mb-2">
                                         <label for="image-upload" class="input-tile mb-2">
                                             <a class="upload">Chọn ảnh</a>
-                                            <div>Thêm hình ảnh sản phẩm nếu có (*Tối đa 3)</div>
+                                            <span>Thêm hình ảnh sản phẩm nếu có (Tối đa 3)</span>
                                         </label>
                                         <input id="image-upload" type="file" multiple hidden />
                                         <output class="d-flex" id="image-preview">
@@ -425,10 +428,16 @@
                                 @foreach (var rate in Model.rates)
                                 {
                                     <div class="user-comment mb-4">
-                                        <div class="d-flex align-items-center">
-                                            <span class="user__comment-name">
-                                                <strong>@rate.UserName</strong>
-                                            </span>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <span class="user__comment-name">
+                                                    <strong>@rate.UserName</strong>
+                                                </span>
+                                                <span class="user__comment-time ml-2">
+                                                    <img class="verifyImg" width="15" height="15" src="~/images/icon/verify.png">
+                                                    <span class="verify" style="font-size: calc(12px + (16 - 14) * ((100vw - 375px)/ (1920 - 375))) !important; color: #4caf50;">Đã mua hàng</span>
+                                                </span>
+                                            </div>
                                             <span class="user__comment-time ml-2">@rate.CreateDate.ToString("HH:mm, dd/MM/yyyy")</span>
                                         </div>
                                         <div class="d-flex stars">
@@ -444,18 +453,121 @@
                                                 }
                                             }
                                         </div>
-                                        <div class="comment">
+                                        <div class="comment my-2">
                                             @rate.Comment
                                         </div>
-                                        <div class="image">
-                                            <ul class="image-list d-flex">
-                                                @foreach (var img in rate.Images)
-                                                {
-                                                    <li>
-                                                        <img class="pop" src="@(Configuration["ImagePath:Rate"] + img)" alt="">
-                                                    </li>
-                                                }
-                                            </ul>
+                                        @if (rate.Images.Count > 0)
+                                        {
+                                            <div class="image mb-2">
+                                                <ul class="image-list d-flex">
+                                                    @foreach (var img in rate.Images)
+                                                    {
+                                                        <li class="border">
+                                                            <img class="pop" src="@(Configuration["ImagePath:Rate"] + img)" alt="">
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        }
+                                        <a style="color: #288ad9;" href="javascript:onOpenReplyBox(@rate.Id, 1)">Trả lời</a>
+                                        <div class="reply-box reply-box-lv1-@rate.Id d-none">
+                                            <div class="d-flex">
+                                                <textarea class="d-flex w-100 mb-2" name="" id="" placeholder="Bình luận"></textarea>
+                                            </div>
+                                            <div class="text-left">
+                                                <div class="upload-image mb-2">
+                                                    <label for="image-upload-reply-1" class="input-tile mb-2">
+                                                        <a class="upload">Chọn ảnh</a>
+                                                        <span>Thêm hình ảnh nếu có (Tối đa 3)</span>
+                                                    </label>
+                                                    <input id="image-upload-reply-1" class="file-upload" type="file" multiple hidden onchange="handleUpload(event, 'image-reply-preview-1')" />
+                                                    <output class="images-uploaded d-flex" id="image-reply-preview-1">
+                                                    </output>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <button type="button" onclick="onOpenReplyBox(@rate.Id, 1)" style="background: unset; color: #333 !important;">Hủy</button>
+                                                <button type="button" onclick="onOpenReplyBox(@rate.Id, 1), sendReply(@rate.Id)">Gửi</button>
+                                            </div>
+                                        </div>
+                                        <div class="listreply listreply-@rate.Id mt-2">
+                                            <div class="reply mb-2">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="user__comment-name d-flex align-items-center">
+                                                            <img class="mr-2" width="30" height="30" src="@(Configuration["ImagePath:Favicon"] + config.FaviconPath)">
+                                                            <strong>Nguyễn Văn A </strong>
+                                                        </span>
+                                                        <span class="user__comment-role ml-2 px-1">Quản trị viên</span>
+                                                    </div>
+                                                    <span class="user__comment-time ml-2">12:22, 01/11/2021</span>
+                                                </div>
+                                                <div class="comment my-2">
+                                                    <span style="color: #288ad9;">@Html.Raw("@Admin")</span>
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                                </div>
+                                                <div class="image mb-2">
+                                                    <ul class="image-list d-flex">
+                                                        <li class="border">
+                                                            <img class="pop" src="@(Configuration["ImagePath:Rate"] + "jacket1.jpg")" alt="">
+                                                        </li>
+                                                        <li class="border">
+                                                            <img class="pop" src="@(Configuration["ImagePath:Rate"] + "jacket2.jpg")" alt="">
+                                                        </li>
+                                                        <li class="border">
+                                                            <img class="pop" src="@(Configuration["ImagePath:Rate"] + "jacket3.jpg")" alt="">
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="d-flex align-items-center reply-action">
+                                                    <a href="javascript:onOpenReplyBox(1,2)" style="margin-right: 5px; color: #288ad9;">Trả lời</a>
+                                                    <!-- Like -->
+                                                    <a class="favor d-flex align-items-center" href="javascript:void(0)" style="margin-right: 5px; height: 18px;color: #288ad9;">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                                             height="18" viewBox="0 0 24 24" fill="none"
+                                                             stroke="currentColor" stroke-width="1.5"
+                                                             stroke-linecap="round" stroke-linejoin="round"
+                                                             class="feather feather-thumbs-up">
+                                                            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3">
+                                                            </path>
+                                                        </svg>
+                                                        <span class="user__comment-time ml-2" style="color: #707070;">99</span>
+                                                    </a>
+                                                    <!-- Dislike -->
+                                                    <a class="favor d-flex align-items-center" href="javascript:void(0)" style="margin-right: 5px; height: 18px;color: #288ad9;">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                                             height="18" viewBox="0 0 24 24" fill="none"
+                                                             stroke="currentColor" stroke-width="1.5"
+                                                             stroke-linecap="round" stroke-linejoin="round"
+                                                             class="feather feather-thumbs-down">
+                                                            <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17">
+                                                            </path>
+                                                        </svg>
+                                                        <span class="user__comment-time ml-2" style="color: #707070;">00</span>
+                                                    </a>
+                                                </div>
+                                                <div class="reply-box reply-box-lv2-1 d-none">
+                                                    <div class="d-flex">
+                                                        <textarea class="d-flex w-100 mb-2" name="" id="" placeholder="Bình luận"></textarea>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <div class="upload-image mb-2">
+                                                            <label for="image-upload-reply-2" class="input-tile mb-2">
+                                                                <a class="upload">Chọn ảnh</a>
+                                                                <span>Thêm hình ảnh nếu có (Tối đa 3)</span>
+                                                            </label>
+                                                            <input id="image-upload-reply-2" class="file-upload" type="file" multiple hidden onchange="handleUpload(event, 'image-reply-preview-2')" />
+                                                            <output class="images-uploaded d-flex" id="image-reply-preview-2">
+                                                            </output>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-right">
+                                                        <button type="button" onclick="onOpenReplyBox(1,2)" style="background: unset; color: #333 !important;">Hủy</button>
+                                                        <button type="button">Gửi</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
                                 }
@@ -563,7 +675,7 @@
 </div>
 <!-- Product image modal -->
 <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        aria-hidden="true">
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
@@ -578,7 +690,7 @@
 </div>
 <!-- Mua sỉ modal -->
 <div class="modal fade" id="wholesaleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+     aria-hidden="true">
     <div id="sizechart-modal" class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header" style="border: unset;">
@@ -625,7 +737,7 @@
 </div>
 <!-- Size guide modal -->
 <div class="modal fade" id="sizeguideModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true" style="padding-left: 17px !important;">
+     aria-hidden="true" style="padding-left: 17px !important;">
     <div class="modal-dialog" role="document" style="width: unset !important;">
         <div class="modal-content">
             <div class="modal-header pb-0" style="border: unset;">
@@ -652,11 +764,11 @@
 
 @if (!string.IsNullOrEmpty(ViewBag.Message))
 {
-<script>
+    <script>
     window.onload = function () {
         alert("@ViewBag.Message");
     };
-</script>
+    </script>
 }
 
 <script type="text/javascript">
@@ -724,8 +836,66 @@
                 //Read the image
                 picReader.readAsDataURL(file);
             }
+            event.target.value = '';
         });
     }
+
+    arrFilesReply = []
+    function handleUpload(event, preview, arr) {
+        var files = event.target.files;
+        var currentFiles = $('.image__upload-item').length + files.length
+        if (currentFiles > 3) {
+            return;
+        }
+        var output = document.getElementById(preview);
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            //Only pics
+            if (!file.type.match('image'))
+                continue;
+
+            arrFilesReply.push(file);
+
+            var picReader = new FileReader();
+            picReader.fileName = file.name;
+            picReader.addEventListener("load", function (event) {
+                var picFile = event.target;
+                var div = document.createElement("div");
+                div.classList.add(`image__upload-item`, `mr-2`);
+                div.innerHTML = `
+                    <div class="border mb-2 mx-auto" style="height: 100px; width: 100px;">
+                        <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
+                            <img class="mw-100 mh-100" src="${picFile.result}" alt="${picFile.name}">
+                            <span class="position-absolute remove-upload"
+                                style="right: 0; top: 0; cursor: pointer;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                    height="18" viewBox="0 0 24 24" fill="none"
+                                    stroke="red" stroke-width="1" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-x">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                `;
+                var removeUpload = div.querySelector(".remove-upload");
+                removeUpload.addEventListener("click", function (evt) {
+                    arrFilesReply.forEach(function (file, index) {
+                        if (file.name == event.target.fileName) {
+                            arrFilesReply.splice(index, 1);
+                        }
+                    });
+                    div.remove();
+                });
+                output.insertBefore(div, null);
+            });
+            //Read the image
+            picReader.readAsDataURL(file);
+        }
+        event.target.value = "";
+    }
+
 
     // Feature: post comment
     $('.post-comment').click(function () {
@@ -758,6 +928,20 @@
             }
         });
     })
+    function onOpenReplyBox(id, lv) {
+        arrFilesReply = [];
+        $('.file-upload').val('');
+        $('.images-uploaded').empty();
+        if ($(`.reply-box-lv${lv}-${id}`).hasClass('d-none')) {
+            $(`.reply-box`).addClass('d-none')
+            $(`.reply-box-lv${lv}-${id}`).removeClass('d-none');
+        } else {
+            $(`.reply-box-lv${lv}-${id}`).addClass('d-none');
+        }
+    }
+    function sendReply(id) {
+        renderReplyLv2(id);
+    }
 
     // Feature: Add to cart
     $('.btn-addtocart').click(function () {
@@ -769,9 +953,9 @@
         var product = {
             id: @Model.product.ProductId,
             name: '@Model.product.ProductName',
-            img: '@if (Model.product.ProductImages.Count > 0) { 
+            img: '@if (Model.product.ProductImages.Count > 0) {
                     @Html.Raw(Configuration["ImagePath:Product"] + Model.product.ProductImages[0])
-                  } else { 
+                  } else {
                     @Html.Raw("")
                   }',
             qty: Number($('.pro-qty').val()),
@@ -813,6 +997,9 @@
     })
 
     // render Html
+    function renderReplyLv2(id) {
+        $(`.listreply-${id}`).append(htmlReplyLv2());
+    }
     function renderMiniCart(qty) {
         $('.minicart .quantity').remove();
         $('.minicart').append(htmlMiniCartQty(qty)); // red icon
@@ -865,6 +1052,57 @@
     }
 
     // Html
+    function htmlReplyLv2() {
+        var html = `
+            <div class="reply mb-2">
+                <div class="d-flex align-items-center">
+                    <span class="user__comment-name">
+                        <strong>Nguyễn Văn A </strong>
+                    </span>
+                    <span class="user__comment-time ml-2">12:22, 01/11/2021</span>
+                </div>
+                <div class="comment my-2">
+                    <span style="color: #288ad9;">@Html.Raw("@Nguyễn Văn A")</span>
+                    Mua cho ck mình lọ này 2 lần rồi, thấy ông bảo lần sau mua cứ
+                    mua loại
+                    này nhé, công nhận mùi thơm thật sự.
+                </div>
+                <div class="d-flex align-items-center reply-action">
+                    <a href="javascript:void(0)" style="margin-right: 5px; color: #288ad9;">Trả lời</a>
+                    <a class="favor" href="javascript:void(0)" style="margin-right: 5px; height: 18px;color: #288ad9;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round"
+                                class="feather feather-thumbs-up">
+                            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3">
+                            </path>
+                        </svg>
+                    </a>
+                    <a class="favor" href="javascript:void(0)" style="margin-right: 5px; height: 18px;color: #288ad9;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round"
+                                class="feather feather-thumbs-down">
+                            <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17">
+                            </path>
+                        </svg>
+                    </a>
+                </div>
+                <!-- <div class="replybox-lv2">
+                    <div class="d-flex">
+                        <textarea class="d-flex w-100 mb-2" name="" id="" placeholder="Bình luận">@Html.Raw("@Nguyễn Văn A")</textarea>
+                    </div>
+                    <div class="text-right">
+                        <button type="button" style="background: unset; color: #333 !important;">Hủy</button>
+                        <button type="button">Gửi</button>
+                    </div>
+                </div> -->
+            </div>
+        `;
+        return html;
+    }
     function htmlMiniCartQty(qty){
         var html = `
             <span class="quality">${qty}</span>
@@ -945,4 +1183,8 @@
         `;
         return html;
     }
+</script>
+<!-- Comment -->
+<script>
+
 </script>

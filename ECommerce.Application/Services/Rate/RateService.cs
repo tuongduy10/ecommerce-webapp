@@ -42,6 +42,7 @@ namespace ECommerce.Application.Services.Rate
             var rate = await _DbContext.Rates
                 .Where(rate => rate.ProductId == id)
                 .Select(rate => new RateGetModel(){
+                    Id = rate.RateId,
                     Value = (int)rate.RateValue,
                     UserName = rate.User.UserFullName,
                     Comment = rate.Comment,
@@ -57,7 +58,6 @@ namespace ECommerce.Application.Services.Rate
         {
             try
             {
-                if (request.files.Count > 3) return new ApiFailResponse("Ảnh không được vượt quá 3");
                 if (string.IsNullOrEmpty(request.comment)) return new ApiFailResponse("Nội dung không được để trống");
 
                 // Check if user haven't any order with this product
@@ -90,15 +90,19 @@ namespace ECommerce.Application.Services.Rate
                 await _DbContext.SaveChangesAsync();
 
                 // Add image
-                foreach (var filename in request.fileNames)
+                if (request.fileNames != null)
                 {
-                    var image = new Data.Models.RatingImage()
+                    foreach (var filename in request.fileNames)
                     {
-                        RateId = comment.RateId,
-                        RatingImagePath = filename,
-                    };
-                    await _DbContext.RatingImages.AddAsync(image);
+                        var image = new Data.Models.RatingImage()
+                        {
+                            RateId = comment.RateId,
+                            RatingImagePath = filename,
+                        };
+                        await _DbContext.RatingImages.AddAsync(image);
+                    }
                     await _DbContext.SaveChangesAsync();
+
                 }
                 return new ApiSuccessResponse("Đã đánh giá sản phẩm");
             }

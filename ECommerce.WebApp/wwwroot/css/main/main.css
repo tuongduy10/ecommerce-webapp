@@ -1555,6 +1555,12 @@ hr {
     font-size: calc(12px + (16 - 14) * ((100vw - 375px)/ (1920 - 375))) !important;
     color: #999;
 }
+.user__comment-role {
+    font-size: calc(12px + (16 - 14) * ((100vw - 375px)/ (1920 - 375))) !important;
+    background: #ac0833;
+    color: white;
+    border-radius: 5px;
+}
 
 .user-comment .image .image-list {
     height: 130px;
@@ -1572,6 +1578,52 @@ hr {
         height: 100%;
         width: 100%;
         object-fit: contain;
+    }
+.user-comment .listreply {
+    position: relative;
+    padding: 10px 15px 0 12px;
+    background: #f8f8f8;
+    border: 1px solid #dfdfdf;
+}
+
+    .user-comment .listreply::before,
+    .user-comment .listreply::after {
+        top: -20px;
+        left: 18px;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+    }
+
+    .user-comment .listreply::before {
+        border-color: rgba(238,238,238,0);
+        border-bottom-color: #f8f8f8;
+        border-width: 11px;
+        margin-left: -11px;
+        z-index: 1;
+    }
+
+    .user-comment .listreply::after {
+        border-color: rgba(255,255,255,0);
+        border-bottom-color: #dfdfdf;
+        border-width: 10px;
+        margin-left: -10px;
+    }
+
+    .user-comment .listreply .reply:not(:last-child) {
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 1rem;
+    }
+
+    .user-comment .listreply .reply-action .favor::before {
+        float: left;
+        content: '-';
+        color: #999;
+        font-size: 14px;
+        margin-right: 5px;
     }
 
 .product__grid-4 .product {

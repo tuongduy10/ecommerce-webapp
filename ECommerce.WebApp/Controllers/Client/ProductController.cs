@@ -30,8 +30,8 @@ namespace ECommerce.WebApp.Controllers.Client
             IBrandService brandService, 
             IFilterProductService filterService,
             IRateService rateService,
-            IDiscountService discountService)
-        {
+            IDiscountService discountService
+        ) {
             _configurationService = configurationService;
             _productService = productService;
             _subCategoryService = subCategoryService;
