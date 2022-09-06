@@ -4,15 +4,15 @@
 @{
     Layout = "~/Views/Shared/_LayoutClient.cshtml";
 }
-
 <div class="custom-container">
     <!-- Bran list slider -->
+    @if (Model.listBrand.Count > 0 && ViewBag.hasHighlightItems)
+    {
     <div class="bran__logo-list">
         <div class="text-center">
             <div class="line my-4"></div>
             <h3 class="home-title mx-auto">Thương hiệu nổi bật</h3>
         </div>
-
         <div class="autoplay d-flex">
             @foreach (var item in Model.listBrand)
             {
@@ -24,11 +24,14 @@
                 }
             }
         </div>
-
-        <div class="w-100 text-center d-block">
-            <a class="bran__viewmore d-inline-block" style="cursor: pointer;" href="@Url.Action("HighlightsBrands", "Brand")">Xem thêm</a>
-        </div>
+        @if (ViewBag.highlightItemsCount > 5)
+        {
+            <div class="w-100 text-center d-block">
+                <a class="bran__viewmore d-inline-block" style="cursor: pointer;" href="@Url.Action("HighlightsBrands", "Brand")">Xem thêm</a>
+            </div>
+        }
     </div>
+    }
     <!-- Bran list -->
     <div class="content__wrapper">
         <div class="w-100 my-4 p-4">
@@ -126,9 +129,9 @@
                                 {
                                     <a class="order__item" onclick="getAllBrandInCategory(@category.CategoryId)">
                                         @category.CategoryName<svg xmlns='http://www.w3.org/2000/svg'
-                                                               width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#333'
-                                                               stroke-width='1' stroke-linecap='round' stroke-linejoin='round'
-                                                               class='feather feather-chevron-right'>
+                                                                   width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#333'
+                                                                   stroke-width='1' stroke-linecap='round' stroke-linejoin='round'
+                                                                   class='feather feather-chevron-right'>
                                             <polyline points='9 18 15 12 9 6'></polyline>
                                         </svg>
                                     </a>
@@ -277,7 +280,7 @@
         }
         getAllBrandList();
     })
-    $(document).on('click', '.bran__viewmore', function () { // View more 
+    $(document).on('click', '.bran__viewmore', function () { // View more
         getAllBrandList();
     })
     // Call API functions
@@ -313,7 +316,7 @@
             if (data.status == "success") {
                 $('.bran__list-items').empty();
                 var listBrand = data.data; // array brand
-                renderBrandListOrdered(listBrand, sortBy);                
+                renderBrandListOrdered(listBrand, sortBy);
             }
         });
     }
@@ -402,3 +405,21 @@
         `);
     }
 </script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/gh/kenwheeler/slick@1.8.1/slick/slick.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+@if (ViewBag.highlightItemsCount > 5)
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.autoplay').slick({
+                slidesToShow: 5,
+                slidesToScroll: 5,
+                autoplay: true,
+                autoplaySpeed: 3000,
+                prevArrow: "<button type='button' class='slick-prev pull-left'><svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-left'><polyline points='15 18 9 12 15 6'></polyline></svg></button>",
+                nextArrow: "<button type='button' class='slick-next pull-right'><svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#333' stroke-width='1' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-right'><polyline points='9 18 15 12 9 6'></polyline></svg></button>"
+            });
+        });
+    </script>
+}
+

@@ -39,6 +39,9 @@ namespace ECommerce.WebApp.Controllers
                 listCategory = _listCategory
             };
 
+            ViewBag.hasHighlightItems = _listBrand.Any(item => item.Highlights == true);
+            ViewBag.highlightItemsCount = _listBrand.Where(item => item.Highlights == true).Count();
+
             return View(model);
         }
         public async Task<IActionResult> Payment()
