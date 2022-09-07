@@ -280,14 +280,6 @@
                 console.log(error);
                 alert(error.responseText);
             })
-        $.get('/api/ProductAPI/GetSizeGuideBySub', { id: $(this).val() })
-            .then(function (response) {
-                renderSubCategoryForm(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
-            })
     })
     // get attribute and options
     $(document).on('change', '.sub-category', function () {
