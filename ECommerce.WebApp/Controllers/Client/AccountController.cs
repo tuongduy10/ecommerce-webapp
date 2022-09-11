@@ -43,8 +43,12 @@ namespace ECommerce.WebApp.Controllers.Client
         }
         public async Task<IActionResult> UserProfile()
         {
-            var id = User.Claims.FirstOrDefault(i => i.Type == "UserId").Value;
-            var user = await _userService.UserProfile(Int32.Parse(id));
+            var _id = User.Claims.FirstOrDefault(i => i.Type == "UserId") != null ? 
+                Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value) : 0;
+
+            var user = await _userService.UserProfile(_id);
+            if (user == null || user.Status == false) return RedirectToAction("SignOut", "Account");
+
             return View(user);
         }
         public async Task<IActionResult> UpdateUserPhoneNumber()

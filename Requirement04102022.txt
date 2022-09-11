@@ -1,2 +1,0 @@
-- Add wholesale for product in category
-- Add sizechart for product in category

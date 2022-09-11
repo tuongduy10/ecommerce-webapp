@@ -1,2 +1,0 @@
-Add at menuside admin (seller list, update unconfirm users)
-E press for login

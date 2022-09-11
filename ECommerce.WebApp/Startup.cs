@@ -18,6 +18,12 @@ using ECommerce.Application.Services.Bank;
 using ECommerce.Application.Services.Shop;
 using ECommerce.Application.Services.Rate;
 using ECommerce.Application.Services.Role;
+using Microsoft.AspNetCore.Http;
+using ECommerce.WebApp.Middlewares;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using ECommerce.WebApp.Configs.ActionFilters;
+using ECommerce.WebApp.Configs.Middlewares;
 
 namespace ECommerce.WebApp
 {
@@ -39,9 +45,15 @@ namespace ECommerce.WebApp
             services
                 .AddAuthorization(option =>
                 {
-                    option.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
-                    option.AddPolicy("Seller", policy => policy.RequireRole("Admin", "Seller"));
-                    option.AddPolicy("Buyer", policy => policy.RequireRole("Admin", "Seller", "Buyer"));
+                    option.AddPolicy("Admin", policy => {
+                        policy.RequireRole("Admin");
+                    });
+                    option.AddPolicy("Seller", policy => {
+                        policy.RequireRole("Admin", "Seller");
+                    });
+                    option.AddPolicy("Buyer", policy => {
+                        policy.RequireRole("Admin", "Seller", "Buyer");
+                    });
                 })
                 .AddAuthentication(option => option.DefaultAuthenticateScheme = "ClientAuth")
                 .AddCookie("ClientAuth", option => {
@@ -58,14 +70,17 @@ namespace ECommerce.WebApp
                     option.ExpireTimeSpan = TimeSpan.FromHours(4);
                     option.Cookie.MaxAge = option.ExpireTimeSpan;
                 });
+            services.AddMvc(options => {
+                options.Filters.Add(new GlobalActionFilter(new UserService(DbContext(services))));
+            });
 
-            services.AddMvc();
-            // Services
+            /*
+             * Business Services
+             */ 
             // Website Configuration
             services.AddTransient<IConfigurationService, ConfigurationService>();
             services.AddTransient<IHeaderService, HeaderService>();
             services.AddTransient<IFooterService, FooterService>();
-
             // Website Data
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<ISubCategoryService, SubCategoryService>();
@@ -75,26 +90,20 @@ namespace ECommerce.WebApp
             services.AddTransient<IBankService, BankService>();
             services.AddTransient<IRateService, RateService>();
             services.AddTransient<IDiscountService, DiscountService>();
-
             // User
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();
             // Shop
             services.AddTransient<IShopService, ShopService>();
 
-            //services
-            //    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //    .AddJwtBearer(options =>{
-            //        options.TokenValidationParameters = new TokenValidationParameters
-            //        {
-            //            ValidateIssuer = false,
-            //            ValidateAudience = false,
-
-            //            ValidateIssuerSigningKey = true,
-            //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey:Key"])),
-            //            ClockSkew = TimeSpan.Zero
-            //        };
-            //    });
+            /*
+             * Config Services
+             */
+            services.AddScoped<GlobalActionFilter>();
+            //services.AddScoped<IAuthorizationHandler, CustomAuthorizationHandler>();
+            //services.Configure<SecurityStampValidatorOptions>(option => option.ValidationInterval = TimeSpan.FromSeconds(10));
+            //services.AddHttpContextAccessor();
+            //services.AddScoped<IUserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -122,6 +131,8 @@ namespace ECommerce.WebApp
             app.UseAuthorization();
 
             app.UseCookiePolicy();
+            
+            app.UseCustomAuthorizationMiddleware();
 
             app.UseEndpoints(endpoints =>
             {
@@ -135,6 +146,11 @@ namespace ECommerce.WebApp
                     name: "admin",
                     pattern: "{controller=Admin}/{action=Index}/{id?}");
             });
+        }
+    
+        private ECommerceContext DbContext(IServiceCollection services)
+        {
+            return services.BuildServiceProvider().GetService<ECommerceContext>();
         }
     }
 }

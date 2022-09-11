@@ -20,7 +20,11 @@ namespace ECommerce.WebApp.Controllers
         private readonly IBrandService _brandService;
         private readonly IFooterService _footerService;
 
-        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService, IBrandService brandService, IFooterService footerService)
+        public HomeController(
+            ILogger<HomeController> logger, 
+            ICategoryService categoryService, 
+            IBrandService brandService, 
+            IFooterService footerService)
         {
             _logger = logger;
             _categoryService = categoryService;
