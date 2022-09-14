@@ -353,6 +353,8 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.ProductDescription).HasColumnType("ntext");
 
+                entity.Property(e => e.ProductDescriptionMobile).HasColumnType("ntext");
+
                 entity.Property(e => e.SizeGuide).HasColumnType("ntext");
 
                 entity.Property(e => e.ProductImportDate).HasColumnType("date");

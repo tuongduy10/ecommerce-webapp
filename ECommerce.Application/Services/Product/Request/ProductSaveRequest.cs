@@ -16,6 +16,7 @@ namespace ECommerce.Application.Services.Product.Dtos
         public int shopId { get; set; }
         public string name{ get;set; }
         public string description { get; set; }
+        public string descriptionMobile { get; set; }
         public string size { get; set; }
         public string note { get; set; }
         public string link { get; set; }

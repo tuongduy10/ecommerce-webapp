@@ -9,7 +9,9 @@ namespace ECommerce.WebApp.ViewComponents
     {
         private readonly IHeaderService _headerService;
         private readonly IConfigurationService _configurationService;
-        public HeaderViewComponent(IConfigurationService configurationService, IHeaderService headerService)
+        public HeaderViewComponent(
+            IConfigurationService configurationService, 
+            IHeaderService headerService)
         {
             _configurationService = configurationService;
             _headerService = headerService;

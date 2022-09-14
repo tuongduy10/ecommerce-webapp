@@ -559,6 +559,7 @@ namespace ECommerce.Application.Services.Product
                     ProductName = request.name.Trim(), // required
                     PPC = await GetNewPPC(),
                     ProductDescription = request.description == null ? null : request.description,
+                    ProductDescriptionMobile = request.descriptionMobile == null ? null : request.descriptionMobile,
                     SizeGuide = request.size == null ? null : request.size,
                     Note = string.IsNullOrEmpty(request.note) ? "" : request.note.Trim(),
                     Link = string.IsNullOrEmpty(request.link) ? "" : request.link.Trim(),

@@ -139,6 +139,7 @@
                             <a class="collapse-item" href="@Url.Action("AddProduct","ManageProduct")">Thêm sản phẩm mới</a>
                             <a class="collapse-item" href="@Url.Action("Index","ManageBrand")">Danh sách thương hiệu</a>
                             <a class="collapse-item" href="@Url.Action("Index","ManageCategory")">Danh sách danh mục</a>
+                            <a class="collapse-item" href="@Url.Action("Index","ManageSubCategory")">Danh sách loại sản phẩm</a>
                             <a class="collapse-item" href="@Url.Action("Index","ManageSizeGuide")">Bảng chọn size</a>
                         </div>
                     </div>
@@ -248,7 +249,7 @@
                     </div>
                 </li>
             }
-            
+
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
             <!-- Sidebar Toggler (Sidebar) -->
@@ -257,7 +258,6 @@
             </div>
         </ul>
         <!-- End of Sidebar -->
-
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
@@ -294,7 +294,11 @@
 
     <!-- Page level custom scripts -->
     @*<script src="/js/demo/chart-area-demo.js"></script>
-    <script src="/js/demo/chart-pie-demo.js"></script>*@
+        <script src="/js/demo/chart-pie-demo.js"></script>*@
     <script src="/js/demo/datatables-demo.js"></script>
+
+    <!-- Auto Formatting Currency -->
+    <script src="/js/auto-formatting-currency.js"></script>
+
 </body>
 </html>

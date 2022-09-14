@@ -34,13 +34,13 @@
                         <div class="form-group mb-4">
                             <label>Giá có sẵn</label>
                             <div class="d-flex align-items-center">
-                                <input type="number" class="form-control pro-priceavailable" value="" min="0" step="1000" id="1">
+                                <input type="text" class="form-control pro-priceavailable" value="" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" id="1">
                             </div>
                         </div>
                         <div class="form-group mb-4">
                             <label>Giá đặt trước</label>
                             <div class="d-flex align-items-center">
-                                <input type="number" class="form-control pro-pricepreorder" value="" min="0" step="1000" id="2">
+                                <input type="text" class="form-control pro-pricepreorder" value="" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" id="2">
                             </div>
                         </div>
                         <!-- Discount -->
@@ -51,15 +51,15 @@
                                 <label class="form-check-label" for="flexRadioDefault1">
                                     Giảm theo %
                                 </label>
-                                <input type="number" class="form-control mb-2 d-none pro-discpercent" placeholder="% giảm" value="" min="0" max="100">
+                                <input type="number" class="form-control mb-2 d-none pro-discpercent" placeholder="% giảm" >
                             </div>
                             <div class="form-check mb-4">
                                 <input class="form-check-input pro-disc-select" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
                                 <label class="form-check-label" for="flexRadioDefault2">
                                     Giảm theo giá
                                 </label>
-                                <input type="number" class="form-control mb-2 d-none pro-discavailable" placeholder="Giá đã giảm có sẵn" value="" min="0" step="1000" id="1">
-                                <input type="number" class="form-control mb-2 d-none pro-discpreorder" placeholder="Giá đã giảm đặt trước" value="" min="0" step="1000" id="2">
+                                <input type="text" class="form-control mb-2 d-none pro-discavailable" placeholder="Giá đã giảm có sẵn" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" id="1">
+                                <input type="text" class="form-control mb-2 d-none pro-discpreorder" placeholder="Giá đã giảm đặt trước" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" id="2">
                             </div>
                         </div>
                         <!-- New -->
@@ -178,10 +178,16 @@
                             </div>*@
                     </div>
                     <div class="col-sm-12 mb-4">
-                        <!-- Description -->
+                        <!-- Description Desktop -->
                         <div class="text-left mb-2 text-primary"><strong>Mô tả</strong></div>
                         <div class="form-group mb-4">
                             <textarea class="form-control" id="product-desciptions" rows="8"
+                                      cols="50"></textarea>
+                        </div>
+                        <!-- Description Mobile -->
+                        <div class="text-left mb-2 text-primary"><strong>Mô tả</strong></div>
+                        <div class="form-group mb-4">
+                            <textarea class="form-control" id="product-desciptions-mobile" rows="8"
                                       cols="50"></textarea>
                         </div>
                         <!-- Size Guide -->

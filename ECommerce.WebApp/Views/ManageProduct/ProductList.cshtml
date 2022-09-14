@@ -62,7 +62,9 @@
                             @*<label class="mb-0" for="product-@product.ProductId" style="cursor: pointer;">@product.ProductId</label>*@
                         </td>
                         <td>@product.CreatedDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
-                        <td>@product.PPC</td>
+                        <td>
+                            <a href="@Url.Action("ProductDetail", "ManageProduct", new { productId = product.ProductId, shopId = product.ShopId, brandId = product.BrandId})" class="mr-2">@product.PPC</a>
+                        </td>
                         <td>@product.ProductCode</td>
                         <td>
                             <div class="d-flex">
@@ -114,8 +116,6 @@
                             <td style="white-space: nowrap;">Đã ẩn</td>
                         }
                         <td class="text-center">
-                            <a href="@Url.Action("ProductDetail", "ManageProduct", new { productId = product.ProductId, shopId = product.ShopId, brandId = product.BrandId})" class="mr-2">Chi tiết</a>
-
                             <button class="btn btn-danger" onclick="deleteProduct(@product.ProductId)">Xóa</button>
                         </td>
                     </tr>
