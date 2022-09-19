@@ -135,6 +135,7 @@ namespace ECommerce.Application.Services.Product
                     PPC = i.PPC,
                     ProductName = i.ProductName,
                     ProductDescription = i.ProductDescription,
+                    ProductDescriptionMobile = i.ProductDescriptionMobile,
                     SizeGuide = i.SizeGuide,
 
                     FreeDelivery = i.FreeDelivery,
@@ -199,6 +200,7 @@ namespace ECommerce.Application.Services.Product
                     PPC = i.PPC,
                     ProductName = i.ProductName,
                     ProductDescription = i.ProductDescription,
+                    ProductDescriptionMobile = i.ProductDescriptionMobile,
                     SizeGuide = i.SizeGuide,
                     Note = i.Note,
                     Link = i.Link,
@@ -778,6 +780,7 @@ namespace ECommerce.Application.Services.Product
                 product.ProductCode = request.code.Trim();
                 product.ProductName = request.name.Trim(); // required
                 product.ProductDescription = request.description == null ? null : request.description;
+                product.ProductDescriptionMobile = request.descriptionMobile == null ? null : request.descriptionMobile;
                 product.SizeGuide = request.size == null ? null : request.size;
                 product.Note = request.note == null ? "" : request.note.Trim();
                 product.Link = request.link == null ? "" : request.link.Trim();

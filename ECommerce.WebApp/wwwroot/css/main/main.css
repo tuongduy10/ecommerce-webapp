@@ -1517,6 +1517,17 @@ hr {
     margin-bottom: calc(10px + (30 - 10) * ((100vw - 375px)/ (1920 - 375)));
     font-weight: 600;
 }
+.product-detail .description-mobile {
+    display: none;
+}
+@media only screen and (max-width: 768px) {
+    .product-detail .description {
+        display: none;
+    }
+    .product-detail .description-mobile {
+        display: block;
+    }
+}
 
 .input-title {
     font-size: calc(16px + (20 - 16) * ((100vw - 375px)/ (1920 - 375)));

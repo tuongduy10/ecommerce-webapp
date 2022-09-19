@@ -12,6 +12,7 @@ namespace ECommerce.Application.Services.Product.Dtos
         public string PPC { get; set; }
         public string ProductName { get; set; } //
         public string ProductDescription { get; set; } //
+        public string ProductDescriptionMobile { get; set; }
         public string SizeGuide { get; set; }
         public string Note { get; set; }
         public string Link { get; set; }
