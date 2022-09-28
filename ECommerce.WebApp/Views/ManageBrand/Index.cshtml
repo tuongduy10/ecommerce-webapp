@@ -72,24 +72,37 @@
             </div>
             <button class="btn btn-primary brand-saveChanges">Thêm mới</button>
         </div>
+        <div class="d-flex align-items-center flex-wrap mb-2">
+            <div class="mr-4">
+                <input type="checkbox" name="select-all" id="select-all">
+                <label class="mb-0" for="select-all">Chọn tất cả</label>
+            </div>
+            <div class="select-actions d-flex align-items-center" style="height: 40px;">
+
+            </div>
+        </div>
         <div class="table-responsive">
             <table class="table table-bordered order-table" id="dataTable" width="100%"
                    cellspacing="0">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Ảnh</th>
                         <th>Thương hiệu</th>
                         <th>Danh mục</th>
                         <th class="text-center">Nổi bật</th>
                         <th class="text-center">Trạng thái</th>
                         <th style="max-width: 200px; width: 100%">Cửa hàng</th>
-                        <th></th>
+                        @*<th></th>*@
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model.listBrand)
                     {
                         <tr>
+                            <td class="text-center">
+                                <input type="checkbox" class="mr-1 select-product" id="product-@item.BrandId" value="@item.BrandId" style="cursor: pointer;" />
+                            </td>
                             <td style="max-width: 300px;">
                                 <div class="border" style="height: 100px; width: 100px;">
                                     <!-- remove icon -->
@@ -157,21 +170,21 @@
                             <td class="text-center">
                                 @if (item.Highlights == true)
                                 {
-                                    <input class="brand-highlight-@item.BrandId" type="checkbox" checked />
+                                    <input class="brand-highlight-@item.BrandId" type="checkbox" onclick="updateBrand(@item.BrandId)" checked />
                                 }
                                 else
                                 {
-                                    <input class="brand-highlight-@item.BrandId" type="checkbox" />
+                                    <input class="brand-highlight-@item.BrandId" type="checkbox" onclick="updateBrand(@item.BrandId)" />
                                 }
                             </td>
                             <td class="text-center">
                                 @if (item.Status == true)
                                 {
-                                    <input class="brand-status-@item.BrandId" type="checkbox" checked />
+                                    <input class="brand-status-@item.BrandId" type="checkbox" onclick="updateBrand(@item.BrandId)" checked />
                                 }
                                 else
                                 {
-                                    <input class="brand-status-@item.BrandId" type="checkbox" />
+                                    <input class="brand-status-@item.BrandId" type="checkbox" onclick="updateBrand(@item.BrandId)" />
                                 }
                             </td>
                             <td>
@@ -185,12 +198,12 @@
                                     }
                                 </div>
                             </td>
-                            <td class="text-center">
+                            @*<td class="text-center">
                                 <a class="btn btn-primary brand-update" value="@item.BrandId" onclick="updateBrand(@item.BrandId)">Cập nhật</a>
                                 <a class="btn btn-danger" onclick="deleteBrand(@item.BrandId)">Xóa</a>
-                            </td>
+                            </td>*@
                         </tr>
-                     }
+                    }
                 </tbody>
             </table>
         </div>
@@ -298,7 +311,6 @@
             processData: false,
             contentType: false,
             success: function (response) {
-                alert(response);
                 location.reload();
             },
             error: function (error) {
@@ -330,6 +342,112 @@
                 })
         }
     }
+
+    $(document).on('click', '.delete-brands', function () {
+        if (confirm("Xác nhận xóa") == true) {
+            let ids = [];
+            $('.select-product').each(function () {
+                if ($(this).is(":checked")) {
+                    let id = $(this).val();
+                    ids.push(id);
+                }
+            });
+            $.post("/ManageBrand/DeleteBrands", { ids: ids })
+                .then(function (response) {
+                    alert(response);
+                    location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    alert(error.responseText);
+                })
+        }
+    })
+
+    $(document).on('click', '.show-brands', function () {
+        if (confirm("Xác nhận cập nhật") == true) {
+            let ids = [];
+            $('.select-product').each(function () {
+                if ($(this).is(":checked")) {
+                    let id = $(this).val();
+                    ids.push(id);
+                }
+            });
+            $.post("/ManageBrand/UpdateBrandsStatus", { ids: ids, status: true })
+                .then(function (response) {
+                    alert(response);
+                    location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    alert(error.responseText);
+                })
+        }
+    })
+
+    $(document).on('click', '.hide-brands', function () {
+        if (confirm("Xác nhận cập nhật") == true) {
+            let ids = [];
+            $('.select-product').each(function () {
+                if ($(this).is(":checked")) {
+                    let id = $(this).val();
+                    ids.push(id);
+                }
+            });
+            $.post("/ManageBrand/UpdateBrandsStatus", { ids: ids, status: false })
+                .then(function (response) {
+                    alert(response);
+                    location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    alert(error.responseText);
+                })
+        }
+    })
+
+</script>
+<script>
+    $(document).ready(function () {
+        $('#select-all').click(function () {
+            if ($('#select-all').is(":checked")) {
+                $('.select-product').prop('checked', true);
+                setAction();
+                return;
+            }
+            $('.select-actions').html(``);
+            $('.select-product').prop('checked', false);
+        })
+
+        $('.select-product').click(function () {
+            $('#select-all').prop('checked', false);
+            setAction();
+        })
+
+        function setAction() {
+            let count = 0;
+            $('.select-product').each(function (index) {
+                if ($(this).is(":checked")) {
+                    count++;
+                }
+            })
+            $('.select-actions').html(`
+                <div class="mr-2">
+                    <span class="products-selected"><strong>${count}</strong></span>
+                    <span>Đã chọn</span>
+                </div>
+                <a class="mr-2 btn btn-primary show-brands">Hiện</a>
+                <a class="mr-2 btn btn-secondary hide-brands">Ẩn</a>
+                <!-- <a class="mr-2 btn btn-danger delete-brands">Xóa</a> -->
+            `);
+            if (count == 0) {
+                $('.select-actions').html(``);
+            }
+            if (count == $('.select-product').length) {
+                $('#select-all').prop('checked', true);
+            }
+        }
+    });
 </script>
 <script type="text/javascript">
     $('.image-uploaded').change(function () {

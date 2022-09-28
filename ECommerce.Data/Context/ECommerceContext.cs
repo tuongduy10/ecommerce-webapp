@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using ECommerce.Data.Models;
-using Microsoft.Extensions.Configuration;
-using System.IO;
 
 #nullable disable
 
@@ -30,6 +28,7 @@ namespace ECommerce.Data.Context
         public virtual DbSet<Configuration> Configurations { get; set; }
         public virtual DbSet<Discount> Discounts { get; set; }
         public virtual DbSet<Header> Headers { get; set; }
+        public virtual DbSet<Interest> Interests { get; set; }
         public virtual DbSet<Option> Options { get; set; }
         public virtual DbSet<OptionValue> OptionValues { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
@@ -60,11 +59,8 @@ namespace ECommerce.Data.Context
         {
             if (!optionsBuilder.IsConfigured)
             {
-                IConfigurationRoot configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json")
-                    .Build();
-                optionsBuilder.UseSqlServer(configuration.GetConnectionString("ECommerceDB"));
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Data Source=.\\SQLEXPRESS;Initial Catalog=ECommerce;Integrated Security=True");
             }
         }
 
@@ -228,6 +224,25 @@ namespace ECommerce.Data.Context
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<Interest>(entity =>
+            {
+                entity.HasKey(e => new { e.RateId, e.UserId });
+
+                entity.ToTable("Interest");
+
+                entity.HasOne(d => d.Rate)
+                    .WithMany(p => p.Interests)
+                    .HasForeignKey(d => d.RateId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Interest_Rate");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Interests)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Interest_User");
+            });
+
             modelBuilder.Entity<Option>(entity =>
             {
                 entity.ToTable("Option");
@@ -339,29 +354,32 @@ namespace ECommerce.Data.Context
             {
                 entity.ToTable("Product");
 
-                entity.Property(e => e.ProductCode).HasMaxLength(50);
-
-                entity.Property(e => e.PPC).HasMaxLength(8);
-
                 entity.Property(e => e.Insurance).HasMaxLength(30);
-
-                entity.Property(e => e.Note).HasMaxLength(500);
 
                 entity.Property(e => e.Link).HasColumnType("ntext");
 
+                entity.Property(e => e.Note).HasMaxLength(500);
+
+                entity.Property(e => e.PPC)
+                    .HasMaxLength(8)
+                    .IsUnicode(false)
+                    .HasColumnName("PPC");
+
                 entity.Property(e => e.ProductAddedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ProductCode).HasMaxLength(50);
 
                 entity.Property(e => e.ProductDescription).HasColumnType("ntext");
 
                 entity.Property(e => e.ProductDescriptionMobile).HasColumnType("ntext");
-
-                entity.Property(e => e.SizeGuide).HasColumnType("ntext");
 
                 entity.Property(e => e.ProductImportDate).HasColumnType("date");
 
                 entity.Property(e => e.ProductName)
                     .IsRequired()
                     .HasMaxLength(100);
+
+                entity.Property(e => e.SizeGuide).HasColumnType("ntext");
 
                 entity.HasOne(d => d.Brand)
                     .WithMany(p => p.Products)
@@ -490,15 +508,24 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.CreateDate).HasColumnType("datetime");
 
+                entity.Property(e => e.HtmlPosition)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Rates)
                     .HasForeignKey(d => d.ProductId)
                     .HasConstraintName("FK_Rate_Product");
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.Rates)
+                    .WithMany(p => p.RateUsers)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_Rate_User");
+
+                entity.HasOne(d => d.UserReplied)
+                    .WithMany(p => p.RateUserReplieds)
+                    .HasForeignKey(d => d.UserRepliedId)
+                    .HasConstraintName("FK_Rate_UserReplied");
             });
 
             modelBuilder.Entity<RatingImage>(entity =>

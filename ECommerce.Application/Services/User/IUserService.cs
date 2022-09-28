@@ -23,5 +23,6 @@ namespace ECommerce.Application.Services.User
         Task<string> getUserRole(int userId);
         Task<UserGetModel> getUserByShop(int shopId);
         Task<ApiResponse> DeleteUser(int id);
+        bool IsAdmin(int id);
     }
 }

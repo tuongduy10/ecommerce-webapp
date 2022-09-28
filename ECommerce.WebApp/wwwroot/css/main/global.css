@@ -49,6 +49,18 @@ select{
     /* for Chrome */
     -webkit-appearance: none;
 }
+.point-red-quantity {
+    position: absolute;
+    border-radius: 50%;
+    background: #ac0833;
+    color: #fff;
+    width: calc(4px + (24 - 10) * ((100vw - 375px)/ (1920 - 375)));
+    height: calc(4px + (24 - 10) * ((100vw - 375px)/ (1920 - 375)));
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .main{
     margin-bottom: 6rem;
 }
@@ -57,7 +69,7 @@ select{
 .form-select{
     border: 1px solid #333;
     
-    padding: 0 4px;
+    padding: 0 30px;
     
     border-color: unset;
     -webkit-box-shadow: unset;
@@ -67,7 +79,7 @@ select{
 
 @media only screen and (max-width: 768px) {
     .form-select{
-        padding: 4px;
+        padding: 4px 30px;
     }
 }
 

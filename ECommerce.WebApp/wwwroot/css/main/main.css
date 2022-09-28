@@ -1279,7 +1279,7 @@ hr {
 
 .product__detail-options .options-wrapper {
     position: relative;
-    width: 7.5rem;
+    /*width: 7.5rem;*/
 }
 
     .product__detail-options .options-wrapper select {
@@ -1554,7 +1554,7 @@ hr {
 }
 
 .user-comment:not(:last-child) {
-    border-bottom: 1px solid #ddd;
+    /*border-bottom: 1px solid #ddd;*/
     padding-bottom: 1rem;
 }
 
@@ -1689,7 +1689,7 @@ hr {
     }
 
     .product__detail-options .options-wrapper {
-        width: 6.5rem;
+        /*width: 6.5rem;*/
     }
 
     .option-quality input {
@@ -2257,5 +2257,64 @@ hr {
 
     .user__info-form {
         width: 100%;
+    }
+}
+
+
+.notification-list {
+    /* max-height: ; */
+}
+
+    .notification-list .notification {
+        position: relative;
+    }
+
+        .notification-list .notification .type {
+        }
+
+        .notification-list .notification .time {
+            font-size: calc(12px + (16 - 14) * ((100vw - 375px)/ (1920 - 375)));
+        }
+
+        .notification-list .notification .content {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 800px;
+        }
+
+        .notification-list .notification:not(:last-child) {
+            border-bottom: 1px solid #dfdfdf;
+        }
+
+        .notification-list .notification .remove {
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 0;
+        }
+
+        .notification-list .notification:hover {
+            cursor: pointer;
+            background-color: white;
+        }
+
+.search-notifications .header-searchform {
+    border-color: #f8f8f8;
+}
+
+    .search-notifications .header-searchform::after {
+        border-color: #f8f8f8;
+    }
+
+    .search-notifications .header-searchform .text input::placeholder {
+        color: #f8f8f8;
+    }
+
+@media only screen and (max-width: 1400px) {
+    .search-notifications .header-searchform input {
+        width: 12.5rem;
     }
 }

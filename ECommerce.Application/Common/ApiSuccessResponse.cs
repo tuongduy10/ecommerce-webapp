@@ -8,6 +8,10 @@ namespace ECommerce.Application.Common
 {
     public class ApiSuccessResponse : ApiResponse
     {
+        public ApiSuccessResponse()
+        {
+            isSucceed = true;
+        }
         public ApiSuccessResponse(string message)
         {
             isSucceed = true;

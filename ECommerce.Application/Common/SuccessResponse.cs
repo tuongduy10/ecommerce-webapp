@@ -13,6 +13,11 @@ namespace ECommerce.Application.Common
             isSucceed = true;
             Message = message;
         }
+        public SuccessResponse(T data)
+        {
+            isSucceed = true;
+            Data = data;
+        }
         public SuccessResponse(string message, T data)
         {
             isSucceed = true;

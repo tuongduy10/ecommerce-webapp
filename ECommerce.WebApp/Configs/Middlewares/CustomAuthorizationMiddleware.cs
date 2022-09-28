@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ECommerce.Application.Services.User;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.WebApp.Middlewares
 {
@@ -28,7 +29,7 @@ namespace ECommerce.WebApp.Middlewares
             //if (_userId != 0)
             //{
             //    var _user = await userService.UserProfile(_userId);
-            //    if (_user == null || _user.Status == false) 
+            //    if (_user == null || _user.Status == false)
             //    {
             //        context.SignOutAsync(_authType).Wait();
             //        context.Response.Redirect("/Account/SignIn");

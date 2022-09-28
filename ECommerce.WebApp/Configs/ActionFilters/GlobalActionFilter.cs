@@ -35,21 +35,23 @@ namespace ECommerce.WebApp.Configs.ActionFilters
 
             if (_user == null || _user.Status == false)
             {
-                if (_authType == "ClientAuth" && !UncheckPathList().Contains(_path)) 
+                if (_authType == "ClientAuth" && IsAllowedPath(_path)) 
                     context.Result = new RedirectToActionResult("SignOut", "Account", null);
-                if (_authType == "AdminAuth" && !UncheckPathList().Contains(_path)) 
+                if (_authType == "AdminAuth" && IsAllowedPath(_path)) 
                     context.Result = new RedirectToActionResult("SignOut", "Admin", null);
             }
         }
-        private List<string> UncheckPathList()
+        private bool IsAllowedPath(string path = null)
         {
-            return new List<string>() { 
+            return !new List<string>() { 
                 //"/", 
                 //"/Home", 
                 //"/Home/Index", 
                 "/Account/SignOut",
-                "/Admin/SignOut"
-            };
+                "/Admin/SignOut",
+                "/Account/SignIn",
+                "/Admin/SignIn"
+            }.Contains(path);
         }
     }
 }

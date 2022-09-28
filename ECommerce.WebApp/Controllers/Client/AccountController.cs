@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.Shop;
+﻿using ECommerce.Application.Services.Notification;
+using ECommerce.Application.Services.Shop;
 using ECommerce.Application.Services.User;
 using ECommerce.Application.Services.User.Dtos;
 using Microsoft.AspNetCore.Authentication;
@@ -15,10 +16,15 @@ namespace ECommerce.WebApp.Controllers.Client
     {
         private IUserService _userService;
         private IShopService _shopService;
-        public AccountController(IUserService userService, IShopService shopService)
+        private INotificationService _notificationService;
+        public AccountController(
+            IUserService userService, 
+            IShopService shopService,
+            INotificationService notificationService)
         {
             _userService = userService;
             _shopService = shopService;
+            _notificationService = notificationService;
         }
 
         [AllowAnonymous]
@@ -40,6 +46,10 @@ namespace ECommerce.WebApp.Controllers.Client
         {
             await HttpContext.SignOutAsync("ClientAuth");
             return RedirectToAction("SignIn", "Account");
+        }
+        public async Task<IActionResult> Notifications()
+        {
+            return View();
         }
         public async Task<IActionResult> UserProfile()
         {

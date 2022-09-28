@@ -8,8 +8,12 @@ using ECommerce.Application.Services.Product.Enum;
 using ECommerce.Application.Services.Rate;
 using ECommerce.Application.Services.SubCategory;
 using ECommerce.WebApp.Models.Products;
+using ECommerce.WebApp.Utils;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.Controllers.Client
@@ -66,10 +70,13 @@ namespace ECommerce.WebApp.Controllers.Client
         }
         public async Task<IActionResult> ProductDetail(int ProductId)
         {
+            var _userId = User.Claims.FirstOrDefault(i => i.Type == "UserId") != null ?
+                Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value) : 0;
+
             var product = await _productService.getProductDetail(ProductId);
             if (product == null)
                 return NotFound();
-            var rates = await _rateService.getRatesByProductId(ProductId);
+            var rates = await _rateService.GetRatesByProductId(ProductId, _userId);
             var suggestion = await _productService.getProductSuggestion();
             var phone = await _configurationService.getPhoneNumber();
             var options = await _productService.getProductOption(ProductId);

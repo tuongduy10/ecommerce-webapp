@@ -498,7 +498,7 @@ namespace ECommerce.Application.Services.User
             {   
                 if (id == 0) return new ApiFailResponse("Vui lòng chọn User");
                 var userRole = await getUserRole(id);
-                if (userRole == RoleConst.Admin) return new ApiFailResponse("Không thể xóa tài khoản này");
+                if (userRole == RoleName.Admin) return new ApiFailResponse("Không thể xóa tài khoản này");
 
                 // User's shops
                 var shops = await _DbContext.Shops.Where(i => i.UserId == id).ToListAsync();
@@ -534,6 +534,24 @@ namespace ECommerce.Application.Services.User
             catch
             {
                 return new ApiFailResponse("Cập nhật thất bại, thử lại sau");
+            }
+        }
+        public bool IsAdmin(int id)
+        {
+            try
+            {
+                var userRoles = _DbContext.UserRoles
+                    .Where(i => i.UserId == id)
+                    .Select(i => i.Role.RoleName)
+                    .ToList();
+                if (userRoles != null)
+                    if (userRoles.Contains(RoleName.Admin))
+                        return true;
+                return false;
+            }
+            catch
+            {
+                return false;
             }
         }
     }

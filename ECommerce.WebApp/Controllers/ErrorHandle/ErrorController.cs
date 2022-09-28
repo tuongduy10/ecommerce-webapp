@@ -10,19 +10,21 @@ namespace ECommerce.WebApp.Controllers.ErrorHandle
 {
     public class ErrorController : Controller
     {
-        [Route("Error/{statusCode}")]
+        [Route("error/{statusCode}")]
         [AllowAnonymous]
         public IActionResult HttpStatusCodeHandler(int statusCode)
         {
             switch (statusCode)
             {
-                case 404: return View("NotFound");
-                case 403: return View("Forbidden");
-                case 401: return RedirectToAction("SignIn", "Account");
+                case 404: 
+                    return View("NotFound");
+                case 403: 
+                    return View("Forbidden");
+                default: 
+                    return View("NotFound");
             }
-            return View("NotFound");
         }
-        [Route("Error")]
+        [Route("error")]
         [AllowAnonymous]
         public IActionResult Error()
         {

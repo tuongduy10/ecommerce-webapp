@@ -1,6 +1,17 @@
 ﻿<div class="control-selectlist">
     <!--Mobile view-->
     <select name="" id="" class="form-control" onchange="location = this.value">
+        <!-- Notifications -->
+        @if (Context.Request.Path.ToString().Contains("Notifications"))
+        {
+            <option value="" selected>Thông báo</option>
+        }
+        else
+        {
+            <option value="">Thông báo</option>
+        }
+
+        <!-- User Profile -->
         @if (Context.Request.Path.ToString().Contains("UserProfile"))
         {
             <option value="@Url.Action("UserProfile", "Account")" selected>Thông tin cá nhân</option>
@@ -10,6 +21,7 @@
             <option value="@Url.Action("UserProfile", "Account")">Thông tin cá nhân</option>
         }
 
+        <!-- Order History -->
         @if (Context.Request.Path.ToString().Contains("OrderHistory"))
         {
             <option value="" selected>Lịch sử đơn hàng</option>
@@ -19,6 +31,7 @@
             <option value="">Lịch sử đơn hàng</option>
         }
 
+        <!-- User Password -->
         @if (Context.Request.Path.ToString().Contains("UpdateUserPassword"))
         {
             <option value="@Url.Action("UpdateUserPassword", "Account")" selected>Đổi mật khẩu</option>
@@ -28,14 +41,15 @@
             <option value="@Url.Action("UpdateUserPassword", "Account")">Đổi mật khẩu</option>
         }
 
+        <!-- Sale Registration -->
         @if (Context.Request.Path.ToString().Contains("SaleRegistration"))
         {
-            <option value="@Url.Action("SaleRegistration", "Account")" selected>Đăng ký bán hàng</option>
+            <option value="@Url.Action("SaleRegistration", "Account")" selected hidden>Đăng ký bán hàng</option>
         }
         else
         {
-            <option value="@Url.Action("SaleRegistration", "Account")">Đăng ký bán hàng</option>
-        }        
+            <option value="@Url.Action("SaleRegistration", "Account")" hidden>Đăng ký bán hàng</option>
+        }
     </select>
     <span class="d-flex align-items-center">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -49,7 +63,18 @@
 <ul class="control-list">
     <!-- Pc view-->
     <li class="mb-2">
-        <a class="d-flex align-items-center @(Context.Request.Path.ToString().Contains("UserProfile") ? "active" : "")" 
+        <a class="d-flex align-items-center @(Context.Request.Path.ToString().Contains("Notifications") ? "active" : "")" 
+           href="@Url.Action("Notifications", "Account")"
+           style="white-space: nowrap;">
+            <span class="mr-2" style="height: 24px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span class="point-red-quantity" style="top: 12px; left: 30px;">9</span>
+            </span>
+            Thông báo
+        </a>
+    </li>
+    <li class="mb-2">
+        <a class="d-flex align-items-center @(Context.Request.Path.ToString().Contains("UserProfile") ? "active" : "")"
            href="@Url.Action("UserProfile", "Account")"
            style="white-space: nowrap;">
             <span class="mr-2" style="height: 24px;">
@@ -67,7 +92,7 @@
     </li>
     <!-- Order history -->
     <li class="mb-2">
-        <a class="d-flex align-items-center" href="user-orderhistory.html"
+        <a class="d-flex align-items-center" href=""
            style="white-space: nowrap;">
             <span class="mr-2" style="height: 24px;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -87,7 +112,7 @@
     </li>
     <!-- Change password -->
     <li class="mb-2">
-        <a class="d-flex align-items-center @(Context.Request.Path.ToString().Contains("UpdateUserPassword") ? "active" : "")" 
+        <a class="d-flex align-items-center @(Context.Request.Path.ToString().Contains("UpdateUserPassword") ? "active" : "")"
            href="@Url.Action("UpdateUserPassword", "Account")"
            style="white-space: nowrap;">
             <span class="mr-2 mb-0" style="height: 24px;">
@@ -115,40 +140,40 @@
     <hr>
     <!-- Sales registration -->
     @*<li class="mb-2">
-        @if (!Model.isRegisted || Model.status == 2 || Model.status == 4)
-        {
-            <a class="d-flex align-items-center @(Context.Request.Path.ToString().Contains("SaleRegistration") ? "active" : "")"
-               href="@Url.Action("SaleRegistration", "Account")" style="white-space: nowrap;">
-                <span class="mr-2 mb-0" style="height: 24px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
-                         stroke-linecap="round" stroke-linejoin="round"
-                         class="feather feather-edit">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
-                        </path>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
-                        </path>
-                    </svg>
-                </span>
-                Đăng ký bán hàng
-            </a>
-        }
-        else
-        {
-            <a class="d-flex align-items-center" href="@Url.Action("Index", "Seller")" style="white-space: nowrap;">
-                <span class="mr-2 mb-0" style="height: 24px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
-                         stroke-linecap="round" stroke-linejoin="round"
-                         class="feather feather-edit">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
-                        </path>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
-                        </path>
-                    </svg>
-                </span>
-                Quản lý bán hàng
-            </a>
-        }
-    </li>*@
+            @if (!Model.isRegisted || Model.status == 2 || Model.status == 4)
+            {
+                <a class="d-flex align-items-center @(Context.Request.Path.ToString().Contains("SaleRegistration") ? "active" : "")"
+                   href="@Url.Action("SaleRegistration", "Account")" style="white-space: nowrap;">
+                    <span class="mr-2 mb-0" style="height: 24px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+                             stroke-linecap="round" stroke-linejoin="round"
+                             class="feather feather-edit">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
+                            </path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
+                            </path>
+                        </svg>
+                    </span>
+                    Đăng ký bán hàng
+                </a>
+            }
+            else
+            {
+                <a class="d-flex align-items-center" href="@Url.Action("Index", "Seller")" style="white-space: nowrap;">
+                    <span class="mr-2 mb-0" style="height: 24px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+                             stroke-linecap="round" stroke-linejoin="round"
+                             class="feather feather-edit">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
+                            </path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
+                            </path>
+                        </svg>
+                    </span>
+                    Quản lý bán hàng
+                </a>
+            }
+        </li>*@
 </ul>

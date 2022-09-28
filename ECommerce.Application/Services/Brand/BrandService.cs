@@ -122,6 +122,23 @@ namespace ECommerce.Application.Services.Brand
                 return new ApiFailResponse("Cập nhật thất bại");
             }
         }
+        public async Task<ApiResponse> UpdateBrandsStatus(List<int> ids, bool status)
+        {
+            try
+            {
+                var brands = await _DbContext.Brands.Where(i => ids.Contains(i.BrandId)).ToListAsync();
+                foreach (var brand in brands)
+                {
+                    brand.Status = status;
+                }
+                _DbContext.SaveChangesAsync().Wait();
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            catch
+            {
+                return new ApiFailResponse("Cập nhật thất bại");
+            }
+        }
         public async Task<List<BrandModel>> getAll()
         {
             var list = await _DbContext.Brands
@@ -353,6 +370,46 @@ namespace ECommerce.Application.Services.Brand
             catch
             {
                 return new FailResponse<string>("Xóa thất bại");
+            }
+        }
+        public async Task<Response<List<string>>> DeleteBrands(List<int> ids)
+        {
+            try
+            {
+                if (ids == null) return new FailResponse<List<string>>("Vui lòng chọn thương hiệu");
+
+                var brands = await _DbContext.Brands
+                    .Where(i => ids.Contains(i.BrandId))
+                    .ToListAsync();
+
+                var productCount = await _DbContext.Products
+                    .Where(i => ids.Contains(i.BrandId))
+                    .CountAsync();
+                var hasProduct = productCount > 0;
+                if (hasProduct)
+                    return new FailResponse<List<string>>($"Có thương hiệu đang tồn tại sản phẩm, không thể xóa");
+                
+                var shopCount = await _DbContext.ShopBrands
+                    .Where(i => ids.Contains(i.BrandId))
+                    .CountAsync();
+                var hasShop = shopCount > 0;
+                if (hasShop)
+                    return new FailResponse<List<string>>($"Có thương hiệu đang có shop quản lý, không thể xóa");
+                
+                var brandCategories = await _DbContext.BrandCategories.Where(i => ids.Contains(i.BrandId)).ToListAsync();
+                _DbContext.BrandCategories.RemoveRange(brandCategories);
+                _DbContext.SaveChangesAsync().Wait();
+
+                _DbContext.Brands.RemoveRange(brands);
+                _DbContext.SaveChangesAsync().Wait();
+
+                List<string> paths = brands.Select(item => item.BrandImagePath).ToList();
+
+                return new SuccessResponse<List<string>>("Xóa thành công", paths);
+            }
+            catch
+            {
+                return new FailResponse<List<string>>("Xóa thất bại");
             }
         }
     }

@@ -30,12 +30,13 @@ namespace ECommerce.WebApp.Controllers.Admin
         private const string LOGO_FILEPREFIX = FilePathConstant.LOGO_FILEPREFIX;
         private const string FAVICON_FILEPATH = FilePathConstant.FAVICON_FILEPATH;
         private const string FAVICON_FILEPREFIX = FilePathConstant.FAVICON_FILEPREFIX;
-        public ManageConfigurationController(IFooterService footerService, 
-                                            IConfigurationService configurationService, 
-                                            IBankService bankService, 
-                                            IHeaderService headerService,
-                                            IWebHostEnvironment webHostEnvironment)
-        {
+        public ManageConfigurationController(
+            IFooterService footerService, 
+            IConfigurationService configurationService, 
+            IBankService bankService, 
+            IHeaderService headerService,
+            IWebHostEnvironment webHostEnvironment
+        ) {
             _footerService = footerService;
             _configurationService = configurationService;
             _bankService = bankService;

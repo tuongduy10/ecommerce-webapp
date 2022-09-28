@@ -1,0 +1,108 @@
+﻿@using Microsoft.Extensions.Configuration;
+@using ECommerce.Application.Services.Configurations;
+@inject IConfiguration Configuration;
+@inject IConfigurationService _configurationService;
+@{
+    Layout = "~/Views/Shared/_LayoutClientNoBanner.cshtml";
+}
+
+<!-- Main contain -->
+<div class="custom-container">
+    <div class="content__wrapper products__content-wrapper">
+        <div class="content__inner w-100">
+            <ul class="web__directional">
+                <li>
+                    <a href="@Url.Action("Index", "Home")">Trang chủ</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Notifications", "Account")">Thông báo</a>
+                </li>
+            </ul>
+            <hr>
+            <div class="user__profile-wrapper row">
+                <div class="col-md-2 col-xs-12 mb-4">
+                    <div class="tabs-control">
+                        @await Component.InvokeAsync("UserProfileMenu")
+                    </div>
+                </div>
+
+                <div class="col-md-10 col-xs-12 mb-4">
+                    <div class="tabs-content">
+                        <div class="tab-content">
+                            <div class="text-center">
+                                <div class="title"><strong>THÔNG BÁO</strong></div>
+                            </div>
+                            <div class="search-notifications mx-auto text-right mb-4" style="max-width: 992px;">
+                                <a class="header-searchform header__top-link">
+                                    <span class="text">
+                                        <input type="text" placeholder="Thông báo cần tìm" style="background: #f8f8f8;">
+                                    </span>
+                                    <span class="icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                             fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"
+                                             stroke-linejoin="round" class="feather feather-search">
+                                            <circle cx="11" cy="11" r="8"></circle>
+                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                        </svg>
+                                    </span>
+                                </a>
+                            </div>
+                            <div class="mx-auto" style="max-width: 992px;">
+                                <ul class="notification-list" style="max-height: 675px; overflow:auto">
+                                    <li class="notification d-flex py-4">
+                                        <div class="mr-2" style="width: 120px;">
+                                            <img class="mw-100 mh-100 mx-auto" src="@(Configuration["ImagePath:Icon"] + "comment.png")" alt="">
+                                        </div>
+                                        <div>
+                                            <h1 class="type mb-4">Bình luận được phản hồi</h1>
+                                            <div><strong class="name" style="color: var(--blue-dior);">Admin (Quản trị viên)</strong> đã phản hồi bình luận của bạn:</div>
+                                            <div class="content">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</div>
+                                            <div class="time">20:42, 18/09/2022</div>
+                                        </div>
+                                        <span class="remove remove-notification-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                        </span>
+                                    </li>
+
+                                    <li class="notification d-flex py-4">
+                                        <div class="mr-2" style="width: 120px;">
+                                            <img class="mw-100 mh-100 mx-auto" src="@(Configuration["ImagePath:Icon"] + "bill.png")" alt="">
+                                        </div>
+                                        <div>
+                                            <h1 class="type mb-4">Đơn hàng đã được cập nhật</h1>
+                                            <div><strong class="name">Admin</strong> đã phản hồi bình luận của bạn:</div>
+                                            <div class="content">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</div>
+                                            <div class="time">20:42, 18/09/2022</div>
+                                        </div>
+                                        <span class="remove remove-notification-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                        </span>
+                                    </li>
+
+                                    <li class="notification d-flex py-4">
+                                        <div class="mr-2" style="width: 120px;">
+                                            <img class="mw-100 mh-100 mx-auto" src="@(Configuration["ImagePath:Icon"] + "coupon.png")" alt="">
+                                        </div>
+                                        <div>
+                                            <h1 class="type mb-4">Mã khuyến mãi mới</h1>
+                                            <div><strong class="name">Admin</strong> đã phản hồi bình luận của bạn:</div>
+                                            <div class="content">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</div>
+                                            <div class="time">20:42, 18/09/2022</div>
+                                        </div>
+                                        <span class="remove remove-notification-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                        </span>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+</script>

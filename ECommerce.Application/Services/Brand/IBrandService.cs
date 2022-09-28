@@ -13,6 +13,7 @@ namespace ECommerce.Application.Services.Brand
         Task<ApiResponse> Create(BrandCreateRequest request);
         Task<Response<FileChangedResponse>> Update(BrandUpdateRequest request);
         Task<ApiResponse> UpdateStatus(int id, bool status);
+        Task<ApiResponse> UpdateBrandsStatus(List<int> ids, bool status);
         Task<BrandModel> getBrandById(int BrandId);
         Task<List<BrandModel>> getAll();
         Task<List<BrandModel>> getAllManage();
@@ -20,6 +21,7 @@ namespace ECommerce.Application.Services.Brand
         Task<List<BrandModel>> getAllAvailableInCategory(int CategoryId);
         Task<List<BrandModel>> getAllBrandInShop(int userId);
         Task<Response<string>> DeleteBrand(int id);
+        Task<Response<List<string>>> DeleteBrands(List<int> ids);
         Task<List<BrandModel>> getBrandsByShop(int id);
         Task<List<BrandModel>> GetAllAvailable();
     }

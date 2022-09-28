@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -95,6 +96,15 @@ namespace ECommerce.WebApp.Controllers.Admin
             }
             return BadRequest(result.Message);
         }
+        public async Task<IActionResult> UpdateBrandsStatus(List<int> ids, bool status)
+        {
+            var result = await _brandService.UpdateBrandsStatus(ids, status);
+            if (result.isSucceed)
+            {
+                return Ok(result.Message);
+            }
+            return BadRequest(result.Message);
+        }
         public async Task<IActionResult> DeleteBrand(int id)
         {
             var result = await _brandService.DeleteBrand(id);
@@ -104,6 +114,17 @@ namespace ECommerce.WebApp.Controllers.Admin
                 var previousFileName = result.Data;
                 _manageFiles.DeleteFile(previousFileName, FILE_PATH);
 
+                return Ok(result.Message);
+            }
+            return BadRequest(result.Message);
+        }
+        public async Task<IActionResult> DeleteBrands(List<int> ids)
+        {
+            var result = await _brandService.DeleteBrands(ids);
+            if (result.isSucceed)
+            {
+                var previousFileNames = result.Data;
+                _manageFiles.DeleteFiles(previousFileNames, FILE_PATH);
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);

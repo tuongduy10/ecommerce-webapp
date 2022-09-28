@@ -24,6 +24,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using ECommerce.WebApp.Configs.ActionFilters;
 using ECommerce.WebApp.Configs.Middlewares;
+using ECommerce.Application.Services.Notification;
+using ECommerce.WebApp.Configs.ActionFilters.HttpResponse;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 
 namespace ECommerce.WebApp
 {
@@ -71,6 +75,7 @@ namespace ECommerce.WebApp
                     option.Cookie.MaxAge = option.ExpireTimeSpan;
                 });
             services.AddMvc(options => {
+                //options.Filters.Add(new HttpResponseExceptionFilter());
                 options.Filters.Add(new GlobalActionFilter(new UserService(DbContext(services))));
             });
 
@@ -93,6 +98,7 @@ namespace ECommerce.WebApp
             // User
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();
+            services.AddTransient<INotificationService, NotificationService>();
             // Shop
             services.AddTransient<IShopService, ShopService>();
 
@@ -111,14 +117,16 @@ namespace ECommerce.WebApp
         {
             if (env.IsDevelopment())
             {
+                // app.UseExceptionHandler("/error");
+                // app.UseStatusCodePagesWithRedirects("/error/{0}");
                 app.UseDeveloperExceptionPage();
             }
             else
             {
-                app.UseExceptionHandler("/Error");
-                app.UseStatusCodePagesWithRedirects("/Error/{0}");
+                app.UseExceptionHandler("/error");
+                app.UseStatusCodePagesWithRedirects("/error/{0}");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                // app.UseHsts();
             }
 
             app.UseHttpsRedirection();
@@ -131,7 +139,7 @@ namespace ECommerce.WebApp
             app.UseAuthorization();
 
             app.UseCookiePolicy();
-            
+
             app.UseCustomAuthorizationMiddleware();
 
             app.UseEndpoints(endpoints =>
@@ -146,6 +154,7 @@ namespace ECommerce.WebApp
                     name: "admin",
                     pattern: "{controller=Admin}/{action=Index}/{id?}");
             });
+
         }
     
         private ECommerceContext DbContext(IServiceCollection services)

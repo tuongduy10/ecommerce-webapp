@@ -9,8 +9,10 @@ namespace ECommerce.Data.Models
     {
         public User()
         {
+            Interests = new HashSet<Interest>();
             Orders = new HashSet<Order>();
-            Rates = new HashSet<Rate>();
+            RateUserReplieds = new HashSet<Rate>();
+            RateUsers = new HashSet<Rate>();
             Shops = new HashSet<Shop>();
             UserRoles = new HashSet<UserRole>();
         }
@@ -28,8 +30,10 @@ namespace ECommerce.Data.Models
         public bool? Status { get; set; }
         public bool? IsSystemAccount { get; set; }
 
+        public virtual ICollection<Interest> Interests { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
-        public virtual ICollection<Rate> Rates { get; set; }
+        public virtual ICollection<Rate> RateUserReplieds { get; set; }
+        public virtual ICollection<Rate> RateUsers { get; set; }
         public virtual ICollection<Shop> Shops { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
     }

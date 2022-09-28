@@ -1,10 +1,13 @@
 ﻿using ECommerce.Application.Common;
+using ECommerce.Application.Constants;
 using ECommerce.Application.Services.Rate;
 using ECommerce.Application.Services.User;
 using ECommerce.Application.Services.User.Dtos;
 using ECommerce.WebApp.Models.Admin;
+using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -19,20 +22,33 @@ namespace ECommerce.WebApp.Controllers.Admin
     public class AdminController : Controller
     {
         private const string _cookieAdminScheme = "AdminAuth";
+        private string RATE_FILE_PATH = FilePathConstant.RATE_FILEPATH;
+        private string RATE_FILE_PREFIX = FilePathConstant.RATE_FILEPREFIX;
+
         private IUserService _userService;
         private IRateService _rateService;
-        public AdminController(IUserService userService, IRateService rateService)
-        {
+        private ManageFiles _manageFiles;
+        public AdminController(
+            IUserService userService, 
+            IRateService rateService,
+            IWebHostEnvironment webHostEnvironment
+        ) {
             _userService = userService;
             _rateService = rateService;
+            _manageFiles = new ManageFiles(webHostEnvironment);
         }
         public async Task<IActionResult> Index()
         {
             var comments = await _rateService.GetAll();
+            var commentsToDay = await _rateService.GetAllToDay();
+
             var model = new AdminIndexViewModel
             {
                 comments = comments
             };
+
+            ViewBag.CommentsToDay = commentsToDay.Count();
+
             return View(model);
         }
 
@@ -113,7 +129,12 @@ namespace ECommerce.WebApp.Controllers.Admin
         public async Task<IActionResult> DeleteComment(int id)
         {
             var result = await _rateService.DeleteComment(id);
-            if (result.isSucceed) return Ok(result.Message);
+            if (result.isSucceed) 
+            {
+                _manageFiles.DeleteFiles(result.Data, RATE_FILE_PATH);
+                return Ok(result.Message);
+            }
+            
             return BadRequest(result.Message);
         }
 
