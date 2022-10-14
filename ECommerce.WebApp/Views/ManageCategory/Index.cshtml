@@ -45,27 +45,37 @@
         var request = {
             CategoryName: $('.category-name').val()
         };
-        $.post("ManageCategory/Add", { request: request })
+        //$.post("ManageCategory/Add", { request: request })
+        //    .then(function (response) {
+        //        alert(response);
+        //        location.reload();
+        //    })
+        //    .catch(function (error) {
+        //        console.log(error);
+        //        alert(error.responseText);
+        //    })
+        PostApi("ManageCategory/Add", { request: request })
             .then(function (response) {
                 alert(response);
                 location.reload();
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
             })
     })
     
     function deleteCategory(id) {
         if (confirm("Xác nhận xóa")) {
-            $.post("ManageCategory/Delete", { id: id })
+            //$.post("ManageCategory/Delete", { id: id })
+            //    .then(function (response) {
+            //        alert(response);
+            //        location.reload();
+            //    })
+            //    .catch(function (error) {
+            //        console.log(error);
+            //        alert(error.responseText);
+            //    })
+            PostApi("ManageCategory/Delete", { id: id })
                 .then(function (response) {
                     alert(response);
                     location.reload();
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    alert(error.responseText);
                 })
         }
     }

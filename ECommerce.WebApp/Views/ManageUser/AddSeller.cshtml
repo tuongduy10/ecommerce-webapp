@@ -120,15 +120,21 @@
             RePassword: $('.user-repassword').val(),
             shopIds: shopIds,
         };
-        $.post("/ManageUser/AddSeller", request)
+        //$.post("/ManageUser/AddSeller", request)
+        //    .then(function (response) {
+        //        alert(response);
+        //        window.location = "/ManageUser";
+        //        return;
+        //    })
+        //    .catch(function (error) {
+        //        console.log(error);
+        //        alert(error.responseText);
+        //        return;
+        //    })
+        PostApi("/ManageUser/AddSeller", request)
             .then(function (response) {
                 alert(response);
                 window.location = "/ManageUser";
-                return;
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
                 return;
             })
     })

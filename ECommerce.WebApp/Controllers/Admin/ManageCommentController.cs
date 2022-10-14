@@ -32,7 +32,11 @@ namespace ECommerce.WebApp.Controllers.Admin
             _rateService = rateService;
             _manageFiles = new ManageFiles(webHostEnvironment);
         }
-
+        public async Task<IActionResult> Index()
+        {
+            var list = await _rateService.GetAll();
+            return View(list);
+        }
         public async Task<IActionResult> Detail(int id)
         {
             var list = await _rateService.GetAllByParentId(id);

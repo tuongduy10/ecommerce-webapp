@@ -321,24 +321,34 @@
         });
     }
     function updateStatus(id, status) {
-        $.post('/ManageBrand/UpdateStatus', { id: id, status: status })
+        //$.post('/ManageBrand/UpdateStatus', { id: id, status: status })
+        //    .then(function (response) {
+        //        alert(response);
+        //        location.reload();
+        //    })
+        //    .catch(function (error) {
+        //        alert(error.responseText);
+        //    })
+        PostApi('/ManageBrand/UpdateStatus', { id: id, status: status })
             .then(function (response) {
                 alert(response);
                 location.reload();
             })
-            .catch(function (error) {
-                alert(error.responseText);
-            })
     }
     function deleteBrand(id) {
         if (confirm("Xác nhận xóa")) {
-            $.post('/ManageBrand/DeleteBrand', { id: id })
+            //$.post('/ManageBrand/DeleteBrand', { id: id })
+            //    .then(function (response) {
+            //        alert(response);
+            //        location.reload();
+            //    })
+            //    .catch(function (error) {
+            //        alert(error.responseText);
+            //    })
+            PostApi('/ManageBrand/DeleteBrand', { id: id })
                 .then(function (response) {
                     alert(response);
                     location.reload();
-                })
-                .catch(function (error) {
-                    alert(error.responseText);
                 })
         }
     }
@@ -352,14 +362,19 @@
                     ids.push(id);
                 }
             });
-            $.post("/ManageBrand/DeleteBrands", { ids: ids })
+            //$.post("/ManageBrand/DeleteBrands", { ids: ids })
+            //    .then(function (response) {
+            //        alert(response);
+            //        location.reload();
+            //    })
+            //    .catch(function (error) {
+            //        console.log(error);
+            //        alert(error.responseText);
+            //    })
+            PostApi("/ManageBrand/DeleteBrands", { ids: ids })
                 .then(function (response) {
                     alert(response);
                     location.reload();
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    alert(error.responseText);
                 })
         }
     })
@@ -373,14 +388,19 @@
                     ids.push(id);
                 }
             });
-            $.post("/ManageBrand/UpdateBrandsStatus", { ids: ids, status: true })
+            //$.post("/ManageBrand/UpdateBrandsStatus", { ids: ids, status: true })
+            //    .then(function (response) {
+            //        alert(response);
+            //        location.reload();
+            //    })
+            //    .catch(function (error) {
+            //        console.log(error);
+            //        alert(error.responseText);
+            //    })
+            PostApi("/ManageBrand/UpdateBrandsStatus", { ids: ids, status: true })
                 .then(function (response) {
                     alert(response);
                     location.reload();
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    alert(error.responseText);
                 })
         }
     })
@@ -394,14 +414,19 @@
                     ids.push(id);
                 }
             });
-            $.post("/ManageBrand/UpdateBrandsStatus", { ids: ids, status: false })
+            //$.post("/ManageBrand/UpdateBrandsStatus", { ids: ids, status: false })
+            //    .then(function (response) {
+            //        alert(response);
+            //        location.reload();
+            //    })
+            //    .catch(function (error) {
+            //        console.log(error);
+            //        alert(error.responseText);
+            //    })
+            PostApi("/ManageBrand/UpdateBrandsStatus", { ids: ids, status: false })
                 .then(function (response) {
                     alert(response);
                     location.reload();
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    alert(error.responseText);
                 })
         }
     })

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ECommerce.Application.Services.Rate.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace ECommerce.Application.Services.Rate.Dtos
         public bool Disliked { get; set; }
         public int LikeCount { get; set; }
         public int DislikeCount { get; set; }
+        public bool CanAction { get; set; }
         public int UserId { get; set; }
         public int UserRepliedId { get; set; }
         public string UserRepliedName { get; set; }
@@ -23,9 +25,11 @@ namespace ECommerce.Application.Services.Rate.Dtos
         public string ProductName { get; set; }
         public string HtmlPosition { get; set; }
         public bool IsAdmin { get; set; }
+        public bool IsSeller { get; set; }
+        public bool IsShopOwner { get; set; }
         public int ParentId { get; set; }
         public DateTime CreateDate { get; set; }
-        public List<string> Images { get; set; }
+        public List<ImageModel> Images { get; set; }
         public List<RateGetModel> Replies { get; set; }
     }
 }

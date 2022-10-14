@@ -393,8 +393,8 @@
                     type: 'POST',
                     success: function (data) {
                         $('.cart-totalprice').html(`
-                    <strong>${new Intl.NumberFormat().format(data)} ₫</strong>
-                `)
+                            <strong>${new Intl.NumberFormat().format(data)} ₫</strong>
+                        `)
                     },
                     error: function (error) {
                         console.log('error--', error)

@@ -78,5 +78,44 @@ namespace ECommerce.WebApp.Controllers.Client
                 return Ok(result.Data);
             return BadRequest(result.Message);
         }
+        public async Task<IActionResult> UpdateComment(UpdateCommentRequest request)
+        {
+            if (request.files != null)
+            {
+                request.fileNames = _manageFiles.GetFilesName(request.files, FILE_PREFIX);
+            }
+            var result = await _rateService.UpdateComment(request);
+            if (result.isSucceed)
+            {
+                // save images to folder
+                if (request.files != null)
+                {
+                    _manageFiles.AddFiles(request.files, request.fileNames, FILE_PATH);
+                }
+                return Ok(result.Message);
+            }
+            return BadRequest(result.Message);
+        }
+        public async Task<IActionResult> DeleteComment(int id)
+        {
+            var result = await _rateService.DeleteComment(id);
+            if (result.isSucceed)
+            {
+                _manageFiles.DeleteFiles(result.Data, FILE_PATH);
+                return Ok(result.Message);
+            }
+
+            return BadRequest(result.Message);
+        }
+        public async Task<IActionResult> DeleteImages(List<int> id) 
+        {
+            var result = await _rateService.DeleteIamges(id);
+            if (result.isSucceed)
+            {
+                _manageFiles.DeleteFiles(result.Data, FILE_PATH);
+                return Ok(result.Message);
+            }
+            return BadRequest(result.Message);
+        }
     }
 }

@@ -254,6 +254,9 @@ namespace ECommerce.Application.Services.User
                                     UserDistrictCode = i.UserDistrictCode,
                                     UserCityCode = i.UserCityCode,
                                     UserPhone = i.UserPhone,
+                                    UserRoles = i.UserRoles
+                                        .Select(ur => ur.Role.RoleName)
+                                        .ToList(),
                                     Status = (bool)i.Status
                                 }).FirstOrDefaultAsync();
 
@@ -505,23 +508,27 @@ namespace ECommerce.Application.Services.User
                 foreach (var shop in shops)
                 {
                     shop.UserId = null;
-                    _DbContext.SaveChangesAsync().Wait();
                 }
 
                 // User's roles
                 var roles = await _DbContext.UserRoles.Where(i => i.UserId == id).ToListAsync();
                 _DbContext.UserRoles.RemoveRange(roles);
-                _DbContext.SaveChangesAsync().Wait();
 
                 // User's comment
                 var rates = await _DbContext.Rates.Where(i => i.UserId == id).FirstOrDefaultAsync();
                 if (rates != null)
                 {
+                    // Images
                     var rateImages = await _DbContext.RatingImages.Where(i => i.RateId == rates.RateId).ToListAsync();
-                    _DbContext.RatingImages.RemoveRange(rateImages);
-                    _DbContext.SaveChangesAsync().Wait();
+                    if (rateImages != null)
+                        _DbContext.RatingImages.RemoveRange(rateImages);
+
+                    // Like/Dislike
+                    var interests = await _DbContext.Interests.Where(i => i.UserId == id).ToListAsync();
+                    if (interests != null)
+                        _DbContext.Interests.RemoveRange(interests);
+                   
                     _DbContext.Rates.Remove(rates);
-                    _DbContext.SaveChangesAsync().Wait();
                 }
 
                 // User
@@ -531,9 +538,9 @@ namespace ECommerce.Application.Services.User
 
                 return new ApiSuccessResponse("Đã xóa tài khoản");
             }
-            catch
+            catch(Exception error)
             {
-                return new ApiFailResponse("Cập nhật thất bại, thử lại sau");
+                return new ApiFailResponse(error.ToString());
             }
         }
         public bool IsAdmin(int id)

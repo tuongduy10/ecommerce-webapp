@@ -130,17 +130,33 @@
                          data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                             <!-- Manage Shop -->
-                            <h6 class="collapse-header">Quản Lý Cửa Hàng:</h6>
+                            <h6 class="collapse-header">Quản Lý Cửa Hàng</h6>
                             <a class="collapse-item" href="@Url.Action("ShopList","ManageShop")">Danh sách cửa hàng</a>
                             <a class="collapse-item" href="@Url.Action("AddShop","ManageShop")">Tạo cửa hàng mới</a>
                             <!-- Manage Product -->
-                            <h6 class="collapse-header">Quản Lý Sản Phẩm:</h6>
+                            <h6 class="collapse-header">Quản Lý Sản Phẩm</h6>
                             <a class="collapse-item" href="@Url.Action("ProductList","ManageProduct")">Danh sách sản phẩm</a>
                             <a class="collapse-item" href="@Url.Action("AddProduct","ManageProduct")">Thêm sản phẩm mới</a>
                             <a class="collapse-item" href="@Url.Action("Index","ManageBrand")">Danh sách thương hiệu</a>
                             <a class="collapse-item" href="@Url.Action("Index","ManageCategory")">Danh sách danh mục</a>
                             <a class="collapse-item" href="@Url.Action("Index","ManageSubCategory")">Danh sách loại sản phẩm</a>
                             <a class="collapse-item" href="@Url.Action("Index","ManageSizeGuide")">Bảng chọn size</a>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseComments"
+                       aria-expanded="true" aria-controls="collapseComments">
+                        <i class="fas fa-fw fa-comments"></i>
+                        <span>Quản lý bình luận</span>
+                    </a>
+                    <div id="collapseComments" class="collapse" aria-labelledby="headingUtilities"
+                         data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            @*<h6 class="collapse-header">Quản Lý Bình Luận</h6>*@
+                            <a class="collapse-item" href="@Url.Action("Index","ManageComment")">Danh sách bình luận</a>
+
                         </div>
                     </div>
                 </li>
@@ -189,74 +205,74 @@
                         </div>
                     </div>
                 </li>
-            }
+                }
 
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-            @if (User.IsInRole("Seller") || User.IsInRole("Admin"))
-            {
-                <!-- Heading -->
-                <div class="sidebar-heading">
-                    Quản lý bán hàng
+                <!-- Divider -->
+                <hr class="sidebar-divider">
+                @if (User.IsInRole("Seller") || User.IsInRole("Admin"))
+                {
+                    <!-- Heading -->
+                    <div class="sidebar-heading">
+                        Quản lý bán hàng
+                    </div>
+
+                    <!-- Nav Item - Pages Collapse Menu -->
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+                           aria-expanded="true" aria-controls="collapsePages">
+                            <i class="fas fa-fw fa-box"></i>
+                            <span>Quản lý sản phẩm</span>
+                        </a>
+                        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                            <div class="bg-white py-2 collapse-inner rounded">
+                                <a class="collapse-item" href="@Url.Action("ProductList","SaleProduct")">Danh sách sản phẩm</a>
+                                <a class="collapse-item" href="@Url.Action("AddProduct","ManageProduct")">Thêm sản phẩm</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#orderManage"
+                           aria-expanded="true" aria-controls="orderManage">
+                            <i class="fas fa-fw fa-list"></i>
+                            <span>Quản lý đơn hàng</span>
+                            <span class="position-absolute" style="height: 8px; width: 8px; background-color: red; border-radius: 50%; top: 10px; right: 30px;"></span>
+
+                        </a>
+                        <div id="orderManage" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                            <div class="bg-white py-2 collapse-inner rounded">
+                                <h6 class="collapse-header">Danh sách đơn hàng</h6>
+                                <a class="collapse-item" href="seller-manageorder.html">
+                                    Chờ xác nhận...
+                                    <span class="position-absolute" style="height: 8px; width: 8px; background-color: red; border-radius: 50%;"></span>
+                                </a>
+                                <a class="collapse-item" href="">Đơn đang giao...</a>
+                                <a class="collapse-item" href="">Đơn hoàn thành</a>
+                                <a class="collapse-item" href="">Đơn hủy</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#sellerStatistics"
+                           aria-expanded="true" aria-controls="sellerStatistics">
+                            <i class="fas fa-fw fa-chart-bar"></i>
+                            <span>Thống kê</span>
+                        </a>
+                        <div id="sellerStatistics" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                            <div class="bg-white py-2 collapse-inner rounded">
+                                <a class="collapse-item" href="seller-finance.html">Doanh thu</a>
+                                <a class="collapse-item" href="seller-analysisproducts.html">Sản phẩm</a>
+                            </div>
+                        </div>
+                    </li>
+                }
+
+                <!-- Divider -->
+                <hr class="sidebar-divider d-none d-md-block">
+                <!-- Sidebar Toggler (Sidebar) -->
+                <div class="text-center d-none d-md-inline">
+                    <button class="rounded-circle border-0" id="sidebarToggle"></button>
                 </div>
-
-                <!-- Nav Item - Pages Collapse Menu -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                       aria-expanded="true" aria-controls="collapsePages">
-                        <i class="fas fa-fw fa-box"></i>
-                        <span>Quản lý sản phẩm</span>
-                    </a>
-                    <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <a class="collapse-item" href="@Url.Action("ProductList","SaleProduct")">Danh sách sản phẩm</a>
-                            <a class="collapse-item" href="@Url.Action("AddProduct","ManageProduct")">Thêm sản phẩm</a>
-                        </div>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#orderManage"
-                       aria-expanded="true" aria-controls="orderManage">
-                        <i class="fas fa-fw fa-list"></i>
-                        <span>Quản lý đơn hàng</span>
-                        <span class="position-absolute" style="height: 8px; width: 8px; background-color: red; border-radius: 50%; top: 10px; right: 30px;"></span>
-
-                    </a>
-                    <div id="orderManage" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">Danh sách đơn hàng</h6>
-                            <a class="collapse-item" href="seller-manageorder.html">
-                                Chờ xác nhận...
-                                <span class="position-absolute" style="height: 8px; width: 8px; background-color: red; border-radius: 50%;"></span>
-                            </a>
-                            <a class="collapse-item" href="">Đơn đang giao...</a>
-                            <a class="collapse-item" href="">Đơn hoàn thành</a>
-                            <a class="collapse-item" href="">Đơn hủy</a>
-                        </div>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#sellerStatistics"
-                       aria-expanded="true" aria-controls="sellerStatistics">
-                        <i class="fas fa-fw fa-chart-bar"></i>
-                        <span>Thống kê</span>
-                    </a>
-                    <div id="sellerStatistics" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <a class="collapse-item" href="seller-finance.html">Doanh thu</a>
-                            <a class="collapse-item" href="seller-analysisproducts.html">Sản phẩm</a>
-                        </div>
-                    </div>
-                </li>
-            }
-
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
-        </ul>
+            </ul>
         <!-- End of Sidebar -->
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -299,6 +315,8 @@
 
     <!-- Auto Formatting Currency -->
     <script src="/js/auto-formatting-currency.js"></script>
+    <!-- Personal script -->
+    <script type="text/javascript" src="/js/site.js"></script>
 
 </body>
 </html>

@@ -44,7 +44,7 @@ namespace ECommerce.WebApp.Controllers.Admin
 
             var model = new AdminIndexViewModel
             {
-                comments = comments
+                comments = commentsToDay
             };
 
             ViewBag.CommentsToDay = commentsToDay.Count();
@@ -53,6 +53,7 @@ namespace ECommerce.WebApp.Controllers.Admin
         }
 
         [AllowAnonymous]
+        [HttpGet]
         public async Task<IActionResult> SignIn()
         {
             if (User.Identity.IsAuthenticated)
@@ -72,23 +73,8 @@ namespace ECommerce.WebApp.Controllers.Admin
                 ViewBag.error = result.Message;
                 return View("SignIn");
             }
-            if (!isAdminOrSeller(result))
-            {
-                return RedirectToAction("AccessDenied", "Account");
-            }
             SignInHttpContext(result, _cookieAdminScheme);
-
             return RedirectToAction("Index", "Admin");
-        }
-        private bool isAdminOrSeller(ApiResponse result)
-        {
-            var userroles = result.ObjectData.GetType().GetProperty("UserRoles").GetValue(result.ObjectData, null) as List<string>;
-            if (userroles.FindAll(role => role.Contains("Admin") || role.Contains("Seller")).Count == 0)
-            {
-                return false;
-            }
-
-            return true;
         }
         private void SignInHttpContext(ApiResponse result, string scheme)
         {

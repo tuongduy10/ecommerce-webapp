@@ -33,8 +33,18 @@ namespace ECommerce.Application.Services.Rate
                     UserName = rate.User.UserFullName,
                     Comment = rate.Comment,
                     CreateDate = (DateTime)rate.CreateDate,
-                    Images = _DbContext.RatingImages.Where(img => img.RateId == rate.RateId).Select(i => i.RatingImagePath).ToList(),
-                    ParentId = rate.ParentId == null ? 0 : (int)rate.ParentId
+                    Images = _DbContext.RatingImages
+                        .Where(img => img.RateId == rate.RateId)
+                        .Select(i => new ImageModel() { 
+                            id = i.RatingImageId,
+                            path = i.RatingImagePath,
+                        })
+                        .ToList(),
+                    ParentId = rate.ParentId == null ? 0 : (int)rate.ParentId,
+                    Replies = _DbContext.Rates
+                        .Where(reply => reply.ParentId == rate.RateId)
+                        .Select(reply => new RateGetModel())
+                        .ToList()
                 })
                 .OrderByDescending(i => i.CreateDate)
                 .ToListAsync();
@@ -54,7 +64,13 @@ namespace ECommerce.Application.Services.Rate
                     UserName = rate.User.UserFullName,
                     Comment = rate.Comment,
                     CreateDate = (DateTime)rate.CreateDate,
-                    Images = _DbContext.RatingImages.Where(img => img.RateId == rate.RateId).Select(i => i.RatingImagePath).ToList(),
+                    Images = _DbContext.RatingImages
+                        .Where(img => img.RateId == rate.RateId)
+                        .Select(i => new ImageModel() { 
+                            id = i.RatingImageId,
+                            path = i.RatingImagePath
+                        })
+                        .ToList(),
                     LikeCount = rate.Interests.Where(lc => lc.Liked == true).Count(),
                     DislikeCount = rate.Interests.Where(lc => lc.Liked == false).Count()
                 })
@@ -66,7 +82,7 @@ namespace ECommerce.Application.Services.Rate
         public async Task<List<RateGetModel>> GetAllToDay() 
         {
             var rate = await _DbContext.Rates
-                .Where(rate => rate.CreateDate.Value.Date == DateTime.Today.Date)
+                .Where(rate => rate.ParentId == null)
                 .Select(rate => new RateGetModel()
                 {
                     Id = rate.RateId,
@@ -76,14 +92,23 @@ namespace ECommerce.Application.Services.Rate
                     UserName = rate.User.UserFullName,
                     Comment = rate.Comment,
                     CreateDate = (DateTime)rate.CreateDate,
-                    Images = _DbContext.RatingImages.Where(img => img.RateId == rate.RateId).Select(i => i.RatingImagePath).ToList()
+                    Images = _DbContext.RatingImages
+                        .Where(img => img.RateId == rate.RateId)
+                        .Select(i => new ImageModel() { 
+                            id = i.RatingImageId,
+                            path = i.RatingImagePath
+                        })
+                        .ToList()
                 })
                 .OrderByDescending(i => i.CreateDate)
                 .ToListAsync();
 
+            var today = DateTime.Today.Date.ToString("dd/MM/yyyy");
+            rate = rate.Where(i => i.CreateDate.Date.ToString("dd/MM/yyyy") == today).ToList();
+
             return rate;
         }
-        public async Task<List<RateGetModel>> GetRatesByProductId(int id, int userId = 0)
+        public async Task<List<RateGetModel>> GetRatesByProductId(int id, int _userId = 0)
         {
             var rate = await _DbContext.Rates
                 .Where(rate => rate.ProductId == id && rate.ParentId == null)
@@ -94,7 +119,19 @@ namespace ECommerce.Application.Services.Rate
                     UserName = rate.User.UserFullName,
                     Comment = rate.Comment,
                     CreateDate = (DateTime)rate.CreateDate,
-                    Images = _DbContext.RatingImages.Where(img => img.RateId == rate.RateId).Select(i => i.RatingImagePath).ToList(),
+                    Images = _DbContext.RatingImages
+                        .Where(img => img.RateId == rate.RateId)
+                        .Select(i => new ImageModel() { 
+                            id = i.RatingImageId,
+                            path = i.RatingImagePath
+                        })
+                        .ToList(),
+                    CanAction = rate.UserId == _userId,
+                    IsAdmin = _DbContext.UserRoles
+                            .Where(isa => isa.UserId == rate.User.UserId)
+                            .Select(isa => isa.Role.RoleName)
+                            .ToList()
+                            .Contains(RoleName.Admin),
                     Replies = _DbContext.Rates
                     .Where(reply => reply.ParentId == rate.RateId)
                     .Select(reply => new RateGetModel() { 
@@ -108,21 +145,37 @@ namespace ECommerce.Application.Services.Rate
                             .Select(isa => isa.Role.RoleName)
                             .ToList()
                             .Contains(RoleName.Admin),
+                        IsSeller =  _DbContext.UserRoles
+                            .Where(isa => isa.UserId == reply.User.UserId)
+                            .Select(isa => isa.Role.RoleName)
+                            .ToList()
+                            .Contains(RoleName.Seller),
+                        IsShopOwner = _DbContext.Products
+                            .Where(iso => iso.ProductId == id)
+                            .Select(iso => iso.Shop.UserId)
+                            .FirstOrDefault() == reply.User.UserId,
                         Comment = reply.Comment,
                         Liked = _DbContext.Interests
                             .Where(itr => itr.RateId == reply.RateId && itr.Liked == true)
                             .Select(itr => itr.UserId)
                             .ToList()
-                            .Contains(userId),
+                            .Contains(_userId),
                         LikeCount = reply.Interests.Where(lc => lc.Liked == true).Count(),
                         DislikeCount = reply.Interests.Where(dc => dc.Liked == false).Count(),
                         Disliked = _DbContext.Interests
                             .Where(itr => itr.RateId == reply.RateId && itr.Liked == false)
                             .Select(itr => itr.UserId)
                             .ToList()
-                            .Contains(userId),
+                            .Contains(_userId),
+                        CanAction = reply.UserId == _userId,
                         CreateDate = (DateTime)reply.CreateDate,
-                        Images = _DbContext.RatingImages.Where(img => img.RateId == reply.RateId).Select(i => i.RatingImagePath).ToList(),
+                        Images = _DbContext.RatingImages
+                            .Where(img => img.RateId == reply.RateId)
+                            .Select(i => new ImageModel() { 
+                                id = i.RatingImageId,
+                                path = i.RatingImagePath
+                            })
+                            .ToList(),
                     })
                     .ToList()
                 })
@@ -144,7 +197,7 @@ namespace ECommerce.Application.Services.Rate
                     UserRepliedId = request.userRepliedId,
                     ParentId = request.parentId,
                     CreateDate = DateTime.Now,
-                    RateValue = 5,
+                    RateValue = 0,
                 };
                 await _DbContext.Rates.AddAsync(comment);
                 await _DbContext.SaveChangesAsync();
@@ -200,7 +253,7 @@ namespace ECommerce.Application.Services.Rate
                 await _DbContext.SaveChangesAsync();
                 var interest = await this.LikeAndDislikeCount(rateId);
 
-                return new SuccessResponse<LikeAndDislike>(interest);
+                return new SuccessResponse<LikeAndDislike>("Đánh giá thành công", interest);
             }
             catch (Exception e)
             {
@@ -278,13 +331,51 @@ namespace ECommerce.Application.Services.Rate
                         await _DbContext.RatingImages.AddAsync(image);
                     }
                     await _DbContext.SaveChangesAsync();
-
                 }
                 return new ApiSuccessResponse("Đã đánh giá sản phẩm");
             }
             catch
             {
                 return new ApiFailResponse("Đánh giá thất bại");
+            }
+        }
+        public async Task<Response<List<string>>> UpdateComment(UpdateCommentRequest request)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.content))
+                    return new FailResponse<List<string>>("Nội dung không được để trống"); 
+
+                var comment = await _DbContext.Rates
+                    .Where(rate => rate.RateId == request.id)
+                    .FirstOrDefaultAsync();
+
+                if (comment == null)
+                    return new FailResponse<List<string>>("Không tìm thấy bình luận hoặc bình luận đã bị xóa");
+
+                comment.Comment = request.content;
+                comment.RateValue = request.rateValue;
+
+                // Add images
+                if (request.fileNames != null)
+                {
+                    foreach (var filename in request.fileNames)
+                    {
+                        var image = new Data.Models.RatingImage()
+                        {
+                            RateId = comment.RateId,
+                            RatingImagePath = filename,
+                        };
+                        await _DbContext.RatingImages.AddAsync(image);
+                    }
+                }
+
+                await _DbContext.SaveChangesAsync();
+                return new SuccessResponse<List<string>>("Cập nhật thành công");
+            }
+            catch (Exception e) 
+            {
+                return new FailResponse<List<string>>(e.ToString());
             }
         }
         public async Task<Response<List<string>>> DeleteComment(int id)
@@ -311,6 +402,30 @@ namespace ECommerce.Application.Services.Rate
             catch (Exception error)
             {
                 return new FailResponse<List<string>>("Xóa không thành công: \n" + error);
+            }
+        }
+        public async Task<Response<List<string>>> DeleteIamges(List<int> id)
+        {
+            try
+            {
+                var imagesStr = await _DbContext.RatingImages
+                    .Where(i => id.Contains((int)i.RatingImageId))
+                    .Select(i => i.RatingImagePath)
+                    .ToListAsync();
+
+                var images = await _DbContext.RatingImages
+                    .Where(i => id.Contains((int)i.RatingImageId))
+                    .ToListAsync();
+
+                if (images != null)
+                    _DbContext.RatingImages.RemoveRange(images);
+                await _DbContext.SaveChangesAsync();
+
+                return new SuccessResponse<List<string>>("Xóa thành công", imagesStr);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<List<string>>(error.ToString());
             }
         }
         public async Task<ApiResponse> deleteCommentByProductId(int id)

@@ -1,0 +1,82 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+<!-- Content Row -->
+<div class="row">
+    <!-- Area Chart -->
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Tất cả bình luận</h6>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered order-table" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Ngày</th>
+                                <th>Tên</th>
+                                <th>Sản phẩm</th>
+                                <th>Shop</th>
+                                <th>Nội dung</th>
+                                <th>Phản hồi</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Count > 0)
+                            {
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="text-center">
+                                            <a href="@Url.Action("Detail", "ManageComment", new { id = item.Id })">Chi tiết</a>
+                                        </td>
+                                        <td>@item.CreateDate.ToString("HH:mm:ss - dd/MM/yyyy")</td>
+                                        <td>@item.UserName</td>
+                                        <td>@item.ProductName</td>
+                                        <td>@item.ShopName</td>
+                                        <td style="max-width: 300px;">
+                                            <div class="d-flex flex-wrap mb-2">
+                                                @if (item.Images.Count > 0)
+                                                {
+                                                    @foreach (var image in item.Images)
+                                                    {
+                                                        <div class="d-flex align-items-center justify-content-between border p-1 mr-1" style="height: 100px; width: 100px;">
+                                                            <img class="mw-100 mh-100 mx-auto" src="@(Configuration["ImagePath:Rate"] + image)" alt="">
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                            <p style="white-space: pre-line;">@item.Comment</p>
+                                        </td>
+                                        <td>@item.Replies.Count</td>
+                                        <td class="text-center">
+                                            <button class="btn btn-danger" onclick="deleteComment(@item.Id)">Xóa</button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function deleteComment(id) {
+        if (confirm("Xác nhận xóa")) {
+            PostApi("/Admin/DeleteComment", { id: id })
+                .then(function (response) {
+                    alert(response);
+                    window.location.reload();
+                })
+        }
+    }
+</script>

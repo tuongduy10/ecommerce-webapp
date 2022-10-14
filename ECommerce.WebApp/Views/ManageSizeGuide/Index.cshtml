@@ -90,14 +90,19 @@
             ids: ids,
             content: tinymce.get("size-content").getContent()
         }
-        $.post("/ManageSizeGuide/AddSizeGuide", request)
+        //$.post("/ManageSizeGuide/AddSizeGuide", request)
+        //    .then(function (res) {
+        //        alert(res);
+        //        window.location.reload();
+        //    })
+        //    .catch(function (error) {
+        //        alert(error.responseText);
+        //        console.log(error)
+        //    })
+        PostApi("/ManageSizeGuide/AddSizeGuide", request)
             .then(function (res) {
                 alert(res);
                 window.location.reload();
-            })
-            .catch(function (error) {
-                alert(error.responseText);
-                console.log(error)
             })
     })
     function deleteSizeGuide(id) {

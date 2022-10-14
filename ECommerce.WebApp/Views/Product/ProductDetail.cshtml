@@ -431,200 +431,377 @@
                                 @foreach (var rate in Model.rates)
                                 {
                                     <!-- Comment level 1 -->
-                                <div class="user-comment mb-4">
-                                    <!-- User -->
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <div>
-                                            <span class="user__comment-name">
-                                                <strong>@rate.UserName</strong>
-                                            </span>
-                                            <span class="user__comment-time ml-2">
-                                                <img class="verifyImg" width="15" height="15" src="~/images/icon/verify.png">
-                                                <span class="verify" style="font-size: calc(12px + (16 - 14) * ((100vw - 375px)/ (1920 - 375))) !important; color: #4caf50;">Đã mua hàng</span>
-                                            </span>
+                                    <div class="user-comment mb-4">
+                                        <!-- User lv1 -->
+                                        <div class="d-flex align-items-center justify-content-between flex-wrap">
+                                            <div class="mb-2">
+                                                <span class="user__comment-name mr-2">
+                                                    <strong>@rate.UserName</strong>
+                                                </span>
+                                                <span class="user__comment-time" style="white-space: nowrap;">
+                                                    @if (rate.IsAdmin)
+                                                    {
+                                                        <span class="user__comment-role px-1 mr-2" style="white-space: nowrap">Quản trị viên</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <img class="verifyImg" width="15" height="15" src="~/images/icon/verify.png">
+                                                        <span class="verify" style="font-size: calc(12px + (16 - 14) * ((100vw - 375px)/ (1920 - 375))) !important; color: #4caf50;">Đã mua hàng</span>
+                                                    }
+                                                </span>
+                                            </div>
+                                            <span class="user__comment-time ml-2 mb-2" style="white-space: nowrap;">@rate.CreateDate.ToString("HH:mm, dd/MM/yyyy")</span>
                                         </div>
-                                        <span class="user__comment-time ml-2">@rate.CreateDate.ToString("HH:mm, dd/MM/yyyy")</span>
-                                    </div>
-                                    <!-- Star -->
-                                    <div class="d-flex stars">
-                                        @for (int i = 0; i < rate.Value; i++)
-                                        {
-                                            <span class="fa fa-star checked"></span>
-                                        }
-                                        @if (rate.Value != 0)
-                                        {
-                                            for (int i = 0; i < 5 - rate.Value; i++)
+                                        <!-- Star lv1 -->
+                                        <div class="d-flex stars star-@rate.Id">
+                                            @if (rate.Value != 0)
                                             {
-                                                <span class="fa fa-star"></span>
-                                            }
-                                        }
-                                    </div>
-                                    <!-- Comment -->
-                                    <div class="comment my-2">
-                                        @rate.Comment
-                                    </div>
-                                    <!-- Stars -->
-                                    @if (rate.Images.Count > 0)
-                                    {
-                                        <div class="image mb-2">
-                                            <ul class="image-list d-flex">
-                                                @foreach (var img in rate.Images)
+                                                @for (int i = 0; i < rate.Value; i++)
                                                 {
-                                                    <li class="border">
-                                                        <img class="pop" src="@(Configuration["ImagePath:Rate"] + img)" alt="">
-                                                    </li>
+                                                    <span class="fa fa-star checked"></span>
                                                 }
-                                            </ul>
+                                                for (int i = 0; i < 5 - rate.Value; i++)
+                                                {
+                                                    <span class="fa fa-star"></span>
+                                                }
+                                            }
                                         </div>
-                                    }
-                                    @if (!User.Identity.IsAuthenticated)
-                                    {
-                                        <a style="color: #288ad9; cursor: pointer;" onclick="window.location.href = '@Url.Action("SignIn", "Account", new { CurrentUrl = Context.Request.Path + Context.Request.QueryString})'"> Trả lời </a>
-                                    }
-                                    else
-                                    {
-                                        <a style="color: #288ad9;" href="javascript:onOpenReplyBox(@rate.Id, 1)" onclick="userRepliedId = @rate.UserId">Trả lời</a>
-                                    }
-                                    <!-- Reply box level 1 -->
-                                    <div class="reply-box reply-box-lv1-@rate.Id d-none">
-                                        <div class="d-flex">
-                                            <textarea class="d-flex w-100 mb-2 comment-val-@rate.Id" name="" id="" placeholder="Bình luận"></textarea>
+                                        <!-- Comment lv1 -->
+                                        <div class="comment comment-@rate.Id my-2">
+                                            @rate.Comment
                                         </div>
-                                        <div class="text-left">
-                                            <div class="upload-image mb-2">
-                                                <label for="image-upload-reply-@rate.Id" class="input-tile mb-2">
-                                                    <a class="upload">Chọn ảnh</a>
-                                                    <span>Thêm hình ảnh nếu có (Tối đa 3)</span>
-                                                </label>
-                                                <input id="image-upload-reply-@rate.Id" class="file-upload" type="file" multiple hidden onchange="handleUpload(event, 'image-reply-preview-@rate.Id')" />
-                                                <output class="images-uploaded d-flex" id="image-reply-preview-@rate.Id">
-                                                </output>
+                                        <!-- Update info lv1 -->
+                                        <div class="update-comment update-comment-@rate.Id my-2 d-none">
+                                            <!-- Update star lv1 -->
+                                            <div class="rating d-flex mb-2 align-items-center">
+                                                <span>Đánh giá</span>
+                                                <div class="stars ml-2">
+                                                    @for (int i = 0; i < rate.Value; i++)
+                                                    {
+                                                        <span class="rate-value-@rate.Id fa fa-star checked"></span>
+                                                    }
+                                                    @if (rate.Value != 5)
+                                                    {
+                                                        for (int i = 0; i < 5 - rate.Value; i++)
+                                                        {
+                                                            <span class="rate-value-@rate.Id fa fa-star"></span>
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                            <!-- Update comment lv1 -->
+                                            <textarea class="d-flex w-100 mb-2 comment-val-@rate.Id" name="" id="" placeholder="Bình luận">@rate.Comment</textarea>
+                                            <!-- Update images lv1 -->
+                                            <div class="text-left">
+                                                <div class="upload-image mb-2">
+                                                    <label for="image-upload-@rate.Id" class="input-tile mb-2">
+                                                        <a class="upload">Chọn ảnh</a>
+                                                        <span>Thêm hình ảnh nếu có (Tối đa 3)</span>
+                                                    </label>
+                                                    <input id="image-upload-@rate.Id" class="file-upload" type="file" multiple hidden onchange="handleUpload(event, 'image-preview-@rate.Id', @rate.Id)" />
+                                                    <output class="images-uploaded d-flex" id="image-preview-@rate.Id">
+                                                        @if (rate.Images.Count > 0)
+                                                        {
+                                                            @foreach (var img in rate.Images)
+                                                            {
+                                                                <div class="image__upload-item-@rate.Id mr-2">
+                                                                    <div class="border mb-2 mx-auto" style="height: 100px; width: 100px;">
+                                                                        <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
+                                                                            <img class="mw-100 mh-100" src="@(Configuration["ImagePath:Rate"] + img.path)" alt="">
+                                                                            <span class="position-absolute remove-upload"
+                                                                                  style="right: 0; top: 0; cursor: pointer;" value="@img.id">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                                                                     height="18" viewBox="0 0 24 24" fill="none"
+                                                                                     stroke="red" stroke-width="1" stroke-linecap="round"
+                                                                                     stroke-linejoin="round" class="feather feather-x">
+                                                                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                                                </svg>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        }
+                                                    </output>
+                                                </div>
+                                            </div>
+                                            <!-- Cancel/Update lv1 -->
+                                            <div class="text-right">
+                                                <button type="button" onclick="onCancelUpdate(@rate.Id)" style="background: unset; color: #333 !important;">Hủy</button>
+                                                <button type="button" onclick="updateComment(@rate.Id)">Cập nhật</button>
                                             </div>
                                         </div>
-                                        <div class="text-right">
-                                            <button type="button" onclick="onOpenReplyBox(@rate.Id, 1)" style="background: unset; color: #333 !important;">Hủy</button>
-                                            <button type="button" onclick="sendReply(@rate.Id, 1), onOpenReplyBox(@rate.Id, 1)">Gửi</button>
-                                        </div>
-                                    </div>
-                                    <!-- Reply level 2 -->
-                                    @if (rate.Replies.Count > 0)
-                                    {
-                                        <div class="listreply listreply-@rate.Id mt-2">
-                                            @foreach (var reply in rate.Replies)
-                                            {
-                                                <div class="reply mb-2">
-                                                    <!-- User -->
-                                                    <div class="d-flex align-items-center justify-content-between flex-wrap">
-                                                        <div class="d-flex align-items-center mb-2">
-                                                            <span class="user__comment-name d-flex align-items-center">
-                                                                <img class="mr-2" width="30" height="30" src="@(Configuration["ImagePath:Favicon"] + config.FaviconPath)">
-                                                                <strong>@reply.UserName</strong>
-                                                            </span>
-                                                            @if (reply.IsAdmin)
-                                                            {
-                                                                <span class="user__comment-role ml-2 px-1" style="white-space: nowrap">Quản trị viên</span>
-                                                            }
-                                                        </div>
-                                                        <span class="user__comment-time ml-2">@reply.CreateDate.ToString("HH:mm, dd/MM/yyyy")</span>
-                                                    </div>
-                                                    <!-- Comment level 2 -->
-                                                    <div class="comment my-2">
-                                                        <span style="color: #288ad9;">@Html.Raw("@")@reply.UserRepliedName</span>
-                                                        @reply.Comment
-                                                    </div>
-                                                    <!-- Reply images -->
-                                                    @if (reply.Images.Count > 0)
+                                        <!-- Images lv1 -->
+                                        @if (rate.Images.Count > 0)
+                                        {
+                                            <div class="image images-comment images-comment-@rate.Id mb-2">
+                                                <ul class="image-list d-flex">
+                                                    @foreach (var img in rate.Images)
                                                     {
-                                                        <div class="image mb-2">
-                                                            <ul class="image-list d-flex">
-                                                                @foreach (var image in reply.Images)
-                                                                {
-                                                                    <li class="border">
-                                                                        <img class="pop" src="@(Configuration["ImagePath:Rate"] + image)" alt="">
-                                                                    </li>
-                                                                }
+                                                        <li class="border image-@img.id">
+                                                            <img class="pop" src="@(Configuration["ImagePath:Rate"] + img.path)" alt="">
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        }
+                                        <!-- Answer/Like/Dislike/Cancel lv1 -->
+                                        @if (!User.Identity.IsAuthenticated)
+                                        {
+                                            <a style="color: #288ad9; cursor: pointer;" onclick="window.location.href = '@Url.Action("SignIn", "Account", new { CurrentUrl = Context.Request.Path + Context.Request.QueryString})'"> Trả lời </a>
+                                        }
+                                        else
+                                        {
+                                            <div class="action-box action-box-@rate.Id d-flex align-items-center mb-2">
+                                                <a class="mr-2" style="color: #288ad9;" href="javascript:void(0)" onclick="userRepliedId = @rate.UserId; onOpenReplyBox(@rate.Id, 1);">Trả lời</a>
+                                                @if (rate.CanAction)
+                                                {
+                                                    <div style="position: relative;">
+                                                        <a class="favor d-flex align-items-center" href="javascript:void(0)" onclick="onShowAction(@rate.Id)" style="margin-right: 5px; height: 18px;">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                 height="24" viewBox="0 0 24 24"
+                                                                 fill="none"
+                                                                 stroke="currentColor" stroke-width="2"
+                                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                                 class="feather feather-more-horizontal"
+                                                                 style="border-radius: 50%; background: #ddd; border: 1px solid #ddd; padding: 3px;">
+                                                                <circle cx="12" cy="12" r="1"></circle>
+                                                                <circle cx="19" cy="12" r="1"></circle>
+                                                                <circle cx="5" cy="12" r="1"></circle>
+                                                            </svg>
+                                                        </a>
+                                                        <div class="reply-actions reply-actions-@rate.Id d-none" 
+                                                             style="position: absolute; width: 126px; background: #fff; border: 1px solid #ddd; border-radius: 10px; top: 24px; left: 5px; z-index: 1;">
+                                                            <ul class="text-center">
+                                                                <li class="border-bottom">
+                                                                    <a href="javascript:void(0)" style="color: var(--blue-dior);" onclick="onUpdate(@rate.Id);">Chỉnh sửa</a>
+                                                                </li>
+                                                                <li class="border-bottom">
+                                                                    <a href="javascript:void(0)" onclick="deleteComment(@rate.Id)" style="color: red;">Xóa</a>
+                                                                </li>
+                                                                <li style="">
+                                                                    <a href="javascript:void(0)" onclick="onShowAction(@rate.Id)">Hủy</a>
+                                                                </li>
                                                             </ul>
                                                         </div>
-                                                    }
-                                                    <!-- Open reply box, Like, Dislike -->
-                                                    <div class="d-flex align-items-center reply-action">
-                                                        <!-- Open reply box -->
-                                                        @if (!User.Identity.IsAuthenticated)
-                                                        {
-                                                            <a onclick="window.location.href = '@Url.Action("SignIn", "Account", new { CurrentUrl = Context.Request.Path + Context.Request.QueryString})'" style="margin-right: 5px; color: #288ad9; cursor: pointer;">Trả lời</a>
-                                                        }
-                                                        else
-                                                        {
-                                                            <a href="javascript:onOpenReplyBox(@reply.Id, 2)" style="margin-right: 5px; color: #288ad9;" onclick="userRepliedId = @reply.UserId">Trả lời</a>
-                                                        }
-
-                                                        <!-- Like icon -->
-                                                        <a class="favor d-flex align-items-center" href="javascript:void(0)" onclick="likeComment(@reply.Id)" style="margin-right: 5px; height: 18px;color: #288ad9;">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="18"
-                                                                 height="18" viewBox="0 0 24 24" 
-                                                                 @if (reply.Liked) 
-                                                                 { 
-                                                                     @Html.Raw("fill=\"#288ad9\"");
-                                                                 } 
-                                                                 else
-                                                                 {
-                                                                     @Html.Raw("fill=\"none\"");
-                                                                 }
-                                                                 stroke="currentColor" stroke-width="1.5"
-                                                                 stroke-linecap="round" stroke-linejoin="round"
-                                                                 class="feather feather-thumbs-up like-svg-@reply.Id">
-                                                                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3">
-                                                                </path>
-                                                            </svg>
-                                                            <span class="user__comment-time ml-2 like-@reply.Id" style="color: #707070;">@reply.LikeCount</span>
-                                                        </a>
-                                                        <!-- Dislike icon -->
-                                                        <a class="favor d-flex align-items-center" href="javascript:void(0)" onclick="dislikeComment(@reply.Id)" style="margin-right: 5px; height: 18px;color: #288ad9;">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="18"
-                                                                 height="18" viewBox="0 0 24 24" 
-                                                                 @if (reply.Disliked) 
-                                                                 { 
-                                                                     @Html.Raw("fill=\"#288ad9\"");
-                                                                 } 
-                                                                 else
-                                                                 {
-                                                                     @Html.Raw("fill=\"none\"");
-                                                                 }
-                                                                 stroke="currentColor" stroke-width="1.5"
-                                                                 stroke-linecap="round" stroke-linejoin="round"
-                                                                 class="feather feather-thumbs-down dislike-svg-@reply.Id">
-                                                                <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17">
-                                                                </path>
-                                                            </svg>
-                                                            <span class="user__comment-time dislike-@reply.Id ml-2" style="color: #707070;">@reply.DislikeCount</span>
-                                                        </a>
-</div>
-                                                    <!-- Reply box level 2 -->
-                                                    <div class="reply-box reply-box-lv2-@reply.Id d-none">
-                                                        <div class="d-flex">
-                                                            <textarea class="d-flex w-100 mb-2 comment-val-@reply.Id" name="" id="" placeholder="Bình luận"></textarea>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                        <!-- Reply box lv1 -->
+                                        <div class="reply-box reply-box-@rate.Id reply-box-lv1-@rate.Id d-none">
+                                            <div class="d-flex">
+                                                <textarea class="d-flex w-100 mb-2 rep-comment-val-lv1-@rate.Id" name="" id="" placeholder="Bình luận"></textarea>
+                                            </div>
+                                            <div class="text-left">
+                                                <div class="upload-image mb-2">
+                                                    <label for="image-upload-reply-@rate.Id" class="input-tile mb-2">
+                                                        <a class="upload">Chọn ảnh</a>
+                                                        <span>Thêm hình ảnh nếu có (Tối đa 3)</span>
+                                                    </label>
+                                                    <input id="image-upload-reply-@rate.Id" class="file-upload" type="file" multiple hidden onchange="handleUpload(event, 'image-reply-preview-@rate.Id', @rate.Id)" />
+                                                    <output class="images-uploaded d-flex" id="image-reply-preview-@rate.Id">
+                                                    </output>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <button type="button" onclick="onCancelReply(@rate.Id, 1)" style="background: unset; color: #333 !important;">Hủy</button>
+                                                <button type="button" onclick="sendReply(@rate.Id, 1), onOpenReplyBox(@rate.Id, 1)">Gửi</button>
+                                            </div>
+                                        </div>
+                                        <!-- Reply level 2 -->
+                                        @if (rate.Replies.Count > 0)
+                                        {
+                                            <div class="listreply listreply-@rate.Id mt-2">
+                                                @foreach (var reply in rate.Replies)
+                                                {
+                                                    <div class="reply mb-2">
+                                                        <!-- User -->
+                                                        <div class="d-flex align-items-center justify-content-between flex-wrap">
+                                                            <div class="d-flex align-items-center mb-2">
+                                                                @if (reply.IsAdmin)
+                                                                {
+                                                                    <span class="user__comment-name d-flex align-items-center">
+                                                                        <img class="mr-2" width="30" height="30" src="@(Configuration["ImagePath:Favicon"] + config.FaviconPath)">
+                                                                        <strong>@reply.UserName</strong>
+                                                                    </span>
+                                                                    <span class="user__comment-role ml-2 px-1" style="white-space: nowrap">Quản trị viên</span>
+                                                                }
+                                                                else if (reply.IsShopOwner)
+                                                                {
+                                                                    <span class="user__comment-name d-flex align-items-center">
+                                                                        <img class="mr-2" width="30" height="30" src="@(Configuration["ImagePath:User"] + "seller-icon.png")">
+                                                                        <strong>@reply.UserName</strong>
+                                                                    </span>
+                                                                    <span class="user__comment-role ml-2 px-1" style="white-space: nowrap; background-color: var(--blue-dior);">Nhà bán hàng</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="user__comment-name d-flex align-items-center">
+                                                                        <strong>@reply.UserName</strong>
+                                                                    </span>
+                                                                }
+                                                            </div>
+                                                            <span class="user__comment-time ml-2">@reply.CreateDate.ToString("HH:mm, dd/MM/yyyy")</span>
                                                         </div>
-                                                        <div class="text-left">
-                                                            <div class="upload-image mb-2">
-                                                                <label for="image-upload-reply-@reply.Id" class="input-tile mb-2">
-                                                                    <a class="upload">Chọn ảnh</a>
-                                                                    <span>Thêm hình ảnh nếu có (Tối đa 3)</span>
-                                                                </label>
-                                                                <input id="image-upload-reply-@reply.Id" class="file-upload" type="file" multiple hidden onchange="handleUpload(event, 'image-reply-preview-@reply.Id')" />
-                                                                <output class="images-uploaded d-flex" id="image-reply-preview-@reply.Id">
-                                                                </output>
+                                                        <!-- Comment level 2 -->
+                                                        <div class="comment comment-@reply.Id my-2">
+                                                            <span style="color: #288ad9;">@Html.Raw("@")@reply.UserRepliedName</span>
+                                                            @reply.Comment
+                                                        </div>
+                                                        <!-- Update Info level 2 -->
+                                                        <div class="update-comment update-comment-@reply.Id mb-2 d-none">
+                                                            <textarea class="d-flex w-100 mb-2 comment-val-@reply.Id" name="" id="" placeholder="Bình luận">@reply.Comment</textarea>
+                                                            <div class="text-left">
+                                                                <div class="upload-image mb-2">
+                                                                    <label for="image-upload-@reply.Id" class="input-tile mb-2">
+                                                                        <a class="upload">Chọn ảnh</a>
+                                                                        <span>Thêm hình ảnh nếu có (Tối đa 3)</span>
+                                                                    </label>
+                                                                    <input id="image-upload-@reply.Id" class="file-upload" type="file" multiple hidden onchange="handleUpload(event, 'image-preview-@reply.Id')" />
+                                                                    <output class="images-uploaded d-flex" id="image-preview-@reply.Id">
+                                                                        @if (rate.Images.Count > 0)
+                                                                        {
+                                                                            @foreach (var img in reply.Images)
+                                                                            {
+                                                                                <div class="image__upload-item-@reply.Id mr-2">
+                                                                                    <div class="border mb-2 mx-auto" style="height: 100px; width: 100px;">
+                                                                                        <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
+                                                                                            <img class="mw-100 mh-100" src="@(Configuration["ImagePath:Rate"] + img.path)" alt="">
+                                                                                            <span class="position-absolute remove-upload"
+                                                                                                  style="right: 0; top: 0; cursor: pointer;" value="@img.id">
+                                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                                                                                     height="18" viewBox="0 0 24 24" fill="none"
+                                                                                                     stroke="red" stroke-width="1" stroke-linecap="round"
+                                                                                                     stroke-linejoin="round" class="feather feather-x">
+                                                                                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                                                                </svg>
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            }
+                                                                        }
+                                                                    </output>
+                                                                </div>
+                                                            </div>
+                                                            <div class="text-right">
+                                                                <button type="button" onclick="onCancelUpdate(@reply.Id)" style="background: unset; color: #333 !important;">Hủy</button>
+                                                                <button type="button" onclick="updateComment(@reply.Id)">Cập nhật</button>
                                                             </div>
                                                         </div>
-                                                        <div class="text-right">
-                                                            <button type="button" onclick="onOpenReplyBox(@reply.Id, 2)" style="background: unset; color: #333 !important;">Hủy</button>
-                                                            <button type="button" onclick="sendReplyLv2(@rate.Id, @reply.Id), onOpenReplyBox(@reply.Id, 2)">Gửi</button>
+                                                        <!-- Reply images level 2 -->
+                                                        @if (reply.Images.Count > 0)
+                                                        {
+                                                            <div class="image images-comment-@reply.Id mb-2">
+                                                                <ul class="image-list d-flex">
+                                                                    @foreach (var image in reply.Images)
+                                                                    {
+                                                                        <li class="border">
+                                                                            <img class="pop" src="@(Configuration["ImagePath:Rate"] + image.path)" alt="">
+                                                                        </li>
+                                                                    }
+                                                                </ul>
+                                                            </div>
+                                                        }
+                                                        <!-- Open reply box, Like, Dislike level 2 -->
+                                                        <div class="d-flex align-items-center reply-action">
+                                                            <!-- Open reply box level 2 -->
+                                                            @if (!User.Identity.IsAuthenticated)
+                                                            {
+                                                                <a onclick="window.location.href = '@Url.Action("SignIn", "Account", new { CurrentUrl = Context.Request.Path + Context.Request.QueryString})'" style="margin-right: 5px; color: #288ad9; cursor: pointer;">Trả lời</a>
+                                                            }
+                                                            else
+                                                            {
+                                                                <a href="javascript:void(0)" style="margin-right: 5px; color: #288ad9;" onclick="userRepliedId = @reply.UserId; onOpenReplyBox(@reply.Id, 2); onCancelUpdate(@reply.Id)">Trả lời</a>
+                                                            }
+                                                            <!-- Like icon level 2 -->
+                                                            <a class="favor d-flex align-items-center" href="javascript:void(0)" onclick="likeComment(@reply.Id)" style="margin-right: 5px; height: 18px;color: #288ad9;">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                                                     height="18" viewBox="0 0 24 24"
+                                                                     @if (reply.Liked) { @Html.Raw("fill=\"#288ad9\"")  ; } else { @Html.Raw("fill=\"none\"") ; }
+                                                                     stroke="currentColor" stroke-width="1.5"
+                                                                     stroke-linecap="round" stroke-linejoin="round"
+                                                                     class="feather feather-thumbs-up like-svg-@reply.Id">
+                                                                    <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3">
+                                                                    </path>
+                                                                </svg>
+                                                                <span class="user__comment-time ml-2 like-@reply.Id" style="color: #707070;">@reply.LikeCount</span>
+                                                            </a>
+                                                            <!-- Dislike icon level 2 -->
+                                                            <a class="favor d-flex align-items-center" href="javascript:void(0)" onclick="dislikeComment(@reply.Id)" style="margin-right: 5px; height: 18px;color: #288ad9;">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                                                     height="18" viewBox="0 0 24 24"
+                                                                     @if (reply.Disliked) { @Html.Raw("fill=\"#288ad9\"")  ; } else { @Html.Raw("fill=\"none\"") ; }
+                                                                     stroke="currentColor" stroke-width="1.5"
+                                                                     stroke-linecap="round" stroke-linejoin="round"
+                                                                     class="feather feather-thumbs-down dislike-svg-@reply.Id">
+                                                                    <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17">
+                                                                    </path>
+                                                                </svg>
+                                                                <span class="user__comment-time dislike-@reply.Id ml-2" style="color: #707070;">@reply.DislikeCount</span>
+                                                            </a>
+                                                            <!-- More icon level 2 -->
+                                                            @if (reply.CanAction)
+                                                            {
+                                                                <div style="position: relative;">
+                                                                    <a class="favor d-flex align-items-center" href="javascript:void(0)" onclick="onShowAction(@reply.Id)" style="margin-right: 5px; height: 18px;">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                             height="24" viewBox="0 0 24 24"
+                                                                             fill="none"
+                                                                             stroke="currentColor" stroke-width="2"
+                                                                             stroke-linecap="round" stroke-linejoin="round"
+                                                                             class="feather feather-more-horizontal"
+                                                                             style="border-radius: 50%; background: #ddd; border: 1px solid #ddd; padding: 3px;">
+                                                                            <circle cx="12" cy="12" r="1"></circle>
+                                                                            <circle cx="19" cy="12" r="1"></circle>
+                                                                            <circle cx="5" cy="12" r="1"></circle>
+                                                                        </svg>
+                                                                    </a>
+                                                                    <div class="reply-actions reply-actions-@reply.Id d-none" style="position: absolute;width: 126px;background: #fff;border: 1px solid #ddd;border-radius: 10px;top: 24px;left: 5px;">
+                                                                        <ul class="text-center">
+                                                                            <li class="border-bottom">
+                                                                                <a href="javascript:void(0)" style="color: var(--blue-dior);" onclick="onUpdate(@reply.Id); onShowAction(@reply.Id)">Chỉnh sửa</a>
+                                                                            </li>
+                                                                            <li class="border-bottom">
+                                                                                <a href="javascript:void(0)" onclick="deleteComment(@reply.Id)" style="color: red;">Xóa</a>
+                                                                            </li>
+                                                                            <li style="">
+                                                                                <a href="javascript:void(0)" onclick="onShowAction(@reply.Id)">Hủy</a>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                        <!-- Reply box level 2 -->
+                                                        <div class="reply-box reply-box-@reply.Id reply-box-lv2-@reply.Id d-none">
+                                                            <div class="d-flex">
+                                                                <textarea class="d-flex w-100 mb-2 rep-comment-val-lv2-@reply.Id" name="" id="" placeholder="Bình luận"></textarea>
+                                                            </div>
+                                                            <div class="text-left">
+                                                                <div class="upload-image mb-2">
+                                                                    <label for="image-upload-reply-@reply.Id" class="input-tile mb-2">
+                                                                        <a class="upload">Chọn ảnh</a>
+                                                                        <span>Thêm hình ảnh nếu có (Tối đa 3)</span>
+                                                                    </label>
+                                                                    <input id="image-upload-reply-@reply.Id" class="file-upload" type="file" multiple hidden onchange="handleUpload(event, 'image-reply-preview-@reply.Id')" />
+                                                                    <output class="images-uploaded d-flex" id="image-reply-preview-@reply.Id">
+                                                                    </output>
+                                                                </div>
+                                                            </div>
+                                                            <div class="text-right">
+                                                                <button type="button" onclick="onOpenReplyBox(@reply.Id, 2)" style="background: unset; color: #333 !important;">Hủy</button>
+                                                                <button type="button" onclick="sendReplyLv2(@rate.Id, @reply.Id), onOpenReplyBox(@reply.Id, 2)">Gửi</button>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            }
-                                        </div>
-                                    }
-                                </div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
                                 }
                             </div>
                         </div>
@@ -897,9 +1074,9 @@
     }
 
     arrFilesReply = []
-    function handleUpload(event, preview, arr) {
+    function handleUpload(event, preview, id = 0) {
         var files = event.target.files;
-        var currentFiles = $('.image__upload-item').length + files.length
+        var currentFiles = $(`.image__upload-item-${id}`).length + files.length
         if (currentFiles > 3) {
             return;
         }
@@ -911,13 +1088,12 @@
                 continue;
 
             arrFilesReply.push(file);
-            console.log(arrFilesReply);
             var picReader = new FileReader();
             picReader.fileName = file.name;
             picReader.addEventListener("load", function (event) {
                 var picFile = event.target;
                 var div = document.createElement("div");
-                div.classList.add(`image__upload-item`, `mr-2`);
+                div.classList.add(`image__upload-new-item`,`image__upload-item-${id}`, `mr-2`);
                 div.innerHTML = `
                     <div class="border mb-2 mx-auto" style="height: 100px; width: 100px;">
                         <div class="image-wrapper w-100 h-100 position-relative d-flex align-items-center justify-content-center">
@@ -983,23 +1159,13 @@
             }
         });
     })
-    function onOpenReplyBox(id, lv) {
-        arrFilesReply = [];
-        $('.file-upload').val('');
-        $('.images-uploaded').empty();
-        if ($(`.reply-box-lv${lv}-${id}`).hasClass('d-none')) {
-            $(`.reply-box`).addClass('d-none')
-            $(`.reply-box-lv${lv}-${id}`).removeClass('d-none');
-        } else {
-            $(`.reply-box-lv${lv}-${id}`).addClass('d-none');
-        }
-    }
+
     function sendReply(rateId, lv) {
         var formData = new FormData();
         for (let i = 0; i < arrFilesReply.length; i++) {
             formData.append('files', arrFilesReply[i]);
         }
-        formData.append('comment', $(`.comment-val-${rateId}`).val());
+        formData.append('comment', $(`.rep-comment-val-lv1-${rateId}`).val());
         formData.append('productId', @Model.product.ProductId);
         formData.append('parentId', rateId);
         formData.append('userRepliedId', userRepliedId);
@@ -1025,7 +1191,7 @@
         for (let i = 0; i < arrFilesReply.length; i++) {
             formData.append('files', arrFilesReply[i]);
         }
-        formData.append('comment', $(`.comment-val-${replyId}`).val());
+        formData.append('comment', $(`.rep-comment-val-lv2-${replyId}`).val());
         formData.append('productId', @Model.product.ProductId);
         formData.append('parentId', parentId);
         formData.append('userRepliedId', userRepliedId);
@@ -1051,26 +1217,10 @@
             liked: true,
         }
 
-        //$.ajax({
-        //    type: "POST",
-        //    url: "/Rate/LikeComment",
-        //    data: JSON.stringify(request), // In the controller it receives List<IFormFile> files, ...
-        //    dataType: 'json',
-        //    contentType: 'application/json; charset=utf-8',
-        //    success: function (res) {
-        //        $(`.like-${rateId}`).text(res.likeCount);
-        //        $(`.dislike-${rateId}`).text(res.dislikeCount);
-        //    },
-        //    error: function (error) {
-        //        console.log(error.responseText);
-        //    }
-        //});
-
-        $.post("/Rate/LikeComment", request)
+        PostApi("/Rate/LikeComment", request)
             .then(function (res) {
                 $(`.like-${rateId}`).text(res.likeCount);
                 $(`.dislike-${rateId}`).text(res.dislikeCount);
-
                 if ($(`.like-svg-${rateId}`).attr('fill') !== 'none') {
                     $(`.like-svg-${rateId}`).attr('fill', 'none');
                 } else {
@@ -1078,16 +1228,14 @@
                 }
                 $(`.dislike-svg-${rateId}`).attr('fill', 'none');
             })
-            .catch(function (error) {
-                console.log(error);
-            })
     }
     function dislikeComment(rateId) {
         var request = {
             rateId: rateId,
             liked: false,
         }
-        $.post("/Rate/LikeComment", request)
+
+        PostApi("/Rate/LikeComment", request)
             .then(function (res) {
                 $(`.like-${rateId}`).text(res.likeCount);
                 $(`.dislike-${rateId}`).text(res.dislikeCount);
@@ -1099,10 +1247,38 @@
                     $(`.dislike-svg-${rateId}`).attr('fill', '#288ad9');
                 }
             })
-            .catch(function (error) {
-                console.log(error);
-            })
     }
+    function deleteComment(id) {
+        if (confirm("Xác nhận xóa")) {
+            PostApi("/Rate/DeleteComment", { id: id })
+                .then(function (res) {
+                    alert(res);
+                    window.location.reload()
+                })
+        }
+    }
+    function updateComment(id) {
+        var formData = new FormData();
+        formData.append('id', id);
+        formData.append('content', $(`.comment-val-${id}`).val());
+        var value = 0;
+        $(`.rate-value-${id}`).each(function () {
+            if ($(this).hasClass('checked')) {
+                value++;
+            }
+        })
+        formData.append('rateValue', value);
+        for (let i = 0; i < arrFilesReply.length; i++) {
+            formData.append('files', arrFilesReply[i]);
+        }
+
+        AjaxPostForm("/Rate/UpdateComment", formData)
+            .success(function (message) {
+                alert(message);
+                location.reload();
+            });
+    }
+    
 
     // Feature: Add to cart
     $('.btn-addtocart').click(function () {
@@ -1347,5 +1523,169 @@
 </script>
 <!-- Comment -->
 <script>
+    function onOpenReplyBox(id, lv) {
+        arrFilesReply = [];
+        $('.file-upload').val('');
+        $('.images-uploaded').empty();
 
+        $(`.reply-box`).each((index, item) => {
+            if (!$(item).hasClass('d-none')) {
+                $(item).addClass('d-none');
+            }
+        })
+
+        if ($(`.reply-box-lv${lv}-${id}`).hasClass('d-none')) {
+            $(`.reply-box-lv${lv}-${id}`).removeClass('d-none');
+        } else {
+            $(`.reply-box-lv${lv}-${id}`).addClass('d-none');
+        }
+    }
+    function onShowAction(id) {
+        if ($(`.reply-actions-${id}`).hasClass("d-none")) {
+            $(`.reply-actions-${id}`).removeClass("d-none");
+        } else {
+            $(`.reply-actions-${id}`).addClass("d-none");
+        }
+    }
+    function onUpdate(id) {
+        arrFilesReply = [];
+        $(`.update-comment`).addClass('d-none');
+        $(`.comment`).removeClass('d-none');
+        $(`.stars`).removeClass('d-none');
+        $(`.images-comment`).removeClass('d-none');
+        $(`.image__upload-new-item`).remove();
+
+        // hide reply box
+        if (!$(`.reply-box-${id}`).hasClass("d-none")) {
+            $(`.reply-box-${id}`).addClass("d-none");
+        }
+
+        // Hide/Show reply action
+        $(`.reply-actions`).each((index, item) => {
+            if (!$(item).hasClass('d-none')) {
+                $(item).addClass('d-none');
+            }
+        })
+
+        // Hide/Show action box (like/dislike/answer)
+        $(`.action-box`).each((index, item) => {
+            if ($(item).hasClass("d-none")) {
+                $(item).removeClass("d-none");
+                $(item).addClass("d-flex");
+            }
+        })
+        if ($(`.action-box-${id}`).hasClass('d-flex')) {
+            $(`.action-box-${id}`).removeClass('d-flex');
+            $(`.action-box-${id}`).addClass('d-none');
+        }
+
+        if ($(`.comment-${id}`).hasClass("d-none")) {
+            $(`.comment-${id}`).removeClass("d-none");
+            $(`.images-comment-${id}`).removeClass("d-none");
+
+            $(`.star-${id}`).removeClass("d-none");
+            $(`.star-${id}`).addClass("d-flex");
+
+            $(`.update-comment-${id}`).addClass("d-none");
+        } else {
+            $(`.comment-${id}`).addClass("d-none");
+            $(`.images-comment-${id}`).addClass("d-none");
+
+            $(`.star-${id}`).removeClass("d-flex");
+            $(`.star-${id}`).addClass("d-none");
+
+            $(`.update-comment-${id}`).removeClass("d-none");
+        }
+    }
+    function onCancelUpdate(id) {
+        arrFilesReply = [];
+        $(`.image__upload-new-item`).remove();
+
+        if (!$(`.action-box-${id}`).hasClass('d-flex')) {
+            $(`.action-box-${id}`).removeClass('d-none');
+            $(`.action-box-${id}`).addClass('d-flex');
+        }
+
+        // Hide reply action
+        $(`.reply-actions`).each((index, item) => {
+            if (!$(item).hasClass('d-none')) {
+                $(item).addClass('d-none');
+            }
+        })
+
+        if ($(`.comment-${id}`).hasClass("d-none")) {
+
+            $(`.comment-${id}`).removeClass("d-none");
+            $(`.images-comment-${id}`).removeClass("d-none");
+
+            $(`.star-${id}`).removeClass("d-none");
+            $(`.star-${id}`).addClass("d-flex");
+
+            $(`.update-comment-${id}`).addClass("d-none");
+        } else {
+            $(`.comment-${id}`).addClass("d-none");
+            $(`.images-comment-${id}`).addClass("d-none");
+
+            $(`.star-${id}`).removeClass("d-flex");
+            $(`.star-${id}`).addClass("d-none");
+
+            $(`.update-comment-${id}`).removeClass("d-none");
+        }
+    }
+    function onCancelReply(id) {
+        arrFilesReply = [];
+        $('.file-upload').val('');
+        $('.images-uploaded').empty();
+
+        $(`.reply-box`).each((index, item) => {
+            if (!$(item).hasClass('d-none')) {
+                $(item).addClass('d-none');
+            }
+        })
+
+        $(`.reply-box-lv${lv}-${id}`).addClass('d-none');
+    }
+
+    // showReply(id)
+    // hideReply(id)
+    // showUpdate(id)
+    // hideUpdate(id)
+    // showAction(id)
+    // hideAction(id)
+
+    hideAllReply(){
+        $(`.reply-box`).each((index, item) => {
+            if (!$(item).hasClass('d-none')) {
+                $(item).addClass('d-none');
+            }
+        })
+    }
+    hideAllUpdate(){
+        $(`.update-comment`).each((index, item) => {
+            if (!$(item).hasClass(`d-none`)) {
+                $(item).addClass(`d-none`);
+            }
+        })
+    }
+    hideAllAction(){
+        $(`.action-box`).each((index, item) => {
+            if (!$(item).hasClass("d-none")) {
+                $(item).removeClass("d-flex");
+                $(item).addClass("d-none");
+            }
+        })
+    }
+
+    $(`.remove-upload`).click(function () {
+        var ele = $(this).parent().parent().parent();
+        if (confirm("Xác nhận xóa")) {
+            var _id = $(this).attr("value");
+            PostApi("/Rate/DeleteImages", { id: _id })
+                .then(function (res) {
+                    console.log(res);
+                    ele.remove();
+                    $(`.image-${_id}`).remove();
+                })
+        }
+    })
 </script>

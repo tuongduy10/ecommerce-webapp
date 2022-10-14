@@ -32,7 +32,8 @@ namespace ECommerce.WebApp.Configs.ActionFilters
             var _authType = context.HttpContext.User.Identity.AuthenticationType; // ClientAuth or AdminAuth
             var _path = context.HttpContext.Request.Path.ToString(); // ex: /Home/Index
             var _user = await _userService.UserProfile(_userId);
-
+             
+            // Check status and existed
             if (_user == null || _user.Status == false)
             {
                 if (_authType == "ClientAuth" && IsAllowedPath(_path)) 

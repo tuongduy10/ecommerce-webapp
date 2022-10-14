@@ -20,8 +20,8 @@ namespace ECommerce.WebApp.Controllers.ErrorHandle
                     return View("NotFound");
                 case 403: 
                     return View("Forbidden");
-                default: 
-                    return View("NotFound");
+                default:
+                    return BadRequest();
             }
         }
         [Route("error")]

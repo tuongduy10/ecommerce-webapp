@@ -131,14 +131,19 @@
             accountNumber: $('.shop-accountnumber').val(),
             bankAccount: $('.shop-accountname').val(),
         };
-        $.post("/ManageShop/AddShop", request)
+        //$.post("/ManageShop/AddShop", request)
+        //    .then(function (response) {
+        //        alert(response);
+        //        return;
+        //    })
+        //    .catch(function (error) {
+        //        console.log(error);
+        //        alert(error.responseText);
+        //        return;
+        //    })
+        PostApi("/ManageShop/AddShop", request)
             .then(function (response) {
                 alert(response);
-                return;
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
                 return;
             })
     })

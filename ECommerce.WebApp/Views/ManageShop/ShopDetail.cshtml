@@ -269,13 +269,17 @@
     }
 
     $(".update-shop").click(function () {
-        $.post("/ManageShop/UpdateShop", updateRequest())
+        //$.post("/ManageShop/UpdateShop", updateRequest())
+        //    .then(function (response) {
+        //        alert(response);
+        //    })
+        //    .catch(function (error) {
+        //        console.log(error);
+        //        alert(error.responseText);
+        //    })
+        PostApi("/ManageShop/UpdateShop", updateRequest())
             .then(function (response) {
                 alert(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
             })
     })
 </script>

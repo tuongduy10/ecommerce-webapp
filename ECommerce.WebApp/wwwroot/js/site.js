@@ -1,1 +1,84 @@
 ﻿// Write your Javascript code.
+function PostApi(url, params) {
+    return $.post(url, params)
+        .fail(function (xhr, status, error) {
+           switch (xhr.status) {
+               case 401:
+                   console.log(window.location.href);
+                   if (xhr.getAllResponseHeaders().includes('Manage')) {
+                       window.location.href = "/Admin/SignIn";
+                   } else {
+                       window.location.href = "/Account/SignIn";
+                   }
+                   break;
+               case 400:
+                   console.log("error---", xhr);
+                   if (xhr.responseText) {
+                       alert(xhr.responseText);
+                   }
+                   break;
+               case 500:
+                   alert('Lỗi');
+                   break;
+           }
+        })
+}
+
+function AjaxPost(_url, _params, errorMessage = false) {
+    return $.ajax({
+        url: _url,
+        data: JSON.stringify(_params),
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        type: 'POST',
+    }).fail(function (error) {
+        switch (error.status) {
+           case 401:
+                if (error.getAllResponseHeaders().includes("Manage")) {
+                    window.location.href = "/Admin/SignIn";
+                } else {
+                    window.location.href = "/Account/SignIn";
+                }
+               break;
+           case 400:
+               console.log('error--- ', error);
+               if (errorMessage && error.responseJSON.Message) {
+                   alert(error.responseJSON.Message);
+               }
+               break;
+           case 500:
+               alert('Lỗi');
+               break;
+        }
+    });
+}
+
+function AjaxPostForm(_url, _formData, errorMessage = false) {
+    return $.ajax({
+        type: "POST",
+        url: _url,
+        data: _formData,
+        processData: false,
+        contentType: false,
+    }).fail(function (error) {
+        switch (error.status) {
+           case 401:
+                if (error.getAllResponseHeaders().includes("Manage")) {
+                    window.location.href = "/Admin/SignIn";
+                } else {
+                    window.location.href = "/Account/SignIn";
+                }
+                break;
+           case 400:
+                console.log('error--- ', error);
+                if (errorMessage && error.responseJSON.Message) {
+                    alert(error.responseJSON.Message);
+                }
+                break;
+           case 500:
+                alert('Lỗi');
+                break;
+        }
+    });
+}
+

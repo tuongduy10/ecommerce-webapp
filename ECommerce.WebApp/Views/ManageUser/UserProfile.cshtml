@@ -116,26 +116,35 @@
             UserCityCode: $('.user-city').val(),
             ShopIds: shopIds
         };
-        $.post("/ManageUser/UpdateUser", request)
+        //$.post("/ManageUser/UpdateUser", request)
+        //    .then(function (response) {
+        //        alert(response);
+        //    })
+        //    .catch(function (error) {
+        //        console.log(error);
+        //        alert(error.responseText);
+        //    })
+        PostApi("/ManageUser/UpdateUser", request)
             .then(function (response) {
                 alert(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
             })
     })
     $(".delete-user").click(function () {
         if (confirm("Xác nhận xóa tài khoản này")) {
-            $.post("/ManageUser/DeleteUser", { id: @Model.User.UserId })
-            .then(function (response) {
-                alert(response);
-                window.location = "/ManageUser/Index";
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
-            })
+            //$.post("/ManageUser/DeleteUser", { id: @Model.User.UserId })
+            //    .then(function (response) {
+            //        alert(response);
+            //        window.location = "/ManageUser/Index";
+            //    })
+            //    .catch(function (error) {
+            //        console.log(error);
+            //        alert(error.responseText);
+            //    })
+            PostApi("/ManageUser/DeleteUser", { id: @Model.User.UserId })
+                .then(function (response) {
+                    alert(response);
+                    window.location = "/ManageUser/Index";
+                })
         }
     })
 </script>

@@ -197,25 +197,35 @@
             name: $(`#sub-${id}-name`).val(),
             id: id
         }
-        $.post("/ManageCategory/UpdateSubcategory", request)
+        //$.post("/ManageCategory/UpdateSubcategory", request)
+        //    .then(function (res) {
+        //        alert(res);
+        //        window.location.reload();
+        //    })
+        //    .catch(function (error) {
+        //        console.log(error);
+        //        alert(error.responseText);
+        //    })
+        PostApi("/ManageCategory/UpdateSubcategory", request)
             .then(function (res) {
                 alert(res);
                 window.location.reload();
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
             })
     }
     function deleteSubCategory(id) {
-        $.post("/ManageCategory/DeleteSubCategory", { id: id })
+        //$.post("/ManageCategory/DeleteSubCategory", { id: id })
+        //    .then(function (res) {
+        //        alert(res);
+        //        window.location.reload();
+        //    })
+        //    .catch(function (error) {
+        //        console.log(error);
+        //        alert(error.responseText);
+        //    })
+        PostApi("/ManageCategory/DeleteSubCategory", { id: id })
             .then(function (res) {
                 alert(res);
                 window.location.reload();
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
             })
     }
     $(document).on('click', '.add-attribute', function () {
@@ -229,14 +239,19 @@
             ids: ids,
             name: $(".attribute-name").val()
         }
-        $.post("/ManageCategory/UpdateAttributeForSub", request)
+        //$.post("/ManageCategory/UpdateAttributeForSub", request)
+        //    .then(function (res) {
+        //        alert(res);
+        //        window.location.reload();
+        //    })
+        //    .catch(function (error) {
+        //        console.log(error);
+        //        alert(error.responseText);
+        //    })
+        PostApi("/ManageCategory/UpdateAttributeForSub", request)
             .then(function (res) {
                 alert(res);
                 window.location.reload();
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
             })
     })
     $(document).on('click', '.add-option', function () {
@@ -250,14 +265,19 @@
             ids: ids,
             name: $(".option-name").val()
         }
-        $.post("/ManageCategory/UpdateOptionForSub", request)
+        //$.post("/ManageCategory/UpdateOptionForSub", request)
+        //    .then(function (res) {
+        //        alert(res);
+        //        window.location.reload();
+        //    })
+        //    .catch(function (error) {
+        //        console.log(error);
+        //        alert(error.responseText);
+        //    })
+        PostApi("/ManageCategory/UpdateOptionForSub", request)
             .then(function (res) {
                 alert(res);
                 window.location.reload();
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
             })
     })
     $(document).on('click', '.add-subcategory', function () {
@@ -265,14 +285,19 @@
             SubCategoryName: $('.subcategory-value').val(),
             CategoryId: @Model.category.CategoryId
         };
-        $.post("/ManageCategory/AddSubcategory", request)
+        //$.post("/ManageCategory/AddSubcategory", request)
+        //    .then(function (res) {
+        //        alert(res);
+        //        window.location.reload();
+        //    })
+        //    .catch(function (error) {
+        //        console.log(error);
+        //        alert(error.responseText);
+        //    })
+        PostApi("/ManageCategory/AddSubcategory", request)
             .then(function (res) {
                 alert(res);
                 window.location.reload();
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
             })
     })
     $(document).on('click', '.update-category', function () {
@@ -280,14 +305,19 @@
             CategoryId: @Model.category.CategoryId,
             CategoryName: $(".category-name").val()
         }
-        $.post("/ManageCategory/Update", request)
+        //$.post("/ManageCategory/Update", request)
+        //    .then(function (res) {
+        //        alert(res);
+        //        window.location.reload();
+        //    })
+        //    .catch(function (error) {
+        //        console.log(error);
+        //        alert(error.responseText);
+        //    })
+        PostApi("/ManageCategory/Update", request)
             .then(function (res) {
                 alert(res);
                 window.location.reload();
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
             })
     })
 </script>

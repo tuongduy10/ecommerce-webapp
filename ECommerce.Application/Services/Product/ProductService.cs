@@ -110,7 +110,7 @@ namespace ECommerce.Application.Services.Product
                 .ToListAsync();
 
             var rate = await _DbContext.Rates
-                .Where(i => i.ProductId == id)
+                .Where(i => i.ProductId == id && i.RateValue != 0)
                 .ToListAsync();
 
             int value = 0;

@@ -110,26 +110,36 @@
             name: $(`.option-${id}-name`).val(),
             ids: ids
         }
-        $.post("/ManageCategory/UpdateOptionBaseValue", request)
+        //$.post("/ManageCategory/UpdateOptionBaseValue", request)
+        //    .then(function (res) {
+        //        alert(res);
+        //        window.location.reload();
+        //    })
+        //    .catch(function (error) {
+        //        console.log(error);
+        //        alert(error.responseText);
+        //    })
+        PostApi("/ManageCategory/UpdateOptionBaseValue", request)
             .then(function (res) {
                 alert(res);
                 window.location.reload();
             })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
-            })
     }
     function deleteOption(id) {
         if (confirm("Xác nhận xóa")) {
-            $.post("/ManageCategory/DeleteOption", { id: id })
+            //$.post("/ManageCategory/DeleteOption", { id: id })
+            //    .then(function (res) {
+            //        alert(res);
+            //        window.location.reload();
+            //    })
+            //    .catch(function (error) {
+            //        console.log(error);
+            //        alert(error.responseText);
+            //    })
+            PostApi("/ManageCategory/DeleteOption", { id: id })
                 .then(function (res) {
                     alert(res);
                     window.location.reload();
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    alert(error.responseText);
                 })
         }
     }
@@ -144,14 +154,19 @@
             ids: ids,
             value: $('.option-value').val()
         }
-        $.post("/ManageCategory/AddOptionBaseValue", request)
+        //$.post("/ManageCategory/AddOptionBaseValue", request)
+        //    .then(function (res) {
+        //        alert(res);
+        //        window.location.reload();
+        //    })
+        //    .catch(function (error) {
+        //        console.log(error);
+        //        alert(error.responseText);
+        //    })
+        PostApi("/ManageCategory/AddOptionBaseValue", request)
             .then(function (res) {
                 alert(res);
                 window.location.reload();
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert(error.responseText);
             })
     }
 </script>

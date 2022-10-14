@@ -182,14 +182,19 @@
                     ids.push(id);
                 }
             });
-            $.post("/SaleProduct/DisableProducts", { ids: ids })
+            //$.post("/SaleProduct/DisableProducts", { ids: ids })
+            //    .then(function (response) {
+            //        alert(response);
+            //        location.reload();
+            //    })
+            //    .catch(function (error) {
+            //        console.log(error);
+            //        alert(error.responseText);
+            //    })
+            PostApi("/SaleProduct/DisableProducts", { ids: ids })
                 .then(function (response) {
                     alert(response);
                     location.reload();
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    alert(error.responseText);
                 })
         }
     })
@@ -202,14 +207,19 @@
                     ids.push(id);
                 }
             });
-            $.post("/SaleProduct/ApproveProducts", { ids: ids })
+            //$.post("/SaleProduct/ApproveProducts", { ids: ids })
+            //    .then(function (response) {
+            //        alert(response);
+            //        location.reload();
+            //    })
+            //    .catch(function (error) {
+            //        console.log(error);
+            //        alert(error.responseText);
+            //    })
+            PostApi("/SaleProduct/ApproveProducts", { ids: ids })
                 .then(function (response) {
                     alert(response);
                     location.reload();
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    alert(error.responseText);
                 })
         }
     })
@@ -222,28 +232,38 @@
                     ids.push(id);
                 }
             });
-            $.post("/SaleProduct/DeleteProducts", { ids: ids })
+            //$.post("/SaleProduct/DeleteProducts", { ids: ids })
+            //    .then(function (response) {
+            //        alert(response);
+            //        location.reload();
+            //    })
+            //    .catch(function (error) {
+            //        console.log(error);
+            //        alert(error.responseText);
+            //    })
+            PostApi("/SaleProduct/DeleteProducts", { ids: ids })
                 .then(function (response) {
                     alert(response);
                     location.reload();
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    alert(error.responseText);
                 })
         }
     })
 
     function deleteProduct(id) {
         if (confirm("Xác nhận xóa") == true) {
-            $.post("/SaleProduct/DeleteProduct", { id: id })
+            //$.post("/SaleProduct/DeleteProduct", { id: id })
+            //    .then(function (response) {
+            //        alert(response);
+            //        location.reload();
+            //    })
+            //    .catch(function (error) {
+            //        console.log(error);
+            //        alert(error.responseText);
+            //    })
+            PostApi("/SaleProduct/DeleteProduct", { id: id })
                 .then(function (response) {
                     alert(response);
                     location.reload();
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    alert(error.responseText);
                 })
         }
     }

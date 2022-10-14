@@ -64,25 +64,35 @@
             content: tinymce.get("size-content").getContent(),
             id: @Model.SizeGuide.SizeGuideId
         }
-        $.post("/ManageSizeGuide/UpdateSizeGuide", request)
+        //$.post("/ManageSizeGuide/UpdateSizeGuide", request)
+        //    .then(function (res) {
+        //        alert(res);
+        //        window.location.reload();
+        //    })
+        //    .catch(function (error) {
+        //        alert(error.responseText);
+        //        console.log(error)
+        //    })
+        PostApi("/ManageSizeGuide/UpdateSizeGuide", request)
             .then(function (res) {
                 alert(res);
                 window.location.reload();
             })
-            .catch(function (error) {
-                alert(error.responseText);
-                console.log(error)
-            })
     })
     $(".delete-sizechart").click(function () {
-        $.post("/ManageSizeGuide/DeleteSizeGuide", { id: @Model.SizeGuide.SizeGuideId})
+        // $.post("/ManageSizeGuide/DeleteSizeGuide", { id: @Model.SizeGuide.SizeGuideId})
+        //    .then(function (res) {
+        //        alert(res);
+        //        window.location = "/ManageSizeGuide/Index";
+        //    })
+        //    .catch(function (error) {
+        //        alert(error.responseText);
+        //        console.log(error)
+        //    })
+        PostApi("/ManageSizeGuide/DeleteSizeGuide", { id: @Model.SizeGuide.SizeGuideId})
             .then(function (res) {
                 alert(res);
                 window.location = "/ManageSizeGuide/Index";
-            })
-            .catch(function (error) {
-                alert(error.responseText);
-                console.log(error)
             })
     })
 </script>

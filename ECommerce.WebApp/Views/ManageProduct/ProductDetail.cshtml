@@ -759,7 +759,20 @@
     // Delete Image
     function deleteProductImage(ele, id) {
         if (confirm("Xác nhận xóa ảnh")) {
-            $.post("/ManageProduct/DeleteProductImage", { id: id })
+            //$.post("/ManageProduct/DeleteProductImage", { id: id })
+            //    .then(function (response) {
+            //        alert(response);
+
+            //        // Remove Image
+            //        $(ele).siblings('img').attr('src', '');
+            //        // Hide image wrapper
+            //        $(ele).parent().parent().parent().remove();
+            //    })
+            //    .catch(function (error) {
+            //        console.log(error);
+            //        alert(error.responseText);
+            //    })
+            PostApi("/ManageProduct/DeleteProductImage", { id: id })
                 .then(function (response) {
                     alert(response);
 
@@ -768,16 +781,24 @@
                     // Hide image wrapper
                     $(ele).parent().parent().parent().remove();
                 })
-                .catch(function (error) {
-                    console.log(error);
-                    alert(error.responseText);
-                })
-            
         }
     }
     function deleteProductUserImage(ele, id) {
         if (confirm("Xác nhận xóa ảnh")) {
-            $.post("/ManageProduct/DeleteProductUserImage", { id: id })
+            //$.post("/ManageProduct/DeleteProductUserImage", { id: id })
+            //    .then(function (response) {
+            //        alert(response);
+
+            //        // Remove Image
+            //        $(ele).siblings('img').attr('src', '');
+            //        // Hide image wrapper
+            //        $(ele).parent().parent().parent().remove();
+            //    })
+            //    .catch(function (error) {
+            //        console.log(error);
+            //        alert(error.responseText);
+            //    })
+            PostApi("/ManageProduct/DeleteProductUserImage", { id: id })
                 .then(function (response) {
                     alert(response);
 
@@ -785,10 +806,6 @@
                     $(ele).siblings('img').attr('src', '');
                     // Hide image wrapper
                     $(ele).parent().parent().parent().remove();
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    alert(error.responseText);
                 })
         }
     }

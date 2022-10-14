@@ -120,13 +120,14 @@ namespace ECommerce.WebApp
                 // app.UseExceptionHandler("/error");
                 // app.UseStatusCodePagesWithRedirects("/error/{0}");
                 app.UseDeveloperExceptionPage();
+                // app.UseHsts();
             }
             else
             {
-                app.UseExceptionHandler("/error");
-                app.UseStatusCodePagesWithRedirects("/error/{0}");
+                // app.UseExceptionHandler("/error");
+                // app.UseStatusCodePagesWithRedirects("/error/{0}");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                // app.UseHsts();
+                app.UseHsts();
             }
 
             app.UseHttpsRedirection();
