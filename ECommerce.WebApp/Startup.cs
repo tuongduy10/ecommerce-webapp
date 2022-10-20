@@ -101,7 +101,6 @@ namespace ECommerce.WebApp
             // User
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();
-            services.AddTransient<IFakeNotificationService, FakeNotificationService>();
             // Shop
             services.AddTransient<IShopService, ShopService>();
 
