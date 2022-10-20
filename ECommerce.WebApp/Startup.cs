@@ -28,6 +28,7 @@ using ECommerce.Application.Services.Notification;
 using ECommerce.WebApp.Configs.ActionFilters.HttpResponse;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using ECommerce.Application.Repositories;
 
 namespace ECommerce.WebApp
 {
@@ -78,6 +79,8 @@ namespace ECommerce.WebApp
                 //options.Filters.Add(new HttpResponseExceptionFilter());
                 options.Filters.Add(new GlobalActionFilter(new UserService(DbContext(services))));
             });
+            services.AddControllers();
+
 
             /*
              * Business Services
@@ -98,9 +101,11 @@ namespace ECommerce.WebApp
             // User
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();
-            services.AddTransient<INotificationService, NotificationService>();
+            services.AddTransient<IFakeNotificationService, FakeNotificationService>();
             // Shop
             services.AddTransient<IShopService, ShopService>();
+
+            services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 
             /*
              * Config Services

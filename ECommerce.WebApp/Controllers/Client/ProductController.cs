@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.Brand;
+﻿using ECommerce.Application.Repositories;
+using ECommerce.Application.Services.Brand;
 using ECommerce.Application.Services.Configurations;
 using ECommerce.Application.Services.Discount;
 using ECommerce.Application.Services.FilterProduct;
@@ -27,6 +28,7 @@ namespace ECommerce.WebApp.Controllers.Client
         private readonly IFilterProductService _filterService;
         private readonly IRateService _rateService;
         private readonly IDiscountService _discountService;
+        private readonly IRepositoryWrapper _repo;
         public ProductController(
             IConfigurationService configurationService,
             IProductService productService, 
@@ -34,7 +36,8 @@ namespace ECommerce.WebApp.Controllers.Client
             IBrandService brandService, 
             IFilterProductService filterService,
             IRateService rateService,
-            IDiscountService discountService
+            IDiscountService discountService,
+            IRepositoryWrapper repo
         ) {
             _configurationService = configurationService;
             _productService = productService;
@@ -43,6 +46,7 @@ namespace ECommerce.WebApp.Controllers.Client
             _filterService = filterService;
             _rateService = rateService;
             _discountService = discountService;
+            _repo = repo;
         }
         public async Task<IActionResult> ProductInBrand(ProductGetRequest request)
         {
@@ -80,7 +84,7 @@ namespace ECommerce.WebApp.Controllers.Client
             var suggestion = await _productService.getProductSuggestion();
             var phone = await _configurationService.getPhoneNumber();
             var options = await _productService.getProductOption(ProductId);
-            var discount = await _discountService.getDisount(product.ShopId, product.BrandId); // issue has been found
+            var discount = await _discountService.getDisount(product.ShopId, product.BrandId);
             var sizeGuides = await _productService.SizeGuideList();
 
             var model = new ProductDetailViewModel
@@ -94,6 +98,7 @@ namespace ECommerce.WebApp.Controllers.Client
                 sizeGuides = sizeGuides
             };
 
+            ViewBag.Notitfication = await _repo.Comment.FindAll();
             ViewBag.isScrolledTo = isScrolledTo;
             ViewBag.CommentId = commentId;
 
