@@ -49,21 +49,39 @@
                             </div>
                             <div class="mx-auto" style="max-width: 992px;">
                                 <ul class="notification-list" style="max-height: 675px; overflow:auto">
-                                    <li class="notification d-flex py-4">
-                                        <div class="mr-2" style="width: 120px;">
-                                            <img class="mw-100 mh-100 mx-auto" src="@(Configuration["ImagePath:Icon"] + "comment.png")" alt="">
-                                        </div>
-                                        <div>
-                                            <h1 class="type mb-4">Bình luận được phản hồi</h1>
-                                            <div><strong class="name" style="color: var(--blue-dior);">Admin (Quản trị viên)</strong> đã phản hồi bình luận của bạn:</div>
-                                            <div class="content">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</div>
-                                            <div class="time">20:42, 18/09/2022</div>
-                                        </div>
-                                        <span class="remove remove-notification-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                        </span>
-                                    </li>
+                                    @foreach (var noti in ViewBag.Notifications)
+                                    {
+                                        <li class="notification d-flex py-4" @if (noti.Id %2 == 0) { @Html.Raw("style=\"background: #f1f1f1;\"") }>
+                                            <div class="mr-2" style="width: 120px; cursor: pointer;" onclick="redirectTo(@noti.ProductId, @noti.Id)">
+                                                <img class="mw-100 mh-100 mx-auto" src="@(Configuration["ImagePath:Icon"] + "comment.png")" alt="">
+                                            </div>
+                                            <div style="cursor: pointer; @if (noti.Id % 2 == 0) { @Html.Raw("font-weight: bold") }" onclick="redirectTo(@noti.ProductId, @noti.Id)">
+                                                <h1 class="type mb-4" style="@if (noti.Id % 2 == 0) { @Html.Raw("font-weight: bold") }">
+                                                    Bình luận được phản hồi
+                                                </h1>
+                                                <div>
+                                                    @if (noti.IsAdmin)
+                                                    {
+                                                        <strong class="name" style="color: var(--blue-dior);">@noti.UserName (Quản trị viên)</strong> @Html.Raw("đã phản hồi bình luận của bạn:");
+                                                    }
+                                                    else
+                                                    {
+                                                        <strong class="name">@noti.UserName</strong> @Html.Raw("đã phản hồi bình luận của bạn:");
+                                                    }
+                                                </div>
+                                                <div class="content">@noti.Comment</div>
+                                                <div class="time">
+                                                    @noti.CreateDate.ToString("HH:mm, dd/MM/yyyy")
+                                                </div>
+                                            </div>
+                                            <span class="remove remove-notification-1" onclick="deleteNoti(@noti.Id)">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                            </span>
+                                        </li>
+                                    }
 
+
+                                    <!--
                                     <li class="notification d-flex py-4">
                                         <div class="mr-2" style="width: 120px;">
                                             <img class="mw-100 mh-100 mx-auto" src="@(Configuration["ImagePath:Icon"] + "bill.png")" alt="">
@@ -93,7 +111,7 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                         </span>
                                     </li>
-
+    -->
                                 </ul>
                             </div>
                         </div>
@@ -104,5 +122,17 @@
     </div>
 </div>
 <script type="text/javascript">
+    function deleteNoti(id) {
+        if (confirm("Xác nhận xóa")) {
+            PostApi("/Rate/DeleteComment", { id: id })
+                .then(function (res) {
+                    alert(res);
+                    window.location.reload()
+                })
+        }
+    }
 
+    function redirectTo(productId, commentId) {
+        window.open(`/Product/ProductDetail?ProductId=${productId}&isScrolledTo=true&commentId=${commentId}`, '_blank').focus();
+    }
 </script>

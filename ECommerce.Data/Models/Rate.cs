@@ -18,6 +18,7 @@ namespace ECommerce.Data.Models
         public string Comment { get; set; }
         public int? ProductId { get; set; }
         public DateTime? CreateDate { get; set; }
+        public int? RepliedId { get; set; }
         public int? ParentId { get; set; }
         public string HtmlPosition { get; set; }
         public int? UserId { get; set; }

@@ -48,7 +48,7 @@
                                                     @foreach (var image in item.Images)
                                                     {
                                                         <div class="d-flex align-items-center justify-content-between border p-1 mr-1" style="height: 100px; width: 100px;">
-                                                            <img class="mw-100 mh-100 mx-auto" src="@(Configuration["ImagePath:Rate"] + image)" alt="">
+                                                            <img class="mw-100 mh-100 mx-auto" src="@(Configuration["ImagePath:Rate"] + image.path)" alt="">
                                                         </div>
                                                     }
                                                 }

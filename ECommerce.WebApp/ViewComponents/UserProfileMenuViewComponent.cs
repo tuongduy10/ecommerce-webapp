@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.Shop;
+﻿using ECommerce.Application.Services.Rate;
+using ECommerce.Application.Services.Shop;
 using ECommerce.Application.Services.User;
 using ECommerce.WebApp.Controllers.Client;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +13,13 @@ namespace ECommerce.WebApp.ViewComponents
     public class UserProfileMenuViewComponent : ViewComponent
     {
         private IShopService _shopService;
-        public UserProfileMenuViewComponent(IShopService shopService)
+        private IRateService _rateService;
+        public UserProfileMenuViewComponent(
+            IShopService shopService,
+            IRateService rateService)
         {
             _shopService = shopService;
+            _rateService = rateService;
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
@@ -22,6 +27,9 @@ namespace ECommerce.WebApp.ViewComponents
             var id = Int32.Parse(user.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
             var result = await _shopService.isRegisted(id);
             var model = new SaleRegistrationModel();
+
+            var notifications = await _rateService.GetAllByUserId(id);
+            ViewBag.NotiCount = notifications.Count();
 
             // Chưa đăng ký
             if (!result.isSucceed || result.ObjectData == null)

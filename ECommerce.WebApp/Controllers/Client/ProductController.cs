@@ -68,7 +68,7 @@ namespace ECommerce.WebApp.Controllers.Client
 
             return View(model);
         }
-        public async Task<IActionResult> ProductDetail(int ProductId)
+        public async Task<IActionResult> ProductDetail(int ProductId, bool isScrolledTo = false, int commentId = 0)
         {
             var _userId = User.Claims.FirstOrDefault(i => i.Type == "UserId") != null ?
                 Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value) : 0;
@@ -93,6 +93,10 @@ namespace ECommerce.WebApp.Controllers.Client
                 discount = discount,
                 sizeGuides = sizeGuides
             };
+
+            ViewBag.isScrolledTo = isScrolledTo;
+            ViewBag.CommentId = commentId;
+
             return View(model);
         }
         public async Task<IActionResult> ProductAvaliable()

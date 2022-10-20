@@ -6,9 +6,9 @@ function PostApi(url, params) {
                case 401:
                    console.log(window.location.href);
                    if (xhr.getAllResponseHeaders().includes('Manage')) {
-                       window.location.href = "/Admin/SignIn";
+                       //window.location.href = "/Admin/SignIn";
                    } else {
-                       window.location.href = "/Account/SignIn";
+                       //window.location.href = "/Account/SignIn";
                    }
                    break;
                case 400:
@@ -24,7 +24,7 @@ function PostApi(url, params) {
         })
 }
 
-function AjaxPost(_url, _params, errorMessage = false) {
+function AjaxPost(_url, _params, errorMessage = true) {
     return $.ajax({
         url: _url,
         data: JSON.stringify(_params),
@@ -41,10 +41,10 @@ function AjaxPost(_url, _params, errorMessage = false) {
                 }
                break;
            case 400:
-               console.log('error--- ', error);
-               if (errorMessage && error.responseJSON.Message) {
-                   alert(error.responseJSON.Message);
-               }
+                console.log('Ajax Post error--- ', error);
+                if (errorMessage && error.responseText) {
+                    alert(error.responseText);
+                }
                break;
            case 500:
                alert('Lỗi');
@@ -53,7 +53,7 @@ function AjaxPost(_url, _params, errorMessage = false) {
     });
 }
 
-function AjaxPostForm(_url, _formData, errorMessage = false) {
+function AjaxPostForm(_url, _formData, errorMessage = true) {
     return $.ajax({
         type: "POST",
         url: _url,
@@ -70,9 +70,9 @@ function AjaxPostForm(_url, _formData, errorMessage = false) {
                 }
                 break;
            case 400:
-                console.log('error--- ', error);
-                if (errorMessage && error.responseJSON.Message) {
-                    alert(error.responseJSON.Message);
+                console.log('Ajax Post Form error--- ', error);
+                if (errorMessage && error.responseText) {
+                    alert(error.responseText);
                 }
                 break;
            case 500:

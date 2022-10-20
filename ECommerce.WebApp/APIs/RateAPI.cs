@@ -43,7 +43,7 @@ namespace ECommerce.WebApp.APIs
             }   
             request.userId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
 
-            var result = await _rateService.postComment(request);
+            var result = await _rateService.PostComment(request);
             if (result.isSucceed)
             {
                 // save images to folder

@@ -1,4 +1,5 @@
 ﻿using ECommerce.Application.Constants;
+using ECommerce.Application.Services.Notification;
 using ECommerce.Application.Services.Rate;
 using ECommerce.Application.Services.Rate.Dtos;
 using ECommerce.WebApp.Utils;
@@ -17,15 +18,18 @@ namespace ECommerce.WebApp.Controllers.Client
     public class RateController : Controller
     {
         private IRateService _rateService;
+        private INotificationService _notificationService;
         private ManageFiles _manageFiles;
         private string FILE_PATH = FilePathConstant.RATE_FILEPATH;
         private string FILE_PREFIX = FilePathConstant.RATE_FILEPREFIX;
 
         public RateController(
             IRateService rateService,
+            INotificationService notificationService,
             IWebHostEnvironment webHostEnvironment
         ) {
             _rateService = rateService;
+            _notificationService = notificationService;
             _manageFiles = new ManageFiles(webHostEnvironment);
         }
 
@@ -38,7 +42,7 @@ namespace ECommerce.WebApp.Controllers.Client
             }
             request.userId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
 
-            var result = await _rateService.postComment(request);
+            var result = await _rateService.PostComment(request);
             if (result.isSucceed)
             {
                 // save images to folder
@@ -109,7 +113,7 @@ namespace ECommerce.WebApp.Controllers.Client
         }
         public async Task<IActionResult> DeleteImages(List<int> id) 
         {
-            var result = await _rateService.DeleteIamges(id);
+            var result = await _rateService.DeleteImages(id);
             if (result.isSucceed)
             {
                 _manageFiles.DeleteFiles(result.Data, FILE_PATH);

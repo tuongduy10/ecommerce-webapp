@@ -1,4 +1,5 @@
 ﻿using ECommerce.Application.Services.Notification;
+using ECommerce.Application.Services.Rate;
 using ECommerce.Application.Services.Shop;
 using ECommerce.Application.Services.User;
 using ECommerce.Application.Services.User.Dtos;
@@ -16,14 +17,17 @@ namespace ECommerce.WebApp.Controllers.Client
     {
         private IUserService _userService;
         private IShopService _shopService;
+        private IRateService _rateService;
         private INotificationService _notificationService;
         public AccountController(
-            IUserService userService, 
+            IUserService userService,
             IShopService shopService,
+            IRateService rateService,
             INotificationService notificationService)
         {
             _userService = userService;
             _shopService = shopService;
+            _rateService = rateService;
             _notificationService = notificationService;
         }
 
@@ -49,6 +53,12 @@ namespace ECommerce.WebApp.Controllers.Client
         }
         public async Task<IActionResult> Notifications()
         {
+            var _id = User.Claims.FirstOrDefault(i => i.Type == "UserId") != null ?
+                Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value) : 0;
+
+            var notifications = await _rateService.GetAllByUserId(_id);
+            ViewBag.Notifications = notifications;
+
             return View();
         }
         public async Task<IActionResult> UserProfile()

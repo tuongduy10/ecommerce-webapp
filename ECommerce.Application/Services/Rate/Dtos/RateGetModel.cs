@@ -22,6 +22,7 @@ namespace ECommerce.Application.Services.Rate.Dtos
         public string UserRepliedName { get; set; }
         public string UserName {get;set;}
         public string ShopName { get; set; }
+        public int ProductId { get; set; }
         public string ProductName { get; set; }
         public string HtmlPosition { get; set; }
         public bool IsAdmin { get; set; }
