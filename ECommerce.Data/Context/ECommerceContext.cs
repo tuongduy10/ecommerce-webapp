@@ -518,6 +518,10 @@ namespace ECommerce.Data.Context
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.IdsToDelete)
+                    .HasMaxLength(256)
+                    .IsUnicode(false);
+
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Rates)
                     .HasForeignKey(d => d.ProductId)

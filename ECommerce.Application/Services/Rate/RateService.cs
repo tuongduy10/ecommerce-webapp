@@ -280,6 +280,14 @@ namespace ECommerce.Application.Services.Rate
             try
             {
                 if (string.IsNullOrEmpty(request.comment)) return new ApiFailResponse("Nội dung không được để trống");
+
+                string idsToDelete = null;
+                var replied = await _DbContext.Rates.Where(i => i.RateId == request.repliedId).FirstOrDefaultAsync();
+                if (replied != null)
+                {
+                    idsToDelete = string.IsNullOrEmpty(replied.IdsToDelete) ? request.repliedId.ToString() : (replied.IdsToDelete + "," + replied.RateId);
+                }
+
                 // Add comment content
                 var comment = new Data.Models.Rate()
                 {
@@ -289,6 +297,7 @@ namespace ECommerce.Application.Services.Rate
                     UserRepliedId = request.userRepliedId,
                     RepliedId = request.repliedId,
                     ParentId = request.parentId,
+                    IdsToDelete = idsToDelete,
                     CreateDate = DateTime.Now,
                     RateValue = 0,
                 };
@@ -508,11 +517,38 @@ namespace ECommerce.Application.Services.Rate
                         var replyImages = await _DbContext.RatingImages.Where(i => i.RateId == reply.RateId).ToListAsync();
                         if (replyImages != null)
                             _DbContext.RatingImages.RemoveRange(replyImages);
+
                         var replyInterests = await _DbContext.Interests.Where(i => i.RateId == reply.RateId).ToListAsync();
                         if (replyInterests != null)
                             _DbContext.Interests.RemoveRange(replyInterests);
                     }
                     _DbContext.Rates.RemoveRange(replies);
+                }
+
+                // Delete replied
+                var repliesByRepliedId = await _DbContext.Rates
+                    .Where(i => i.IdsToDelete != null && i.IdsToDelete.Contains(comment.RateId.ToString()))
+                    .ToListAsync();
+                if (repliesByRepliedId != null)
+                {
+                    foreach (var reply in repliesByRepliedId)
+                    {
+                        var imgStr = await _DbContext.RatingImages
+                            .Where(i => i.RateId == reply.RateId)
+                            .Select(i => i.RatingImagePath)
+                            .ToListAsync();
+                        deleteImages.AddRange(imgStr);
+
+                        var replyImages = await _DbContext.RatingImages.Where(i => i.RateId == reply.RateId).ToListAsync();
+                        if (replyImages != null)
+                            _DbContext.RatingImages.RemoveRange(replyImages);
+
+                        var replyInterests = await _DbContext.Interests.Where(i => i.RateId == reply.RateId).ToListAsync();
+                        if (replyInterests != null)
+                            _DbContext.Interests.RemoveRange(replyInterests);
+                    }
+
+                    _DbContext.Rates.RemoveRange(repliesByRepliedId);
                 }
 
                 await _DbContext.SaveChangesAsync();
@@ -521,7 +557,7 @@ namespace ECommerce.Application.Services.Rate
             }
             catch (Exception error)
             {
-                return new FailResponse<List<string>>("Xóa không thành công: \n" + error);
+                return new FailResponse<List<string>>("Xóa không thành công: \n\n" + error);
             }
         }
         public async Task<Response<List<string>>> DeleteImages(List<int> id)
