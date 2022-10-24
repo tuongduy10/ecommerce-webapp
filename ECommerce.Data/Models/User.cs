@@ -10,6 +10,8 @@ namespace ECommerce.Data.Models
         public User()
         {
             Interests = new HashSet<Interest>();
+            NotificationReceivers = new HashSet<Notification>();
+            NotificationSenders = new HashSet<Notification>();
             Orders = new HashSet<Order>();
             RateUserReplieds = new HashSet<Rate>();
             RateUsers = new HashSet<Rate>();
@@ -31,6 +33,8 @@ namespace ECommerce.Data.Models
         public bool? IsSystemAccount { get; set; }
 
         public virtual ICollection<Interest> Interests { get; set; }
+        public virtual ICollection<Notification> NotificationReceivers { get; set; }
+        public virtual ICollection<Notification> NotificationSenders { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Rate> RateUserReplieds { get; set; }
         public virtual ICollection<Rate> RateUsers { get; set; }

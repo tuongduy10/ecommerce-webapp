@@ -45,7 +45,7 @@ namespace ECommerce.Application.Services.Product
                 {
                     ProductId = i.ProductId,
                     ProductName = i.ProductName,
-                    PPC = i.PPC,
+                    PPC = i.Ppc,
                     ProductCode = i.ProductCode,
                     CreatedDate = i.ProductAddedDate,
                     Status = i.Status,
@@ -132,7 +132,7 @@ namespace ECommerce.Application.Services.Product
                 {
                     ProductId = i.ProductId,
                     ProductCode = i.ProductCode,
-                    PPC = i.PPC,
+                    PPC = i.Ppc,
                     ProductName = i.ProductName,
                     ProductDescription = i.ProductDescription,
                     ProductDescriptionMobile = i.ProductDescriptionMobile,
@@ -197,7 +197,7 @@ namespace ECommerce.Application.Services.Product
                 {
                     ProductId = i.ProductId,
                     ProductCode = i.ProductCode,
-                    PPC = i.PPC,
+                    PPC = i.Ppc,
                     ProductName = i.ProductName,
                     ProductDescription = i.ProductDescription,
                     ProductDescriptionMobile = i.ProductDescriptionMobile,
@@ -559,7 +559,7 @@ namespace ECommerce.Application.Services.Product
                 {
                     ProductCode = request.code.Trim(),
                     ProductName = request.name.Trim(), // required
-                    PPC = await GetNewPPC(),
+                    Ppc = await GetNewPPC(),
                     ProductDescription = request.description == null ? null : request.description,
                     ProductDescriptionMobile = request.descriptionMobile == null ? null : request.descriptionMobile,
                     SizeGuide = request.size == null ? null : request.size,

@@ -1,11 +1,14 @@
 ﻿
 using ECommerce.Application.Common;
+using ECommerce.Application.Repositories.Notification.Dtos;
+using ECommerce.Application.Repositories.Notification.Enums;
 using ECommerce.Application.Services.Rate.Dtos;
 using ECommerce.Application.Services.Rate.Models;
 using ECommerce.Application.Services.User;
 using ECommerce.Application.Services.User.Enums;
 using ECommerce.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +20,8 @@ namespace ECommerce.Application.Services.Rate
     public class RateService : IRateService
     {
         private ECommerceContext _DbContext;
-        public RateService(ECommerceContext DbContext)
+        public RateService(
+            ECommerceContext DbContext)
         {
             _DbContext = DbContext;
         }
@@ -319,11 +323,24 @@ namespace ECommerce.Application.Services.Rate
                     await _DbContext.SaveChangesAsync();
                 }
 
+                // Notification
+                var notification = new Data.Models.Notification()
+                {
+                    TextContent = comment.Comment,
+                    IsRead = false,
+                    ReceiverId = comment.UserRepliedId,
+                    SenderId = comment.UserId,
+                    JsLink = $"/Product/ProductDetail?ProductId={comment.ProductId}&isScrolledTo=true&commentId={comment.RateId}",
+                    TypeId = (int?)NotificationType.Comment,
+                };
+                await _DbContext.Notifications.AddAsync(notification);
+                await _DbContext.SaveChangesAsync();
+
                 return new ApiSuccessResponse("Phản hồi thành công");
             }
-            catch
+            catch(Exception error)
             {
-                return new ApiFailResponse("Phản hồi thất bại");
+                return new ApiFailResponse("Phản hồi thất bại \n\n" + error.ToString());
             }
             
         }

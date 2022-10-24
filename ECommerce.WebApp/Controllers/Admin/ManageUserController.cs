@@ -30,6 +30,10 @@ namespace ECommerce.WebApp.Controllers.Admin
             var list = await _userService.getUsersByFiltered(request);
             return View(list);
         }
+        public async Task<IActionResult> CurrentOnline()
+        {
+            return View();
+        }
         public async Task<IActionResult> UnConfirmUser()
         {
             var list = await _userService.getAll();

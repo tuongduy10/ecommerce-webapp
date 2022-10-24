@@ -21,9 +21,9 @@ namespace ECommerce.Data.Models
         public int? RepliedId { get; set; }
         public int? ParentId { get; set; }
         public string HtmlPosition { get; set; }
-        public string IdsToDelete { get; set; }
         public int? UserId { get; set; }
         public int? UserRepliedId { get; set; }
+        public string IdsToDelete { get; set; }
 
         public virtual Product Product { get; set; }
         public virtual User User { get; set; }

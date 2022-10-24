@@ -60,8 +60,4 @@
     <ProjectReference Include="..\ECommerce.Data\ECommerce.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\Notification\Dtos\" />
-  </ItemGroup>
-
 </Project>

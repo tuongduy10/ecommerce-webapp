@@ -18,7 +18,7 @@ namespace ECommerce.Data.Models
         }
 
         public int ProductId { get; set; }
-        public string PPC { get; set; }
+        public string Ppc { get; set; }
         public string ProductCode { get; set; }
         public string ProductName { get; set; }
         public byte? DiscountPercent { get; set; }

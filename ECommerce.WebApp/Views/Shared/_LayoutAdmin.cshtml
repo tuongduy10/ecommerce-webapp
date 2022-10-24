@@ -113,6 +113,9 @@
                     <div id="collapseUser" class="collapse" aria-labelledby="headingUtilities"
                          data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">Quản Lý Truy Cập</h6>
+                            <a class="collapse-item" href="@Url.Action("CurrentOnline","ManageUser")">Đang hoạt động</a>
+                            <h6 class="collapse-header">Quản Lý Tài Khoản</h6>
                             <a class="collapse-item" href="@Url.Action("Index","ManageUser")">Danh sách người dùng</a>
                             <a class="collapse-item" href="@Url.Action("Index","ManageUser", new { isSystemAccount = true })">Tài khoản nội bộ</a>
                             <a class="collapse-item" href="@Url.Action("AddSeller", "ManageUser")">Tạo tài khoản bán hàng</a>

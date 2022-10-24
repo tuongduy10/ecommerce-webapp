@@ -17,28 +17,66 @@ namespace ECommerce.Application.Repositories
         {
             _DbContext = DbContext;
         }
-        public virtual async Task<IEnumerable<T>> FindAll()
+        // Custom
+        public virtual IQueryable<T> Query(Expression<Func<T, bool>> expression = null)
         {
-            return await _DbSet.ToListAsync();
+            if (expression != null)
+                return _DbContext.Set<T>().Where(expression).AsNoTracking();
+            return _DbContext.Set<T>().AsNoTracking();
         }
-        public virtual async Task<IEnumerable<T>> FindByCondition(Expression<Func<T, bool>> expression)
+        // Single Obj
+        public virtual async Task<T> FindAsyncWhere(Expression<Func<T, bool>> expression)
         {
-            return await _DbSet.Where(expression).ToListAsync();
+            return await _DbContext.Set<T>().Where(expression).FirstOrDefaultAsync();
         }
-        public virtual async Task<bool> Create(T entity)
+        // List
+        public virtual async Task<IEnumerable<T>> ToListAsync()
         {
-            await _DbSet.AddAsync(entity);
+            return await _DbContext.Set<T>().ToListAsync();
+        } 
+        public virtual async Task<IEnumerable<T>> ToListAsyncWhere(Expression<Func<T, bool>> expression)
+        {
+            return await _DbContext.Set<T>().Where(expression).ToListAsync();
+        }
+        // Add
+        public virtual async Task<bool> AddAsync(T entity)
+        {
+            await _DbContext.Set<T>().AddAsync(entity);
             return true;
         }
-        public virtual async Task<bool> Update(T entity)
+        public virtual async Task<bool> AddRangeAsync(IEnumerable<T> entities)
         {
-            _DbSet.Update(entity);
+            await _DbContext.Set<T>().AddRangeAsync(entities);
             return true;
         }
-
-        public virtual async Task<bool> Delete(T entity)
+        // Update
+        public virtual void Update(T entity)
         {
-            return true;
+            _DbContext.Set<T>().Update(entity);
+        }
+        // Remove
+        public virtual async Task RemoveAsyncWhere(Expression<Func<T, bool>> expression)
+        {
+            var entity = await FindAsyncWhere(expression);
+            Remove(entity);
+        }
+        public virtual async Task RemoveRangeAsyncWhere(Expression<Func<T, bool>> expression)
+        {
+            var entities = await ToListAsyncWhere(expression);
+            RemoveRange(entities);
+        }
+        public virtual void Remove(T entity)
+        {
+            _DbContext.Set<T>().Remove(entity);
+        }
+        public virtual void RemoveRange(IEnumerable<T> entities)
+        {
+            _DbContext.Set<T>().RemoveRange(entities);
+        }
+        // Save changes
+        public virtual async Task SaveChangesAsync()
+        {
+            await _DbContext.SaveChangesAsync();
         }
     }
 }

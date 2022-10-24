@@ -1,4 +1,6 @@
 ﻿using ECommerce.Application.Constants;
+using ECommerce.Application.Repositories.Notification.Dtos;
+using ECommerce.Application.Services.Comment;
 using ECommerce.Application.Services.Notification;
 using ECommerce.Application.Services.Rate;
 using ECommerce.Application.Services.Rate.Dtos;
@@ -18,28 +20,24 @@ namespace ECommerce.WebApp.Controllers.Client
     public class RateController : Controller
     {
         private IRateService _rateService;
-        private INotificationService _notificationService;
+        private ICommentService _commentService;
         private ManageFiles _manageFiles;
         private string FILE_PATH = FilePathConstant.RATE_FILEPATH;
         private string FILE_PREFIX = FilePathConstant.RATE_FILEPREFIX;
-
+        
         public RateController(
             IRateService rateService,
-            INotificationService notificationService,
+            ICommentService comment,
             IWebHostEnvironment webHostEnvironment
         ) {
             _rateService = rateService;
-            _notificationService = notificationService;
+            _commentService = comment;
             _manageFiles = new ManageFiles(webHostEnvironment);
         }
-
         public async Task<IActionResult> PostComment(PostCommentRequest request)
         {
-            var listName = new List<string>();
             if (request.files != null)
-            {
                 request.fileNames = _manageFiles.GetFilesName(request.files, FILE_PREFIX);
-            }
             request.userId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
 
             var result = await _rateService.PostComment(request);
@@ -47,17 +45,15 @@ namespace ECommerce.WebApp.Controllers.Client
             {
                 // save images to folder
                 if (request.files != null)
-                {
                     _manageFiles.AddFiles(request.files, request.fileNames, FILE_PATH);
-                }
+
                 return Ok(result.Message);
             }
 
             return BadRequest(result.Message);
         }
-        public async Task<IActionResult> ReplyComment(ReplyCommentRequest request)
+        public async Task<IActionResult> ReplyCommentBakup(ReplyCommentRequest request)
         {
-            var listName = new List<string>();
             if (request.files != null)
                 request.fileNames = _manageFiles.GetFilesName(request.files, FILE_PREFIX);
             request.userId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
@@ -72,12 +68,38 @@ namespace ECommerce.WebApp.Controllers.Client
             }
             return BadRequest(result.Message);
         }
-        public async Task<IActionResult> LikeComment(LikeRequest request)
+        public async Task<IActionResult> ReplyComment(ReplyCommentRequest request)
+        {
+            if (request.files != null)
+                request.fileNames = _manageFiles.GetFilesName(request.files, FILE_PREFIX);
+            request.userId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
+
+            var result = await _commentService.ReplyCommentAsync(request);
+            if (result.isSucceed)
+            {
+                // save images to folder
+                if (request.files != null)
+                    _manageFiles.AddFiles(request.files, request.fileNames, FILE_PATH);
+                return Ok(result.Message);
+            }
+            return BadRequest(result.Message);
+        }
+        public async Task<IActionResult> LikeCommentBakup(LikeRequest request)
         {
             var _id = User.Claims.FirstOrDefault(i => i.Type == "UserId") != null ?
                 Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value) : 0;
             request.userId = _id;
             var result = await _rateService.LikeComment(request);
+            if (result.isSucceed)
+                return Ok(result.Data);
+            return BadRequest(result.Message);
+        }
+        public async Task<IActionResult> LikeComment(LikeRequest request)
+        {
+            var _id = User.Claims.FirstOrDefault(i => i.Type == "UserId") != null ?
+                Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value) : 0;
+            request.userId = _id;
+            var result = await _commentService.LikeComment(request);
             if (result.isSucceed)
                 return Ok(result.Data);
             return BadRequest(result.Message);

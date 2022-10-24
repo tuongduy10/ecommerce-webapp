@@ -12,8 +12,9 @@ namespace ECommerce.Data.Models
             Notifications = new HashSet<Notification>();
         }
 
-        public int TypeId { get; set; }
-        public string TypeText { get; set; }
+        public int Id { get; set; }
+        public string TypeName { get; set; }
+        public string TypeCode { get; set; }
 
         public virtual ICollection<Notification> Notifications { get; set; }
     }

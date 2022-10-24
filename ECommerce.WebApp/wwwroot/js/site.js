@@ -4,11 +4,10 @@ function PostApi(url, params) {
         .fail(function (xhr, status, error) {
            switch (xhr.status) {
                case 401:
-                   console.log(window.location.href);
                    if (xhr.getAllResponseHeaders().includes('Manage')) {
-                       //window.location.href = "/Admin/SignIn";
+                       window.location.href = "/Admin/SignIn";
                    } else {
-                       //window.location.href = "/Account/SignIn";
+                       window.location.href = "/Account/SignIn";
                    }
                    break;
                case 400:

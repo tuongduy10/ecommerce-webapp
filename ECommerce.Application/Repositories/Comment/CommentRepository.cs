@@ -15,11 +15,11 @@ namespace ECommerce.Application.Repositories.Comment
         {
 
         }
-        public override async Task<IEnumerable<Rate>> FindAll()
+        public override async Task<IEnumerable<Rate>> ToListAsync()
         {
             try
             {
-                return await _DbSet.ToListAsync();
+                return await _DbContext.Rates.ToListAsync();
             }
             catch (Exception error)
             {

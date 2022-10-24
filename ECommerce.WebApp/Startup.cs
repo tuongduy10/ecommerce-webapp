@@ -29,6 +29,7 @@ using ECommerce.WebApp.Configs.ActionFilters.HttpResponse;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using ECommerce.Application.Repositories;
+using ECommerce.Application.Services.Comment;
 
 namespace ECommerce.WebApp
 {
@@ -104,7 +105,8 @@ namespace ECommerce.WebApp
             // Shop
             services.AddTransient<IShopService, ShopService>();
 
-            services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+            services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<ICommentService, CommentService>();
 
             /*
              * Config Services

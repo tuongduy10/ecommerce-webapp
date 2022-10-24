@@ -7,19 +7,17 @@ namespace ECommerce.Data.Models
 {
     public partial class Notification
     {
-        public int NotificationId { get; set; }
-        public int? SeenderId { get; set; }
-        public int? ReceiverId { get; set; }
-        public string Title { get; set; }
+        public int Id { get; set; }
+        public bool? IsRead { get; set; }
         public string TextContent { get; set; }
-        public string Link { get; set; }
-        public DateTime? Time { get; set; }
-        public bool? Seen { get; set; }
-        public bool? Deleted { get; set; }
+        public DateTime? CreateDate { get; set; }
+        public string JsLink { get; set; }
         public int? TypeId { get; set; }
+        public int? ReceiverId { get; set; }
+        public int? SenderId { get; set; }
 
         public virtual User Receiver { get; set; }
-        public virtual User Seender { get; set; }
+        public virtual User Sender { get; set; }
         public virtual NotificationType Type { get; set; }
     }
 }

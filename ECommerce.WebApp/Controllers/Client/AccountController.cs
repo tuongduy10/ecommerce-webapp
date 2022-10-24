@@ -2,7 +2,6 @@
 using ECommerce.Application.Services.Rate;
 using ECommerce.Application.Services.Shop;
 using ECommerce.Application.Services.User;
-using ECommerce.Application.Services.User.Dtos;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -56,7 +55,7 @@ namespace ECommerce.WebApp.Controllers.Client
             var _id = User.Claims.FirstOrDefault(i => i.Type == "UserId") != null ?
                 Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value) : 0;
 
-            var notifications = await _rateService.GetAllByUserId(_id);
+            var notifications = await _notificationService.GetAllByUserIdAsync(_id);
             ViewBag.Notifications = notifications;
 
             return View();
@@ -109,7 +108,6 @@ namespace ECommerce.WebApp.Controllers.Client
             ViewBag.Message = result.Message;
             return RedirectToAction("SaleRegistration", "Account");
         }
-
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword()
         {

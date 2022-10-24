@@ -1,4 +1,5 @@
 ﻿using ECommerce.Application.Services.Configurations;
+using ECommerce.Application.Services.Notification;
 using ECommerce.Application.Services.Rate;
 using ECommerce.WebApp.Models.Components;
 using Microsoft.AspNetCore.Mvc;
@@ -11,14 +12,14 @@ namespace ECommerce.WebApp.ViewComponents
     public class HeaderViewComponent : ViewComponent
     {
         private readonly IHeaderService _headerService;
-        private readonly IRateService _rateService;
         private readonly IConfigurationService _configurationService;
+        private readonly INotificationService _notificationService;
         public HeaderViewComponent(
             IConfigurationService configurationService, 
-            IRateService rateService,
+            INotificationService notificationService,
             IHeaderService headerService)
         {
-            _rateService = rateService;
+            _notificationService = notificationService;
             _configurationService = configurationService;
             _headerService = headerService;
         }
@@ -35,7 +36,7 @@ namespace ECommerce.WebApp.ViewComponents
 
             var userId = Request.HttpContext.User.Claims.FirstOrDefault(i => i.Type == "UserId") != null ?
                 Int32.Parse(Request.HttpContext.User.Claims.FirstOrDefault(i => i.Type == "UserId").Value) : 0;
-            var notifications = await _rateService.GetAllByUserId(userId);
+            var notifications = await _notificationService.Notification.ToListAsyncWhere(item => item.ReceiverId == userId && item.IsRead == false);
             ViewBag.NotiCount = notifications.Count();
 
             return View(model);
