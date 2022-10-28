@@ -84,7 +84,7 @@ namespace ECommerce.WebApp.Controllers.Client
             }
             return BadRequest(result.Message);
         }
-        public async Task<IActionResult> LikeCommentBakup(LikeRequest request)
+        public async Task<IActionResult> LikeCommentBakup(LikeAndDislikeCount request)
         {
             var _id = User.Claims.FirstOrDefault(i => i.Type == "UserId") != null ?
                 Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value) : 0;
@@ -94,7 +94,7 @@ namespace ECommerce.WebApp.Controllers.Client
                 return Ok(result.Data);
             return BadRequest(result.Message);
         }
-        public async Task<IActionResult> LikeComment(LikeRequest request)
+        public async Task<IActionResult> LikeComment(LikeAndDislikeCount request)
         {
             var _id = User.Claims.FirstOrDefault(i => i.Type == "UserId") != null ?
                 Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value) : 0;

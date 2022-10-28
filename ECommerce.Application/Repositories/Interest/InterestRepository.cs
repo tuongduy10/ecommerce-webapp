@@ -24,7 +24,7 @@ namespace ECommerce.Application.Repositories.Interest
             };
             return result;
         }
-        public async Task<LikeAndDislike> LikeComment(LikeRequest request)
+        public async Task<LikeAndDislike> LikeComment(LikeAndDislikeCount request)
         {
             var currObj = await FindAsyncWhere(i => i.UserId == request.userId && i.RateId == request.rateId);
             int rateId = 0;

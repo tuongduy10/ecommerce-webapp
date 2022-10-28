@@ -545,14 +545,16 @@
                                             </div>
                                         }
                                         <!-- Answer/Like/Dislike/Cancel lv1 -->
-                                        @if (!User.Identity.IsAuthenticated)
-                                        {
-                                            <a style="color: #288ad9; cursor: pointer;" onclick="window.location.href = '@Url.Action("SignIn", "Account", new { CurrentUrl = Context.Request.Path + Context.Request.QueryString})'"> Trả lời </a>
-                                        }
-                                        else
-                                        {
                                         <div class="d-flex align-items-center mb-2 reply-action action-box action-box-@rate.Id">
-                                            <a class="mr-2" style="color: #288ad9;" href="javascript:void(0)" onclick="userRepliedId = @rate.UserId; openReplyBox(@rate.Id)">Trả lời</a>
+                                            @if (!User.Identity.IsAuthenticated)
+                                            {
+                                                <a style="color: #288ad9; cursor: pointer;" onclick="window.location.href = '@Url.Action("SignIn", "Account", new { CurrentUrl = Context.Request.Path + Context.Request.QueryString})'"> Trả lời </a>
+                                            }
+                                            else
+                                            {
+                                                <a class="mr-2" style="color: #288ad9;" href="javascript:void(0)" onclick="userRepliedId = @rate.UserId; openReplyBox(@rate.Id)">Trả lời</a>
+
+                                            }
                                             <!-- Like icon level 1 -->
                                             <a class="favor d-flex align-items-center" href="javascript:void(0)" onclick="likeComment(@rate.Id)" style="margin-right: 5px; height: 18px;color: #288ad9;">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="18"
@@ -612,7 +614,6 @@
                                                 </div>
                                             }
                                         </div>
-                                        }
                                         <!-- Reply box lv1 -->
                                         <div class="reply-box reply-box-@rate.Id reply-box-lv1-@rate.Id d-none">
                                             <div class="d-flex">

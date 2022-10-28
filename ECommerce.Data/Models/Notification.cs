@@ -15,6 +15,7 @@ namespace ECommerce.Data.Models
         public int? TypeId { get; set; }
         public int? ReceiverId { get; set; }
         public int? SenderId { get; set; }
+        public int? InfoId { get; set; }
 
         public virtual User Receiver { get; set; }
         public virtual User Sender { get; set; }

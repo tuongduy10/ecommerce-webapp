@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Services.Rate.Dtos
 {
-    public class LikeRequest
+    public class LikeAndDislikeCount
     {
         public int userId { get; set; }
         public int rateId { get; set; }

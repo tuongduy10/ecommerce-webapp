@@ -75,7 +75,7 @@ namespace ECommerce.WebApp.APIs
             return BadRequest(result.Message);
         }
         [HttpPost("LikeComment")]
-        public async Task<IActionResult> LikeComment(LikeRequest request)
+        public async Task<IActionResult> LikeComment(LikeAndDislikeCount request)
         {
             var _id = User.Claims.FirstOrDefault(i => i.Type == "UserId") != null ?
                 Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value) : 0;

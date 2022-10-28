@@ -344,7 +344,7 @@ namespace ECommerce.Application.Services.Rate
             }
             
         }
-        public async Task<Response<LikeAndDislike>> LikeComment(LikeRequest request)
+        public async Task<Response<LikeAndDislike>> LikeComment(LikeAndDislikeCount request)
         {
             try
             {

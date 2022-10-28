@@ -17,7 +17,7 @@ namespace ECommerce.Application.Services.Rate
         Task<List<RateGetModel>> GetAllByUserId(int id);
         Task<ApiResponse> PostComment(PostCommentRequest request);
         Task<ApiResponse> ReplyComment(ReplyCommentRequest request);
-        Task<Response<LikeAndDislike>> LikeComment(LikeRequest request);
+        Task<Response<LikeAndDislike>> LikeComment(LikeAndDislikeCount request);
         Task<Response<List<string>>> UpdateComment(UpdateCommentRequest request);
         Task<Response<List<string>>> DeleteComment(int id);
         Task<Response<List<string>>> DeleteImages(List<int> id);

@@ -39,7 +39,7 @@ namespace ECommerce.Application.Services.Comment
             if (_interestRepo == null)
                 _interestRepo = new InterestRepository(_DbContext);
         }
-        // Repository get
+        // Repositories
         public ICommentRepository Comment { get => _commentRepo; }
         public INotificationRepository Notification { get => _notificationRepo; }
         public IRepositoryBase<RatingImage> CommentImage { get => _commentImageRepo; }
@@ -90,7 +90,7 @@ namespace ECommerce.Application.Services.Comment
                 await SaveChangesAsync();
 
                 // Add Notification
-                await _notificationRepo.CreateCommentNotiAsync(comment);
+                var noti = await _notificationRepo.CreateCommentNotiAsync(comment);
                 await SaveChangesAsync();
                 return new SuccessResponse<List<string>>("Phản hồi thành công");
             }
@@ -99,15 +99,19 @@ namespace ECommerce.Application.Services.Comment
                 return new FailResponse<List<string>>("Lỗi \n\n" + error.ToString());
             }
         }
-        public async Task<Response<LikeAndDislike>> LikeComment(LikeRequest request)
+        public async Task<Response<LikeAndDislike>> LikeComment(LikeAndDislikeCount request)
         {
             try
             {
+                // Like
                 var result = await _interestRepo.LikeComment(request);
-
-                
-
                 await SaveChangesAsync();
+
+                // Notification
+                var comment = await _commentRepo.FindAsyncWhere(item => item.RateId == request.rateId);
+                await _notificationRepo.CreateLikeDislikeNotiAsync(comment);
+                await SaveChangesAsync();
+
                 return new SuccessResponse<LikeAndDislike>("Đánh giá thành công", result);
             }
             catch (Exception e)
@@ -115,7 +119,6 @@ namespace ECommerce.Application.Services.Comment
                 return new FailResponse<LikeAndDislike>("Lỗi \n\n" + e.Message);
             }
         }
-
 
         public async Task SaveChangesAsync() => await _DbContext.SaveChangesAsync();
     }

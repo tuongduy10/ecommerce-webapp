@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Repositories.Interest
 {
-    public interface IInterestRepository
+    public interface IInterestRepository : IRepositoryBase<Data.Models.Interest>
     {
         Task<LikeAndDislike> LikeAndDislikeCount(int rateId);
-        Task<LikeAndDislike> LikeComment(LikeRequest request);
+        Task<LikeAndDislike> LikeComment(LikeAndDislikeCount request);
     }
 }

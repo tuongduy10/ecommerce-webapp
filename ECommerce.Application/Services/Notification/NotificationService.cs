@@ -32,8 +32,6 @@ namespace ECommerce.Application.Services.Notification
         {
             get
             {
-                if (_notificationRepo == null)
-                    _notificationRepo = new NotificationRepository(_DbContext);
                 return _notificationRepo;
             }
         }
@@ -41,26 +39,26 @@ namespace ECommerce.Application.Services.Notification
         {
             get
             {
-                if (_userRepo == null)
-                    _userRepo = new UserRepository(_DbContext);
                 return _userRepo;
             }
         }
         public async Task<List<NotificationModel>> GetAllByUserIdAsync(int userId = 0)
         {
-            var list = await _notificationRepo.Query(item => item.ReceiverId == userId)
+            var list = await _notificationRepo
+                .Query(item => item.ReceiverId == userId)
                 .Select(item => new NotificationModel
                 {
                     Id = item.Id,
                     TextContent = item.TextContent,
-                    ReceiverId = (int)item.ReceiverId,
-                    SenderId = (int)item.SenderId,
+                    ReceiverId = item.ReceiverId == null ? 0 : (int)item.ReceiverId,
+                    SenderId = item.SenderId == null ? 0 : (int)item.SenderId,
                     JsLink = item.JsLink,
                     CreateDate = (DateTime)item.CreateDate,
                     IsRead = (bool)item.IsRead,
-                    ReceiverIsAmin = item.Receiver.UserRoles.Select(role => role.Role.RoleName).FirstOrDefault().Contains(RoleName.Admin),
-                    SenderIsAdmin = item.Sender.UserRoles.Select(role => role.Role.RoleName).FirstOrDefault().Contains(RoleName.Admin),
-                    SenderName = item.Sender.UserFullName
+                    ReceiverIsAmin = item.Receiver == null ? false  : item.Receiver.UserRoles.Select(role => role.Role.RoleName).FirstOrDefault().Contains(RoleName.Admin),
+                    SenderIsAdmin = item.Sender == null ? false : item.Sender.UserRoles.Select(role => role.Role.RoleName).FirstOrDefault().Contains(RoleName.Admin),
+                    SenderName = item.Sender == null ? "" : item.Sender.UserFullName,
+                    TypeCode = item.Type.TypeCode
                 })
                 .OrderByDescending(item => item.CreateDate)
                 .ToListAsync();

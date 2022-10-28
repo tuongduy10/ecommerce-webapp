@@ -57,16 +57,20 @@
                                             </div>
                                             <div style="cursor: pointer; @if (!noti.IsRead) { @Html.Raw("font-weight: bold") }" onclick="read(@noti.Id)">
                                                 <h1 class="type mb-4" style="@if (!noti.IsRead) { @Html.Raw("font-weight: bold") }">
-                                                    Bình luận được phản hồi
+                                                    @if (noti.TypeCode == "COMMENT") { @Html.Raw("Bình luận được phản hồi") }
+                                                    @if (noti.TypeCode == "LIKE") { @Html.Raw("Bình luận của bạn") }
                                                 </h1>
                                                 <div>
-                                                    @if (noti.ReceiverIsAmin)
+                                                    @if (noti.SenderId != null && noti.SenderId != 0)
                                                     {
-                                                        <strong class="name" style="color: var(--blue-dior);">@noti.SenderName (Quản trị viên)</strong> @Html.Raw("đã phản hồi bình luận của bạn:");
-                                                    }
-                                                    else
-                                                    {
-                                                        <strong class="name">@noti.SenderName</strong> @Html.Raw("đã phản hồi bình luận của bạn:");
+                                                        @if (noti.SenderIsAmin)
+                                                        {
+                                                            <strong class="name" style="color: var(--blue-dior);">@noti.SenderName (Quản trị viên)</strong> @Html.Raw("đã phản hồi bình luận của bạn:");
+                                                        }
+                                                        else
+                                                        {
+                                                            <strong class="name">@noti.SenderName</strong> @Html.Raw("đã phản hồi bình luận của bạn:");
+                                                        }
                                                     }
                                                 </div>
                                                 <div class="content">@noti.TextContent</div>

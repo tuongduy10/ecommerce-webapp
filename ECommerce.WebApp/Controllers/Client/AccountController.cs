@@ -52,6 +52,7 @@ namespace ECommerce.WebApp.Controllers.Client
         }
         public async Task<IActionResult> Notifications()
         {
+
             var _id = User.Claims.FirstOrDefault(i => i.Type == "UserId") != null ?
                 Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value) : 0;
 
