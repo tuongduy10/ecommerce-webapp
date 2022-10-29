@@ -46,9 +46,7 @@ namespace ECommerce.Data.Context
         public virtual DbSet<ProductType> ProductTypes { get; set; }
         public virtual DbSet<ProductUserImage> ProductUserImages { get; set; }
         public virtual DbSet<Rate> Rates { get; set; }
-        public virtual DbSet<RateReplied> RateReplieds { get; set; }
         public virtual DbSet<RatingImage> RatingImages { get; set; }
-        public virtual DbSet<Replied> Replieds { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Shop> Shops { get; set; }
         public virtual DbSet<ShopBank> ShopBanks { get; set; }
@@ -578,13 +576,6 @@ namespace ECommerce.Data.Context
                     .HasConstraintName("FK_Rate_UserReplied");
             });
 
-            modelBuilder.Entity<RateReplied>(entity =>
-            {
-                entity.HasKey(e => new { e.RateId, e.RepliedId });
-
-                entity.ToTable("RateReplied");
-            });
-
             modelBuilder.Entity<RatingImage>(entity =>
             {
                 entity.ToTable("RatingImage");
@@ -597,21 +588,6 @@ namespace ECommerce.Data.Context
                     .WithMany(p => p.RatingImages)
                     .HasForeignKey(d => d.RateId)
                     .HasConstraintName("FK_RatingImage_Rate");
-            });
-
-            modelBuilder.Entity<Replied>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToTable("Replied");
-
-                entity.Property(e => e.Comment)
-                    .HasMaxLength(10)
-                    .IsFixedLength(true);
-
-                entity.Property(e => e.CreateDate)
-                    .HasMaxLength(10)
-                    .IsFixedLength(true);
             });
 
             modelBuilder.Entity<Role>(entity =>

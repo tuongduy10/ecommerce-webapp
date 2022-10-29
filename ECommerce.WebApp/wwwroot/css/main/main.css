@@ -1636,6 +1636,12 @@ hr {
         font-size: 14px;
         margin-right: 5px;
     }
+        .reply-action .favor .count{
+            cursor: pointer;
+        }
+        .reply-action .favor .count:hover {
+            text-decoration: underline;
+        }
 
 .product__grid-4 .product {
     width: calc(25% - 4px) !important;

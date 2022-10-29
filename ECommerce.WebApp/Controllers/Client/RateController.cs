@@ -1,6 +1,7 @@
 ﻿using ECommerce.Application.Constants;
 using ECommerce.Application.Repositories.Notification.Dtos;
 using ECommerce.Application.Services.Comment;
+using ECommerce.Application.Services.Comment.Request;
 using ECommerce.Application.Services.Notification;
 using ECommerce.Application.Services.Rate;
 using ECommerce.Application.Services.Rate.Dtos;
@@ -141,6 +142,14 @@ namespace ECommerce.WebApp.Controllers.Client
                 _manageFiles.DeleteFiles(result.Data, FILE_PATH);
                 return Ok(result.Message);
             }
+            return BadRequest(result.Message);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> GetUsersFavor(UserFavorRequest request)
+        {
+            var result = await _commentService.GetUsersFavor(request);
+            if(result.isSucceed)
+                return Ok(result);
             return BadRequest(result.Message);
         }
     }

@@ -63,7 +63,7 @@
                                                 <div>
                                                     @if (noti.SenderId != null && noti.SenderId != 0)
                                                     {
-                                                        @if (noti.SenderIsAmin)
+                                                        @if (noti.SenderIsAdmin == true)
                                                         {
                                                             <strong class="name" style="color: var(--blue-dior);">@noti.SenderName (Quản trị viên)</strong> @Html.Raw("đã phản hồi bình luận của bạn:");
                                                         }
@@ -140,11 +140,12 @@
             .then(function (res) {
                 if (res && res.data) {
                     redirectTo(res.data.jsLink);
-                    window.location.reload()
+                    //window.location.reload()
                 }
             })
     }
     function redirectTo(link) {
-        window.open(link, '_blank').focus();
+        //window.open(link, '_blank').focus();
+        window.location.href = link;
     }
 </script>

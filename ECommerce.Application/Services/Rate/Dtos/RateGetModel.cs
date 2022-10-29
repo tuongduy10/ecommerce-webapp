@@ -32,5 +32,7 @@ namespace ECommerce.Application.Services.Rate.Dtos
         public DateTime CreateDate { get; set; }
         public List<ImageModel> Images { get; set; }
         public List<RateGetModel> Replies { get; set; }
+        public List<string> UsersLike { get; set; }
+        public List<string> UsersDislike { get; set; }
     }
 }

@@ -163,8 +163,8 @@
                                 <!-- Product options -->
                                 <div class="product__detail-options">
                                     <div class="option-quality d-flex mb-2 align-items-center">
-                                        <div class="option-title">Chọn số lượng </div>
-                                        <input class="text-center mr-2 pro-qty" type="number" value="1" min="1" max="50">
+                                        <div class="option-title">Chọn số lượng</div>
+                                        <input class="text-center mr-2 pro-qty" type="number" value="1" min="1" max="999" onkeyup="if(this.value > 999) this.value = 999;">
                                         @*<a class="product__detail-link" style="text-decoration: underline; cursor: pointer;" data-toggle="modal"
                                                data-target="#wholesaleModal">
                                                 Xem giá mua sỉ
@@ -553,24 +553,35 @@
                                             else
                                             {
                                                 <a class="mr-2" style="color: #288ad9;" href="javascript:void(0)" onclick="userRepliedId = @rate.UserId; openReplyBox(@rate.Id)">Trả lời</a>
-
                                             }
                                             <!-- Like icon level 1 -->
-                                            <a class="favor d-flex align-items-center" href="javascript:void(0)" onclick="likeComment(@rate.Id)" style="margin-right: 5px; height: 18px;color: #288ad9;">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                            <a class="favor d-flex align-items-center"
+                                               href="javascript:void(0)"
+                                               style="cursor: default; margin-right: 5px; height: 18px;color: #288ad9;">
+                                                <svg onclick="likeComment(@rate.Id)"
+                                                     style="cursor: pointer;"
+                                                     xmlns="http://www.w3.org/2000/svg" width="18"
                                                      height="18" viewBox="0 0 24 24"
-                                                     @if (rate.Liked) { @Html.Raw("fill=\"#288ad9\"")  ; } else { @Html.Raw("fill=\"none\"") ; }
+                                                     @if (rate.Liked) { @Html.Raw("fill=\"#288ad9\"")  ; } else { @Html.Raw("fill=\"none\"")   ; }
                                                      stroke="currentColor" stroke-width="1.5"
                                                      stroke-linecap="round" stroke-linejoin="round"
                                                      class="feather feather-thumbs-up like-svg-@rate.Id">
                                                     <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3">
                                                     </path>
                                                 </svg>
-                                                <span class="user__comment-time ml-2 like-@rate.Id" style="color: #707070;">@rate.LikeCount</span>
+                                                <span class="user__comment-time ml-2 like-@rate.Id count"
+                                                      onclick="getUsersLike(@rate.Id)"
+                                                      style="color: #707070;">
+                                                    @rate.LikeCount
+                                                </span>
                                             </a>
                                             <!-- Dislike icon level 1 -->
-                                            <a class="favor d-flex align-items-center" href="javascript:void(0)" onclick="dislikeComment(@rate.Id)" style="margin-right: 5px; height: 18px;color: #288ad9;">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                            <a class="favor d-flex align-items-center" 
+                                               href="javascript:void(0)" 
+                                               style="cursor: default; margin-right: 5px; height: 18px;color: #288ad9;">
+                                                <svg onclick="dislikeComment(@rate.Id)"
+                                                     style="cursor: pointer;"
+                                                     xmlns="http://www.w3.org/2000/svg" width="18"
                                                      height="18" viewBox="0 0 24 24"
                                                      @if (rate.Disliked) { @Html.Raw("fill=\"#288ad9\"")  ; } else { @Html.Raw("fill=\"none\"") ; }
                                                      stroke="currentColor" stroke-width="1.5"
@@ -579,7 +590,11 @@
                                                     <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17">
                                                     </path>
                                                 </svg>
-                                                <span class="user__comment-time dislike-@rate.Id ml-2" style="color: #707070;">@rate.DislikeCount</span>
+                                                <span class="user__comment-time dislike-@rate.Id ml-2 count"
+                                                      onclick="getUsersDislike(@rate.Id)"
+                                                      style="color: #707070;">
+                                                    @rate.DislikeCount
+                                                </span>
                                             </a>
                                             @if (rate.CanAction)
                                             {
@@ -743,8 +758,12 @@
                                                                 <a href="javascript:void(0)" style="margin-right: 5px; color: #288ad9;" onclick="userRepliedId = @reply.UserId; openReplyBox(@reply.Id)">Trả lời</a>
                                                             }
                                                             <!-- Like icon level 2 -->
-                                                            <a class="favor d-flex align-items-center" href="javascript:void(0)" onclick="likeComment(@reply.Id)" style="margin-right: 5px; height: 18px;color: #288ad9;">
+                                                            <a class="favor d-flex align-items-center" 
+                                                               href="javascript:void(0)" 
+                                                               style="cursor: default;margin-right: 5px; height: 18px;color: #288ad9;">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                                                     onclick="likeComment(@reply.Id)" 
+                                                                     style="cursor: pointer;"
                                                                      height="18" viewBox="0 0 24 24"
                                                                      @if (reply.Liked) { @Html.Raw("fill=\"#288ad9\"")  ; } else { @Html.Raw("fill=\"none\"") ; }
                                                                      stroke="currentColor" stroke-width="1.5"
@@ -753,11 +772,19 @@
                                                                     <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3">
                                                                     </path>
                                                                 </svg>
-                                                                <span class="user__comment-time ml-2 like-@reply.Id" style="color: #707070;">@reply.LikeCount</span>
+                                                                <span class="user__comment-time ml-2 like-@reply.Id count" 
+                                                                      onclick="getUsersLike(@reply.Id)"
+                                                                      style="color: #707070;">
+                                                                    @reply.LikeCount
+                                                                </span>
                                                             </a>
                                                             <!-- Dislike icon level 2 -->
-                                                            <a class="favor d-flex align-items-center" href="javascript:void(0)" onclick="dislikeComment(@reply.Id)" style="margin-right: 5px; height: 18px;color: #288ad9;">
+                                                            <a class="favor d-flex align-items-center" 
+                                                               href="javascript:void(0)" 
+                                                               style="cursor: default;margin-right: 5px; height: 18px;color: #288ad9;">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="18"
+                                                                     onclick="dislikeComment(@reply.Id)" 
+                                                                     style="cursor: pointer;"
                                                                      height="18" viewBox="0 0 24 24"
                                                                      @if (reply.Disliked) { @Html.Raw("fill=\"#288ad9\"")  ; } else { @Html.Raw("fill=\"none\"") ; }
                                                                      stroke="currentColor" stroke-width="1.5"
@@ -766,7 +793,11 @@
                                                                     <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17">
                                                                     </path>
                                                                 </svg>
-                                                                <span class="user__comment-time dislike-@reply.Id ml-2" style="color: #707070;">@reply.DislikeCount</span>
+                                                                <span class="user__comment-time dislike-@reply.Id ml-2 count" 
+                                                                      onclick="getUsersDislike(@reply.Id)"
+                                                                      style="color: #707070;">
+                                                                    @reply.DislikeCount
+                                                                </span>
                                                             </a>
                                                             <!-- More icon level 2 -->
                                                             @if (reply.CanAction)
@@ -1332,7 +1363,20 @@
                 location.reload();
             });
     }
-    
+    function getUsersLike(id) {
+        PostApi("/Rate/GetUsersFavor", { id: id, liked: true })
+            .then(function (res) {
+                if(res && res.data && res.data.length > 0)
+                    alert(res.data.join(", "));
+            })
+    }
+    function getUsersDislike(id) {
+        PostApi("/Rate/GetUsersFavor", { id: id, liked: false })
+            .then(function (res) {
+                if (res && res.data && res.data.length > 0)
+                    alert(res.data.join(", "));
+            })
+    }
 
     // Feature: Add to cart
     $('.btn-addtocart').click(function () {
@@ -1760,7 +1804,6 @@
             $(item).remove();
         })
     }
-
     $(`.remove-upload`).click(function () {
         var ele = $(this).parent().parent().parent();
         if (confirm("Xác nhận xóa")) {

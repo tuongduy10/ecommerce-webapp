@@ -20,7 +20,6 @@ namespace ECommerce.Application.Repositories.Notification
         {
 
         }
-
         public async Task<Data.Models.Notification> CreateCommentNotiAsync(Rate comment)
         {
             // Notification
@@ -41,12 +40,25 @@ namespace ECommerce.Application.Repositories.Notification
         public async Task<Data.Models.Notification> CreateLikeDislikeNotiAsync(Rate comment)
         {
             var notification = await FindAsyncWhere(item => item.InfoId == comment.RateId && item.TypeId == (int)Enums.NotificationType.Like);
-            if (notification == null)
+            var userNames = await _DbContext.Interests
+                        .Where(item => item.RateId == comment.RateId && item.Liked == true)
+                        .Select(item => item.User.UserFullName)
+                        .ToListAsync();
+
+            var textConent = "";
+            if (userNames.Count == 1)
+                textConent = $"{userNames[0]} đã thích bình luận của bạn";
+            if (userNames.Count > 1 && userNames.Count <= 4)
+                textConent = $"{String.Join(", ", userNames.SkipLast(1))} và {userNames.TakeLast(1)} đã thích bình luận của bạn";
+            if (userNames.Count > 4)
+                textConent = $"{String.Join(", ", userNames.Take(4))} và {userNames.Count - 4} người khác đã thích bình luận của bạn";
+
+            if (notification == null && textConent != "")
             {
                 // add new
                 var newNotification = new Data.Models.Notification()
                 {
-                    TextContent = $"{comment.Interests.Where(item => item.Liked == true).Count()} người đã thích bình luận của bạn",
+                    TextContent = textConent,
                     ReceiverId = comment.UserId,
                     SenderId = null,
                     JsLink = $"/Product/ProductDetail?ProductId={comment.ProductId}&isScrolledTo=true&commentId={comment.RateId}",
@@ -56,22 +68,25 @@ namespace ECommerce.Application.Repositories.Notification
                     IsRead = false,
                 };
                 await AddAsync(newNotification);
+                await SaveChangesAsync();
                 return newNotification;
             }
             else
             {
                 var likeCount = comment.Interests.Where(item => item.Liked == true).Count();
-                if (likeCount == 0)
+                if (likeCount == 0 || textConent == "")
                 {
                     await RemoveAsyncWhere(item => item.InfoId == comment.RateId);
+                    await SaveChangesAsync();
                     return null;
                 }
                 else
                 {
                     // update
-                    notification.TextContent = $"{comment.Interests.Where(item => item.Liked == true).Count()} người đã thích bình luận của bạn";
+                    notification.TextContent = textConent;
                     notification.IsRead = false;
                     Update(notification);
+                    await SaveChangesAsync();
                     return notification;
                 }
             }

@@ -12,7 +12,6 @@ namespace ECommerce.Application.Repositories
     public class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
         protected ECommerceContext _DbContext { get; set; }
-        protected DbSet<T> _DbSet { get; set; }
         public RepositoryBase(ECommerceContext DbContext)
         {
             _DbContext = DbContext;
@@ -39,15 +38,15 @@ namespace ECommerce.Application.Repositories
             return await _DbContext.Set<T>().Where(expression).ToListAsync();
         }
         // Add
-        public virtual async Task<bool> AddAsync(T entity)
+        public virtual async Task AddAsync(T entity)
         {
-            await _DbContext.Set<T>().AddAsync(entity);
-            return true;
+            if(entity != null)
+                await _DbContext.Set<T>().AddAsync(entity);
         }
-        public virtual async Task<bool> AddRangeAsync(IEnumerable<T> entities)
+        public virtual async Task AddRangeAsync(IEnumerable<T> entities)
         {
-            await _DbContext.Set<T>().AddRangeAsync(entities);
-            return true;
+            if(entities != null && entities.Count() > 0)
+                await _DbContext.Set<T>().AddRangeAsync(entities);
         }
         // Update
         public virtual void Update(T entity)
@@ -58,20 +57,24 @@ namespace ECommerce.Application.Repositories
         public virtual async Task RemoveAsyncWhere(Expression<Func<T, bool>> expression)
         {
             var entity = await FindAsyncWhere(expression);
-            Remove(entity);
+            if(entity != null)
+                Remove(entity);
         }
         public virtual async Task RemoveRangeAsyncWhere(Expression<Func<T, bool>> expression)
         {
             var entities = await ToListAsyncWhere(expression);
-            RemoveRange(entities);
+            if(entities != null && entities.Count() > 0)
+                RemoveRange(entities);
         }
         public virtual void Remove(T entity)
         {
-            _DbContext.Set<T>().Remove(entity);
+            if(entity != null)
+                _DbContext.Set<T>().Remove(entity);
         }
         public virtual void RemoveRange(IEnumerable<T> entities)
         {
-            _DbContext.Set<T>().RemoveRange(entities);
+            if(entities != null && entities.Count() > 0)
+                _DbContext.Set<T>().RemoveRange(entities);
         }
         // Save changes
         public virtual async Task SaveChangesAsync()

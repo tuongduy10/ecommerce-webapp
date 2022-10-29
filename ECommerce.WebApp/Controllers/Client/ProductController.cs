@@ -29,6 +29,7 @@ namespace ECommerce.WebApp.Controllers.Client
         private readonly IFilterProductService _filterService;
         private readonly IRateService _rateService;
         private readonly IDiscountService _discountService;
+        private readonly ICommentService _commentService;
         public ProductController(
             IConfigurationService configurationService,
             IProductService productService, 
@@ -36,7 +37,8 @@ namespace ECommerce.WebApp.Controllers.Client
             IBrandService brandService, 
             IFilterProductService filterService,
             IRateService rateService,
-            IDiscountService discountService
+            IDiscountService discountService,
+            ICommentService commentService
         ) {
             _configurationService = configurationService;
             _productService = productService;
@@ -45,6 +47,7 @@ namespace ECommerce.WebApp.Controllers.Client
             _filterService = filterService;
             _rateService = rateService;
             _discountService = discountService;
+            _commentService = commentService;
         }
         public async Task<IActionResult> ProductInBrand(ProductGetRequest request)
         {
@@ -78,7 +81,8 @@ namespace ECommerce.WebApp.Controllers.Client
             var product = await _productService.getProductDetail(ProductId);
             if (product == null)
                 return NotFound();
-            var rates = await _rateService.GetRatesByProductId(ProductId, _userId);
+            //var rates = await _rateService.GetRatesByProductId(ProductId, _userId);
+            var rates = await _commentService.GetAllByProductId(ProductId, _userId);
             var suggestion = await _productService.getProductSuggestion();
             var phone = await _configurationService.getPhoneNumber();
             var options = await _productService.getProductOption(ProductId);
@@ -88,7 +92,7 @@ namespace ECommerce.WebApp.Controllers.Client
             var model = new ProductDetailViewModel
             {
                 product = product,
-                rates = rates,
+                rates = rates.Data,
                 suggestion = ProductListFormated(suggestion),
                 phone = phone,
                 options = options,

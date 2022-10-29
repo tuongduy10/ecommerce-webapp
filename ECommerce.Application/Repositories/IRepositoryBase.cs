@@ -17,8 +17,8 @@ namespace ECommerce.Application.Repositories
         Task<IEnumerable<T>> ToListAsync();
         Task<IEnumerable<T>> ToListAsyncWhere(Expression<Func<T, bool>> expression);
         // Add
-        Task<bool> AddAsync(T entity);
-        Task<bool> AddRangeAsync(IEnumerable<T> entities);
+        Task AddAsync(T entity);
+        Task AddRangeAsync(IEnumerable<T> entities);
         // Update
         void Update(T entity);
         // Remove

@@ -44,7 +44,7 @@ namespace ECommerce.Application.Repositories.Interest
                 currObj.Liked = currObj.Liked == request.liked ? null : request.liked;
                 rateId = currObj.RateId;
             }
-
+            await SaveChangesAsync();
             var interest = await LikeAndDislikeCount(rateId);
             return interest;
         }
