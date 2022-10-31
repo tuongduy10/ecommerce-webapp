@@ -27,6 +27,7 @@ namespace ECommerce.Application.Services.Comment
         // Service methods
         Task<Response<LikeAndDislike>> LikeComment(LikeAndDislikeCount request);
         Task<Response<List<string>>> ReplyCommentAsync(ReplyCommentRequest request);
+        Task<Response<List<string>>> UpdateComment(UpdateCommentRequest request);
         Task<Response<List<RateGetModel>>> GetAllByProductId(int _productId, int _userId = 0);
         Task<Response<List<string>>> GetUsersFavor(UserFavorRequest request);
         Task SaveChangesAsync();

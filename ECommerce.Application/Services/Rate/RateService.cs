@@ -502,6 +502,7 @@ namespace ECommerce.Application.Services.Rate
             try
             {
                 List<string> deleteImages = new List<string>();
+                List<int> deleteNotiIds = new List<int>();
 
                 var imagesStr = await _DbContext.RatingImages
                     .Where(i => i.RateId == id)
@@ -519,6 +520,8 @@ namespace ECommerce.Application.Services.Rate
                 if (interests != null)
                     _DbContext.Interests.RemoveRange(interests);
 
+                deleteNotiIds.Add(comment.RateId);
+
                 // Delete by parentId
                 var replies = await _DbContext.Rates.Where(i => i.ParentId == comment.RateId).ToListAsync();
                 if (replies != null)
@@ -534,10 +537,11 @@ namespace ECommerce.Application.Services.Rate
                         var replyImages = await _DbContext.RatingImages.Where(i => i.RateId == reply.RateId).ToListAsync();
                         if (replyImages != null)
                             _DbContext.RatingImages.RemoveRange(replyImages);
-
                         var replyInterests = await _DbContext.Interests.Where(i => i.RateId == reply.RateId).ToListAsync();
                         if (replyInterests != null)
                             _DbContext.Interests.RemoveRange(replyInterests);
+
+                        deleteNotiIds.Add(reply.RateId);
                     }
                     _DbContext.Rates.RemoveRange(replies);
                 }
@@ -559,16 +563,24 @@ namespace ECommerce.Application.Services.Rate
                         var replyImages = await _DbContext.RatingImages.Where(i => i.RateId == reply.RateId).ToListAsync();
                         if (replyImages != null)
                             _DbContext.RatingImages.RemoveRange(replyImages);
-
                         var replyInterests = await _DbContext.Interests.Where(i => i.RateId == reply.RateId).ToListAsync();
                         if (replyInterests != null)
                             _DbContext.Interests.RemoveRange(replyInterests);
-                    }
 
+                        deleteNotiIds.Add(reply.RateId);
+                    }
                     _DbContext.Rates.RemoveRange(repliesByRepliedId);
                 }
 
+                // Notifications
+                var notifications = await _DbContext.Notifications
+                    .Where(item => deleteNotiIds.Contains((int)item.InfoId))
+                    .ToListAsync();
+                if (notifications != null && notifications.Count > 0)
+                    _DbContext.Notifications.RemoveRange(notifications);
+                
                 await _DbContext.SaveChangesAsync();
+
 
                 return new SuccessResponse<List<string>>("Xóa thành công", deleteImages);
             }

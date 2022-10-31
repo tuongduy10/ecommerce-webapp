@@ -102,6 +102,51 @@ namespace ECommerce.Application.Services.Comment
                 return new FailResponse<List<string>>("Lỗi \n\n" + error.ToString());
             }
         }
+        public async Task<Response<List<string>>> UpdateComment(UpdateCommentRequest request)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.content))
+                    return new FailResponse<List<string>>("Nội dung không được để trống");
+
+                var comment = await _commentRepo.FindAsyncWhere(item => item.RateId == request.id);
+                if (comment == null)
+                    return new FailResponse<List<string>>("Không tìm thấy bình luận hoặc bình luận đã bị xóa");
+
+                // Update comment context
+                if (comment != null) 
+                {
+                    comment.Comment = request.content;
+                    comment.RateValue = request.rateValue;
+                }
+                _commentRepo.Update(comment);
+                await SaveChangesAsync();
+
+                // Add images
+                if (request.fileNames != null)
+                {
+                    foreach (var filename in request.fileNames)
+                    {
+                        var image = new RatingImage()
+                        {
+                            RateId = comment.RateId,
+                            RatingImagePath = filename,
+                        };
+                        await _commentImageRepo.AddAsync(image);
+                        await SaveChangesAsync();
+                    }
+                }
+
+                // Notification
+                await _notificationRepo.CreateCommentNotiAsync(comment);
+
+                return new SuccessResponse<List<string>>("Cập nhật thành công");
+            }
+            catch (Exception e)
+            {
+                return new FailResponse<List<string>>(e.ToString());
+            }
+        }
         public async Task<Response<LikeAndDislike>> LikeComment(LikeAndDislikeCount request)
         {
             try

@@ -22,20 +22,38 @@ namespace ECommerce.Application.Repositories.Notification
         }
         public async Task<Data.Models.Notification> CreateCommentNotiAsync(Rate comment)
         {
-            // Notification
-            var notification = new Data.Models.Notification()
+            if (comment.RepliedId == null)
+                return null;
+
+            var notification = await FindAsyncWhere(item => item.InfoId == comment.RateId);
+            if (notification == null)
             {
-                TextContent = comment.Comment,
-                CreateDate = DateTime.Now,
-                IsRead = false,
-                ReceiverId = comment.UserRepliedId,
-                SenderId = comment.UserId,
-                JsLink = $"/Product/ProductDetail?ProductId={comment.ProductId}&isScrolledTo=true&commentId={comment.RateId}",
-                TypeId = (int?)Enums.NotificationType.Comment,
-                InfoId = comment.RateId
-            };
-            await AddAsync(notification);
-            return notification;
+                // create new
+                var newNotification = new Data.Models.Notification()
+                {
+                    TextContent = comment.Comment,
+                    CreateDate = DateTime.Now,
+                    IsRead = false,
+                    ReceiverId = comment.UserRepliedId,
+                    SenderId = comment.UserId,
+                    JsLink = $"/Product/ProductDetail?ProductId={comment.ProductId}&isScrolledTo=true&commentId={comment.RateId}",
+                    TypeId = (int?)Enums.NotificationType.Comment,
+                    InfoId = comment.RateId
+                };
+                await AddAsync(newNotification);
+                await SaveChangesAsync();
+                return newNotification;
+            }
+            else
+            {
+                // update
+                notification.CreateDate = DateTime.Now;
+                notification.TextContent = comment.Comment;
+                notification.IsRead = false;
+                Update(notification);
+                await SaveChangesAsync();
+                return notification;
+            }
         }
         public async Task<Data.Models.Notification> CreateLikeDislikeNotiAsync(Rate comment)
         {
@@ -46,11 +64,11 @@ namespace ECommerce.Application.Repositories.Notification
                         .ToListAsync();
 
             var textConent = "";
-            if (userNames.Count == 1)
+            if (userNames != null && userNames.Count == 1)
                 textConent = $"{userNames[0]} đã thích bình luận của bạn";
-            if (userNames.Count > 1 && userNames.Count <= 4)
-                textConent = $"{String.Join(", ", userNames.SkipLast(1))} và {userNames.TakeLast(1)} đã thích bình luận của bạn";
-            if (userNames.Count > 4)
+            if (userNames != null && userNames.Count > 1 && userNames.Count <= 4)
+                textConent = $"{String.Join(", ", userNames.SkipLast(1))} và {userNames.TakeLast(1).First()} đã thích bình luận của bạn";
+            if (userNames != null && userNames.Count > 4)
                 textConent = $"{String.Join(", ", userNames.Take(4))} và {userNames.Count - 4} người khác đã thích bình luận của bạn";
 
             if (notification == null && textConent != "")
@@ -69,7 +87,7 @@ namespace ECommerce.Application.Repositories.Notification
                 };
                 await AddAsync(newNotification);
                 await SaveChangesAsync();
-                return newNotification; // test git branch
+                return newNotification;
             }
             else
             {
@@ -83,6 +101,7 @@ namespace ECommerce.Application.Repositories.Notification
                 else
                 {
                     // update
+                    notification.CreateDate = DateTime.Now;
                     notification.TextContent = textConent;
                     notification.IsRead = false;
                     Update(notification);
