@@ -1048,6 +1048,26 @@
         </div>
     </div>
 </div>
+<!-- Users like Modal-->
+<div class="modal fade" id="usersLikeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true" style="padding: 0 !important;">
+    <div class="modal-dialog" role="document" style="width: unset !important;">
+        <div class="modal-content">
+            <div class="modal-header pb-0" style="border: unset;">
+                <h5 class="modal-title" id="exampleModalLabel">Người dùng đã thích</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="users-like-result">
+                
+            </div>
+            <div class="modal-footer pt-0" style="border: unset;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @if (!string.IsNullOrEmpty(ViewBag.Message))
 {
@@ -1366,8 +1386,12 @@
     function getUsersLike(id) {
         PostApi("/Rate/GetUsersFavor", { id: id, liked: true })
             .then(function (res) {
-                if(res && res.data && res.data.length > 0)
-                    alert(res.data.join(", "));
+                if (res && res.data && res.data.length > 0) {
+                    $("#users-like-result").html(
+                        res.data.map(item => `<div>${item}</div>`).join("")
+                    );
+                    $("#usersLikeModal").modal('show');
+                }
             })
     }
     function getUsersDislike(id) {

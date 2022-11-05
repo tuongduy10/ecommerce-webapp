@@ -14,6 +14,7 @@ namespace ECommerce.Application.Repositories.Notification.Enums
         Coupon = 4,
         DiscountFromShop = 5,
         NewProduct = 6,
-        Like = 7
+        Like = 7,
+        UpdateComment = 8
     }
 }

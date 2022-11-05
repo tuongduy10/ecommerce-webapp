@@ -16,10 +16,7 @@ namespace ECommerce.Application.Repositories.Notification
 {
     public class NotificationRepository : RepositoryBase<Data.Models.Notification>, INotificationRepository
     {
-        public NotificationRepository(ECommerceContext DbContext):base(DbContext)
-        {
-
-        }
+        public NotificationRepository(ECommerceContext DbContext):base(DbContext) { }
         public async Task<Data.Models.Notification> CreateCommentNotiAsync(Rate comment)
         {
             if (comment.RepliedId == null)
@@ -50,6 +47,7 @@ namespace ECommerce.Application.Repositories.Notification
                 notification.CreateDate = DateTime.Now;
                 notification.TextContent = comment.Comment;
                 notification.IsRead = false;
+                notification.TypeId = (int?)Enums.NotificationType.UpdateComment;
                 Update(notification);
                 await SaveChangesAsync();
                 return notification;
@@ -94,7 +92,8 @@ namespace ECommerce.Application.Repositories.Notification
                 var likeCount = comment.Interests.Where(item => item.Liked == true).Count();
                 if (likeCount == 0 || textConent == "")
                 {
-                    await RemoveAsyncWhere(item => item.InfoId == comment.RateId);
+                    // remove if it has no content or like count return to 0
+                    await RemoveAsyncWhere(item => item.InfoId == comment.RateId && item.TypeId == (int?)Enums.NotificationType.Like);
                     await SaveChangesAsync();
                     return null;
                 }

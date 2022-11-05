@@ -59,18 +59,21 @@
                                                 <h1 class="type mb-4" style="@if (!noti.IsRead) { @Html.Raw("font-weight: bold") }">
                                                     @if (noti.TypeCode == "COMMENT") { @Html.Raw("Bình luận được phản hồi") }
                                                     @if (noti.TypeCode == "LIKE") { @Html.Raw("Bình luận của bạn") }
+                                                    @if (noti.TypeCode == "UPDATE_COMMENT") { @Html.Raw("Phản hồi được cập nhật") }
                                                 </h1>
                                                 <div>
                                                     @if (noti.SenderId != null && noti.SenderId != 0)
                                                     {
                                                         @if (noti.SenderIsAdmin == true)
                                                         {
-                                                            <strong class="name" style="color: var(--blue-dior);">@noti.SenderName (Quản trị viên)</strong> @Html.Raw("đã phản hồi bình luận của bạn:");
+                                                            <strong class="name" style="color: var(--blue-dior);">@noti.SenderName (Quản trị viên)</strong>
                                                         }
                                                         else
                                                         {
-                                                            <strong class="name">@noti.SenderName</strong> @Html.Raw("đã phản hồi bình luận của bạn:");
+                                                            <strong class="name">@noti.SenderName</strong>
                                                         }
+                                                        @if (noti.TypeCode == "COMMENT") { @Html.Raw("đã phản hồi bình luận của bạn:") }
+                                                        @if (noti.TypeCode == "UPDATE_COMMENT") { @Html.Raw("đã cập nhật phản hồi của họ về bình luận của bạn:") }
                                                     }
                                                 </div>
                                                 <div class="content">@noti.TextContent</div>
