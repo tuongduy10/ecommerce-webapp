@@ -11,7 +11,7 @@ namespace ECommerce.Application.Repositories.Attribute
     {
         public AttributeRepository(ECommerceContext DbContext) : base(DbContext)
         {
-
+            
         }
     }
 }

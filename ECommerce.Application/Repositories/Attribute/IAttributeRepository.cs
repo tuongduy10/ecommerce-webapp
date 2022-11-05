@@ -8,5 +8,6 @@ namespace ECommerce.Application.Repositories.Attribute
 {
     public interface IAttributeRepository : IRepositoryBase<Data.Models.Attribute>
     {
+
     }
 }

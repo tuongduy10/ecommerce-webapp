@@ -30,6 +30,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using ECommerce.Application.Repositories;
 using ECommerce.Application.Services.Comment;
+using ECommerce.WebApp.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ECommerce.WebApp
 {
@@ -81,6 +83,7 @@ namespace ECommerce.WebApp
                 options.Filters.Add(new GlobalActionFilter(new UserService(DbContext(services))));
             });
             services.AddControllers();
+            services.AddSignalR();
 
 
             /*
@@ -148,6 +151,11 @@ namespace ECommerce.WebApp
             app.UseCookiePolicy();
 
             app.UseCustomAuthorizationMiddleware();
+
+            app.UseEndpoints(routes =>
+            {
+                routes.MapHub<ChatHub>("/chatHub");
+            });
 
             app.UseEndpoints(endpoints =>
             {
