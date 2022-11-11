@@ -5,6 +5,7 @@
 `Entity Framework 5.0`
 `Cookie Authentication`
 `Firebase Authentication`
+`SignalR`
 
 ## Nuget Packages
 
