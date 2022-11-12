@@ -10,7 +10,7 @@ namespace ECommerce.Application.Repositories
     public interface IRepositoryBase<T> where T : class
     {
         // Custom
-        IQueryable<T> Query(Expression<Func<T, bool>> expression);
+        IQueryable<T> Query(Expression<Func<T, bool>> expression = null);
         // Single obj
         Task<T> FindAsyncWhere(Expression<Func<T, bool>> expression);
         // List
