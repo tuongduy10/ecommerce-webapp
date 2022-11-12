@@ -31,6 +31,7 @@ namespace ECommerce.Data.Models
         public string Password { get; set; }
         public bool? Status { get; set; }
         public bool? IsSystemAccount { get; set; }
+        public bool? IsOnline { get; set; }
 
         public virtual ICollection<Interest> Interests { get; set; }
         public virtual ICollection<Notification> NotificationReceivers { get; set; }
