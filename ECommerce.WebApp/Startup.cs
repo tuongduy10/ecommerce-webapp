@@ -32,6 +32,9 @@ using ECommerce.Application.Repositories;
 using ECommerce.Application.Services.Comment;
 using ECommerce.WebApp.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using ECommerce.Application.Services.Product_v2;
+using ECommerce.Application.Services.User_v2;
+using Microsoft.Extensions.Logging;
 
 namespace ECommerce.WebApp
 {
@@ -84,11 +87,12 @@ namespace ECommerce.WebApp
             });
             services.AddControllers();
             services.AddSignalR();
+            services.AddHttpContextAccessor();
 
 
             /*
              * Business Services
-             */ 
+             */
             // Website Configuration
             services.AddTransient<IConfigurationService, ConfigurationService>();
             services.AddTransient<IHeaderService, HeaderService>();
@@ -108,8 +112,11 @@ namespace ECommerce.WebApp
             // Shop
             services.AddTransient<IShopService, ShopService>();
 
+            // Services ver 2
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IProductService_v2,ProductService_v2>();
+            services.AddScoped<IUserService_v2, UserService_v2>();
 
             /*
              * Config Services
@@ -122,7 +129,10 @@ namespace ECommerce.WebApp
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env,
+            ILoggerFactory logger)
         {
             if (env.IsDevelopment())
             {
@@ -155,6 +165,7 @@ namespace ECommerce.WebApp
             app.UseEndpoints(routes =>
             {
                 routes.MapHub<ChatHub>("/chatHub");
+                routes.MapHub<OnlineHub>("/onlineHub");
             });
 
             app.UseEndpoints(endpoints =>

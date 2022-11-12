@@ -2,6 +2,7 @@
 using ECommerce.Application.Services.Rate;
 using ECommerce.Application.Services.Shop;
 using ECommerce.Application.Services.User;
+using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,7 @@ namespace ECommerce.WebApp.Controllers.Client
         private IShopService _shopService;
         private IRateService _rateService;
         private INotificationService _notificationService;
+        private HttpContextHelper _contextHelper;
         public AccountController(
             IUserService userService,
             IShopService shopService,
@@ -28,6 +30,7 @@ namespace ECommerce.WebApp.Controllers.Client
             _shopService = shopService;
             _rateService = rateService;
             _notificationService = notificationService;
+            _contextHelper = new HttpContextHelper();
         }
 
         [AllowAnonymous]
@@ -63,8 +66,7 @@ namespace ECommerce.WebApp.Controllers.Client
         }
         public async Task<IActionResult> UserProfile()
         {
-            var _id = User.Claims.FirstOrDefault(i => i.Type == "UserId") != null ? 
-                Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value) : 0;
+            var _id = _contextHelper.GetCurrentUserId();
 
             var user = await _userService.UserProfile(_id);
             if (user == null || user.Status == false) return RedirectToAction("SignOut", "Account");
