@@ -9,6 +9,7 @@ namespace ECommerce.Application.Common
     public class ApiResponse
     {
         public bool isSucceed { get; set; }
+        public string Status { get; set; }
         public string Message { get; set; }
         public Object ObjectData { get; set; }
     }

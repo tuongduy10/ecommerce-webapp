@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ECommerce.Application.Constants;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace ECommerce.Application.Common
         public FailResponse(string message)
         {
             isSucceed = false;
+            Status = SystemConstant.FAIL;
             Message = message;
         }
     }
