@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Constants;
 using ECommerce.Application.Services.Brand;
+using ECommerce.Application.Services.Comment;
 using ECommerce.Application.Services.Product;
 using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.Shop;
@@ -28,6 +29,7 @@ namespace ECommerce.WebApp.Controllers.Admin
         private IBrandService _brandService;
         private IShopService _shopService;
         private ISubCategoryService _subCategoryService;
+        private ICommentService _commentService;
         private ManageFiles _manageFiles;
         private string FILE_PATH = FilePathConstant.PRODUCT_FILEPATH;
         private string FILE_PREFIX = FilePathConstant.PRODUCT_FILEPREFIX;
@@ -36,12 +38,14 @@ namespace ECommerce.WebApp.Controllers.Admin
             IBrandService brandService,
             IShopService shopService,
             IWebHostEnvironment webHostEnvironment,
-            ISubCategoryService subCategoryService
+            ISubCategoryService subCategoryService,
+            ICommentService commentService
         ) {
             _productService = productService;
             _brandService = brandService;
             _shopService = shopService;
             _subCategoryService = subCategoryService;
+            _commentService = commentService;
             _manageFiles = new ManageFiles(webHostEnvironment);
         }
         public async Task<IActionResult> ProductList(int subCategoryId = 0)

@@ -17,5 +17,6 @@ namespace ECommerce.Application.Services.User.Dtos
         public List<string> UserRoles { get; set; }
         public bool Status { get; set; }
         public bool isSystemAccount { get; set; }
+        public bool IsOnline { get; set; }
     }
 }

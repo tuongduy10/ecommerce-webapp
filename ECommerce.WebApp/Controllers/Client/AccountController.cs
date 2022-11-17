@@ -6,6 +6,7 @@ using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,17 +16,20 @@ namespace ECommerce.WebApp.Controllers.Client
     [Authorize(AuthenticationSchemes = "ClientAuth")]
     public class AccountController : Controller
     {
+        private ILogger<AccountController> _logger;
         private IUserService _userService;
         private IShopService _shopService;
         private IRateService _rateService;
         private INotificationService _notificationService;
         private HttpContextHelper _contextHelper;
         public AccountController(
+            ILogger<AccountController> logger,
             IUserService userService,
             IShopService shopService,
             IRateService rateService,
             INotificationService notificationService)
         {
+            _logger = logger;
             _userService = userService;
             _shopService = shopService;
             _rateService = rateService;
@@ -70,7 +74,7 @@ namespace ECommerce.WebApp.Controllers.Client
 
             var user = await _userService.UserProfile(_id);
             if (user == null || user.Status == false) return RedirectToAction("SignOut", "Account");
-
+            
             return View(user);
         }
         public async Task<IActionResult> UpdateUserPhoneNumber()
@@ -116,7 +120,6 @@ namespace ECommerce.WebApp.Controllers.Client
         {
             return View();
         }
-
         [AllowAnonymous]
         public async Task<IActionResult> AccessDenied()
         {

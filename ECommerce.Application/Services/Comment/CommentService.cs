@@ -279,7 +279,6 @@ namespace ECommerce.Application.Services.Comment
                 return new FailResponse<List<RateGetModel>>("Lỗi \n\n" + e.ToString());
             }
         }
-        public async Task SaveChangesAsync() => await _DbContext.SaveChangesAsync();
         public async Task<Response<List<string>>> GetUsersFavor(UserFavorRequest request)
         {
             try
@@ -295,5 +294,65 @@ namespace ECommerce.Application.Services.Comment
                 return new FailResponse<List<string>>("Lỗi \n\n" + e.ToString());
             }
         }
+        public async Task<Response<List<string>>> DeleteByProductId(int _productId)
+        {
+
+            try
+            {
+                var comments = await _commentRepo.ToListAsyncWhere(i => i.ProductId == _productId);
+                if (comments != null && comments.Count() > 0)
+                {
+                    var commentIds = comments.Select(i => i.RateId).ToList();
+                    var deleteImages = await _commentImageRepo
+                        .Query(item => commentIds.Contains(item.RateId == null ? 0 : (int)item.RateId))
+                        .Select(item => item.RatingImagePath)
+                        .ToListAsync();
+
+                    if (commentIds != null && commentIds.Count > 0)
+                        await _commentImageRepo.RemoveRangeAsyncWhere(i => commentIds.Contains(i.RateId == null ? 0 : (int)i.RateId));
+                    
+                    _commentRepo.RemoveRange(comments);
+                    await SaveChangesAsync();
+
+                    return new SuccessResponse<List<string>>("Xóa thành công", deleteImages);
+                }
+
+                return new FailResponse<List<string>>("Các bình luận đã được xóa hoặc không tìm thấy");
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<List<string>>("Xóa không thành công: \n\n" + error);
+            }
+        }
+        public async Task<Response<List<string>>> DeleteByUserId(int _userId)
+        {
+            try
+            {
+                var comments = await _commentRepo.ToListAsyncWhere(i => i.UserId == _userId || i.UserRepliedId == _userId);
+                if (comments != null && comments.Count() > 0)
+                {
+                    var commentIds = comments.Select(i => i.RateId).ToList();
+                    var deleteImages = await _commentImageRepo
+                        .Query(item => commentIds.Contains(item.RateId == null ? 0 : (int)item.RateId))
+                        .Select(item => item.RatingImagePath)
+                        .ToListAsync();
+
+                    if (commentIds != null && commentIds.Count > 0)
+                        await _commentImageRepo.RemoveRangeAsyncWhere(i => commentIds.Contains(i.RateId == null ? 0 : (int)i.RateId));
+
+                    _commentRepo.RemoveRange(comments);
+                    await SaveChangesAsync();
+
+                    return new SuccessResponse<List<string>>("Xóa thành công", deleteImages);
+                }
+
+                return new FailResponse<List<string>>("Các bình luận đã được xóa hoặc không tìm thấy");
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<List<string>>("Xóa không thành công: \n\n" + error);
+            }
+        }
+        public async Task SaveChangesAsync() => await _DbContext.SaveChangesAsync();
     }
 }

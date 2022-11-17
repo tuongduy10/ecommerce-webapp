@@ -1,4 +1,5 @@
 ﻿using ECommerce.Application.Common;
+using ECommerce.Application.Helpers;
 using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.Product.Enum;
 using ECommerce.Application.Services.Product.Models;

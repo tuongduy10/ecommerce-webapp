@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Constants;
 using ECommerce.Application.Services.Brand;
+using ECommerce.Application.Services.Comment;
 using ECommerce.Application.Services.Product;
 using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.Shop;
@@ -26,6 +27,7 @@ namespace ECommerce.WebApp.Controllers.Seller
         private ISubCategoryService _subCategoryService;
         private IBrandService _brandService;
         private IShopService _shopService;
+        private ICommentService _commentService;
         private ManageFiles _manageFiles;
         private string FILE_PATH = FilePathConstant.PRODUCT_FILEPATH;
         private string FILE_PREFIX = FilePathConstant.PRODUCT_FILEPREFIX;
@@ -33,12 +35,14 @@ namespace ECommerce.WebApp.Controllers.Seller
             IProductService productService,
             IShopService shopService,
             ISubCategoryService subCategoryService, 
-            IBrandService brandService, 
+            IBrandService brandService,
+            ICommentService commentService,
             IWebHostEnvironment webHostEnvironment)
         {
             _productService = productService;
             _subCategoryService = subCategoryService;
             _brandService = brandService;
+            _commentService = commentService;
             _manageFiles = new ManageFiles(webHostEnvironment);
             _shopService = shopService;
         }
@@ -98,6 +102,12 @@ namespace ECommerce.WebApp.Controllers.Seller
         [HttpPost]
         public async Task<IActionResult> DeleteProduct(int id)
         {
+            var deleteCommentRes = await _commentService.DeleteByProductId(id);
+            if (deleteCommentRes.isSucceed)
+            {
+                _manageFiles.DeleteFiles(deleteCommentRes.Data, FilePathConstant.RATE_FILEPATH);
+            }
+
             var result = await _productService.DeleteProduct(id);
             if (result.isSucceed)
             {

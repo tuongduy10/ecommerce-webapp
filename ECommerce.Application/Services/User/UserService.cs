@@ -36,20 +36,23 @@ namespace ECommerce.Application.Services.User
         }
         public async Task<List<UserGetModel>> getUsersByFiltered(UserGetRequest request)
         {
-            var list = await _DbContext.Users.Select(i => new UserGetModel()
-            {
-                UserId = i.UserId,
-                UserFullName = i.UserFullName,
-                UserJoinDate = (DateTime)i.UserJoinDate,
-                UserMail = i.UserMail,
-                UserAddress = i.UserAddress,
-                UserWardCode = i.UserWardCode,
-                UserDistrictCode = i.UserDistrictCode,
-                UserCityCode = i.UserCityCode,
-                UserPhone = i.UserPhone,
-                isSystemAccount = (bool)i.IsSystemAccount,
-                Status = (bool)i.Status,
-            }).ToListAsync();
+            var list = await _DbContext.Users
+                .Where(i => i.UserId != request.userId)
+                .Select(i => new UserGetModel() {
+                    UserId = i.UserId,
+                    UserFullName = i.UserFullName,
+                    UserJoinDate = (DateTime)i.UserJoinDate,
+                    UserMail = i.UserMail,
+                    UserAddress = i.UserAddress,
+                    UserWardCode = i.UserWardCode,
+                    UserDistrictCode = i.UserDistrictCode,
+                    UserCityCode = i.UserCityCode,
+                    UserPhone = i.UserPhone,
+                    isSystemAccount = i.IsSystemAccount == null ? false : (bool)i.IsSystemAccount,
+                    Status = i.Status == null ? false : (bool)i.Status,
+                    IsOnline = i.IsOnline == null ? false : (bool)i.IsOnline,
+                })
+                .ToListAsync();
 
             if (request.all == true) list = list.ToList();
             if (request.isSystemAccount == true) list = list.Where(i => i.isSystemAccount == true).ToList();
@@ -257,7 +260,8 @@ namespace ECommerce.Application.Services.User
                                     UserRoles = i.UserRoles
                                         .Select(ur => ur.Role.RoleName)
                                         .ToList(),
-                                    Status = (bool)i.Status
+                                    Status = (bool)i.Status,
+                                    IsOnline = (bool)i.IsOnline,
                                 }).FirstOrDefaultAsync();
 
                 return user;
@@ -472,10 +476,8 @@ namespace ECommerce.Application.Services.User
                 .FirstOrDefaultAsync();
 
             if (userId == null)
-            {
                 return null;
-            }
-
+            
             // get user id by user id
             var user = await _DbContext.Users
                 .Where(u => u.UserId == userId)
@@ -490,7 +492,8 @@ namespace ECommerce.Application.Services.User
                     UserDistrictCode = i.UserDistrictCode,
                     UserCityCode = i.UserCityCode,
                     UserPhone = i.UserPhone,
-                    Status = (bool)i.Status
+                    Status = i.Status == null ? false : (bool)i.Status,
+                    IsOnline = i.IsOnline == null ? false : (bool)i.IsOnline,
                 })
                 .FirstOrDefaultAsync();
             return user;

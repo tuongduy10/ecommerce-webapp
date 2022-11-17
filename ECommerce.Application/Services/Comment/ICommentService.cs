@@ -30,6 +30,8 @@ namespace ECommerce.Application.Services.Comment
         Task<Response<List<string>>> UpdateComment(UpdateCommentRequest request);
         Task<Response<List<RateGetModel>>> GetAllByProductId(int _productId, int _userId = 0);
         Task<Response<List<string>>> GetUsersFavor(UserFavorRequest request);
+        Task<Response<List<string>>> DeleteByProductId(int _productId);
+        Task<Response<List<string>>> DeleteByUserId(int _userId);
         Task SaveChangesAsync();
     }
 }

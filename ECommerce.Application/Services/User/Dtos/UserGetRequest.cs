@@ -8,8 +8,11 @@ namespace ECommerce.Application.Services.User.Dtos
 {
     public class UserGetRequest
     {
-        public bool isSystemAccount { get; set; }
+        public int userId { get; set; }
         public bool all { get; set; }
+        public bool isSystemAccount { get; set; }
         public bool isSeller { get; set; }
+        public bool isAdmin { get; set; }
+        public bool isOnline { get; set; }
     }
 }
