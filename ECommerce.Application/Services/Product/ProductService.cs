@@ -521,36 +521,36 @@ namespace ECommerce.Application.Services.Product
         }
         public async Task<ApiResponse> AddProduct(ProductSaveRequest request)
         {
-            if (string.IsNullOrEmpty(request.name)) 
-                return new ApiFailResponse("Vui lòng nhập tên sản phẩm");
-            if (request.shopId == 0) 
-                return new ApiFailResponse("Vui lòng chọn cửa hàng");
-            if (request.brandId == 0) 
-                return new ApiFailResponse("Vui lòng chọn thương hiệu");
-            if (request.subCategoryId == 0)
-                return new ApiFailResponse("Vui lòng chọn loại sản phẩm");
-
-            Price priceAvailable = JsonConvert.DeserializeObject<Price>(request.priceAvailable);
-            Price pricePreorder = JsonConvert.DeserializeObject<Price>(request.pricePreorder);
-            if (priceAvailable.price == null && priceAvailable.priceOnSell == null && pricePreorder.price == null && pricePreorder.priceOnSell == null)
-                return new ApiFailResponse("Vui lòng nhập giá sản phẩm");
-            if (priceAvailable.price == null && priceAvailable.priceOnSell != null) 
-                return new ApiFailResponse("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
-            if (priceAvailable.price < priceAvailable.priceOnSell) 
-                return new ApiFailResponse("Giá giảm không thể lớn hơn giá gốc !");
-            if (pricePreorder.price == null && pricePreorder.priceOnSell != null) 
-                return new ApiFailResponse("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
-            if (pricePreorder.price < pricePreorder.priceOnSell) 
-                return new ApiFailResponse("Giá giảm không thể lớn hơn giá gốc !");
-
-            var code = await _DbContext.Products
-                .Where(i => request.code != null && i.ProductCode == request.code.Trim())
-                .FirstOrDefaultAsync();
-            if(code != null)
-                return new ApiFailResponse("Mã này đã tồn tại !");
-
             try
             {
+                if (string.IsNullOrEmpty(request.name))
+                    return new ApiFailResponse("Vui lòng nhập tên sản phẩm");
+                if (request.shopId == 0)
+                    return new ApiFailResponse("Vui lòng chọn cửa hàng");
+                if (request.brandId == 0)
+                    return new ApiFailResponse("Vui lòng chọn thương hiệu");
+                if (request.subCategoryId == 0)
+                    return new ApiFailResponse("Vui lòng chọn loại sản phẩm");
+
+                Price priceAvailable = JsonConvert.DeserializeObject<Price>(request.priceAvailable);
+                Price pricePreorder = JsonConvert.DeserializeObject<Price>(request.pricePreorder);
+                if (priceAvailable.price == null && priceAvailable.priceOnSell == null && pricePreorder.price == null && pricePreorder.priceOnSell == null)
+                    return new ApiFailResponse("Vui lòng nhập giá sản phẩm");
+                if (priceAvailable.price == null && priceAvailable.priceOnSell != null)
+                    return new ApiFailResponse("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
+                if (priceAvailable.price < priceAvailable.priceOnSell)
+                    return new ApiFailResponse("Giá giảm không thể lớn hơn giá gốc !");
+                if (pricePreorder.price == null && pricePreorder.priceOnSell != null)
+                    return new ApiFailResponse("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
+                if (pricePreorder.price < pricePreorder.priceOnSell)
+                    return new ApiFailResponse("Giá giảm không thể lớn hơn giá gốc !");
+
+                var code = await _DbContext.Products
+                    .Where(i => request.code != null && i.ProductCode == request.code.Trim())
+                    .FirstOrDefaultAsync();
+                if (code != null)
+                    return new ApiFailResponse("Mã này đã tồn tại !");
+
                 var isAdmin = await _userService.getUserRole(request.userId) == "Admin";
 
                 /*
@@ -667,13 +667,14 @@ namespace ECommerce.Application.Services.Product
                 decimal discountAvailable = 0;
                 decimal discountPreOrder = 0;
                 if (request.discountPercent != null && priceAvailable.price != null)
-                {
                     discountAvailable = GetDiscountPrice(priceAvailable.price, request.discountPercent);
-                }
                 if (request.discountPercent != null && pricePreorder.price != null)
-                {
                     discountPreOrder = GetDiscountPrice(pricePreorder.price, request.discountPercent);
-                }
+                if (request.discountPercent == null && priceAvailable.price != null && priceAvailable.priceOnSell != null)
+                    discountAvailable = (decimal)priceAvailable.priceOnSell;
+                if (request.discountPercent == null && pricePreorder.price != null && pricePreorder.priceOnSell != null)
+                    discountPreOrder = (decimal)pricePreorder.priceOnSell;
+
                 // Available Price
                 var availablePrice = new ProductPrice();
                     availablePrice.Price = priceAvailable.price == null ? null : priceAvailable.price;
@@ -693,15 +694,18 @@ namespace ECommerce.Application.Services.Product
                 await _DbContext.SaveChangesAsync();
 
                 // Images
-                foreach (var file in request.systemFileName)
+                if (request.systemFileName != null) 
                 {
-                    var systemImage = new Data.Models.ProductImage
+                    foreach (var file in request.systemFileName)
                     {
-                        ProductId = product.ProductId,
-                        ProductImagePath = file
-                    };
-                    await _DbContext.ProductImages.AddAsync(systemImage);
-                    await _DbContext.SaveChangesAsync();
+                        var systemImage = new Data.Models.ProductImage
+                        {
+                            ProductId = product.ProductId,
+                            ProductImagePath = file
+                        };
+                        await _DbContext.ProductImages.AddAsync(systemImage);
+                        await _DbContext.SaveChangesAsync();
+                    }
                 }
                 if (request.userFileName != null)
                 {
@@ -721,7 +725,7 @@ namespace ECommerce.Application.Services.Product
             }
             catch(Exception e)
             {
-                return new ApiFailResponse(e.Message);
+                return new ApiFailResponse(e.ToString());
             }
         }
         public async Task<Response<ProductUpdateResponse>> UpdateProduct(ProductSaveRequest request)

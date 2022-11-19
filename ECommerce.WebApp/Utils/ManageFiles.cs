@@ -17,23 +17,29 @@ namespace ECommerce.WebApp.Utils
         }
         public void AddFiles(List<IFormFile> files, List<string> filesName, string path)
         {
-            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, path);
-            for (int i = 0; i < files.Count; i++)
+            if (files != null && filesName != null) 
             {
-                string filePath = Path.Combine(uploadsFolder, filesName[i]);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, path);
+                for (int i = 0; i < files.Count; i++)
                 {
-                    files[i].CopyTo(fileStream);
+                    string filePath = Path.Combine(uploadsFolder, filesName[i]);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        files[i].CopyTo(fileStream);
+                    }
                 }
             }
         }
         public void AddFile(IFormFile file, string fileName, string path)
         {
-            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, path);
-            string filePath = Path.Combine(uploadsFolder, fileName);
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            if (file != null && !String.IsNullOrEmpty(fileName) && !String.IsNullOrEmpty(path)) 
             {
-                file.CopyTo(fileStream);
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, path);
+                string filePath = Path.Combine(uploadsFolder, fileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
             }
         }
         public void DeleteAllFiles(string path)

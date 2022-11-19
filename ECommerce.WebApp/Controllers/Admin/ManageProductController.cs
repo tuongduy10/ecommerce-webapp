@@ -83,21 +83,20 @@ namespace ECommerce.WebApp.Controllers.Admin
 
             request.userId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
             // Get files name
-            request.systemFileName = _manageFiles.GetFilesName(request.systemImage, FILE_PREFIX);
-            if (request.userFileName != null)
-            {
+            if (request.systemImage != null)
+                request.systemFileName = _manageFiles.GetFilesName(request.systemImage, FILE_PREFIX);
+            if (request.userImage != null)
                 request.userFileName = _manageFiles.GetFilesName(request.userImage, FILE_PREFIX);
-            }
             // Result 
             var result = await _productService.AddProduct(request);
             if (result.isSucceed)
             {
                 // Add file with files, files'name, path
-                _manageFiles.AddFiles(request.systemImage, request.systemFileName, FILE_PATH);
-                if (request.userFileName != null)
-                {
+                if (request.systemImage != null && request.systemFileName != null)
+                    _manageFiles.AddFiles(request.systemImage, request.systemFileName, FILE_PATH);
+                if (request.userImage != null && request.userFileName != null)
                     _manageFiles.AddFiles(request.userImage, request.userFileName, FILE_PATH);
-                }
+
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);
@@ -117,9 +116,9 @@ namespace ECommerce.WebApp.Controllers.Admin
             if (result.isSucceed)
             {
                 // Add file with files, files'name, path
-                if (request.systemImage != null)
+                if (request.systemImage != null && request.systemFileName != null)
                     _manageFiles.AddFiles(request.systemImage, request.systemFileName, FILE_PATH);
-                if (request.userImage != null)
+                if (request.userImage != null && request.userFileName != null)
                     _manageFiles.AddFiles(request.userImage, request.userFileName, FILE_PATH);
                 
                 return Ok(result.Message);
