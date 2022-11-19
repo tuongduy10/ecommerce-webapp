@@ -18,22 +18,22 @@ namespace ECommerce.WebApp.Hubs
             _userSerivceV2 = userServiceV2;
         }
         // Online
-        public override async Task<Task> OnConnectedAsync()
+        public override async Task OnConnectedAsync()
         {
             var userId = _contextHelper.GetCurrentUserId();
             if (userId != 0)
                 await _userSerivceV2.SetOnline(userId);
 
-            return base.OnConnectedAsync();
+            await base.OnConnectedAsync();
         }
         // Offline
-        public override async Task<Task> OnDisconnectedAsync(Exception exception)
+        public override async Task OnDisconnectedAsync(Exception exception)
         {
             var userId = _contextHelper.GetCurrentUserId();
             if (userId != 0)
                 await _userSerivceV2.SetOnline(userId, false);
 
-            return base.OnDisconnectedAsync(exception);
+            await base.OnDisconnectedAsync(exception);
         }
     }
 }

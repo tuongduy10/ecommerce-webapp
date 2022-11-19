@@ -366,7 +366,9 @@ namespace ECommerce.Application.Services.Rate
                 }
                 else
                 {
-                    currObj.Liked = currObj.Liked == request.liked ? null : request.liked;
+                    if (currObj.Liked == request.liked) currObj.Liked = null;
+                    else currObj.Liked = request.liked;
+                    
                     rateId = currObj.RateId;
                 }
                 await _DbContext.SaveChangesAsync();

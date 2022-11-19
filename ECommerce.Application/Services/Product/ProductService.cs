@@ -675,22 +675,20 @@ namespace ECommerce.Application.Services.Product
                     discountPreOrder = GetDiscountPrice(pricePreorder.price, request.discountPercent);
                 }
                 // Available Price
-                var availablePrice = new ProductPrice
-                {
-                    Price = priceAvailable.price == null ? null : priceAvailable.price,
-                    PriceOnSell = discountAvailable == 0 ? null : discountAvailable,
-                    ProductId = product.ProductId,
-                    ProductTypeId = (int)enumProductType.Available,
-                };
+                var availablePrice = new ProductPrice();
+                    availablePrice.Price = priceAvailable.price == null ? null : priceAvailable.price;
+                    availablePrice.ProductId = product.ProductId;
+                    availablePrice.ProductTypeId = (int)enumProductType.Available;
+                    if (discountAvailable == 0) availablePrice.PriceOnSell = null;
+                    else availablePrice.PriceOnSell = discountAvailable;
                 await _DbContext.ProductPrices.AddAsync(availablePrice);
                 // Pre Order Price
-                var preOrderPrice = new ProductPrice
-                {
-                    Price = pricePreorder.price == null ? null : pricePreorder.price,
-                    PriceOnSell = discountPreOrder == 0 ? null : discountPreOrder,
-                    ProductId = product.ProductId,
-                    ProductTypeId = (int)enumProductType.PreOrder,
-                };
+                var preOrderPrice = new ProductPrice();
+                    preOrderPrice.Price = pricePreorder.price == null ? null : pricePreorder.price;
+                    preOrderPrice.ProductId = product.ProductId;
+                    preOrderPrice.ProductTypeId = (int)enumProductType.PreOrder;
+                    if (discountPreOrder == 0) preOrderPrice.PriceOnSell = null;
+                    else preOrderPrice.PriceOnSell = discountPreOrder;
                 await _DbContext.ProductPrices.AddAsync(preOrderPrice);
                 await _DbContext.SaveChangesAsync();
 
@@ -912,17 +910,18 @@ namespace ECommerce.Application.Services.Product
                 if (availablePrice != null)
                 {
                     availablePrice.Price = priceAvailable.price == null ? null : priceAvailable.price;
-                    availablePrice.PriceOnSell = discountAvailable == 0 ? null : discountAvailable;
+                    if (discountAvailable == 0) availablePrice.PriceOnSell = null;
+                    else availablePrice.PriceOnSell = discountAvailable;
                 }
                 else
                 {
-                    var newAvailablePrice = new ProductPrice
-                    {
-                        ProductId = product.ProductId,
-                        Price = priceAvailable.price,
-                        PriceOnSell = discountAvailable == 0 ? null : discountAvailable,
-                        ProductTypeId = (int)enumProductType.Available,
-                    };
+                    var newAvailablePrice = new ProductPrice();
+                    newAvailablePrice.ProductId = product.ProductId;
+                    newAvailablePrice.Price = priceAvailable.price;
+                    newAvailablePrice.ProductTypeId = (int)enumProductType.Available;
+                    if (discountAvailable == 0) newAvailablePrice.PriceOnSell = null;
+                    else newAvailablePrice.PriceOnSell = discountAvailable;
+
                     await _DbContext.ProductPrices.AddAsync(newAvailablePrice);
                 }
                 await _DbContext.SaveChangesAsync();
@@ -933,17 +932,18 @@ namespace ECommerce.Application.Services.Product
                 if (preOrderPrice != null)
                 {
                     preOrderPrice.Price = pricePreorder.price == null ? null : pricePreorder.price;
-                    preOrderPrice.PriceOnSell = discountPreOrder == 0 ? null : discountPreOrder;
+                    if (discountPreOrder == 0) preOrderPrice.PriceOnSell = null;
+                    else preOrderPrice.PriceOnSell = discountPreOrder;
                 }
                 else
                 {
-                    var newPreOrderPrice = new ProductPrice
-                    {
-                        ProductId = product.ProductId,
-                        Price = pricePreorder.price,
-                        PriceOnSell = discountPreOrder == 0 ? null : discountPreOrder,
-                        ProductTypeId = (int)enumProductType.PreOrder,
-                    };
+                    var newPreOrderPrice = new ProductPrice();
+                    newPreOrderPrice.ProductId = product.ProductId;
+                    newPreOrderPrice.Price = pricePreorder.price;
+                    newPreOrderPrice.ProductTypeId = (int)enumProductType.PreOrder;
+                    if (discountPreOrder == 0) newPreOrderPrice.PriceOnSell = null;
+                    else newPreOrderPrice.PriceOnSell = discountPreOrder;
+
                     await _DbContext.ProductPrices.AddAsync(newPreOrderPrice);
                 }
                 await _DbContext.SaveChangesAsync();
