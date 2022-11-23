@@ -69,13 +69,6 @@
                                 <label class="mb-0" for="new">Mới</label>
                             </div>
                         </div>
-                        <!-- Legit -->
-                        <div class="form-group mb-4">
-                            <div class="d-flex align-items-center">
-                                <input type="checkbox" class="pro-legit mr-2" id="legit">
-                                <label class="mb-0" for="legit">Chính hãng</label>
-                            </div>
-                        </div>
                         <!-- Highlight -->
                         <div class="form-group mb-4">
                             <div class="d-flex align-items-center">
@@ -83,18 +76,25 @@
                                 <label class="mb-0" for="highlight">Nổi bật</label>
                             </div>
                         </div>
+                        <!-- Legit -->
+                        <div class="form-group mb-4">
+                            <div class="d-flex align-items-center">
+                                <input type="checkbox" class="pro-legit mr-2" id="legit">
+                                <label class="mb-0" for="legit">Sản phẩm chính hãng</label>
+                            </div>
+                        </div>
                         <!-- Free return -->
                         <div class="form-group mb-4">
                             <div class="d-flex align-items-center">
                                 <input type="checkbox" class="pro-freereturn mr-2" id="return">
-                                <label class="mb-0" for="return">Miễn phí giao hàng</label>
+                                <label class="mb-0" for="return">Đổi trả miễn phí</label>
                             </div>
                         </div>
                         <!-- Free delivery -->
                         <div class="form-group mb-4">
                             <div class="d-flex align-items-center">
                                 <input type="checkbox" class="pro-freedelivery mr-2" id="delivery">
-                                <label class="mb-0" for="delivery">Đổi trả miễn phí</label>
+                                <label class="mb-0" for="delivery">Miễn phí giao hàng</label>
                             </div>
                         </div>
                         <!-- Insurance -->
@@ -114,12 +114,14 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-sh-menu px-2" style="max-height: 300px; overflow: auto;">
                                     <input class="form-control mb-2" id="myInput-sh" type="text" placeholder="Tìm cửa hàng..." autocomplete="off" />
-                                    @foreach (var item in Model.shops)
-                                    {
-                                        <li class="d-flex align-items-center" value="@item.ShopName">
-                                            <input name="shop" class="shop_select mr-2" id="sh_@item.ShopId" type="radio" value="@item.ShopId">
-                                            <label class="mb-0" for="sh_@item.ShopId">@item.ShopName</label>
-                                        </li>
+                                    @if (Model.shops != null && Model.shops.Count > 0) {
+                                        @foreach (var item in Model.shops)
+                                        {
+                                            <li class="d-flex align-items-center" value="@item.ShopName">
+                                                <input name="shop" class="shop_select mr-2" id="sh_@item.ShopId" type="radio" value="@item.ShopId">
+                                                <label class="mb-0" for="sh_@item.ShopId">@item.ShopName</label>
+                                            </li>
+                                        }
                                     }
                                 </ul>
                             </div>
@@ -179,13 +181,13 @@
                     </div>
                     <div class="col-sm-12 mb-4">
                         <!-- Description Desktop -->
-                        <div class="text-left mb-2 text-primary"><strong>Mô tả</strong></div>
+                        <div class="text-left mb-2 text-primary"><strong>Mô tả cho máy tính (rộng: 700px)</strong></div>
                         <div class="form-group mb-4">
                             <textarea class="form-control" id="product-desciptions" rows="8"
                                       cols="50"></textarea>
                         </div>
                         <!-- Description Mobile -->
-                        <div class="text-left mb-2 text-primary"><strong>Mô tả</strong></div>
+                        <div class="text-left mb-2 text-primary"><strong>Mô tả cho điện thoại (rộng: 300px)</strong></div>
                         <div class="form-group mb-4">
                             <textarea class="form-control" id="product-desciptions-mobile" rows="8"
                                       cols="50"></textarea>

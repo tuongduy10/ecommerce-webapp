@@ -146,20 +146,6 @@
                                 <label class="mb-0" for="new">Mới</label>
                             </div>
                         </div>
-                        <!-- Legit -->
-                        <div class="form-group mb-4">
-                            <div class="d-flex align-items-center">
-                                @if (Model.product.Legit)
-                                {
-                                    <input type="checkbox" class="pro-legit mr-2" id="legit" checked>
-                                }
-                                else
-                                {
-                                    <input type="checkbox" class="pro-legit mr-2" id="legit">
-                                }
-                                <label class="mb-0" for="legit">Chính hãng</label>
-                            </div>
-                        </div>
                         <!-- Highlight -->
                         <div class="form-group mb-4">
                             <div class="d-flex align-items-center">
@@ -175,6 +161,20 @@
                                 <label class="mb-0" for="highlight">Nổi bật</label>
                             </div>
                         </div>
+                        <!-- Legit -->
+                        <div class="form-group mb-4">
+                            <div class="d-flex align-items-center">
+                                @if (Model.product.Legit)
+                                {
+                                    <input type="checkbox" class="pro-legit mr-2" id="legit" checked>
+                                }
+                                else
+                                {
+                                    <input type="checkbox" class="pro-legit mr-2" id="legit">
+                                }
+                                <label class="mb-0" for="legit">Sản phẩm chính hãng</label>
+                            </div>
+                        </div>
                         <!-- Free return -->
                         <div class="form-group mb-4">
                             <div class="d-flex align-items-center">
@@ -186,7 +186,7 @@
                                 {
                                     <input type="checkbox" class="pro-freereturn mr-2" id="return">
                                 }
-                                <label class="mb-0" for="return">Miễn phí giao hàng</label>
+                                <label class="mb-0" for="delivery">Đổi trả miễn phí</label>
                             </div>
                         </div>
                         <!-- Free delivery -->
@@ -200,7 +200,7 @@
                                 {
                                     <input type="checkbox" class="pro-freedelivery mr-2" id="delivery">
                                 }
-                                <label class="mb-0" for="delivery">Đổi trả miễn phí</label>
+                                <label class="mb-0" for="return">Miễn phí giao hàng</label>
                             </div>
                         </div>
                         <!-- Insurance -->
