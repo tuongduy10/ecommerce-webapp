@@ -182,34 +182,39 @@ namespace ECommerce.Application.Services.User
                     {
                         phonenumber = phonenumber.Replace("+84", "");
                         if (!phonenumber.StartsWith("0"))
-                        {
                             phonenumber = "0" + phonenumber;
-                        }
                     }
                 }
 
-                if (string.IsNullOrEmpty(request.UserFullName)) return new ApiFailResponse("Vui lòng nhập họ tên");
-                if (string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.RePassword)) return new ApiFailResponse("Vui lòng nhập mật khẩu");
-                if (request.Password != request.RePassword) return new ApiFailResponse("Mật khẩu không trùng");
+                if (string.IsNullOrEmpty(request.UserFullName)) 
+                    return new ApiFailResponse("Vui lòng nhập họ tên");
+                if (string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.RePassword)) 
+                    return new ApiFailResponse("Vui lòng nhập mật khẩu");
+                if (request.Password != request.RePassword) 
+                    return new ApiFailResponse("Mật khẩu không trùng");
 
-                var checkMail = await _DbContext.Users.Where(i => i.UserMail == request.UserMail).FirstOrDefaultAsync();
-                if (checkMail != null) return new ApiFailResponse("Mail đã tồn tại");
+                var checkMail = await _DbContext.Users
+                    .Where(i => request.UserMail != null && i.UserMail == request.UserMail)
+                    .FirstOrDefaultAsync();
+                if (checkMail != null) 
+                    return new ApiFailResponse("Mail đã tồn tại");
 
                 var checkPhone = await _DbContext.Users.Where(i => i.UserPhone == request.UserPhone).FirstOrDefaultAsync();
-                if (checkPhone != null) return new ApiFailResponse("Số điện thoại đã tồn tại");
+                if (checkPhone != null) 
+                    return new ApiFailResponse("Số điện thoại đã tồn tại");
 
                 Data.Models.User user = new Data.Models.User();
-                user.UserMail = request.UserMail.Trim();
+                user.UserMail = request.UserMail != null ? request.UserMail.Trim() : null;
                 user.UserJoinDate = DateTime.Now;
-                user.UserFullName = request.UserFullName.Trim();
+                user.UserFullName = request.UserFullName != null ? request.UserFullName.Trim() : null;
                 user.UserPhone = phonenumber;
 
-                user.UserPhone = request.UserPhone.Trim();
-                user.UserAddress = request.UserAddress.Trim();
+                user.UserPhone = request.UserPhone != null ? request.UserPhone.Trim() : null;
+                user.UserAddress = request.UserAddress != null ? request.UserAddress.Trim() : null;
                 user.UserDistrictCode = request.UserDistrictCode;
                 user.UserCityCode = request.UserCityCode;
                 user.UserWardCode = request.UserWardCode;
-                user.Password = request.RePassword.Trim();
+                user.Password = request.RePassword != null ? request.RePassword.Trim() : null;
                 user.Status = true;
                 user.IsSystemAccount = request.isSystemAccount;
                 await _DbContext.Users.AddAsync(user);

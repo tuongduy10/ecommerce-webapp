@@ -23,9 +23,9 @@
                     @foreach (var user in Model)
                     {
                         <tr>
-                            <td>@user.UserJoinDate.ToString("dd/MM/yyyy hh:mm:ss")</td>
+                            <td>@user.UserJoinDate.ToString("hh:mm:ss, dd/MM/yyyy")</td>
                             <td>@user.UserFullName</td>
-                            <td class="address">@user.UserAddress|@user.UserWardCode|@user.UserDistrictCode|@user.UserCityCode</td>
+                            <td class="address">@user.UserAddress@if(user.UserWardCode != null){ @Html.Raw("|")@user.UserWardCode }@if(user.UserDistrictCode != null){ @Html.Raw("|")@user.UserDistrictCode }@if(user.UserCityCode != null){ @Html.Raw("|")@user.UserCityCode }</td>
                             <td>@user.UserMail</td>
                             <td>@user.UserPhone</td>
                             <td class="status_@user.UserId">
