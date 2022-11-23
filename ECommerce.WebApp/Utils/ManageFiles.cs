@@ -17,7 +17,7 @@ namespace ECommerce.WebApp.Utils
         }
         public void AddFiles(List<IFormFile> files, List<string> filesName, string path)
         {
-            if (files != null && filesName != null) 
+            if (files != null && filesName != null && !String.IsNullOrEmpty(path)) 
             {
                 string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, path);
                 for (int i = 0; i < files.Count; i++)
@@ -44,13 +44,19 @@ namespace ECommerce.WebApp.Utils
         }
         public void DeleteAllFiles(string path)
         {
-            string pathInfo = Path.Combine(_webHostEnvironment.WebRootPath, path);
-            DirectoryInfo directInfo = new DirectoryInfo(pathInfo);
-            foreach (FileInfo file in directInfo.GetFiles()) file.Delete();
+            if (!String.IsNullOrEmpty(path)) 
+            {
+                string pathInfo = Path.Combine(_webHostEnvironment.WebRootPath, path);
+                DirectoryInfo directInfo = new DirectoryInfo(pathInfo);
+                foreach (FileInfo file in directInfo.GetFiles()) 
+                {
+                    file.Delete();
+                }
+            }
         }
         public void DeleteFiles(List<string> fileNames, string path)
         {
-            if (fileNames != null && fileNames.Count > 0)
+            if (fileNames != null && fileNames.Count > 0 && !String.IsNullOrEmpty(path))
             {
                 string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, path);
                 // remove previous image
@@ -69,7 +75,7 @@ namespace ECommerce.WebApp.Utils
         }
         public void DeleteFile(string fileName, string path)
         {
-            if (!String.IsNullOrEmpty(fileName))
+            if (!String.IsNullOrEmpty(fileName) && !String.IsNullOrEmpty(path))
             {
                 string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, path);
                 // remove previous image
@@ -86,21 +92,27 @@ namespace ECommerce.WebApp.Utils
         public List<string> GetFilesName(List<IFormFile> files, string prefix)
         {
             var listFileName = new List<string>();
-            for (int i = 0; i < files.Count; i++)
+            if (files != null && !String.IsNullOrEmpty(prefix)) 
             {
-                var file = files[i];
-                var extension = new FileInfo(file.FileName).Extension;
-                var fileName = prefix + Guid.NewGuid().ToString() + extension;
-                listFileName.Add(fileName);
+                for (int i = 0; i < files.Count; i++)
+                {
+                    var file = files[i];
+                    var extension = new FileInfo(file.FileName).Extension;
+                    var fileName = prefix + Guid.NewGuid().ToString() + extension;
+                    listFileName.Add(fileName);
+                }
             }
             return listFileName;
         }
         public string GetFileName(IFormFile file, string prefix)
         {
-            var extension = new FileInfo(file.FileName).Extension;
-            var fileName = prefix + Guid.NewGuid().ToString() + extension;
-
-            return fileName;
+            if (file != null && !String.IsNullOrEmpty(prefix)) 
+            {
+                var extension = new FileInfo(file.FileName).Extension;
+                var fileName = prefix + Guid.NewGuid().ToString() + extension;
+                return fileName;
+            }
+            return "";
         }
     }
 }

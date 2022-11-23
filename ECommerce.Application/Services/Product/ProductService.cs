@@ -206,6 +206,7 @@ namespace ECommerce.Application.Services.Product
                     Note = i.Note,
                     Link = i.Link,
                     Stock = (int)i.ProductStock,
+
                     New = i.New,
                     Highlight = i.Highlights,
                     FreeDelivery = i.FreeDelivery,

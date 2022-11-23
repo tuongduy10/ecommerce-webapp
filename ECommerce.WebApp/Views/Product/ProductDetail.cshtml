@@ -128,7 +128,7 @@
                                                 <span class="bullet-text">Sản phẩm chính hãng</span>
                                             </div>
                                         }
-                                        @if (Model.product.Insurance != "")
+                                        @if (string.IsNullOrEmpty(Model.product.Insurance))
                                         {
                                             <div class="d-flex align-items-center mb-2">
                                                 <span class="mr-2">
@@ -321,7 +321,7 @@
                 </div>
             </div>
             <!-- Product user images -->
-            @if (Model.product.ProductUserImages.Count > 0)
+            @if (Model.product.ProductUserImages != null && Model.product.ProductUserImages.Count > 0)
             {
                 <div class="product__images-slider">
                     <h1 class="detail-title mb-0"><strong>HÌNH ẢNH THỰC TẾ</strong></h1>
