@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Constants
 {
-    public class SystemConstant
+    public class StatusConstant
     {
         public const string SUCCESS = "success";
         public const string FAIL = "fail";
