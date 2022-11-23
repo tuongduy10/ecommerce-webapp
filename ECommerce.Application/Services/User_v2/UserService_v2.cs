@@ -53,6 +53,7 @@ namespace ECommerce.Application.Services.User_v2
 
                 if (request != null)
                 {
+                    if (request.userId != 0) list = list.Where(i => i.UserId == request.userId).ToList();
                     if (request.all) list = list.ToList();
                     if (request.isSystemAccount) list = list.Where(i => i.isSystemAccount == true).ToList();
                     if (request.isOnline) list = list.Where(i => i.IsOnline == true).ToList();

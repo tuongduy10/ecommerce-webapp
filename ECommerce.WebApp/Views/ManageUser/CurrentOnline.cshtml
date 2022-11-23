@@ -67,7 +67,7 @@
                                     <!--<a href="@Url.Action("UserProfile", "ManageUser", new { id = 0 })" class="mr-2">Chi tiết</a>-->
                                     <a href="" class="mr-2">Chi tiết</a>
                                 </td>
-                                <td>@user.UserFullName</td>
+                                <td>@if(!string.IsNullOrEmpty(user.UserFullName)){@user.UserFullName}</td>
                                 <td>
                                     <div>2 giờ</div>
                                     <div>8 lần</div>
@@ -81,7 +81,7 @@
                                     <div>8 lần</div>
                                 </td>
                                 <td>11:02:13, 22/10/2022</td>
-                                <td class="text-center d-flex align-items-center">
+                                <td id="user-status-@user.UserId" class="text-center d-flex align-items-center user-status">
                                     @if (user.IsOnline) {
                                         <div class="mr-2" style="height: 18px; width: 18px; background: #31A24C; border-radius: 50%"></div>
                                         <label class="mb-0" style="color: #31A24C">Đang hoạt động</label>
@@ -98,3 +98,5 @@
         </div>
     </div>
 </div>
+<script type="text/javascript" src="/js/signalr/dist/browser/signalr.js"></script>
+<script type="text/javascript" src="/js/main/manage-online.js"></script>
