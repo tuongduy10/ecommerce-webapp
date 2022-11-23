@@ -12,7 +12,7 @@ namespace ECommerce.Application.Common
         public FailResponse(string message)
         {
             isSucceed = false;
-            Status = SystemConstant.FAIL;
+            Status = StatusConstant.FAIL;
             Message = message;
         }
     }

@@ -12,19 +12,19 @@ namespace ECommerce.Application.Common
         public SuccessResponse(string message = "success")
         {
             isSucceed = true;
-            Status = SystemConstant.SUCCESS;
+            Status = StatusConstant.SUCCESS;
             Message = message;
         }
         public SuccessResponse(T data)
         {
             isSucceed = true;
-            Status = SystemConstant.SUCCESS;
+            Status = StatusConstant.SUCCESS;
             Data = data;
         }
         public SuccessResponse(string message, T data)
         {
             isSucceed = true;
-            Status = SystemConstant.SUCCESS;
+            Status = StatusConstant.SUCCESS;
             Message = message;
             Data = data;
         }
