@@ -142,15 +142,15 @@ namespace ECommerce.Application.Services.User
                 if (checkPhone != null) return new ApiFailResponse("Số điện thoại đã tồn tại");
 
                 Data.Models.User user = new Data.Models.User();
-                user.UserMail = request.UserMail.Trim();
+                user.UserMail = !string.IsNullOrEmpty(request.UserMail) ? request.UserMail.Trim() : null;
                 user.UserJoinDate = DateTime.Now;
-                user.UserFullName = request.UserFullName.Trim();
-                user.UserPhone = request.UserPhone.Trim();
-                user.UserAddress = request.UserAddress.Trim();
-                user.UserDistrictCode = request.UserDistrictCode;
-                user.UserCityCode = request.UserCityCode;
-                user.UserWardCode = request.UserWardCode;
-                user.Password = request.RePassword.Trim();
+                user.UserFullName = !string.IsNullOrEmpty(request.UserFullName) ? request.UserFullName.Trim() : null;
+                user.UserPhone = !string.IsNullOrEmpty(request.UserPhone) ? request.UserPhone.Trim() : null;
+                user.UserAddress = !string.IsNullOrEmpty(request.UserAddress) ? request.UserAddress.Trim() : null;
+                user.UserDistrictCode = !string.IsNullOrEmpty(request.UserDistrictCode) ? request.UserDistrictCode.Trim() : null;
+                user.UserCityCode = !string.IsNullOrEmpty(request.UserCityCode) ? request.UserCityCode.Trim() : null;
+                user.UserWardCode = !string.IsNullOrEmpty(request.UserWardCode) ? request.UserWardCode.Trim() : null;
+                user.Password = !string.IsNullOrEmpty(request.RePassword) ? request.RePassword.Trim() : null;
                 user.Status = true;
                 user.IsSystemAccount = request.isSystemAccount;
                 await _DbContext.Users.AddAsync(user);

@@ -6,45 +6,73 @@
         <h6 class="m-0 font-weight-bold text-primary">Danh sách người dùng</h6>
     </div>
     <div class="card-body">
-        <div class="page-controls mb-4">
-            <button class="btn btn-primary">Làm mới</button>
-            <button class="btn btn-success">Đang hoạt động</button>
-            <button class="btn btn-dark">Không hoạt động</button>
-            <div class="mt-2">
-                <label for="from-date">Từ ngày</label>
-                <input name="from-date" class="form-control" type="datetime-local" />
-            </div>
-            <div class="mt-2">
-                <label for="to-date">Đến ngày</label>
-                <input name="to-date" class="form-control" type="datetime-local" />
+        <div class="page-data mb-4">
+            <div class="table-responsive">
+                <table class="table table-bordered order-table" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Lọc</th>
+                            <th>Từ ngày</th>
+                            <th>Đến ngày</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <!-- Filter -->
+                            <td>
+                                <button class="btn btn-primary refresh">Làm mới</button>
+                                <button class="btn btn-success">Đang hoạt động</button>
+                                <button class="btn btn-dark">Không hoạt động</button>
+                            </td>
+                            <!-- From Date -->
+                            <td class="font-weight-bold">
+                                <!-- <div class="mt-2">
+                                     <label for="from-date">Từ ngày</label>
+                                    <input name="from-date" class="form-control" type="datetime-local" />
+                                </div> -->
+                                <input name="from-date" class="form-control date-picker" type="datetime-local" />
+                            </td>
+                            <!-- To Date -->
+                            <td class="font-weight-bold">
+                                <!-- <div class="mt-2">
+                                    <label for="to-date">Đến ngày</label>F
+                                    <input name="to-date" class="form-control" type="datetime-local" />
+                                </div> -->
+                                <input name="to-date" class="form-control date-picker" type="datetime-local" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         <div class="page-data mb-4">
-            <table class="table table-bordered order-table" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Tổng truy cập trong hôm nay</th>
-                        <th>Tổng truy cập trong tuần này</th>
-                        <th>Tổng truy cập trong tháng này</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="font-weight-bold" style="color: red;">
-                            <div>4 giờ</div>
-                            <div>16 lần</div>
-                        </td>
-                        <td class="font-weight-bold" style="color: red;">
-                            <div>4 giờ</div>
-                            <div>16 lần</div>
-                        </td>
-                        <td class="font-weight-bold" style="color: red;">
-                            <div>4 giờ</div>
-                            <div>16 lần</div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-bordered order-table" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Tổng truy cập trong hôm nay</th>
+                            <th>Tổng truy cập trong tuần này</th>
+                            <th>Tổng truy cập trong tháng này</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-weight-bold" style="color: red;">
+                                <div>4 giờ</div>
+                                <div>16 lần</div>
+                            </td>
+                            <td class="font-weight-bold" style="color: red;">
+                                <div>4 giờ</div>
+                                <div>16 lần</div>
+                            </td>
+                            <td class="font-weight-bold" style="color: red;">
+                                <div>4 giờ</div>
+                                <div>16 lần</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div class="table-responsive">
             <table class="table table-bordered order-table" width="100%" id="dataTable" cellspacing="0">
