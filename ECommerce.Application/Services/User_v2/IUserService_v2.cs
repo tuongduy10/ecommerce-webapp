@@ -12,6 +12,8 @@ namespace ECommerce.Application.Services.User_v2
     {
         int GetCurrentUserId();
         Task<Response<List<UserGetModel>>> GetUsers(UserGetRequest request = null);
+        Task<Response<UserGetModel>> GetUser(int userId);
         Task<ApiResponse> SetOnline(int userId = 0, bool isOnline = true);
+        Task<Response<UserGetModel>> UpdateOnlineStatus(int _userId = 0, bool _isOnline = true);
     }
 }

@@ -23,6 +23,12 @@ function PostApi(url, params) {
                        alert(xhr.responseText);
                    }
                    break;
+               case 404:
+                   console.log("error---", xhr);
+                   if (xhr.responseText) {
+                       alert(xhr.responseText);
+                   }
+                   break;
                case 500:
                    alert('Lỗi');
                    break;
@@ -93,6 +99,12 @@ function AjaxPostForm(_url, _formData, errorMessage = true) {
                 console.log('Ajax Post Form error--- ', error);
                 if (errorMessage && error.responseText) {
                     alert(error.responseText);
+                }
+                break;
+           case 404:
+                console.log("error---", xhr);
+                if (xhr.responseText) {
+                    alert(xhr.responseText);
                 }
                 break;
            case 500:

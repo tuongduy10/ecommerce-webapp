@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using ECommerce.Application.Constants;
 
 namespace ECommerce.Application.Services.User_v2
 {
@@ -48,6 +49,7 @@ namespace ECommerce.Application.Services.User_v2
                         isSystemAccount = i.IsSystemAccount == null ? false : (bool)i.IsSystemAccount,
                         Status = i.Status == null ? false : (bool)i.Status,
                         IsOnline = i.IsOnline == null ? false : (bool)i.IsOnline,
+                        LastOnline = (DateTime)i.LastOnline
                     })
                     .ToListAsync();
 
@@ -67,6 +69,28 @@ namespace ECommerce.Application.Services.User_v2
                 return new FailResponse<List<UserGetModel>>("Lỗi: \n\n" + error.ToString());
             }
         }
+        public async Task<Response<UserGetModel>> GetUser(int userId)
+        {
+            try
+            {
+                if (userId == 0) return new FailResponse<UserGetModel>("");
+                var user = await _userRepo.FindAsyncWhere(i => i.UserId == userId);
+
+                if (user == null) return new FailResponse<UserGetModel>("Không tìm thấy người dùng");
+                var result = new UserGetModel()
+                {
+                    UserId = user.UserId,
+                    IsOnline = user.IsOnline != null ? (bool)user.IsOnline : false,
+                    LastOnlineLabel = user.LastOnline != null ? ((DateTime)user.LastOnline).ToString(ConfigConstant.DATE_FORMAT) : "",
+                };
+
+                return new SuccessResponse<UserGetModel>("", result);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<UserGetModel>(error.ToString());
+            }
+        }
         public async Task<ApiResponse> SetOnline(int _userId = 0, bool _isOnline = true)
         {
             try
@@ -77,6 +101,7 @@ namespace ECommerce.Application.Services.User_v2
                     if (user != null)
                     {
                         user.IsOnline = _isOnline;
+                        user.LastOnline = DateTime.Now;
                         _userRepo.Update(user);
                         await _userRepo.SaveChangesAsync();
                         return new ApiSuccessResponse("");
@@ -87,6 +112,32 @@ namespace ECommerce.Application.Services.User_v2
             catch (Exception error)
             {
                 return new ApiFailResponse(error.ToString());
+            }
+        }
+        public async Task<Response<UserGetModel>> UpdateOnlineStatus(int _userId = 0, bool _isOnline = true)
+        {
+            try
+            {
+                if (_userId == 0) return new FailResponse<UserGetModel>("");
+
+                var user = await _userRepo.FindAsyncWhere(item => item.UserId == _userId);
+                if(user == null) return new FailResponse<UserGetModel>("Không tìm thấy người dùng");
+                user.IsOnline = _isOnline;
+                user.LastOnline = DateTime.Now;
+                _userRepo.Update(user);
+                await _userRepo.SaveChangesAsync();
+
+                var ressult = new UserGetModel()
+                {
+                    UserId = user.UserId,
+                    IsOnline = (bool)user.IsOnline,
+                    LastOnlineLabel = ((DateTime)user.LastOnline).ToString(ConfigConstant.DATE_FORMAT)
+                };
+                return new SuccessResponse<UserGetModel>("", ressult);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<UserGetModel>(error.ToString());
             }
         }
     }

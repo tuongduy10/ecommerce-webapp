@@ -29,8 +29,9 @@
                                 <!-- <div class="mt-2">
                                      <label for="from-date">Từ ngày</label>
                                     <input name="from-date" class="form-control" type="datetime-local" />
-                                </div> -->
-                                <input name="from-date" class="form-control date-picker" type="datetime-local" />
+                                </div> 
+                                <input name="from-date" class="form-control mb-4 date-picker" type="datetime-local" /> -->
+                                <input name="to-date" class="form-control date-picker" type="text" placeholder="dd-mm-yyyy" />
                             </td>
                             <!-- To Date -->
                             <td class="font-weight-bold">
@@ -38,7 +39,7 @@
                                     <label for="to-date">Đến ngày</label>F
                                     <input name="to-date" class="form-control" type="datetime-local" />
                                 </div> -->
-                                <input name="to-date" class="form-control date-picker" type="datetime-local" />
+                                <input name="to-date" class="form-control date-picker" type="text" placeholder="dd-mm-yyyy" />
                             </td>
                         </tr>
                     </tbody>
@@ -108,7 +109,11 @@
                                     <div>2 giờ</div>
                                     <div>8 lần</div>
                                 </td>
-                                <td>11:02:13, 22/10/2022</td>
+                                <td id="user-lastonline-@user.UserId">
+                                    @if (user.LastOnline != null && !user.IsOnline) {
+                                        @user.LastOnline.ToString("hh:mm:ss, dd/MM/yyyy")
+                                    }
+                                </td>
                                 <td id="user-status-@user.UserId" class="text-center d-flex align-items-center user-status">
                                     @if (user.IsOnline) {
                                         <div class="mr-2" style="height: 18px; width: 18px; background: #31A24C; border-radius: 50%"></div>
@@ -128,3 +133,11 @@
 </div>
 <script type="text/javascript" src="/js/signalr/dist/browser/signalr.js"></script>
 <script type="text/javascript" src="/js/main/manage-online.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('.date-picker').datepicker({
+            format: 'dd-mm-yyyy',
+        });
+    })
+    
+</script>

@@ -794,6 +794,8 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.UserJoinDate).HasColumnType("datetime");
 
+                entity.Property(e => e.LastOnline).HasColumnType("datetime");
+
                 entity.Property(e => e.UserMail)
                     .HasMaxLength(50)
                     .IsUnicode(false);

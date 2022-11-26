@@ -27,7 +27,7 @@ namespace ECommerce.WebApp.Hubs
         public override async Task OnConnectedAsync()
         {
             var userId = _contextHelper.GetCurrentUserId();
-            if (userId != 0) 
+            if (userId != 0)
                 await _userSerivceV2.SetOnline(userId);
 
             await base.OnConnectedAsync();
@@ -37,22 +37,19 @@ namespace ECommerce.WebApp.Hubs
         {
             var userId = _contextHelper.GetCurrentUserId();
             if (userId != 0)
-                await _userSerivceV2.SetOnline(userId, false);
-
-            await SendOnlineUsers();
+                await UpdateOnlineStatus(userId, false);
             await base.OnDisconnectedAsync(exception);
         }
-        // Send users is currently online
-        public async Task SendOnlineUsers()
+        public async Task UpdateOnlineStatus(int userId, bool status)
         {
-            var request = new UserGetRequest()
-            {
-                isOnline = true
-            };
-
-            var users = await _userSerivceV2.GetUsers(request);
-            
-            await Clients.All.SendAsync("ReceiveOnlineUsers", users);
+            var result = await _userSerivceV2.UpdateOnlineStatus(userId, status);
+            await Clients.All.SendAsync("ReceiveOnlineUsers", result);
+        }
+        public async Task SendOnlineUser()
+        {
+            var userId = _contextHelper.GetCurrentUserId();
+            var result = await _userSerivceV2.GetUser(userId);
+            await Clients.All.SendAsync("ReceiveOnlineUsers", result);
         }
     }
 }

@@ -51,6 +51,7 @@ namespace ECommerce.Application.Services.User
                     isSystemAccount = i.IsSystemAccount == null ? false : (bool)i.IsSystemAccount,
                     Status = i.Status == null ? false : (bool)i.Status,
                     IsOnline = i.IsOnline == null ? false : (bool)i.IsOnline,
+                    LastOnline = (DateTime)i.LastOnline
                 })
                 .ToListAsync();
 

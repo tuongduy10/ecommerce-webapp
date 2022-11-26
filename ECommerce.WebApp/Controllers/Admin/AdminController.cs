@@ -53,7 +53,7 @@ namespace ECommerce.WebApp.Controllers.Admin
         }
 
         [AllowAnonymous]
-        [HttpGet]
+        [HttpGet()]
         public async Task<IActionResult> SignIn()
         {
             if (User.Identity.IsAuthenticated)
@@ -100,6 +100,7 @@ namespace ECommerce.WebApp.Controllers.Admin
             var props = new AuthenticationProperties();
             HttpContext.SignInAsync(scheme, principal, props).Wait();
         }
+        [AllowAnonymous]
         public async Task<IActionResult> SignOut()
         {
             await HttpContext.SignOutAsync("AdminAuth");

@@ -673,7 +673,7 @@
 </script>
 <script type="text/javascript">
     // Search input with autocomplete
-    $(document).on("keyup", "#myInput-sh", function () {
+        $(document).on("keyup", "#myInput-sh", function () {
         var value = $(this).val().toLowerCase();
         $(".dropdown-sh-menu li label").filter(function () {
             $(this).siblings("input").toggle($(this).text().toLowerCase().indexOf(value) > -1)

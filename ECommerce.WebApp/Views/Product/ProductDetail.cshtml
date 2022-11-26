@@ -1236,9 +1236,15 @@
         })
         formData.append('value', value);
 
-        $.ajax({
+        AjaxPostForm("/api/RateAPI/PostComment", formData)
+            .success(function (message) {
+                alert(message);
+                location.reload();
+            })
+
+        @*$.ajax({
             type: "POST",
-            url: "/api/RateAPI/PostComment",
+            url: "/api/RateAPI/PostComment1",
             data: formData, // In the controller it receives List<IFormFile> files, ...
             processData: false,
             contentType: false,
@@ -1249,7 +1255,7 @@
             error: function (error) {
                 alert(error.responseText);
             }
-        });
+        });*@
     })
 
     function sendReply(rateId) {

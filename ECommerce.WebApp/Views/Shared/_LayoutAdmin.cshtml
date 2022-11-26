@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.Extensions.Configuration
+@using ECommerce.Application.Services.Configurations;
+@inject IConfiguration Configuration
+@inject IConfigurationService _configurationService
+@{
+    var config = await _configurationService.getConfiguration();
+}
+<!DOCTYPE html>
 
 <html lang="en">
 <head>
@@ -32,7 +39,7 @@
 
     <!-- Custom styles for year picker -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
-
+    <link rel="icon" href="@(Configuration["ImagePath:Favicon"] + config.FaviconPath)" type="image/x-icon">
 </head>
 <body>
     <div id="wrapper">
@@ -271,6 +278,13 @@
 
                 <!-- Divider -->
                 <hr class="sidebar-divider d-none d-md-block">
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("Index", "Elements")">
+                        <i class="fas fa-fw fa-wrench"></i>
+                        <span>Elements</span>
+                    </a>
+                </li>
+
                 <!-- Sidebar Toggler (Sidebar) -->
                 <div class="text-center d-none d-md-inline">
                     <button class="rounded-circle border-0" id="sidebarToggle"></button>

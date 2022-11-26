@@ -10,6 +10,7 @@
             <table class="table table-bordered order-table" width="100%" id="dataTable" cellspacing="0">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Ngày tham gia</th>
                         <th>Tên</th>
                         <th>Địa chỉ</th>
@@ -23,6 +24,9 @@
                     @foreach (var user in Model)
                     {
                         <tr>
+                            <td>                                
+                                <a href="@Url.Action("UserProfile", "ManageUser", new { id = user.UserId })" class="mr-2">Chi tiết</a>
+                            </td>
                             <td>@user.UserJoinDate.ToString("hh:mm:ss, dd/MM/yyyy")</td>
                             <td>@user.UserFullName</td>
                             <td class="address">@user.UserAddress@if(user.UserWardCode != null){ @Html.Raw("|")@user.UserWardCode }@if(user.UserDistrictCode != null){ @Html.Raw("|")@user.UserDistrictCode }@if(user.UserCityCode != null){ @Html.Raw("|")@user.UserCityCode }</td>
@@ -39,7 +43,6 @@
                                 }
                             </td>
                             <td class="action_@user.UserId text-center d-flex align-items-center">
-                                <a href="@Url.Action("UserProfile", "ManageUser", new { id = user.UserId })" class="mr-2">Chi tiết</a>
                                 @if (user.Status == false)
                                 {
                                     <button class="btn btn-success" onclick="unblockUser(@user.UserId)">Mở khóa</button>

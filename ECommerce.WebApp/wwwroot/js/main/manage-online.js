@@ -1,16 +1,13 @@
 ﻿var connection = new signalR.HubConnectionBuilder().withUrl("/onlineHub").build();
 connection.start().then(function () {
-
+    console.log("conected!");
 }).catch(function (err) {
     return console.error(err.toString());
 });
 connection.on("ReceiveOnlineUsers", function (res) {
     if (res && res.data) {
-        console.log(res.data);
-        $(`.user-status`).html(htmlOffline);
-        res.data.forEach(user => {
-            document.getElementById(`user-status-${user.userId}`).innerHTML = htmlOnline;
-        });
+        document.getElementById(`user-status-${res.data.userId}`).innerHTML = res.data.isOnline ? htmlOnline : htmlOffline;
+        document.getElementById(`user-lastonline-${res.data.userId}`).innerHTML = !res.data.isOnline ? res.data.lastOnlineLabel : "";
     }
 });
 

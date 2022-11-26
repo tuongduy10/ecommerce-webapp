@@ -136,8 +136,8 @@ namespace ECommerce.WebApp
         {
             if (env.IsDevelopment())
             {
-                // app.UseExceptionHandler("/error");
-                // app.UseStatusCodePagesWithRedirects("/error/{0}");
+                app.UseExceptionHandler("/error");
+                app.UseStatusCodePagesWithRedirects("/error/{0}");
                 app.UseDeveloperExceptionPage();
                 // app.UseHsts();
             }

@@ -4,7 +4,7 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/onlineHub").build(
 // Connect to server
 connection.start().then(function () {
     // Call function from server
-    connection.invoke("SendOnlineUsers").catch(function (err) {
+    connection.invoke("SendOnlineUser").catch(function (err) {
         return console.error(err.toString());
     });
 }).catch(function (err) {

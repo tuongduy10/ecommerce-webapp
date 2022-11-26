@@ -18,5 +18,7 @@ namespace ECommerce.Application.Services.User.Dtos
         public bool Status { get; set; }
         public bool isSystemAccount { get; set; }
         public bool IsOnline { get; set; }
+        public DateTime LastOnline { get; set; }
+        public string LastOnlineLabel { get; set; }
     }
 }

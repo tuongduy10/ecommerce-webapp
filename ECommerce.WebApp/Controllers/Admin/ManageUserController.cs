@@ -49,10 +49,12 @@ namespace ECommerce.WebApp.Controllers.Admin
         }
         public async Task<IActionResult> CurrentOnline(UserGetRequest request = null)
         {
-            request.userId = _contextHelper.GetCurrentUserId();
-            var list = await _userService.getUsersByFiltered(request);
+            var currentUserId = _contextHelper.GetCurrentUserId();
+            var result = await _userSerivceV2.GetUsers(request);
 
-            ViewBag.List = list;
+            result.Data = result.Data.Where(i => i.UserId != currentUserId).ToList();
+            ViewBag.List = result.Data;
+
             return View();
         }
         public async Task<IActionResult> UnConfirmUser()
