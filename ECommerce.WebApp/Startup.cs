@@ -165,7 +165,8 @@ namespace ECommerce.WebApp
             app.UseEndpoints(routes =>
             {
                 routes.MapHub<ChatHub>("/chatHub");
-                routes.MapHub<OnlineHub>("/onlineHub");
+                routes.MapHub<ClientHub>("/client-hub");
+                routes.MapHub<CommonHub>("/common-hub");
             });
 
             app.UseEndpoints(endpoints =>

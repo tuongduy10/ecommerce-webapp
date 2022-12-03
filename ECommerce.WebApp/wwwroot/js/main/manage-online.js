@@ -1,13 +1,14 @@
-﻿var connection = new signalR.HubConnectionBuilder().withUrl("/onlineHub").build();
-connection.start().then(function () {
-    console.log("conected!");
+﻿var commonHub = new signalR.HubConnectionBuilder().withUrl("/common-hub").build();
+commonHub.start().then(function () {
+    console.log("admin connected...!");
 }).catch(function (err) {
     return console.error(err.toString());
 });
-connection.on("ReceiveOnlineUsers", function (res) {
+commonHub.on("onUpdateUser", function (res) {
     if (res && res.data) {
-        document.getElementById(`user-status-${res.data.userId}`).innerHTML = res.data.isOnline ? htmlOnline : htmlOffline;
-        document.getElementById(`user-lastonline-${res.data.userId}`).innerHTML = !res.data.isOnline ? res.data.lastOnlineLabel : "";
+        const user = res.data
+        document.getElementById(`user-status-${user.userId}`).innerHTML = user.isOnline ? htmlOnline : htmlOffline;
+        document.getElementById(`user-lastonline-${user.userId}`).innerHTML = user.isOnline === false ? user.lastOnlineLabel : "";
     }
 });
 

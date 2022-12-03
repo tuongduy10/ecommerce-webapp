@@ -55,10 +55,11 @@ namespace ECommerce.Application.Services.User_v2
 
                 if (request != null)
                 {
-                    if (request.userId != 0) list = list.Where(i => i.UserId == request.userId).ToList();
                     if (request.all) list = list.ToList();
+                    if (request.userId != 0) list = list.Where(i => i.UserId == request.userId).ToList();
                     if (request.isSystemAccount) list = list.Where(i => i.isSystemAccount == true).ToList();
                     if (request.isOnline) list = list.Where(i => i.IsOnline == true).ToList();
+                    if (request.isOffline) list = list.Where(i => i.IsOnline == false).ToList();
                 }
 
                 var result = list.OrderByDescending(i => i.UserJoinDate).ToList();
@@ -114,7 +115,7 @@ namespace ECommerce.Application.Services.User_v2
                 return new ApiFailResponse(error.ToString());
             }
         }
-        public async Task<Response<UserGetModel>> UpdateOnlineStatus(int _userId = 0, bool _isOnline = true)
+        public async Task<Response<UserGetModel>> UpdateOnlineStatus(int _userId, bool _isOnline)
         {
             try
             {
@@ -122,6 +123,7 @@ namespace ECommerce.Application.Services.User_v2
 
                 var user = await _userRepo.FindAsyncWhere(item => item.UserId == _userId);
                 if(user == null) return new FailResponse<UserGetModel>("Không tìm thấy người dùng");
+
                 user.IsOnline = _isOnline;
                 user.LastOnline = DateTime.Now;
                 _userRepo.Update(user);
@@ -130,7 +132,7 @@ namespace ECommerce.Application.Services.User_v2
                 var ressult = new UserGetModel()
                 {
                     UserId = user.UserId,
-                    IsOnline = (bool)user.IsOnline,
+                    IsOnline = user.IsOnline != null ? (bool)user.IsOnline : false,
                     LastOnlineLabel = ((DateTime)user.LastOnline).ToString(ConfigConstant.DATE_FORMAT)
                 };
                 return new SuccessResponse<UserGetModel>("", ressult);

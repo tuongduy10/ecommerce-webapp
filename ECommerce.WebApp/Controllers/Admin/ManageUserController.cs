@@ -27,6 +27,9 @@ namespace ECommerce.WebApp.Controllers.Admin
         private ICommentService _commentService;
         private ManageFiles _manageFiles;
         private HttpContextHelper _contextHelper;
+
+        private const string DATETIME_LABEL = ConfigConstant.DATE_FORMAT;
+
         public ManageUserController(
             IUserService userService,
             IUserService_v2 userSerivceV2,
@@ -54,6 +57,7 @@ namespace ECommerce.WebApp.Controllers.Admin
 
             result.Data = result.Data.Where(i => i.UserId != currentUserId).ToList();
             ViewBag.List = result.Data;
+            ViewBag.DateTimeFormat = DATETIME_LABEL;
 
             return View();
         }

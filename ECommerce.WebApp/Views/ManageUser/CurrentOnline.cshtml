@@ -20,9 +20,9 @@
                         <tr>
                             <!-- Filter -->
                             <td>
-                                <button class="btn btn-primary refresh">Làm mới</button>
-                                <button class="btn btn-success">Đang hoạt động</button>
-                                <button class="btn btn-dark">Không hoạt động</button>
+                                <a href="/ManageUser/CurrentOnline?all=true" class="btn btn-primary">Làm mới</a>
+                                <a href="/ManageUser/CurrentOnline?isOnline=true" class="btn btn-success">Đang hoạt động</a>
+                                <a href="/ManageUser/CurrentOnline?isOffline=true" class="btn btn-dark">Không hoạt động</a>
                             </td>
                             <!-- From Date -->
                             <td class="font-weight-bold">
@@ -111,7 +111,7 @@
                                 </td>
                                 <td id="user-lastonline-@user.UserId">
                                     @if (user.LastOnline != null && !user.IsOnline) {
-                                        @user.LastOnline.ToString("hh:mm:ss, dd/MM/yyyy")
+                                        @user.LastOnline.ToString(ViewBag.DateTimeFormat)
                                     }
                                 </td>
                                 <td id="user-status-@user.UserId" class="text-center d-flex align-items-center user-status">
@@ -139,5 +139,5 @@
             format: 'dd-mm-yyyy',
         });
     })
-    
+
 </script>

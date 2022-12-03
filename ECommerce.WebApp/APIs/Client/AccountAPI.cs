@@ -3,10 +3,15 @@ using ECommerce.Application.Services.Shop;
 using ECommerce.Application.Services.Shop.Dtos;
 using ECommerce.Application.Services.User;
 using ECommerce.Application.Services.User.Dtos;
+using ECommerce.Application.Services.User_v2;
+using ECommerce.Data.Models;
+using ECommerce.WebApp.Hubs;
+using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,13 +27,26 @@ namespace ECommerce.WebApp.APIs
     {
         private const string COOKIE_CLIENT_SCHEMA = "ClientAuth";
         private IUserService _userService;
+        private IUserService_v2 _userServiceV2;
         private IShopService _shopService;
-        public AccountAPI(IUserService userService, IShopService shopService)
+        private IHubContext<CommonHub> _commonHub;
+        private IHubContext<ClientHub> _clientHub;
+        private HttpContextHelper _contextHelper;
+        public AccountAPI(
+            IUserService userService, 
+            IUserService_v2 userServiceV2,
+            IShopService shopService,
+            IHubContext<CommonHub> commonHub,
+            IHubContext<ClientHub> clientHub)
         {
             _userService = userService;
+            _userServiceV2 = userServiceV2;
             _shopService = shopService;
+            _commonHub = commonHub;
+            _clientHub = clientHub;
+            _contextHelper = new HttpContextHelper();
         }
-        private void SignInHttpContext(ApiResponse result, string scheme)
+        private async Task SignInHttpContext(ApiResponse result, string scheme)
         {
             // User Data
             var user = result.ObjectData.GetType();
@@ -51,6 +69,14 @@ namespace ECommerce.WebApp.APIs
             var principal = new ClaimsPrincipal(identity);
             var props = new AuthenticationProperties();
             HttpContext.SignInAsync(scheme, principal, props).Wait();
+
+            // set online status, send to client
+            var userIdFromContext = _contextHelper.GetCurrentUserId();
+            if (userIdFromContext != 0)
+            {
+                var status = await _userServiceV2.UpdateOnlineStatus(userIdFromContext, true);
+                await _clientHub.Clients.All.SendAsync("onChangeStatus", status);
+            }
         }
         [AllowAnonymous]
         [HttpPost("SignIn")]
@@ -62,7 +88,7 @@ namespace ECommerce.WebApp.APIs
                 return BadRequest(result);
             }
             
-            SignInHttpContext(result, COOKIE_CLIENT_SCHEMA);
+            await SignInHttpContext(result, COOKIE_CLIENT_SCHEMA);
             return Ok(result);
         }
         [AllowAnonymous]
@@ -102,7 +128,7 @@ namespace ECommerce.WebApp.APIs
             var result = await _userService.UpdateUserProfile(request);
             if (!result.isSucceed) return BadRequest(result);
 
-            SignInHttpContext(result, COOKIE_CLIENT_SCHEMA);
+            await SignInHttpContext(result, COOKIE_CLIENT_SCHEMA);
 
             return Ok(result);
         }

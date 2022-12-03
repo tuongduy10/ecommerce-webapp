@@ -2,10 +2,13 @@
 using ECommerce.Application.Services.Rate;
 using ECommerce.Application.Services.Shop;
 using ECommerce.Application.Services.User;
+using ECommerce.Application.Services.User_v2;
+using ECommerce.WebApp.Hubs;
 using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -18,22 +21,28 @@ namespace ECommerce.WebApp.Controllers.Client
     {
         private ILogger<AccountController> _logger;
         private IUserService _userService;
+        private IUserService_v2 _userServiceV2;
         private IShopService _shopService;
         private IRateService _rateService;
         private INotificationService _notificationService;
+        private IHubContext<ClientHub> _clientHub;
         private HttpContextHelper _contextHelper;
         public AccountController(
             ILogger<AccountController> logger,
             IUserService userService,
+            IUserService_v2 userServiceV2,
             IShopService shopService,
             IRateService rateService,
+            IHubContext<ClientHub> clientHub,
             INotificationService notificationService)
         {
             _logger = logger;
             _userService = userService;
+            _userServiceV2 = userServiceV2;
             _shopService = shopService;
             _rateService = rateService;
             _notificationService = notificationService;
+            _clientHub = clientHub;
             _contextHelper = new HttpContextHelper();
         }
 
@@ -54,6 +63,14 @@ namespace ECommerce.WebApp.Controllers.Client
         }
         public async Task<IActionResult> SignOut()
         {
+            // set offline status, send to client
+            var userIdFromContext = _contextHelper.GetCurrentUserId();
+            if (userIdFromContext != 0)
+            {
+                var res = await _userServiceV2.UpdateOnlineStatus(userIdFromContext, false);
+                await _clientHub.Clients.All.SendAsync("onChangeStatus", res);
+            }
+            
             await HttpContext.SignOutAsync("ClientAuth");
             return RedirectToAction("SignIn", "Account");
         }

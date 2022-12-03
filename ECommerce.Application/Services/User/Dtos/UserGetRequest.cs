@@ -14,5 +14,6 @@ namespace ECommerce.Application.Services.User.Dtos
         public bool isSeller { get; set; }
         public bool isAdmin { get; set; }
         public bool isOnline { get; set; }
+        public bool isOffline { get; set; }
     }
 }
