@@ -1,4 +1,9 @@
-﻿@{
+﻿@using Microsoft.Extensions.Configuration
+@using ECommerce.Application.Services.Configurations;
+@inject IConfiguration Configuration
+@inject IConfigurationService _configurationService
+@{
+    var config = await _configurationService.getConfiguration();
     Layout = "";
 }
 <!DOCTYPE html>
@@ -22,7 +27,7 @@
 
     <!-- Custom styles for this template-->
     <link href="/css/sb-admin-2.min.css" rel="stylesheet">
-
+    <link rel="icon" href="@(Configuration["ImagePath:Favicon"] + config.FaviconPath)" type="image/x-icon">
 </head>
 
 <body class="bg-gradient-primary">
