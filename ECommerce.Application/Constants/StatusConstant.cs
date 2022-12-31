@@ -13,8 +13,8 @@ namespace ECommerce.Application.Constants
         public const string FAIL = "fail";
 
         // message, chat
-        public const string MSG_READ = "read";
-        public const string MSG_UNREAD = "unread";
-        public const string MSG_RECALl = "recall";
+        public const string MSG_READ = "READ";
+        public const string MSG_UNREAD = "UN_READ";
+        public const string MSG_RECALl = "RECALL";
     }
 }

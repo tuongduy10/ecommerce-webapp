@@ -132,5 +132,32 @@ namespace ECommerce.Application.Services.Chat
                 return new FailResponse<List<MessageModel>>(error.ToString());
             }
         }
+        public async Task<Response<MessageModel>> SaveOfflineMessageAsync(OfflineMessage request)
+        {
+            try
+            {
+                if (String.IsNullOrEmpty(request.PhoneNumber))
+                    return new FailResponse<MessageModel>("Số điện thoại không được để trống");
+                if (String.IsNullOrEmpty(request.UserName))
+                    return new FailResponse<MessageModel>("Tên không được để trống");
+                if (String.IsNullOrEmpty(request.Message))
+                    return new FailResponse<MessageModel>("Nội dung không được để trống");
+                if (request.PhoneNumber.Count() > 10)
+                    return new FailResponse<MessageModel>("Số điện thoại không hợp lệ");
+                if (request.UserName.Count() > 100)
+                    return new FailResponse<MessageModel>("Tên không hợp lệ");
+                if (request.Message.Count() > 500)
+                    return new FailResponse<MessageModel>("Nội dung không được vượt quá 500 ký tự");
+
+                
+
+
+                return new SuccessResponse<MessageModel>("success");
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<MessageModel>(error.ToString());
+            }
+        }
     }
 }

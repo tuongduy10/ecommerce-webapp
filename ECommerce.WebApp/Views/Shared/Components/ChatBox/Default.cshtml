@@ -67,7 +67,7 @@
                     </div>
                 </form>
                 <div class="chat-box-button-wrapper">
-                    <button class="w-100">
+                    <button class="w-100 send-offline-msg">
                         <p class="mb-0 d-flex align-items-center justify-content-center">
                             <!-- Bắt đầu -->
                             Gửi
@@ -138,7 +138,7 @@
 </div>
 <script type="text/javascript" src="/js/signalr/dist/browser/signalr.js"></script>
 <script type="text/javascript" src="/js/main/client-chat.js"></script>
-<script>
+<script type="text/javascript">
     // ChatBox
     $(".chat-box-min").click(function () {
         $(this).addClass("d-none");
@@ -160,4 +160,21 @@
     $(".chat-box-label").click(function () {
         $(this).siblings(".chat-box-input").focus();
     });
+</script>
+<script type="text/javascript">
+    $(".send-offline-msg").click(function(){
+        var userName = $(".user-name").val();
+        var phoneNumber = $(".phone-number").val();
+        var textContent = $(".text-content").val();
+        var params = {
+            userName: userName,
+            phoneNumber: phoneNumber,
+            message: textContent
+        }
+
+        PostApi("/Home/SendOfflineMessage", params)
+            .then(function(){
+                alert("Gửi tin nhắn thành công")
+            })
+    })
 </script>

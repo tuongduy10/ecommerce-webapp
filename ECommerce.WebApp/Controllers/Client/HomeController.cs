@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Services.Brand;
 using ECommerce.Application.Services.Category;
+using ECommerce.Application.Services.Chat.Dtos;
 using ECommerce.Application.Services.Configurations;
 using ECommerce.WebApp.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -54,8 +55,9 @@ namespace ECommerce.WebApp.Controllers
             var result = await _footerService.getBlogDetail(7);
             return View(result);
         }
-        public async Task<IActionResult> SendOffLineMessage()
+        public async Task<IActionResult> SendOffLineMessage(OfflineMessage request)
         {
+
             return Ok();
         }
 
