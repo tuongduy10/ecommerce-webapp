@@ -126,7 +126,7 @@ namespace ECommerce.WebApp.Controllers.Admin
         }
         public async Task<IActionResult> ChatBox()
         {
-            var userMessageList = await _chatService.GetUserMessagesAsync();
+            var userMessageList = await _chatService.GetAllUserMessagesAsync();
 
             ViewBag.UserMessages = userMessageList.Data;
 

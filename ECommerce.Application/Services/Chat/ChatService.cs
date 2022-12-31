@@ -102,6 +102,25 @@ namespace ECommerce.Application.Services.Chat
                 return new FailResponse<List<UserMessage>>(error.ToString());
             }
         }
+        public async Task<Response<List<UserMessage>>> GetAllUserMessagesAsync()
+        {
+            try
+            {
+                var _list = await _msgRepo.ToListAsync();
+
+                var list = await _DbContext.MessageHistories
+                    .Select(i => new UserMessage() { 
+                    
+                    })
+                    .ToListAsync();
+
+                return new SuccessResponse<List<UserMessage>>("", list);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<List<UserMessage>>(error.ToString());
+            }
+        }
         public async Task<Response<List<MessageModel>>> GetMessages(int fromUserId = 0, int toUserId = 0)
         {
             try
@@ -149,7 +168,13 @@ namespace ECommerce.Application.Services.Chat
                 if (request.Message.Count() > 500)
                     return new FailResponse<MessageModel>("Nội dung không được vượt quá 500 ký tự");
 
-                
+
+                var messageModel = new MessageHistory();
+                messageModel.Message = request.Message.Trim();
+                messageModel.UserName = request.UserName.Trim();
+                messageModel.PhoneNumber = request.PhoneNumber.Trim();
+                await _msgRepo.AddAsync(messageModel);
+                await _msgRepo.SaveChangesAsync();
 
 
                 return new SuccessResponse<MessageModel>("success");
