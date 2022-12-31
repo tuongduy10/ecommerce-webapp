@@ -2348,8 +2348,8 @@ hr {
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        width: 80px;
-        height: 80px;
+        width: 60px;
+        height: 60px;
         text-align: center;
         bottom: 10px;
     }
@@ -2362,12 +2362,13 @@ hr {
     .chat-box-min .dot-wrapper {
         position: fixed;
         display: flex;
-        bottom: 50px;
-        right: 32px;
+        bottom: 40px;
+        right: 28px;
     }
     .chat-box-min .dot-wrapper .dot {
-        width: 5px !important;
-        height: 5px !important;
+        margin-right: 3px !important;
+        width: 4px !important;
+        height: 4px !important;
         background-color: #AC0833;
     }
 }
