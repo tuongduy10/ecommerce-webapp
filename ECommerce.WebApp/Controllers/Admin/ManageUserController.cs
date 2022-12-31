@@ -1,4 +1,5 @@
 ﻿using ECommerce.Application.Constants;
+using ECommerce.Application.Services.Chat;
 using ECommerce.Application.Services.Comment;
 using ECommerce.Application.Services.Role;
 using ECommerce.Application.Services.Shop;
@@ -25,6 +26,7 @@ namespace ECommerce.WebApp.Controllers.Admin
         private IUserService_v2 _userSerivceV2;
         private IShopService _shopService;
         private ICommentService _commentService;
+        private IChatService _chatService;
         private ManageFiles _manageFiles;
         private HttpContextHelper _contextHelper;
 
@@ -35,12 +37,14 @@ namespace ECommerce.WebApp.Controllers.Admin
             IUserService_v2 userSerivceV2,
             IShopService shopService,
             ICommentService commentService,
+            IChatService chatService,
             IWebHostEnvironment webHostEnvironment
         ) {
             _userService = userService;
             _userSerivceV2 = userSerivceV2;
             _shopService = shopService;
             _commentService = commentService;
+            _chatService = chatService;
             _contextHelper = new HttpContextHelper();
             _manageFiles = new ManageFiles(webHostEnvironment);
         }
@@ -119,6 +123,21 @@ namespace ECommerce.WebApp.Controllers.Admin
             if (result.isSucceed) return Ok(result.Message);
 
             return BadRequest(result.Message);
+        }
+        public async Task<IActionResult> ChatBox()
+        {
+            var userMessageList = await _chatService.GetUserMessagesAsync();
+
+            ViewBag.UserMessages = userMessageList.Data;
+
+            return View();
+        }
+        public async Task<IActionResult> GetMessages(int fromUserId = 0, int toUserId = 0)
+        {
+            var userId = _contextHelper.GetCurrentUserId();
+
+            var list = await _chatService.GetMessages(fromUserId, toUserId);
+            return Ok(list);
         }
     }
 }

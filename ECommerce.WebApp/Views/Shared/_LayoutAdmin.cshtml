@@ -26,6 +26,7 @@
     <!-- Custom styles for this template-->
     <link href="/css/sb-admin-2.min.css" rel="stylesheet">
     <link href="/css/all.css" rel="stylesheet">
+    <link href="/css/admin-chat.css" rel="stylesheet">
 
     <!-- Custom styles for this page -->
     <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
@@ -122,6 +123,7 @@
                         <div class="bg-white py-2 collapse-inner rounded">
                             <h6 class="collapse-header">Quản Lý Truy Cập</h6>
                             <a class="collapse-item" href="@Url.Action("CurrentOnline","ManageUser")">Đang hoạt động</a>
+                            <a class="collapse-item" href="@Url.Action("ChatBox","ManageUser")">Hộp thoại</a>
                             <h6 class="collapse-header">Quản Lý Tài Khoản</h6>
                             <a class="collapse-item" href="@Url.Action("Index","ManageUser")">Danh sách người dùng</a>
                             <a class="collapse-item" href="@Url.Action("Index","ManageUser", new { isSystemAccount = true })">Tài khoản nội bộ</a>

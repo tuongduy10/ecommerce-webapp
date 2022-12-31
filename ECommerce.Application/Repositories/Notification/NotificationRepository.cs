@@ -3,6 +3,7 @@ using ECommerce.Application.Repositories.Notification.Dtos;
 using ECommerce.Application.Services.Rate.Dtos;
 using ECommerce.Application.Services.Rate.Models;
 using ECommerce.Application.Services.User.Enums;
+using ECommerce.Application.Services.User_v2.Dtos;
 using ECommerce.Data.Context;
 using ECommerce.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -108,6 +109,22 @@ namespace ECommerce.Application.Repositories.Notification
                     return notification;
                 }
             }
+        }
+        public async Task<Data.Models.Notification> CreateMessageHistoryAsync(MessageModel message)
+        {
+            // add new
+            var newNotification = new Data.Models.Notification()
+            {
+                TextContent = message.Message,
+                ReceiverId = message.ToUserId,
+                SenderId = message.FromUserId,
+                TypeId = (int?)Enums.NotificationType.NewMessage,
+                CreateDate = DateTime.Now,
+                IsRead = false,
+            };
+            await AddAsync(newNotification);
+            await SaveChangesAsync();
+            return newNotification;
         }
         public async Task<NotificationModel> FindByIdAsync(int id = 0)
         {

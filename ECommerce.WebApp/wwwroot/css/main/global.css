@@ -389,6 +389,11 @@ a:hover{
         }
 }
 
+.flex-al-jus-center {
+    display: flex;
+    align-items: center;
+    justify-self: center;
+}
 
 /* Scroll bar */
 .filter--scrollbar::-webkit-scrollbar {
@@ -507,13 +512,20 @@ a:hover{
 }
 
 /* Variable */
-:root{
+:root {
+    /* Colors */
     --black: #333;
     --white: #fafafa;
     --success: #29b474;
     --fail: #ea4335;
     --blue-dior: #3b99fc;
+    --red-noti: #ac0833;
 
-
+    /* Font */
     --font-title: 'Noto Serif', serif;
+
+    /* chatbox */
+    --cb-header-height: 58px;
+    --cb-footer-height: 24px;
+    --cb-background-color: #f2f5fC;
 }

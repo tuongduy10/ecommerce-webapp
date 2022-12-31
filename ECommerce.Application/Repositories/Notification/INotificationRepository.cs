@@ -2,6 +2,7 @@
 using ECommerce.Application.Repositories.Notification.Dtos;
 using ECommerce.Application.Services.Rate.Dtos;
 using ECommerce.Application.Services.Rate.Models;
+using ECommerce.Application.Services.User_v2.Dtos;
 using ECommerce.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -17,5 +18,6 @@ namespace ECommerce.Application.Repositories.Notification
         Task<NotificationModel> FindByIdAsync(int id = 0);
         Task<Data.Models.Notification> CreateCommentNotiAsync(Rate comment);
         Task<Data.Models.Notification> CreateLikeDislikeNotiAsync(Rate comment);
+        Task<Data.Models.Notification> CreateMessageHistoryAsync(MessageModel message);
     }
 }

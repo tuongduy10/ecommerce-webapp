@@ -398,11 +398,13 @@
             }
         }
         // Xem thêm
-        $('.bran__list-items').append(`
-            <div class="w-100 text-center d-block">
-                <a class="bran__viewmore d-inline-block" style="cursor: pointer">Xem thêm</a>
-            </div>
-        `);
+        if(listBrand.length > 0){
+            $('.bran__list-items').append(`
+                <div class="w-100 text-center d-block">
+                    <a class="bran__viewmore d-inline-block" style="cursor: pointer">Xem thêm</a>
+                </div>
+            `);
+        }
     }
 </script>
 <script type="text/javascript" src="//cdn.jsdelivr.net/gh/kenwheeler/slick@1.8.1/slick/slick.min.js"></script>

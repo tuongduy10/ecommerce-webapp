@@ -1,0 +1,133 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div class="messaging">
+        <div class="inbox_msg">
+            <div class="inbox_people">
+                <div class="inbox_chat scroll">
+                    @if(ViewBag.UserMessages != null && ViewBag.UserMessages.Count > 0){
+                        foreach (var user in ViewBag.UserMessages) 
+                        {
+                            if(user.UserId != Int32.Parse(User.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value)){
+                                <div class="chat_list active_chat" onclick="openChat(@user.UserId)">
+                                    <div class="chat_people">
+                                        <div class="chat_img">
+                                            <img src="https://ptetutorials.com/images/user-profile.png"
+                                     alt="sunil">
+                                        </div>
+                                        <div class="chat_ib">
+                                            <h5>@user.UserName <span class="chat_date">21:36, 25/12/2022</span></h5>
+                                            <p>@user.PhoneNumber</p>
+                                        </div>
+                                    </div>
+                                    <span class="unread_chat unread_chat"></span>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+            <div class="mesgs">
+                <div class="msg_history">
+                    @*<div id="msg_wrapper_36" class="msg_wrapper">
+                        <div class="outgoing_msg">
+                            <div class="sent_msg">
+                                <p>Apollo University, Delhi, India Test</p>
+                                <span class="time_date"> 12:00:00, 25/12/2022 </span>
+                            </div>
+                        </div>
+                        <div class="incoming_msg">
+                            <div class="received_msg">
+                                <div class="received_withd_msg">
+                                    <p>
+                                        We work directly with our designers and suppliers,
+                                        and sell direct to you, which means quality, exclusive
+                                        products, at a price anyone can afford. <a href="">attachment</a>
+                                    </p>
+                                    <span class="time_date"> 12:00:00, 25/12/2022 </span>
+                                </div>
+                            </div>
+                        </div>
+                        </div>*@
+                </div>
+                <div class="type_msg">
+                    <div class="input_msg_write">
+                        @*<input type="text" class="userInputId" value="@ViewBag.UserId" hidden />
+                        <input type="text" class="userInputName" value="@User.Identity.Name" hidden/>
+                        <input type="text" class="write_msg" placeholder="Nhập tin nhắn" />
+                        <button class="msg_send_btn" type="button">
+                            <i class="fa fa-paper-plane"
+                               aria-hidden="true"></i>
+                        </button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="/js/signalr/dist/browser/signalr.js"></script>
+<script type="text/javascript" src="/js/main/manage-online.js"></script>
+<script type="text/javascript" src="/js/main/admin-chat.js"></script>
+<script type="text/javascript">
+    function openChat(id){
+        /*
+         * id: from user
+         */
+        $(".msg_history").empty();
+        $(".msg_history").html(`<div id="msg_wrapper_${id}" class="msg_wrapper"></div>`);
+
+        var userName = '@User.Identity.Name';
+        var fromUserId = @User.Claims.FirstOrDefault(i => i.Type == "UserId").Value
+        $(".input_msg_write").empty();
+        $(".input_msg_write").html(`
+            <input type="text" class="toUserId" value="${id}" hidden />
+            <input type="text" class="fromUserId" value="${fromUserId}" hidden/>
+            <input type="text" class="userInputName" value="${userName}" hidden/>
+            <input type="text" class="write_msg" placeholder="Nhập tin nhắn" />
+            <button class="msg_send_btn" type="button">
+                <i class="fa fa-paper-plane"aria-hidden="true"></i>
+            </button>
+        `);
+
+        PostApi("/ManageUser/GetMessages", { fromUserId: Number(fromUserId), toUserId: id })
+            .then(function (res) {
+                if(res.isSucceed && res.data.length > 0){
+                    console.log(res.data)
+                    res.data.forEach(msg => {
+                        if(id == msg.fromUserId){
+                            let msgHtml = inComingMsg(msg);
+                            $(`#msg_wrapper_${id}`).append(msgHtml);
+                        } else {
+                            let msgHtml = outGoingMsg(msg);
+                            $(`#msg_wrapper_${id}`).append(msgHtml);
+                        }
+                    });
+                }
+            });
+    }
+
+    function inComingMsg(msg) {
+        return `
+            <div class="incoming_msg">
+                <div class="received_msg">
+                    <div class="received_withd_msg">
+                        <p>${msg.message}</p>
+                        <span class="time_date"> ${msg.createDateLabel} </span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    function outGoingMsg(msg) {
+        return `
+            <div class="outgoing_msg">
+                <div class="sent_msg">
+                    <p>${msg.message}</p>
+                    <span class="time_date"> ${msg.createDateLabel} </span>
+                </div>
+            </div>
+        `;
+    }
+</script>

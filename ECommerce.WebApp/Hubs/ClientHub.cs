@@ -45,6 +45,15 @@ namespace ECommerce.WebApp.Hubs
             var userId = _contextHelper.GetCurrentUserId();
             if(userId != 0) await UpdateOnlineStatus(userId, false);
         }
+        public async Task UpdateOnlineHistory()
+        {
+            var userId = _contextHelper.GetCurrentUserId();
+            if (userId != 0) 
+            {
+                var result = await _userServiceV2.UpdateOnlineHistory(userId);
+                // await _commonHub.Clients.All.SendAsync("onUpdateUser", result);
+            } 
+        }
         public async Task UpdateOnlineStatus(int userId, bool status)
         {
             var result = await _userServiceV2.UpdateOnlineStatus(userId, status);

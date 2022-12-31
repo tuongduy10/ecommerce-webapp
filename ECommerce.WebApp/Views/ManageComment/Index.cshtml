@@ -26,6 +26,7 @@
                                 <th>Nội dung</th>
                                 <th>Phản hồi</th>
                                 <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -37,7 +38,7 @@
                                         <td class="text-center">
                                             <a href="@Url.Action("Detail", "ManageComment", new { id = item.Id })">Chi tiết</a>
                                         </td>
-                                        <td>@item.CreateDate.ToString("HH:mm:ss - dd/MM/yyyy")</td>
+                                        <td>@item.CreateDate.ToString("HH:mm:ss, dd/MM/yyyy")</td>
                                         <td>@item.UserName</td>
                                         <td>@item.ProductName</td>
                                         <td>@item.ShopName</td>
@@ -56,6 +57,13 @@
                                             <p style="white-space: pre-line;">@item.Comment</p>
                                         </td>
                                         <td>@item.Replies.Count</td>
+                                        <td>
+                                            @if(item.ParentId == 0){ 
+                                                <span class="p-1" style="background: red; color: black; font-weight: bold">Level 1</span>
+                                            } else {
+                                                @item.ParentCreateDate
+                                            }
+                                        </td>
                                         <td class="text-center">
                                             <button class="btn btn-danger" onclick="deleteComment(@item.Id)">Xóa</button>
                                         </td>

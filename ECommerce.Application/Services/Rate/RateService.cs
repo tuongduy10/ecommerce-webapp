@@ -1,5 +1,6 @@
 ﻿
 using ECommerce.Application.Common;
+using ECommerce.Application.Constants;
 using ECommerce.Application.Repositories.Notification.Dtos;
 using ECommerce.Application.Repositories.Notification.Enums;
 using ECommerce.Application.Services.Rate.Dtos;
@@ -46,6 +47,11 @@ namespace ECommerce.Application.Services.Rate
                         })
                         .ToList(),
                     ParentId = rate.ParentId == null ? 0 : (int)rate.ParentId,
+                    ParentCreateDate = ((DateTime)_DbContext.Rates
+                        .Where(reply => reply.RateId == rate.ParentId)
+                        .Select(reply => reply.CreateDate)
+                        .FirstOrDefault())
+                        .ToString(ConfigConstant.DATE_FORMAT),
                     Replies = _DbContext.Rates
                         .Where(reply => reply.ParentId == rate.RateId)
                         .Select(reply => new RateGetModel())

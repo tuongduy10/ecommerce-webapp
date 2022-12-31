@@ -114,3 +114,9 @@ function AjaxPostForm(_url, _formData, errorMessage = true) {
     });
 }
 
+// Date format
+//$(function () {
+//    $('.date-picker').datepicker({
+//        format: 'dd-mm-yyyy',
+//    });
+//});

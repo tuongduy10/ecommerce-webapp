@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#nullable disable
-
 namespace ECommerce.Data.Models
 {
     public partial class ProductPrice

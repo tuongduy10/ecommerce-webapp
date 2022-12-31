@@ -35,6 +35,8 @@ using Microsoft.AspNetCore.SignalR;
 using ECommerce.Application.Services.Product_v2;
 using ECommerce.Application.Services.User_v2;
 using Microsoft.Extensions.Logging;
+using ECommerce.Data.Models;
+using ECommerce.Application.Services.Chat;
 
 namespace ECommerce.WebApp
 {
@@ -117,6 +119,7 @@ namespace ECommerce.WebApp
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IProductService_v2,ProductService_v2>();
             services.AddScoped<IUserService_v2, UserService_v2>();
+            services.AddScoped<IChatService, ChatService>();
 
             /*
              * Config Services

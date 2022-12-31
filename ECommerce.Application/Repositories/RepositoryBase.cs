@@ -28,7 +28,19 @@ namespace ECommerce.Application.Repositories
         {
             return await _DbContext.Set<T>().Where(expression).FirstOrDefaultAsync();
         }
+        public virtual async Task<T> FindLastAsyncWhere(Expression<Func<T, bool>> expression)
+        {
+            return await _DbContext.Set<T>().Where(expression).LastOrDefaultAsync();
+        }
         // List
+        public virtual IEnumerable<T> ToList()
+        {
+            return _DbContext.Set<T>().ToList();
+        }
+        public virtual IEnumerable<T> ToListWhere(Expression<Func<T, bool>> expression)
+        {
+            return _DbContext.Set<T>().Where(expression).ToList();
+        }
         public virtual async Task<IEnumerable<T>> ToListAsync()
         {
             return await _DbContext.Set<T>().ToListAsync();

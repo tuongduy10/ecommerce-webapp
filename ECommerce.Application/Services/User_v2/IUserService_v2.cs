@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services.User.Dtos;
+using ECommerce.Application.Services.User_v2.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,7 @@ namespace ECommerce.Application.Services.User_v2
         Task<Response<UserGetModel>> GetUser(int userId);
         Task<ApiResponse> SetOnline(int userId = 0, bool isOnline = true);
         Task<Response<UserGetModel>> UpdateOnlineStatus(int _userId, bool _isOnline);
+        Task<Response<UserGetModel>> UpdateOnlineHistory(int _userId);
+        Task<Response<MessageModel>> SendMessage(MessageModel request);
     }
 }

@@ -12,18 +12,13 @@ clientHub.start().then(function () {
 /*
  * Methods
  */
-document.addEventListener("visibilitychange", function () {
-    if (!document.hidden || document.visibilityState === "visible") {
-        setOnline();
-    } else {
-        setOffline();
-    }
-}, false);
 $(window).focus(function (e) {
     setOnline();
+    // updateOnlineHistory();
 });
 $(window).blur(function (e) {
     setOffline();
+    // updateOnlineHistory();
 });
 function setOffline() {
     clientHub.invoke("SetOffline").catch(function (err) {
@@ -34,4 +29,9 @@ function setOnline() {
     clientHub.invoke("SetOnline").catch(function (err) {
         return console.error(err.toString());
     });
+}
+function updateOnlineHistory() {
+    clientHub.invoke("UpdateOnlineHistory").catch(function (err) {
+        return console.error(err.toString());
+    })
 }

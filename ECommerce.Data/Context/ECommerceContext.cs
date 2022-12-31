@@ -31,12 +31,14 @@ namespace ECommerce.Data.Context
         public virtual DbSet<Discount> Discounts { get; set; }
         public virtual DbSet<Header> Headers { get; set; }
         public virtual DbSet<Interest> Interests { get; set; }
+        public virtual DbSet<MessageHistory> MessageHistories { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<NotificationType> NotificationTypes { get; set; }
         public virtual DbSet<Option> Options { get; set; }
         public virtual DbSet<OptionValue> OptionValues { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
+        public virtual DbSet<OnlineHistory> OnlineHistories { get; set; }
         public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<ProductAttribute> ProductAttributes { get; set; }
@@ -285,6 +287,14 @@ namespace ECommerce.Data.Context
                     .IsUnicode(false);
 
                 entity.Property(e => e.TypeName).HasMaxLength(256);
+            });
+
+
+            modelBuilder.Entity<OnlineHistory>(entity =>
+            {
+                entity.ToTable("OnlineHistory");
+
+                entity.Property(e => e.AccessDate).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Option>(entity =>
@@ -826,6 +836,23 @@ namespace ECommerce.Data.Context
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_UserRole_User");
+            });
+
+            modelBuilder.Entity<MessageHistory>(entity =>
+            {
+                entity.ToTable("MessageHistory");
+
+                entity.Property(e => e.Message).HasMaxLength(500);
+
+                entity.Property(e => e.Attachment)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CreateDate).HasColumnType("datetime");
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -13,6 +13,7 @@ namespace ECommerce.Application.Repositories
         IQueryable<T> Query(Expression<Func<T, bool>> expression = null);
         // Single obj
         Task<T> FindAsyncWhere(Expression<Func<T, bool>> expression);
+        Task<T> FindLastAsyncWhere(Expression<Func<T, bool>> expression);
         // List
         Task<IEnumerable<T>> ToListAsync();
         Task<IEnumerable<T>> ToListAsyncWhere(Expression<Func<T, bool>> expression);

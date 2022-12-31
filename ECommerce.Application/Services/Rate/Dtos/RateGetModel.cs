@@ -29,6 +29,7 @@ namespace ECommerce.Application.Services.Rate.Dtos
         public bool IsSeller { get; set; }
         public bool IsShopOwner { get; set; }
         public int ParentId { get; set; }
+        public string ParentCreateDate { get; set; }
         public DateTime CreateDate { get; set; }
         public List<ImageModel> Images { get; set; }
         public List<RateGetModel> Replies { get; set; }

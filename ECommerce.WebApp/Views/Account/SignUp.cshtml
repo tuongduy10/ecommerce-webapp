@@ -112,6 +112,7 @@
             .then(function (result) {
                 $('#verificationCode').remove();
                 $('.verifycode').remove();
+                $("#number").prop("disabled", true);
                 renderFormInformation();
             }).catch(function (error) {
                 console.log(error.message);
