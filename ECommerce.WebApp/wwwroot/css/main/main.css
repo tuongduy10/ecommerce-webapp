@@ -2372,15 +2372,17 @@ hr {
         background-color: #AC0833;
     }
 }
-    .chat-box {
-        position: fixed;
-        width: 350px;
-        bottom: 20px;
-        right: 20px;
-        box-shadow: 1px 1px 10px 2px rgb(0 0 0 / 22%);
-        border-radius: 10px;
-        transition: all .2s ease-in-out;
-    }
+.chat-box {
+    margin-left: 20px;
+    position: fixed;
+    z-index: 100;
+    max-width: 350px;
+    bottom: 20px;
+    right: 20px;
+    box-shadow: 1px 1px 10px 2px rgb(0 0 0 / 22%);
+    border-radius: 10px;
+    transition: all .2s ease-in-out;
+}
 
 .chat-header {
     height: 58px;
