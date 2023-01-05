@@ -13,9 +13,23 @@ $("#messageInput").on("keypress", function (e) {
         sendMessage();
     }
 })
+$("#button-emoji").on("click", function () {
+    if (!$(".emoji-wrapper").hasClass("d-none")) {
+        $(".emoji-wrapper").addClass("d-none");
+    } else {
+        $(".emoji-wrapper").removeClass("d-none");
+    }
+    loadEmoji();
+});
+$(".emoji-list li").click(function () {
+    var text = $("#messageInput").val() + $(this).html();
+    $("#messageInput").val(text);
+    $(".emoji-wrapper").addClass("d-none");
+});
+
 $("#button-send").on("click", function () {
     sendMessage();
-})
+});
 
 // Receive from server
 connection.on("ReceiveFromAdmin", function (userName, message) {
@@ -42,6 +56,27 @@ function sendMessage() {
     div.innerHTML = htmlMessageRight(userName, message);
     $("#messageInput").val("");
 };
+
+function loadEmoji() {
+    if ($(".emoji-list li").length == 0) {
+        $.get("/js/json/emoji.json", function (res) {
+            if (res && res.length > 0) {
+                $(".emoji-list").empty();
+                res.forEach(emoji => {
+                    let li = document.createElement('li');
+                    li.textContent = emoji.character;
+                    li.id = emoji.slug;
+                    li.addEventListener('click', () => {
+                        var text = $("#messageInput").val() + li.textContent;
+                        $("#messageInput").val(text);
+                        $(".emoji-wrapper").addClass("d-none");
+                    })
+                    $(".emoji-list").append(li);
+                });
+            }
+        });
+    }
+}
 
 // html
 function htmlMessageRight(userName, message) {
