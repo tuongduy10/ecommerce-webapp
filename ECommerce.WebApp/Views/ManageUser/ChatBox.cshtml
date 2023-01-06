@@ -10,19 +10,22 @@
                     @if(ViewBag.UserMessages != null && ViewBag.UserMessages.Count > 0){
                         foreach (var user in ViewBag.UserMessages) 
                         {
+                            var lastestMsg = user.MessageList[user.MessageList.Count - 1];
+
                             if(user.UserId != Int32.Parse(User.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value)){
-                                <div class="chat_list active_chat" onclick="openChat(@user.UserId)">
+                                <div class="chat_list @if(lastestMsg.Status == "UN_READ") {@Html.Raw("active_chat")}" onclick="openChat(@user.UserId)">
                                     <div class="chat_people">
                                         <div class="chat_img">
-                                            <img src="https://ptetutorials.com/images/user-profile.png"
-                                     alt="sunil">
+                                            <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
                                         </div>
                                         <div class="chat_ib">
-                                            <h5>@user.UserName <span class="chat_date">21:36, 25/12/2022</span></h5>
+                                            <h5>@user.UserName <span class="chat_date">@lastestMsg.CreateDateLabel</span></h5>
                                             <p>@user.PhoneNumber</p>
                                         </div>
                                     </div>
-                                    <span class="unread_chat unread_chat"></span>
+                                    @if(lastestMsg.Status == "UN_READ"){
+                                        <span class="unread_chat"></span>
+                                    }
                                 </div>
                             }
                         }
