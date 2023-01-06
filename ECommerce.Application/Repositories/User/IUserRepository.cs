@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ECommerce.Application.Services.User.Dtos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace ECommerce.Application.Repositories.User
 {
     public interface IUserRepository : IRepositoryBase<Data.Models.User>
     {
+        Task<UserGetModel> GetUserInfo(int userId);
         bool IsAdmin(int userId);
     }
 }

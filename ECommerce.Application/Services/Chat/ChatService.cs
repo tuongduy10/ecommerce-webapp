@@ -9,6 +9,7 @@ using ECommerce.Application.Services.User_v2;
 using ECommerce.Data.Context;
 using ECommerce.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +40,7 @@ namespace ECommerce.Application.Services.Chat
             {
                 if (String.IsNullOrEmpty(request.Message))
                     return new FailResponse<MessageModel>("Nội dung không được để trống");
+                var fromUserInfo = await _userRepo.GetUserInfo(request.FromUserId);
 
                 var newMessageHistory = new MessageHistory();
                 newMessageHistory.Message = request.Message.Trim();
@@ -46,6 +48,8 @@ namespace ECommerce.Application.Services.Chat
                 newMessageHistory.Status = StatusConstant.MSG_UNREAD;
                 newMessageHistory.FromUserId = request.FromUserId;
                 newMessageHistory.ToUserId = request.ToUserId;
+                newMessageHistory.UserName = fromUserInfo != null ? fromUserInfo.UserFullName : "";
+                newMessageHistory.PhoneNumber = fromUserInfo != null ? fromUserInfo.UserPhone : "";
                 if(!String.IsNullOrEmpty(request.Attachment))
                     newMessageHistory.Attachment = request.Attachment.Trim();
 
@@ -102,18 +106,37 @@ namespace ECommerce.Application.Services.Chat
                 return new FailResponse<List<UserMessage>>(error.ToString());
             }
         }
-        public async Task<Response<List<UserMessage>>> GetAllUserMessagesAsync()
+        public async Task<Response<List<UserMessage>>>  GetAllUserMessagesAsync()
         {
             try
             {
-                var _list = await _msgRepo.ToListAsync();
-
-                var list = await _DbContext.MessageHistories
-                    .Select(i => new UserMessage() { 
+                var groupMsg = from msg in _msgRepo.Query().ToList()
+                               group msg by new
+                               {
+                                   msg.FromUserId,
+                                   msg.UserName,
+                                   msg.PhoneNumber
+                               };
                     
-                    })
-                    .ToListAsync();
-
+                var list = new List<UserMessage>();
+                foreach (var msg in groupMsg)
+                {
+                    list.Add(new UserMessage() { 
+                        UserId = msg.Key.FromUserId,
+                        UserName = msg.Key.UserName,
+                        PhoneNumber = msg.Key.PhoneNumber,
+                        MessageList = msg.Select(i => new MessageModel() { 
+                            FromUserId = i.FromUserId,
+                            ToUserId = i.ToUserId,
+                            CreateDate = i.CreateDate,
+                            CreateDateLabel = ((DateTime)i.CreateDate).ToString(ConfigConstant.DATE_FORMAT),
+                            Message = i.Message,
+                            Status = i.Status,
+                            Type = i.Type,
+                            Attachment = i.Attachment
+                        }).ToList()
+                    });
+                }
                 return new SuccessResponse<List<UserMessage>>("", list);
             }
             catch (Exception error)
