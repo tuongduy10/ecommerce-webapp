@@ -124,20 +124,5 @@ namespace ECommerce.WebApp.Controllers.Admin
 
             return BadRequest(result.Message);
         }
-        public async Task<IActionResult> ChatBox()
-        {
-            var userMessageList = await _chatService.GetAllUserMessagesAsync();
-
-            ViewBag.UserMessages = userMessageList.Data;
-
-            return View();
-        }
-        public async Task<IActionResult> GetMessages(int fromUserId = 0, int toUserId = 0)
-        {
-            var userId = _contextHelper.GetCurrentUserId();
-
-            var list = await _chatService.GetMessages(fromUserId, toUserId);
-            return Ok(list);
-        }
     }
 }
