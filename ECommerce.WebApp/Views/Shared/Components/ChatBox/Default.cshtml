@@ -1,5 +1,10 @@
 ﻿@using Microsoft.Extensions.Configuration
+@using ECommerce.Application.Services.Configurations;
 @inject IConfiguration Configuration
+@inject IConfigurationService _configurationService
+@{
+    var config = await _configurationService.getConfiguration();
+}
 
 <!-- Chat box -->
 <button class="chat-box-min">
@@ -20,7 +25,7 @@
     <div class="chat-header d-flex align-items-center justify-content-between">
         <div class="chat-header-wrapper d-flex align-items-center justify-content-center">
             <div class="header-img mr-2">
-                <img src="https://hihichi.com//images/favicon/favicon_f31fb1e8-d495-4b29-8a3d-ebf12fb69910.png"
+                <img src="@(Configuration["ImagePath:Favicon"] + config.FaviconPath)"
                      alt="">
             </div>
             <span>HiHiChi</span>
@@ -88,7 +93,7 @@
             <div id="message-list-@ViewBag.UserId" class="message-list">
                 <div class="message-wrapper message-left">
                     <span class="user-name">
-                        <img src="https://hihichi.com//images/favicon/favicon_f31fb1e8-d495-4b29-8a3d-ebf12fb69910.png" alt="">
+                        <img src="@(Configuration["ImagePath:Favicon"] + config.FaviconPath)" alt="">
                         <label class="mb-0" style="margin-top: 0.5px;">Admin</label>
                     </span>
                     <div class="text msg-left" title="15:51:34, 17/12/2022">
