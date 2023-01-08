@@ -123,7 +123,7 @@
                         <div class="bg-white py-2 collapse-inner rounded">
                             <h6 class="collapse-header">Quản Lý Truy Cập</h6>
                             <a class="collapse-item" href="@Url.Action("CurrentOnline","ManageUser")">Đang hoạt động</a>
-                            <a class="collapse-item" href="@Url.Action("ChatBox","ManageUser")">Hộp thoại</a>
+                            <a class="collapse-item" href="@Url.Action("ChatBox","Chat")">Hộp thoại</a>
                             <h6 class="collapse-header">Quản Lý Tài Khoản</h6>
                             <a class="collapse-item" href="@Url.Action("Index","ManageUser")">Danh sách người dùng</a>
                             <a class="collapse-item" href="@Url.Action("Index","ManageUser", new { isSystemAccount = true })">Tài khoản nội bộ</a>
@@ -227,6 +227,21 @@
                     <div class="sidebar-heading">
                         Quản lý bán hàng
                     </div>
+
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUser-seller"
+                            aria-expanded="true" aria-controls="collapseUser-seller">
+                            <i class="fas fa-fw fa-user"></i>
+                            <span>Quản lý người dùng</span>
+                        </a>
+                        <div id="collapseUser-seller" class="collapse" aria-labelledby="headingUtilities"
+                            data-parent="#accordionSidebar">
+                            <div class="bg-white py-2 collapse-inner rounded">
+                                <h6 class="collapse-header">Quản Lý Truy Cập</h6>
+                                <a class="collapse-item" href="@Url.Action("ChatBox","Chat")">Hộp thoại</a>
+                            </div>
+                        </div>
+                    </li>
 
                     <!-- Nav Item - Pages Collapse Menu -->
                     <li class="nav-item">

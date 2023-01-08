@@ -65,6 +65,11 @@ namespace ECommerce.Application.Repositories
         {
             _DbContext.Set<T>().Update(entity);
         }
+        public virtual void UpdateRange(IEnumerable<T> entities)
+        {
+            if (entities != null && entities.Count() > 0)
+                _DbContext.Set<T>().UpdateRange(entities);
+        }
         // Remove
         public virtual async Task RemoveAsyncWhere(Expression<Func<T, bool>> expression)
         {

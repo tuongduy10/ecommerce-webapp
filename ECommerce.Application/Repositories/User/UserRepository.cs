@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.User.Enums;
+﻿using ECommerce.Application.Services.User.Dtos;
+using ECommerce.Application.Services.User.Enums;
 using ECommerce.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,6 +15,22 @@ namespace ECommerce.Application.Repositories.User
         public UserRepository(ECommerceContext DbContext) : base(DbContext)
         {
 
+        }
+        public async Task<UserGetModel> GetUserInfo(int userId)
+        {
+            var result = await Query(i => i.UserId == userId)
+                .Select(i => new UserGetModel()
+                {
+                    UserId = i.UserId,
+                    UserAddress = i.UserAddress,
+                    UserCityCode = i.UserCityCode,
+                    UserDistrictCode = i.UserDistrictCode,
+                    UserFullName = i.UserFullName,
+                    UserPhone = i.UserPhone,
+                })
+                .FirstOrDefaultAsync();
+            if (result != null) return result;
+            return null;
         }
         public bool IsAdmin(int userId)
         {
