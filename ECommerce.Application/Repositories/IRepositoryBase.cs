@@ -22,6 +22,7 @@ namespace ECommerce.Application.Repositories
         Task AddRangeAsync(IEnumerable<T> entities);
         // Update
         void Update(T entity);
+        void UpdateRange(IEnumerable<T> entities);
         // Remove
         Task RemoveAsyncWhere(Expression<Func<T, bool>> expression);
         Task RemoveRangeAsyncWhere(Expression<Func<T, bool>> expression);

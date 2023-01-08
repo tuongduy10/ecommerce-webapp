@@ -163,10 +163,29 @@ namespace ECommerce.Application.Services.Chat
                     .ToListAsync();
 
                 if (fromUserId != 0 && toUserId != 0)
-                    list = list.Where(item => 
-                        (item.FromUserId == toUserId && item.ToUserId == null) || 
-                        (item.FromUserId == fromUserId && item.ToUserId == toUserId)).ToList();
+                {
+                    list = list.Where(item =>
+                        (item.FromUserId == toUserId && item.ToUserId == null) ||
+                        (item.FromUserId == fromUserId && item.ToUserId == toUserId) ||
+                        (item.FromUserId == toUserId && item.ToUserId == fromUserId)).ToList();
+                }
 
+                // read the messages
+                var unReadMsgIds = list
+                    .Where(i => i.Status == StatusConstant.MSG_UNREAD)
+                    .Select(i => i.Id)
+                    .ToList();
+                if (unReadMsgIds.Count() > 0)
+                {
+                    var unReadMsg = await _msgRepo.ToListAsyncWhere(i => unReadMsgIds.Contains(i.Id));
+                    foreach (var msg in unReadMsg)
+                    {
+                        msg.Status = StatusConstant.MSG_READ;
+                    }
+                    _msgRepo.UpdateRange(unReadMsg);
+                    await _msgRepo.SaveChangesAsync();
+                }
+                
                 return new SuccessResponse<List<MessageModel>>(list);
             }
             catch (Exception error)

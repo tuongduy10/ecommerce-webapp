@@ -10,10 +10,9 @@
                     @if(ViewBag.UserMessages != null && ViewBag.UserMessages.Count > 0){
                         foreach (var user in ViewBag.UserMessages) 
                         {
-                            var lastestMsg = user.MessageList[user.MessageList.Count - 1];
-
                             if(user.UserId != Int32.Parse(User.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value)){
-                                <div class="chat_list @if(lastestMsg.Status == "UN_READ") {@Html.Raw("active_chat")}" onclick="openChat(@user.UserId)">
+                                var lastestMsg = user.MessageList[user.MessageList.Count - 1];
+                                <div class="chat_list chat_list_@user.UserId @if(lastestMsg.Status == "UN_READ") {@Html.Raw("active_chat")}" onclick="openChat(@user.UserId)">
                                     <div class="chat_people">
                                         <div class="chat_img">
                                             <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
@@ -21,10 +20,12 @@
                                         <div class="chat_ib">
                                             <h5>@user.UserName <span class="chat_date">@lastestMsg.CreateDateLabel</span></h5>
                                             <p>@user.PhoneNumber</p>
+                                            <p>@user.MessageList[user.MessageList.Count - 1].Message</p>
+                                            <p>@user.MessageList[user.MessageList.Count - 1].Status</p>
                                         </div>
                                     </div>
                                     @if(lastestMsg.Status == "UN_READ"){
-                                        <span class="unread_chat"></span>
+                                        <span class="unread_chat_@user.UserId unread_chat"></span>
                                     }
                                 </div>
                             }
@@ -109,6 +110,10 @@
                     });
                 }
             });
+
+        // read the message box
+        $(`.unread_chat_${id}`).remove();
+        $(`.chat_list_${id}`).removeClass("active_chat");
     }
 
     function inComingMsg(msg) {
