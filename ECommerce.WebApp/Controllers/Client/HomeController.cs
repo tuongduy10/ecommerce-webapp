@@ -55,11 +55,6 @@ namespace ECommerce.WebApp.Controllers
             var result = await _footerService.getBlogDetail(7);
             return View(result);
         }
-        public async Task<IActionResult> SendOffLineMessage(OfflineMessage request)
-        {
-
-            return Ok();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

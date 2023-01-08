@@ -22,8 +22,6 @@
                                         <div class="chat_ib">
                                             <h5>@user.UserName <span class="chat_date">@lastestMsg.CreateDateLabel</span></h5>
                                             <p>@user.PhoneNumber</p>
-                                            <p>@user.MessageList[user.MessageList.Count - 1].Message</p>
-                                            <p>@user.MessageList[user.MessageList.Count - 1].Status</p>
                                         </div>
                                     </div>
                                     @if (lastestMsg.Status == "UN_READ")
