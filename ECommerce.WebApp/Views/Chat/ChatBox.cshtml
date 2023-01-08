@@ -13,7 +13,7 @@
                         {
                             if (user.UserId != Int32.Parse(User.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value) && user.MessageList.Count > 0)
                             {
-                                var lastestMsg = user.MessageList[user.MessageList.Count - 1];
+                                var lastestMsg = user.LatestMessage;
                                 <div class="chat_list chat_list_@user.UserId @if(lastestMsg.Status == "UN_READ") {@Html.Raw("active_chat")}" onclick="openChat(@user.UserId)">
                                     <div class="chat_people">
                                         <div class="chat_img">

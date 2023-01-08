@@ -29,7 +29,7 @@ namespace ECommerce.WebApp.Controllers.Seller
         }
         public async Task<IActionResult> ChatBox()
         {
-            var userMessageList = await _chatService.GetUserMessagesAsync();
+            var userMessageList = await _chatService.GetAllUserMessagesAsync();
 
             ViewBag.UserMessages = userMessageList.Data;
 
@@ -37,7 +37,7 @@ namespace ECommerce.WebApp.Controllers.Seller
         }
         public async Task<IActionResult> GetMessages(int fromUserId = 0, int toUserId = 0)
         {
-            var list = await _chatService.GetMessages(fromUserId, toUserId);
+            var list = await _chatService.GetMessages(fromUserId, toUserId); // get all for admin
 
             return Ok(list);
         }

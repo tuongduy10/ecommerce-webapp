@@ -13,7 +13,7 @@ namespace ECommerce.Application.Services.Chat
     {
         Task<Response<MessageModel>> SendMessage(MessageModel request);
         Task<Response<List<UserMessage>>> GetUserMessagesAsync(int userId = 0);
-        Task<Response<List<UserMessage>>> GetAllUserMessagesAsync();
+        Task<Response<List<UserMessage>>> GetAllUserMessagesAsync(int sellerId = 0);
         Task<Response<List<MessageModel>>> GetMessages(int fromUserId = 0, int toUserId = 0);
     }
 }

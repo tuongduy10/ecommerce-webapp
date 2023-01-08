@@ -106,7 +106,7 @@ namespace ECommerce.Application.Services.Chat
                 return new FailResponse<List<UserMessage>>(error.ToString());
             }
         }
-        public async Task<Response<List<UserMessage>>>  GetAllUserMessagesAsync()
+        public async Task<Response<List<UserMessage>>>  GetAllUserMessagesAsync(int sellerId = 0)
         {
             try
             {
@@ -121,11 +121,9 @@ namespace ECommerce.Application.Services.Chat
                 var list = new List<UserMessage>();
                 foreach (var msg in groupMsg)
                 {
-                    list.Add(new UserMessage() { 
-                        UserId = msg.Key.FromUserId,
-                        UserName = msg.Key.UserName,
-                        PhoneNumber = msg.Key.PhoneNumber,
-                        MessageList = msg.Select(i => new MessageModel() { 
+                    var messageList = msg
+                        .Select(i => new MessageModel() 
+                        {
                             FromUserId = i.FromUserId,
                             ToUserId = i.ToUserId,
                             CreateDate = i.CreateDate,
@@ -134,9 +132,16 @@ namespace ECommerce.Application.Services.Chat
                             Status = i.Status,
                             Type = i.Type,
                             Attachment = i.Attachment
-                        }).ToList()
+                        }).ToList();
+                    list.Add(new UserMessage() { 
+                        UserId = msg.Key.FromUserId,
+                        UserName = msg.Key.UserName,
+                        PhoneNumber = msg.Key.PhoneNumber,
+                        MessageList = messageList,
+                        LatestMessage = messageList.Count > 0 ? messageList[messageList.Count - 1] : null
                     });
                 }
+                list = list.OrderByDescending(i => i.LatestMessage.CreateDate).ToList();
                 return new SuccessResponse<List<UserMessage>>("", list);
             }
             catch (Exception error)
@@ -171,26 +176,31 @@ namespace ECommerce.Application.Services.Chat
                 }
 
                 // read the messages
-                var unReadMsgIds = list
-                    .Where(i => i.Status == StatusConstant.MSG_UNREAD)
-                    .Select(i => i.Id)
-                    .ToList();
-                if (unReadMsgIds.Count() > 0)
-                {
-                    var unReadMsg = await _msgRepo.ToListAsyncWhere(i => unReadMsgIds.Contains(i.Id));
-                    foreach (var msg in unReadMsg)
-                    {
-                        msg.Status = StatusConstant.MSG_READ;
-                    }
-                    _msgRepo.UpdateRange(unReadMsg);
-                    await _msgRepo.SaveChangesAsync();
-                }
-                
+                await ReadMessageAsync(list);
+
                 return new SuccessResponse<List<MessageModel>>(list);
             }
             catch (Exception error)
             {
                 return new FailResponse<List<MessageModel>>(error.ToString());
+            }
+        }
+        private async Task ReadMessageAsync(List<MessageModel> list)
+        {
+            // read the messages
+            var unReadMsgIds = list
+                .Where(i => i.Status == StatusConstant.MSG_UNREAD)
+                .Select(i => i.Id)
+                .ToList();
+            if (unReadMsgIds.Count() > 0)
+            {
+                var unReadMsg = await _msgRepo.ToListAsyncWhere(i => unReadMsgIds.Contains(i.Id));
+                foreach (var msg in unReadMsg)
+                {
+                    msg.Status = StatusConstant.MSG_READ;
+                }
+                _msgRepo.UpdateRange(unReadMsg);
+                await _msgRepo.SaveChangesAsync();
             }
         }
         public async Task<Response<MessageModel>> SaveOfflineMessageAsync(OfflineMessage request)
