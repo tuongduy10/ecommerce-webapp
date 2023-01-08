@@ -71,20 +71,23 @@
                 </button>
             `);
 
-        PostApi("/Chat/GetMessages", { fromUserId: Number(fromUserId), toUserId: id })
+        PostApi("/Chat/GetMessages", { userId: id })
             .then(function (res) {
                 if (res.isSucceed && res.data.length > 0) {
-                    console.log(res.data)
                     res.data.forEach(msg => {
-                        if (id == msg.fromUserId) {
-                            let msgHtml = inComingMsg(msg);
+                        if (fromUserId == msg.fromUserId) {
+                            let msgHtml = outGoingMsg(msg);
                             $(`#msg_wrapper_${id}`).append(msgHtml);
                         } else {
-                            let msgHtml = outGoingMsg(msg);
+                            console.log(msg)
+                            let msgHtml = inComingMsg(msg);
                             $(`#msg_wrapper_${id}`).append(msgHtml);
                         }
                     });
                 }
+            })
+            .catch(function(error) {
+                console.log(error);
             });
 
         // read the message box
@@ -93,12 +96,17 @@
     }
 
     function inComingMsg(msg) {
+        var pMsg = `<p>${ msg.message }</p>`;
+        if(msg.type === "FROM_ADMIN_MSG"){
+            pMsg = `<p style="background: #ac0833; color: white;">${msg.message}</p>`
+        }
+
         return `
                 <div class="incoming_msg">
                     <div class="received_msg">
                         <div class="received_withd_msg">
-                            <p>${msg.message}</p>
-                            <span class="time_date"> ${msg.createDateLabel} </span>
+                            ${pMsg}
+                            <span class="time_date">${msg.userName} - ${msg.createDateLabel}</span>
                         </div>
                     </div>
                 </div>

@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.Chat;
+﻿using ECommerce.Application.Constants;
+using ECommerce.Application.Services.Chat;
 using ECommerce.Application.Services.Chat.Dtos;
 using ECommerce.Data.Models;
 using ECommerce.WebApp.Utils;
@@ -24,6 +25,7 @@ namespace ECommerce.WebApp.Hubs
             var msgModel = new MessageModel();
             msgModel.FromUserId = Int32.Parse(userId);
             msgModel.Message = message;
+            msgModel.Type = TypeConstant.MSG_FROM_CLIENT;
 
             var sendMsgRes = await _chatService.SendMessage(msgModel);
 
@@ -34,6 +36,7 @@ namespace ECommerce.WebApp.Hubs
             var msgModel = new MessageModel();
             msgModel.FromUserId = !String.IsNullOrEmpty(fromUserId) ? Int32.Parse(fromUserId) : 0;
             msgModel.ToUserId = !String.IsNullOrEmpty(toUserId) ? Int32.Parse(toUserId) : 0;
+            msgModel.Type = TypeConstant.MSG_FROM_ADMIN;
             msgModel.Message = message;
 
             var sendMsgRes = await _chatService.SendMessage(msgModel);

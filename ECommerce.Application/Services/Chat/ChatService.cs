@@ -50,6 +50,7 @@ namespace ECommerce.Application.Services.Chat
                 newMessageHistory.ToUserId = request.ToUserId;
                 newMessageHistory.UserName = fromUserInfo != null ? fromUserInfo.UserFullName : "";
                 newMessageHistory.PhoneNumber = fromUserInfo != null ? fromUserInfo.UserPhone : "";
+                newMessageHistory.Type = request.Type;
                 if(!String.IsNullOrEmpty(request.Attachment))
                     newMessageHistory.Attachment = request.Attachment.Trim();
 
@@ -63,6 +64,7 @@ namespace ECommerce.Application.Services.Chat
                 resModel.ToUserId = newMessageHistory.ToUserId;
                 resModel.FromUserId = newMessageHistory.FromUserId;
                 resModel.Attachment = newMessageHistory.Attachment;
+                resModel.Type = newMessageHistory.Type;
                 resModel.Status = newMessageHistory.Status;
 
                 return new SuccessResponse<MessageModel>("", resModel);
@@ -149,7 +151,7 @@ namespace ECommerce.Application.Services.Chat
                 return new FailResponse<List<UserMessage>>(error.ToString());
             }
         }
-        public async Task<Response<List<MessageModel>>> GetMessages(int fromUserId = 0, int toUserId = 0)
+        public async Task<Response<List<MessageModel>>> GetMessages(int userId = 0)
         {
             try
             {
@@ -162,18 +164,21 @@ namespace ECommerce.Application.Services.Chat
                         CreateDateLabel = ((DateTime)msg.CreateDate).ToString(ConfigConstant.DATE_FORMAT),
                         Message = msg.Message,
                         FromUserId = msg.FromUserId,
+                        UserName = msg.UserName,
                         ToUserId = msg.ToUserId,
+                        Type = msg.Type,
                         Status = msg.Status,
                     })
                     .ToListAsync();
 
-                if (fromUserId != 0 && toUserId != 0)
+                if (userId != 0)
                 {
                     list = list.Where(item =>
-                        (item.FromUserId == toUserId && item.ToUserId == null) ||
-                        (item.FromUserId == fromUserId && item.ToUserId == toUserId) ||
-                        (item.FromUserId == toUserId && item.ToUserId == fromUserId)).ToList();
+                        (item.FromUserId == userId && item.ToUserId == null) ||
+                        item.FromUserId == userId || 
+                        item.ToUserId == userId).ToList();
                 }
+                list = list.OrderBy(item => item.CreateDate).ToList();
 
                 // read the messages
                 await ReadMessageAsync(list);

@@ -31,16 +31,18 @@ function sendMessage() {
     var message = document.getElementById("messageInput").value;
 
     // Call function from server
-    connection.invoke("SendToAdmin", userId, message).catch(function (err) {
-        return console.error(err.toString());
-    });
-
-    // msg behavior
-    var div = document.createElement("div");
-    div.className = "message-wrapper message-right";
-    document.getElementById(`message-list-${userId}`).appendChild(div);
-    div.innerHTML = htmlMessageRight(userName, message);
-    $("#messageInput").val("");
+    connection.invoke("SendToAdmin", userId, message)
+        .then(function () {
+            // msg behavior
+            var div = document.createElement("div");
+            div.className = "message-wrapper message-right";
+            document.getElementById(`message-list-${userId}`).appendChild(div);
+            div.innerHTML = htmlMessageRight(userName, message);
+            $("#messageInput").val("");
+        })
+        .catch(function (err) {
+            return console.error(err.toString());
+        });
 };
 
 // html

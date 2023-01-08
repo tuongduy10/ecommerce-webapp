@@ -35,10 +35,9 @@ namespace ECommerce.WebApp.Controllers.Seller
 
             return View();
         }
-        public async Task<IActionResult> GetMessages(int fromUserId = 0, int toUserId = 0)
+        public async Task<IActionResult> GetMessages(int userId = 0)
         {
-            var list = await _chatService.GetMessages(fromUserId, toUserId); // get all for admin
-
+            var list = await _chatService.GetMessages(userId);
             return Ok(list);
         }
     }
