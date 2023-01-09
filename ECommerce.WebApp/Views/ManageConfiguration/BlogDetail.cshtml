@@ -57,37 +57,24 @@
         apiUpdateBlog(request);
     })
     function apiDeleteBlog(BlogId) {
-        $.ajax({
-            url: '/api/ManageConfigurationsAPI/DeleteBlog',
-            data: JSON.stringify(BlogId),
-            dataType: 'json',
-            contentType: 'application/json; charset=utf-8',
-            type: 'POST',
-            success: function (data) {
-                alert(data.message);
-                window.location.href = "/ManageConfiguration/ManageFooter"
-            },
-            error: function (data) {
-                console.log(data);
-                alert(data.responseJSON.message)
-            }
-        });
+        PostApi("/ManageConfiguration/DeleteBlog", { BlogId: BlogId })
+            .then(function (res) {
+                alert(res.message);
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert(error.responseJSON.message);
+            });
     }
     function apiUpdateBlog(request) {
-        $.ajax({
-            url: '/api/ManageConfigurationsAPI/UpdateBlog',
-            data: JSON.stringify(request),
-            dataType: 'json',
-            contentType: 'application/json; charset=utf-8',
-            type: 'POST',
-            success: function (data) {
-                alert(data.message);
-            },
-            error: function (data) {
-                console.log(data);
-                alert(data.message)
-            }
-        });
+        PostApi("/ManageConfiguration/UpdateBlog", request)
+            .then(function(res) {
+                alert(res.message);
+            })
+            .catch(function(error) {
+                console.log(error);
+                alert(error.message);
+            });
     }
 </script>
 

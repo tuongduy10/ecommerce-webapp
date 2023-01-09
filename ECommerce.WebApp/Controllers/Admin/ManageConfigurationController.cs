@@ -1,6 +1,9 @@
 ﻿using ECommerce.Application.Constants;
 using ECommerce.Application.Services.Bank;
 using ECommerce.Application.Services.Configurations;
+using ECommerce.Application.Services.Configurations.Dtos.Footer;
+using ECommerce.Application.Services.Configurations.Dtos.Header;
+using ECommerce.Data.Models;
 using ECommerce.WebApp.Models.Configurations.Footer;
 using ECommerce.WebApp.Models.Configurations.Header;
 using ECommerce.WebApp.Utils;
@@ -74,6 +77,34 @@ namespace ECommerce.WebApp.Controllers.Admin
         {
             return View();
         }
+        [HttpPost]
+        public async Task<IActionResult> AddBlog(BlogModel request)
+        {
+            var result = await _footerService.AddBlog(request);
+            if (!result.isSucceed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+        public async Task<IActionResult> UpdateBlog(BlogUpdateRequest request)
+        {
+            var result = await _footerService.UpdateBlog(request);
+            if (!result.isSucceed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+        public async Task<IActionResult> DeleteBlog(int BlogId)
+        {
+            var result = await _footerService.DeleteBlog(BlogId);
+            if (!result.isSucceed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
         public async Task<IActionResult> BlogDetail(int BlogId)
         {
             var blog = await _footerService.getBlogDetail(BlogId);
@@ -135,6 +166,15 @@ namespace ECommerce.WebApp.Controllers.Admin
             }
             ViewBag.Message = result.Message;
             return RedirectToAction("ManageHeader", "ManageConfiguration");
+        }
+        public async Task<IActionResult> UpdateHeaderMenu(HeaderUpdateRequest request)
+        {
+            var result = await _headerService.updateHeaderMenu(request);
+            if (result.isSucceed)
+            {
+                return Ok(result);
+            }
+            return BadRequest();
         }
     } 
 }

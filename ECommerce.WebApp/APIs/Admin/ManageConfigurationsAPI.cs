@@ -25,47 +25,18 @@ namespace ECommerce.WebApp.APIs.Admin
         private ManageFiles _manageFiles;
         private IHeaderService _headerService;
         private const string BANNER_FILEPATH = FilePathConstant.BANNER_FILEPATH;
-        public ManageConfigurationsAPI(IConfigurationService configurationService,
-                                        IFooterService footerService,
-                                        IBankService bankService,
-                                        IHeaderService headerService,
-                                        IWebHostEnvironment webHostEnvironment)
-        {
+        public ManageConfigurationsAPI(
+            IConfigurationService configurationService,
+            IFooterService footerService,
+            IBankService bankService,
+            IHeaderService headerService,
+            IWebHostEnvironment webHostEnvironment
+        ) {
             _headerService = headerService;
             _configurationService = configurationService;
             _footerService = footerService;
             _bankService = bankService;
             _manageFiles = new ManageFiles(webHostEnvironment);
-        }
-        [HttpPost("AddBlog")]
-        public async Task<IActionResult> AddBlog(BlogModel request)
-        {
-            var result = await _footerService.AddBlog(request);
-            if (!result.isSucceed)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
-        }
-        [HttpPost("UpdateBlog")]
-        public async Task<IActionResult> UpdateBlog(BlogUpdateRequest request)
-        {
-            var result = await _footerService.UpdateBlog(request);
-            if (!result.isSucceed)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
-        }
-        [HttpPost("DeleteBlog")]
-        public async Task<IActionResult> DeleteBlog([FromBody] int BlogId)
-        {
-            var result = await _footerService.DeleteBlog(BlogId);
-            if (!result.isSucceed)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
         }
         [HttpPost("UpdateSocial")]
         public async Task<IActionResult> UpdateSocial([FromBody] SocialUpdateRequest request)

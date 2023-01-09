@@ -55,7 +55,11 @@ namespace ECommerce.WebApp.Controllers
             var result = await _footerService.getBlogDetail(7);
             return View(result);
         }
-
+        public async Task<IActionResult> BlogDetail(int BlogId)
+        {
+            var result = await _footerService.getBlogDetail(BlogId);
+            return View(result);
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -311,21 +311,15 @@
             HeaderName: name,
             Status: status
         };
-        $.ajax({
-            type: "POST",
-            url: "/api/ManageConfigurationsAPI/UpdateHeaderMenu",
-            data: JSON.stringify(request),
-            dataType: 'json',
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
+        PostApi("/ManageConfiguration/UpdateHeaderMenu", request)
+            .then(function(res){
                 alert("Cập nhật thành công");
                 location.reload();
-            },
-            error: function (data) {
-                console.log(data)
-                alert(data.responseJSON.message);
-            }
-        });
+            })
+            .catch(function(error){
+                console.log(error)
+                alert(error.responseJSON.message);
+            });
     }
     function updateWebConfig() {
         var request = {
