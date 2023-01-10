@@ -108,7 +108,7 @@ namespace ECommerce.Application.Services.Chat
                 return new FailResponse<List<UserMessage>>(error.ToString());
             }
         }
-        public async Task<Response<List<UserMessage>>>  GetAllUserMessagesAsync(int sellerId = 0)
+        public async Task<Response<List<UserMessage>>> GetAllUserMessagesAsync(int sellerId = 0)
         {
             try
             {
@@ -134,13 +134,60 @@ namespace ECommerce.Application.Services.Chat
                             Status = i.Status,
                             Type = i.Type,
                             Attachment = i.Attachment
-                        }).ToList();
+                        })
+                        .ToList();
                     list.Add(new UserMessage() { 
                         UserId = msg.Key.FromUserId,
                         UserName = msg.Key.UserName,
                         PhoneNumber = msg.Key.PhoneNumber,
                         MessageList = messageList,
                         LatestMessage = messageList.Count > 0 ? messageList[messageList.Count - 1] : null
+                    });
+                }
+                list = list.OrderByDescending(i => i.LatestMessage.CreateDate).ToList();
+                return new SuccessResponse<List<UserMessage>>("", list);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<List<UserMessage>>(error.ToString());
+            }
+        }
+        public async Task<Response<List<UserMessage>>> GetUserList()
+        {
+            try
+            {
+                var groupMsg = from msg in _msgRepo.Query().ToList()
+                               where msg.Type == TypeConstant.MSG_FROM_CLIENT
+                               group msg by new
+                               {
+                                   msg.FromUserId,
+                                   msg.UserName,
+                                   msg.PhoneNumber
+                               };
+
+                var list = new List<UserMessage>();
+                foreach (var msg in groupMsg)
+                {
+                    var messages = await _msgRepo
+                            .Query()
+                            .Where(item =>
+                                (item.FromUserId == msg.Key.FromUserId && item.ToUserId == null) ||
+                                item.FromUserId == msg.Key.FromUserId ||
+                                item.ToUserId == msg.Key.FromUserId)
+                            .Select(i => new MessageModel()
+                            {
+                                Message = i.Message,
+                                CreateDate = i.CreateDate,
+                                CreateDateLabel = ((DateTime)i.CreateDate).ToString(ConfigConstant.DATE_FORMAT),
+                                Status = i.Status
+                            })
+                            .ToListAsync();
+                    list.Add(new UserMessage()
+                    {
+                        UserId = msg.Key.FromUserId,
+                        UserName = msg.Key.UserName,
+                        PhoneNumber = msg.Key.PhoneNumber,
+                        LatestMessage = messages[messages.Count() - 1]
                     });
                 }
                 list = list.OrderByDescending(i => i.LatestMessage.CreateDate).ToList();
