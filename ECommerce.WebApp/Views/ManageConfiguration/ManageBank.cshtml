@@ -94,7 +94,7 @@
                             <td>@item.BankAccountName</td>
                             <td>@item.BankAccountNumber</td>
                             <td>
-                                <button class="btn btn-primary">Chỉnh sửa</button>
+                                <button class="btn btn-primary" onclick="onUpdateBank(@item.BankId)">Chỉnh sửa</button>
                                 <button class="btn btn-danger" onclick="deleteBank(@item.BankId)">Xóa</button>
                             </td>
                         </tr>
@@ -122,6 +122,9 @@
             BankAccountName: $('.bank-accountname').val(),
         };
         apiAddBank(request);
+    }
+    function onUpdateBank(id){
+
     }
     function updateBank() {
         var request = {
