@@ -16,7 +16,7 @@
                                 if (item.BlogPosition == 1)
                                 {
                                     <li class="footer__info-link pb-2">
-                                        <a href="">@item.BlogTitle</a>
+                                        <a href="@Url.Action("BlogDetail", "Home", new { BlogId = item.BlogId })">@item.BlogTitle</a>
                                     </li>
                                 }
                             }
@@ -32,7 +32,7 @@
                                 if (item.BlogPosition == 2)
                                 {
                                     <li class="footer__info-link pb-2">
-                                        <a href="">@item.BlogTitle</a>
+                                        <a href="@Url.Action("BlogDetail", "Home", new { BlogId = item.BlogId })">@item.BlogTitle</a>
                                     </li>
                                 }
                             }
@@ -98,7 +98,7 @@
             <div class="py-4">
                 <!-- <span class="footer__copyright-info" style="font-weight: bold;"></span> -->
                 <p class="footer__copyright-info">
-                    <i class="far fa-copyright"></i> 2022 - Copyright by @Model.config.WebsiteName
+                    <i class="far fa-copyright"></i> 2023 - Copyright by @Model.config.WebsiteName
                 </p>
             </div>
         </div>

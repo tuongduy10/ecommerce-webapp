@@ -1,4 +1,5 @@
 ﻿@using Microsoft.Extensions.Configuration
+@using ECommerce.Application.Constants
 @inject IConfiguration Configuration
 @{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
@@ -664,8 +665,8 @@
 <script>
     tinymce.init({
         selector: 'textarea',
-        plugins: 'image autolink lists media table',
-        toolbar: 'addcomment showcomments code image pageembed permanentpen table tableofcontents',
+        plugins: '@ConfigConstant.TINY_PLUGINS',
+        toolbar: '@ConfigConstant.TINY_TOOLBAR',
         toolbar_mode: 'floating',
         tinycomments_mode: 'embedded',
         tinycomments_author: 'Author name',

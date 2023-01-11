@@ -66,7 +66,11 @@ namespace ECommerce.WebApp.Controllers
             if (result.isSucceed) return Ok();
             return BadRequest(result.Message);
         }
-
+        public async Task<IActionResult> BlogDetail(int BlogId)
+        {
+            var result = await _footerService.getBlogDetail(BlogId);
+            return View(result);
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

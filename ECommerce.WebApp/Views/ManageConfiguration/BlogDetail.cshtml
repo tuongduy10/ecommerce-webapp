@@ -1,4 +1,5 @@
-﻿@{
+﻿@using ECommerce.Application.Constants
+@{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 <script src="https://cdn.tiny.cloud/1/4ctr9pi6o8mlflu8si6gdszgl62tn4zl73knhf3tkqalszsx/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
@@ -56,45 +57,32 @@
         apiUpdateBlog(request);
     })
     function apiDeleteBlog(BlogId) {
-        $.ajax({
-            url: '/api/ManageConfigurationsAPI/DeleteBlog',
-            data: JSON.stringify(BlogId),
-            dataType: 'json',
-            contentType: 'application/json; charset=utf-8',
-            type: 'POST',
-            success: function (data) {
-                alert(data.message);
-                window.location.href = "/ManageConfiguration/ManageFooter"
-            },
-            error: function (data) {
-                console.log(data);
-                alert(data.responseJSON.message)
-            }
-        });
+        PostApi("/ManageConfiguration/DeleteBlog", { BlogId: BlogId })
+            .then(function (res) {
+                alert(res.message);
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert(error.responseJSON.message);
+            });
     }
     function apiUpdateBlog(request) {
-        $.ajax({
-            url: '/api/ManageConfigurationsAPI/UpdateBlog',
-            data: JSON.stringify(request),
-            dataType: 'json',
-            contentType: 'application/json; charset=utf-8',
-            type: 'POST',
-            success: function (data) {
-                alert(data.message);
-            },
-            error: function (data) {
-                console.log(data);
-                alert(data.message)
-            }
-        });
+        PostApi("/ManageConfiguration/UpdateBlog", request)
+            .then(function(res) {
+                alert(res.message);
+            })
+            .catch(function(error) {
+                console.log(error);
+                alert(error.message);
+            });
     }
 </script>
 
 <script>
     tinymce.init({
         selector: 'textarea',
-        plugins: 'a11ychecker advcode casechange export formatpainter image editimage linkchecker autolink lists checklist media mediaembed pageembed permanentpen powerpaste table advtable tableofcontents tinycomments tinymcespellchecker',
-        toolbar: 'a11ycheck addcomment showcomments casechange checklist code export formatpainter image editimage pageembed permanentpen table tableofcontents',
+        plugins: '@ConfigConstant.TINY_PLUGINS',
+        toolbar: '@ConfigConstant.TINY_TOOLBAR',
         toolbar_mode: 'floating',
         tinycomments_mode: 'embedded',
         tinycomments_author: 'Author name',
