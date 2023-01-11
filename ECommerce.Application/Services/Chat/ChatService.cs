@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Constants;
+using ECommerce.Application.Helpers;
 using ECommerce.Application.Repositories.Message;
 using ECommerce.Application.Repositories.Message.Dtos;
 using ECommerce.Application.Repositories.Notification;
@@ -68,6 +69,52 @@ namespace ECommerce.Application.Services.Chat
                 resModel.Status = newMessageHistory.Status;
 
                 return new SuccessResponse<MessageModel>("", resModel);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<MessageModel>(error.ToString());
+            }
+        }
+        public async Task<Response<MessageModel>> SendUnAuthMessage(MessageModel request)
+        {
+            try
+            {
+                if (String.IsNullOrEmpty(request.UserName))
+                    return new FailResponse<MessageModel>("Tên không được để trống");
+                if (String.IsNullOrEmpty(request.PhoneNumber))
+                    return new FailResponse<MessageModel>("Số điện thoại không được để trống");
+                if (String.IsNullOrEmpty(request.Message))
+                    return new FailResponse<MessageModel>("Nội dung không được để trống");
+
+                if (request.PhoneNumber.Contains("+84"))
+                {
+                    request.PhoneNumber = request.PhoneNumber.Replace("+84", "");
+                    if (!request.PhoneNumber.StartsWith("0"))
+                    {
+                        request.PhoneNumber = "0" + request.PhoneNumber;
+                    }
+                }
+                var userInfo = await _userRepo.FindAsyncWhere(i => i.UserPhone == request.PhoneNumber);
+                if (userInfo != null)
+                {
+                    request.UserName = userInfo.UserFullName;
+                    request.FromUserId = userInfo.UserId;
+                }
+
+                var newMessageHistory = new MessageHistory();
+                newMessageHistory.Message = request.Message.Trim();
+                newMessageHistory.CreateDate = DateTime.Now;
+                newMessageHistory.FromUserId = request.FromUserId;
+                newMessageHistory.ToUserId = request.ToUserId;
+                newMessageHistory.UserName = request.UserName.Trim();
+                newMessageHistory.PhoneNumber = request.PhoneNumber.Trim();
+                newMessageHistory.Type = TypeConstant.MSG_FROM_CLIENT;
+                newMessageHistory.Status = StatusConstant.MSG_UNREAD;
+
+                await _msgRepo.AddAsync(newMessageHistory);
+                await _msgRepo.SaveChangesAsync();
+
+                return new SuccessResponse<MessageModel>("");
             }
             catch (Exception error)
             {
@@ -218,13 +265,10 @@ namespace ECommerce.Application.Services.Chat
                     })
                     .ToListAsync();
 
-                if (userId != 0)
-                {
-                    list = list.Where(item =>
-                        (item.FromUserId == userId && item.ToUserId == null) ||
-                        item.FromUserId == userId || 
-                        item.ToUserId == userId).ToList();
-                }
+                list = list.Where(item =>
+                    (item.FromUserId == userId && item.ToUserId == null) ||
+                    item.FromUserId == userId ||
+                    item.ToUserId == userId).ToList();
                 list = list.OrderBy(item => item.CreateDate).ToList();
 
                 // read the messages

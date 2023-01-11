@@ -50,21 +50,21 @@
             <div class="chat-box-form-container">
                 <form class="chat-box-form">
                     <div class="chat-box-form-control">
-                        <input class="chat-box-input" name="name" type="text" required>
+                        <input class="chat-box-input user-name" name="name" type="text" required>
                         <label class="chat-box-label" for="name">
                             <span style="color: var(--red-noti);">*</span>
                             Tên
                         </label>
                     </div>
                     <div class="chat-box-form-control">
-                        <input class="chat-box-input" name="phone" type="text">
+                        <input class="chat-box-input phone-number" name="phone" type="text">
                         <label class="chat-box-label" for="phone">
                             <span style="color: var(--red-noti);">*</span>
                             Số điện thoại
                         </label>
                     </div>
                     <div class="chat-box-form-control">
-                        <textarea class="chat-box-input" name="text-content" type="text"></textarea>
+                        <textarea class="chat-box-input text-content" name="text-content" type="text"></textarea>
                         <label class="chat-box-label" for="text-content">
                             <span style="color: var(--red-noti);">*</span>
                             Nội dung cần hỗ trợ
@@ -172,12 +172,12 @@
         var phoneNumber = $(".phone-number").val();
         var textContent = $(".text-content").val();
         var params = {
-            userName: userName,
-            phoneNumber: phoneNumber,
-            message: textContent
+            UserName: userName,
+            PhoneNumber: phoneNumber,
+            Message: textContent
         }
 
-        PostApi("/Home/SendOfflineMessage", params)
+        PostApi("/Home/SendUnAuthMessage", params)
             .then(function(){
                 alert("Gửi tin nhắn thành công")
             })

@@ -1,4 +1,5 @@
-﻿@{
+﻿@using ECommerce.Application.Constants
+@{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
@@ -24,7 +25,7 @@
                                             <p>@user.PhoneNumber</p>
                                         </div>
                                     </div>
-                                    @if (lastestMsg.Status == "UN_READ")
+                                    @if (lastestMsg.Status == StatusConstant.MSG_UNREAD)
                                     {
                                         <span class="unread_chat_@user.UserId unread_chat"></span>
                                     }
