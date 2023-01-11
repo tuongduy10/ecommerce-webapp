@@ -63,7 +63,7 @@ namespace ECommerce.WebApp.Controllers
         public async Task<IActionResult> SendUnAuthMessage(MessageModel request)
         {
             var result = await _chatService.SendUnAuthMessage(request);
-            if (result.isSucceed) return Ok();
+            if (result.isSucceed) return Ok(result);
             return BadRequest(result.Message);
         }
         public async Task<IActionResult> BlogDetail(int BlogId)

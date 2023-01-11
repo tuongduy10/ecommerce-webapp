@@ -1,5 +1,4 @@
 ﻿var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
-var userId = document.getElementById("userInputId").value;
 
 connection.start()
     .then(function () {
@@ -33,6 +32,7 @@ $("#button-send").on("click", function () {
 
 // Receive from server
 connection.on("ReceiveFromAdmin", function (userName, message) {
+    var userId = document.getElementById("userInputId").value;
     var div = document.createElement("div");
     div.className = "message-wrapper message-left";
     document.getElementById(`message-list-${userId}`).appendChild(div);
@@ -43,15 +43,13 @@ connection.on("ReceiveFromAdmin", function (userName, message) {
 function sendMessage() {
     var userName = document.getElementById("userInputName").value
     var message = document.getElementById("messageInput").value;
+    var userId = document.getElementById("userInputId").value;
 
     // Call function from server
     connection.invoke("SendToAdmin", userId, message)
         .then(function () {
             // msg behavior
-            var div = document.createElement("div");
-            div.className = "message-wrapper message-right";
-            document.getElementById(`message-list-${userId}`).appendChild(div);
-            div.innerHTML = htmlMessageRight(userName, message);
+            addMessageRight(userId, userName, message);
             $("#messageInput").val("");
         })
         .catch(function (err) {
@@ -78,6 +76,12 @@ function loadEmoji() {
             }
         });
     }
+}
+function addMessageRight(userId, userName, message) {
+    var div = document.createElement("div");
+    div.className = "message-wrapper message-right";
+    div.innerHTML = htmlMessageRight(userName, message);
+    $(`#message-list-${userId}`).append(div);
 }
 
 // html

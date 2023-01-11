@@ -64,6 +64,7 @@ namespace ECommerce.Application.Services.Chat
                 resModel.CreateDate = newMessageHistory.CreateDate;
                 resModel.ToUserId = newMessageHistory.ToUserId;
                 resModel.FromUserId = newMessageHistory.FromUserId;
+                resModel.UserName = newMessageHistory.UserName;
                 resModel.Attachment = newMessageHistory.Attachment;
                 resModel.Type = newMessageHistory.Type;
                 resModel.Status = newMessageHistory.Status;
@@ -114,7 +115,18 @@ namespace ECommerce.Application.Services.Chat
                 await _msgRepo.AddAsync(newMessageHistory);
                 await _msgRepo.SaveChangesAsync();
 
-                return new SuccessResponse<MessageModel>("");
+                // response model
+                var resModel = new MessageModel();
+                resModel.Message = newMessageHistory.Message;
+                resModel.CreateDate = newMessageHistory.CreateDate;
+                resModel.ToUserId = newMessageHistory.ToUserId;
+                resModel.FromUserId = newMessageHistory.FromUserId;
+                resModel.UserName = newMessageHistory.UserName;
+                resModel.Attachment = newMessageHistory.Attachment;
+                resModel.Type = newMessageHistory.Type;
+                resModel.Status = newMessageHistory.Status;
+
+                return new SuccessResponse<MessageModel>("", resModel);
             }
             catch (Exception error)
             {
