@@ -100,6 +100,15 @@ namespace ECommerce.Application.Services.Chat
                 {
                     request.UserName = userInfo.UserFullName;
                     request.FromUserId = userInfo.UserId;
+                } 
+                else
+                {
+                    var userMsg = await _msgRepo.FindAsyncWhere(i => i.PhoneNumber == request.PhoneNumber);
+                    if (userMsg != null)
+                    {
+                        request.UserName = userMsg.UserName;
+                        request.FromUserId = userMsg.FromUserId;
+                    }
                 }
 
                 var newMessageHistory = new MessageHistory();
