@@ -2,6 +2,7 @@
 using ECommerce.Application.Services.Chat;
 using ECommerce.Application.Services.Chat.Dtos;
 using ECommerce.Data.Models;
+using ECommerce.WebApp.Hubs.Dtos;
 using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -29,6 +30,12 @@ namespace ECommerce.WebApp.Hubs
 
             var sendMsgRes = await _chatService.SendMessage(msgModel);
 
+            await Clients.All.SendAsync("ReceiveMessage", userId, message);
+        }
+        public async Task SendToAdminNoService(MessageHubModel request)
+        {
+            var userId = request.FromUserId;
+            var message = request.Message;
             await Clients.All.SendAsync("ReceiveMessage", userId, message);
         }
         public async Task SendToClient(string fromUserId, string toUserId, string userName, string message)

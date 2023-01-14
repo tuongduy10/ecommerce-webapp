@@ -113,6 +113,7 @@
         <div class="flex-al-jus-center chat-input">
             <input id="userInputId" type="number" value="@ViewBag.UserId" hidden />
             <input id="userInputName" type="text" value="@User.Identity.Name" hidden />
+            <input id="userInputPhoneNumber" type="text" hidden />
             <input id="messageInput" type="text" placeholder="Nhập tin nhắn" />
             <!--
             <label class="mb-0" for="chat-input-file" style="height: 20px;">
@@ -200,13 +201,14 @@
 
     function changeToOnlineChat(user){
         $("#userInputId").attr('value', user.fromUserId);
-        $("#userInputName").val(user.userName);
+        $("#userInputName").attr('value', user.userName);
+        $("#userInputPhoneNumber").attr('value', user.phoneNumber);
         $("#message-list-0").attr("id", `message-list-${user.fromUserId}`);
 
         $(".welcome-message-onlinechat").addClass("d-none");
         $(".chat-body").addClass("d-none");
         $(".auth-chat-wrapper").removeClass("d-none");
 
-        addMessageRight(user.fromUserId, user.userName, user.message);
+        sendMessageToAdmin(user);
     }
 </script>

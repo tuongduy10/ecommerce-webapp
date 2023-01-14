@@ -131,6 +131,7 @@ namespace ECommerce.Application.Services.Chat
                 resModel.ToUserId = newMessageHistory.ToUserId;
                 resModel.FromUserId = newMessageHistory.FromUserId;
                 resModel.UserName = newMessageHistory.UserName;
+                resModel.PhoneNumber = newMessageHistory.PhoneNumber;
                 resModel.Attachment = newMessageHistory.Attachment;
                 resModel.Type = newMessageHistory.Type;
                 resModel.Status = newMessageHistory.Status;

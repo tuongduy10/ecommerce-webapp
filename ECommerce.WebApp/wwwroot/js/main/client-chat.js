@@ -56,6 +56,22 @@ function sendMessage() {
             return console.error(err.toString());
         });
 };
+function sendMessageToAdmin(message) {
+    console.log(message)
+    var request = {
+        FromUserId: message.fromUserId,
+        Message: message.message,
+        UserName: message.userName
+    }
+    // Call function from server
+    connection.invoke("SendToAdminNoService", request)
+        .then(function () {
+            addMessageRight(request.FromUserId, request.UserName, request.Message);
+        })
+        .catch(function (err) {
+            return console.error(err.toString());
+        });
+};
 
 function loadEmoji() {
     if ($(".emoji-list li").length == 0) {
