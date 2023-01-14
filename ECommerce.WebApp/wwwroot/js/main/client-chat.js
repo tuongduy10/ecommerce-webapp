@@ -45,32 +45,35 @@ function sendMessage() {
     var message = document.getElementById("messageInput").value;
     var userId = document.getElementById("userInputId").value;
 
-    // Call function from server
-    connection.invoke("SendToAdmin", userId, message)
-        .then(function () {
-            // msg behavior
-            addMessageRight(userId, userName, message);
-            $("#messageInput").val("");
-        })
-        .catch(function (err) {
-            return console.error(err.toString());
-        });
+    if (message) {
+        // Call function from server
+        connection.invoke("SendToAdmin", userId, message)
+            .then(function () {
+                // msg behavior
+                addMessageRight(userId, userName, message);
+                $("#messageInput").val("");
+            })
+            .catch(function (err) {
+                return console.error(err.toString());
+            });
+    }
 };
 function sendMessageToAdmin(message) {
-    console.log(message)
     var request = {
         FromUserId: message.fromUserId,
         Message: message.message,
         UserName: message.userName
     }
-    // Call function from server
-    connection.invoke("SendToAdminNoService", request)
-        .then(function () {
-            addMessageRight(request.FromUserId, request.UserName, request.Message);
-        })
-        .catch(function (err) {
-            return console.error(err.toString());
-        });
+    if (request.Message) {
+        // Call function from server
+        connection.invoke("SendToAdminNoService", request)
+            .then(function () {
+                addMessageRight(request.FromUserId, request.UserName, request.Message);
+            })
+            .catch(function (err) {
+                return console.error(err.toString());
+            });
+    }
 };
 
 function loadEmoji() {
