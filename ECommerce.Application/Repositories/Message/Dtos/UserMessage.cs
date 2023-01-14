@@ -11,5 +11,6 @@ namespace ECommerce.Application.Repositories.Message.Dtos
         public string UserName { get; set; }
         public string PhoneNumber { get; set; }
         public List<MessageModel> MessageList { get; set; }
+        public MessageModel LatestMessage { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Services.Brand;
 using ECommerce.Application.Services.Category;
+using ECommerce.Application.Services.Chat;
 using ECommerce.Application.Services.Chat.Dtos;
 using ECommerce.Application.Services.Configurations;
 using ECommerce.WebApp.Models;
@@ -21,17 +22,20 @@ namespace ECommerce.WebApp.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IBrandService _brandService;
         private readonly IFooterService _footerService;
+        private readonly IChatService _chatService;
 
         public HomeController(
             ILogger<HomeController> logger, 
             ICategoryService categoryService, 
             IBrandService brandService, 
-            IFooterService footerService)
-        {
+            IFooterService footerService,
+            IChatService chatService
+        ) {
             _logger = logger;
             _categoryService = categoryService;
             _brandService = brandService;
             _footerService = footerService;
+            _chatService = chatService;
         }
 
         public async Task<IActionResult> Index()
@@ -54,6 +58,13 @@ namespace ECommerce.WebApp.Controllers
         {
             var result = await _footerService.getBlogDetail(7);
             return View(result);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> SendUnAuthMessage(MessageModel request)
+        {
+            var result = await _chatService.SendUnAuthMessage(request);
+            if (result.isSucceed) return Ok(result);
+            return BadRequest(result.Message);
         }
         public async Task<IActionResult> BlogDetail(int BlogId)
         {

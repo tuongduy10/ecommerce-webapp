@@ -11,7 +11,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "ManageUser/ChatBox", // Change it when you're developing some features needed
+      "launchUrl": "Chat/ChatBox", // Change it when you're developing some features needed
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

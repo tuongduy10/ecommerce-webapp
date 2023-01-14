@@ -1,4 +1,5 @@
-﻿@{
+﻿@using ECommerce.Application.Constants
+@{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
@@ -11,9 +12,9 @@
                     {
                         foreach (var user in ViewBag.UserMessages)
                         {
-                            if (user.UserId != Int32.Parse(User.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value) && user.MessageList.Count > 0)
+                            if (user.UserId != Int32.Parse(User.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value))
                             {
-                                var lastestMsg = user.MessageList[user.MessageList.Count - 1];
+                                var lastestMsg = user.LatestMessage;
                                 <div class="chat_list chat_list_@user.UserId @if(lastestMsg.Status == "UN_READ") {@Html.Raw("active_chat")}" onclick="openChat(@user.UserId)">
                                     <div class="chat_people">
                                         <div class="chat_img">
@@ -24,7 +25,7 @@
                                             <p>@user.PhoneNumber</p>
                                         </div>
                                     </div>
-                                    @if (lastestMsg.Status == "UN_READ")
+                                    @if (lastestMsg.Status == StatusConstant.MSG_UNREAD)
                                     {
                                         <span class="unread_chat_@user.UserId unread_chat"></span>
                                     }
@@ -71,20 +72,22 @@
                 </button>
             `);
 
-        PostApi("/Chat/GetMessages", { fromUserId: Number(fromUserId), toUserId: id })
+        PostApi("/Chat/GetMessages", { userId: id })
             .then(function (res) {
                 if (res.isSucceed && res.data.length > 0) {
-                    console.log(res.data)
                     res.data.forEach(msg => {
-                        if (id == msg.fromUserId) {
-                            let msgHtml = inComingMsg(msg);
+                        if (fromUserId == msg.fromUserId) {
+                            let msgHtml = outGoingMsg(msg);
                             $(`#msg_wrapper_${id}`).append(msgHtml);
                         } else {
-                            let msgHtml = outGoingMsg(msg);
+                            let msgHtml = inComingMsg(msg);
                             $(`#msg_wrapper_${id}`).append(msgHtml);
                         }
                     });
                 }
+            })
+            .catch(function(error) {
+                console.log(error);
             });
 
         // read the message box
@@ -93,12 +96,17 @@
     }
 
     function inComingMsg(msg) {
+        var pMsg = `<p>${ msg.message }</p>`;
+        if(msg.type === "FROM_ADMIN_MSG"){
+            pMsg = `<p style="background: #ac0833; color: white;">${msg.message}</p>`
+        }
+
         return `
                 <div class="incoming_msg">
                     <div class="received_msg">
                         <div class="received_withd_msg">
-                            <p>${msg.message}</p>
-                            <span class="time_date"> ${msg.createDateLabel} </span>
+                            ${pMsg}
+                            <span class="time_date">${msg.userName} - ${msg.createDateLabel}</span>
                         </div>
                     </div>
                 </div>

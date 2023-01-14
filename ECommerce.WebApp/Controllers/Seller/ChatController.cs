@@ -29,16 +29,15 @@ namespace ECommerce.WebApp.Controllers.Seller
         }
         public async Task<IActionResult> ChatBox()
         {
-            var userMessageList = await _chatService.GetUserMessagesAsync();
+            var userMessageList = await _chatService.GetUserList();
 
             ViewBag.UserMessages = userMessageList.Data;
 
             return View();
         }
-        public async Task<IActionResult> GetMessages(int fromUserId = 0, int toUserId = 0)
+        public async Task<IActionResult> GetMessages(int userId = 0)
         {
-            var list = await _chatService.GetMessages(fromUserId, toUserId);
-
+            var list = await _chatService.GetMessages(userId);
             return Ok(list);
         }
     }

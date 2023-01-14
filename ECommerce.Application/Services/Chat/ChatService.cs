@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Constants;
+using ECommerce.Application.Helpers;
 using ECommerce.Application.Repositories.Message;
 using ECommerce.Application.Repositories.Message.Dtos;
 using ECommerce.Application.Repositories.Notification;
@@ -50,6 +51,7 @@ namespace ECommerce.Application.Services.Chat
                 newMessageHistory.ToUserId = request.ToUserId;
                 newMessageHistory.UserName = fromUserInfo != null ? fromUserInfo.UserFullName : "";
                 newMessageHistory.PhoneNumber = fromUserInfo != null ? fromUserInfo.UserPhone : "";
+                newMessageHistory.Type = request.Type;
                 if(!String.IsNullOrEmpty(request.Attachment))
                     newMessageHistory.Attachment = request.Attachment.Trim();
 
@@ -62,7 +64,76 @@ namespace ECommerce.Application.Services.Chat
                 resModel.CreateDate = newMessageHistory.CreateDate;
                 resModel.ToUserId = newMessageHistory.ToUserId;
                 resModel.FromUserId = newMessageHistory.FromUserId;
+                resModel.UserName = newMessageHistory.UserName;
                 resModel.Attachment = newMessageHistory.Attachment;
+                resModel.Type = newMessageHistory.Type;
+                resModel.Status = newMessageHistory.Status;
+
+                return new SuccessResponse<MessageModel>("", resModel);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<MessageModel>(error.ToString());
+            }
+        }
+        public async Task<Response<MessageModel>> SendUnAuthMessage(MessageModel request)
+        {
+            try
+            {
+                if (String.IsNullOrEmpty(request.UserName))
+                    return new FailResponse<MessageModel>("Tên không được để trống");
+                if (String.IsNullOrEmpty(request.PhoneNumber))
+                    return new FailResponse<MessageModel>("Số điện thoại không được để trống");
+                if (String.IsNullOrEmpty(request.Message))
+                    return new FailResponse<MessageModel>("Nội dung không được để trống");
+
+                if (request.PhoneNumber.Contains("+84"))
+                {
+                    request.PhoneNumber = request.PhoneNumber.Replace("+84", "");
+                    if (!request.PhoneNumber.StartsWith("0"))
+                    {
+                        request.PhoneNumber = "0" + request.PhoneNumber;
+                    }
+                }
+                var userInfo = await _userRepo.FindAsyncWhere(i => i.UserPhone == request.PhoneNumber);
+                if (userInfo != null)
+                {
+                    request.UserName = userInfo.UserFullName;
+                    request.FromUserId = userInfo.UserId;
+                } 
+                else
+                {
+                    var userMsg = await _msgRepo.FindAsyncWhere(i => i.PhoneNumber == request.PhoneNumber);
+                    if (userMsg != null)
+                    {
+                        request.UserName = userMsg.UserName;
+                        request.FromUserId = userMsg.FromUserId;
+                    }
+                }
+
+                var newMessageHistory = new MessageHistory();
+                newMessageHistory.Message = request.Message.Trim();
+                newMessageHistory.CreateDate = DateTime.Now;
+                newMessageHistory.FromUserId = request.FromUserId;
+                newMessageHistory.ToUserId = request.ToUserId;
+                newMessageHistory.UserName = request.UserName.Trim();
+                newMessageHistory.PhoneNumber = request.PhoneNumber.Trim();
+                newMessageHistory.Type = TypeConstant.MSG_FROM_CLIENT;
+                newMessageHistory.Status = StatusConstant.MSG_UNREAD;
+
+                await _msgRepo.AddAsync(newMessageHistory);
+                await _msgRepo.SaveChangesAsync();
+
+                // response model
+                var resModel = new MessageModel();
+                resModel.Message = newMessageHistory.Message;
+                resModel.CreateDate = newMessageHistory.CreateDate;
+                resModel.ToUserId = newMessageHistory.ToUserId;
+                resModel.FromUserId = newMessageHistory.FromUserId;
+                resModel.UserName = newMessageHistory.UserName;
+                resModel.PhoneNumber = newMessageHistory.PhoneNumber;
+                resModel.Attachment = newMessageHistory.Attachment;
+                resModel.Type = newMessageHistory.Type;
                 resModel.Status = newMessageHistory.Status;
 
                 return new SuccessResponse<MessageModel>("", resModel);
@@ -106,7 +177,7 @@ namespace ECommerce.Application.Services.Chat
                 return new FailResponse<List<UserMessage>>(error.ToString());
             }
         }
-        public async Task<Response<List<UserMessage>>>  GetAllUserMessagesAsync()
+        public async Task<Response<List<UserMessage>>> GetAllUserMessagesAsync(int sellerId = 0)
         {
             try
             {
@@ -121,11 +192,9 @@ namespace ECommerce.Application.Services.Chat
                 var list = new List<UserMessage>();
                 foreach (var msg in groupMsg)
                 {
-                    list.Add(new UserMessage() { 
-                        UserId = msg.Key.FromUserId,
-                        UserName = msg.Key.UserName,
-                        PhoneNumber = msg.Key.PhoneNumber,
-                        MessageList = msg.Select(i => new MessageModel() { 
+                    var messageList = msg
+                        .Select(i => new MessageModel() 
+                        {
                             FromUserId = i.FromUserId,
                             ToUserId = i.ToUserId,
                             CreateDate = i.CreateDate,
@@ -134,9 +203,17 @@ namespace ECommerce.Application.Services.Chat
                             Status = i.Status,
                             Type = i.Type,
                             Attachment = i.Attachment
-                        }).ToList()
+                        })
+                        .ToList();
+                    list.Add(new UserMessage() { 
+                        UserId = msg.Key.FromUserId,
+                        UserName = msg.Key.UserName,
+                        PhoneNumber = msg.Key.PhoneNumber,
+                        MessageList = messageList,
+                        LatestMessage = messageList.Count > 0 ? messageList[messageList.Count - 1] : null
                     });
                 }
+                list = list.OrderByDescending(i => i.LatestMessage.CreateDate).ToList();
                 return new SuccessResponse<List<UserMessage>>("", list);
             }
             catch (Exception error)
@@ -144,7 +221,53 @@ namespace ECommerce.Application.Services.Chat
                 return new FailResponse<List<UserMessage>>(error.ToString());
             }
         }
-        public async Task<Response<List<MessageModel>>> GetMessages(int fromUserId = 0, int toUserId = 0)
+        public async Task<Response<List<UserMessage>>> GetUserList()
+        {
+            try
+            {
+                var groupMsg = from msg in _msgRepo.Query().ToList()
+                               where msg.Type == TypeConstant.MSG_FROM_CLIENT
+                               group msg by new
+                               {
+                                   msg.FromUserId,
+                                   msg.UserName,
+                                   msg.PhoneNumber
+                               };
+
+                var list = new List<UserMessage>();
+                foreach (var msg in groupMsg)
+                {
+                    var messages = await _msgRepo
+                            .Query()
+                            .Where(item =>
+                                (item.FromUserId == msg.Key.FromUserId && item.ToUserId == null) ||
+                                item.FromUserId == msg.Key.FromUserId ||
+                                item.ToUserId == msg.Key.FromUserId)
+                            .Select(i => new MessageModel()
+                            {
+                                Message = i.Message,
+                                CreateDate = i.CreateDate,
+                                CreateDateLabel = ((DateTime)i.CreateDate).ToString(ConfigConstant.DATE_FORMAT),
+                                Status = i.Status
+                            })
+                            .ToListAsync();
+                    list.Add(new UserMessage()
+                    {
+                        UserId = msg.Key.FromUserId,
+                        UserName = msg.Key.UserName,
+                        PhoneNumber = msg.Key.PhoneNumber,
+                        LatestMessage = messages[messages.Count() - 1]
+                    });
+                }
+                list = list.OrderByDescending(i => i.LatestMessage.CreateDate).ToList();
+                return new SuccessResponse<List<UserMessage>>("", list);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<List<UserMessage>>(error.ToString());
+            }
+        }
+        public async Task<Response<List<MessageModel>>> GetMessages(int userId = 0)
         {
             try
             {
@@ -157,40 +280,45 @@ namespace ECommerce.Application.Services.Chat
                         CreateDateLabel = ((DateTime)msg.CreateDate).ToString(ConfigConstant.DATE_FORMAT),
                         Message = msg.Message,
                         FromUserId = msg.FromUserId,
+                        UserName = msg.UserName,
                         ToUserId = msg.ToUserId,
+                        Type = msg.Type,
                         Status = msg.Status,
                     })
                     .ToListAsync();
 
-                if (fromUserId != 0 && toUserId != 0)
-                {
-                    list = list.Where(item =>
-                        (item.FromUserId == toUserId && item.ToUserId == null) ||
-                        (item.FromUserId == fromUserId && item.ToUserId == toUserId) ||
-                        (item.FromUserId == toUserId && item.ToUserId == fromUserId)).ToList();
-                }
+                list = list.Where(item =>
+                    (item.FromUserId == userId && item.ToUserId == null) ||
+                    item.FromUserId == userId ||
+                    item.ToUserId == userId).ToList();
+                list = list.OrderBy(item => item.CreateDate).ToList();
 
                 // read the messages
-                var unReadMsgIds = list
-                    .Where(i => i.Status == StatusConstant.MSG_UNREAD)
-                    .Select(i => i.Id)
-                    .ToList();
-                if (unReadMsgIds.Count() > 0)
-                {
-                    var unReadMsg = await _msgRepo.ToListAsyncWhere(i => unReadMsgIds.Contains(i.Id));
-                    foreach (var msg in unReadMsg)
-                    {
-                        msg.Status = StatusConstant.MSG_READ;
-                    }
-                    _msgRepo.UpdateRange(unReadMsg);
-                    await _msgRepo.SaveChangesAsync();
-                }
-                
+                await ReadMessageAsync(list);
+
                 return new SuccessResponse<List<MessageModel>>(list);
             }
             catch (Exception error)
             {
                 return new FailResponse<List<MessageModel>>(error.ToString());
+            }
+        }
+        private async Task ReadMessageAsync(List<MessageModel> list)
+        {
+            // read the messages
+            var unReadMsgIds = list
+                .Where(i => i.Status == StatusConstant.MSG_UNREAD)
+                .Select(i => i.Id)
+                .ToList();
+            if (unReadMsgIds.Count() > 0)
+            {
+                var unReadMsg = await _msgRepo.ToListAsyncWhere(i => unReadMsgIds.Contains(i.Id));
+                foreach (var msg in unReadMsg)
+                {
+                    msg.Status = StatusConstant.MSG_READ;
+                }
+                _msgRepo.UpdateRange(unReadMsg);
+                await _msgRepo.SaveChangesAsync();
             }
         }
         public async Task<Response<MessageModel>> SaveOfflineMessageAsync(OfflineMessage request)
