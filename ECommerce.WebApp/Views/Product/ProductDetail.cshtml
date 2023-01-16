@@ -128,7 +128,7 @@
                                                 <span class="bullet-text">Sản phẩm chính hãng</span>
                                             </div>
                                         }
-                                        @if (string.IsNullOrEmpty(Model.product.Insurance))
+                                        @if (!string.IsNullOrEmpty(Model.product.Insurance))
                                         {
                                             <div class="d-flex align-items-center mb-2">
                                                 <span class="mr-2">
