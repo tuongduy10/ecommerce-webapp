@@ -201,8 +201,8 @@
 
     function changeToOnlineChat(user){
         $("#userInputId").attr('value', user.fromUserId);
-        $("#userInputName").attr('value', user.userName);
-        $("#userInputPhoneNumber").attr('value', user.phoneNumber);
+        $("#userInputName").val(user.userName);
+        $("#userInputPhoneNumber").val(user.phoneNumber);
         $("#message-list-0").attr("id", `message-list-${user.fromUserId}`);
 
         $(".welcome-message-onlinechat").addClass("d-none");

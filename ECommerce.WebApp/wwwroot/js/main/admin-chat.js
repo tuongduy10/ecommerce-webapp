@@ -17,13 +17,14 @@ $(document).on("click", ".msg_send_btn", function (event) {
     sendMessage();
 })
 
-connection.on("ReceiveMessage", function (userId, message) {
+connection.on("ReceiveMessage", function (_message) {
+    console.log(_message);
     var div = document.createElement("div");
-    document.getElementById(`msg_wrapper_${userId}`).appendChild(div);
+    document.getElementById(`msg_wrapper_${_message.userId}`).appendChild(div);
     // We can assign user-supplied strings to an element's textContent because it
     // is not interpreted as markup. If you're assigning in any other way, you 
     // should be aware of possible script injection concerns.
-    div.innerHTML = htmlInComing_msg(message);
+    div.innerHTML = htmlInComing_msg(_message);
 });
 
 function sendMessage() {
@@ -53,10 +54,8 @@ function htmlInComing_msg(msg) {
         <div class="incoming_msg">
             <div class="received_msg">
                 <div class="received_withd_msg">
-                    <p>
-                        ${msg}
-                    </p>
-                    <span class="time_date"> ${_now} </span>
+                    <p>${msg.message}</p>
+                    <span class="time_date">${msg.userName} - ${_now} </span>
                 </div>
             </div>
         </div>

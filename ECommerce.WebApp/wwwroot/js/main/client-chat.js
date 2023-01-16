@@ -45,6 +45,12 @@ function sendMessage() {
     var message = document.getElementById("messageInput").value;
     var userId = document.getElementById("userInputId").value;
 
+    const params = {
+        userName: userName,
+        message: message,
+        userId: userId
+    }
+    console.log(params)
     if (message) {
         // Call function from server
         connection.invoke("SendToAdmin", userId, message)

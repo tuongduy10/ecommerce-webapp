@@ -29,14 +29,23 @@ namespace ECommerce.WebApp.Hubs
             msgModel.Type = TypeConstant.MSG_FROM_CLIENT;
 
             var sendMsgRes = await _chatService.SendMessage(msgModel);
-
-            await Clients.All.SendAsync("ReceiveMessage", userId, message);
+            var _message = new
+            {
+                userId = sendMsgRes.Data.FromUserId,
+                userName = sendMsgRes.Data.UserName,
+                message = sendMsgRes.Data.Message,
+            };
+            await Clients.All.SendAsync("ReceiveMessage", _message);
         }
         public async Task SendToAdminNoService(MessageHubModel request)
         {
-            var userId = request.FromUserId;
-            var message = request.Message;
-            await Clients.All.SendAsync("ReceiveMessage", userId, message);
+            var _message = new
+            {
+                userId = request.FromUserId,
+                userName = request.UserName,
+                message = request.Message,
+            };
+            await Clients.All.SendAsync("ReceiveMessage", _message);
         }
         public async Task SendToClient(string fromUserId, string toUserId, string userName, string message)
         {
