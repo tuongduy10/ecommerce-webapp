@@ -21,21 +21,38 @@ namespace ECommerce.WebApp.Hubs
             _chatService = chatService;
             _contextHelper = new HttpContextHelper();
         }
-        public async Task SendToAdmin(string userId, string message)
+        public async Task SendToAdmin(string userId, string phone, string message)
         {
             var msgModel = new MessageModel();
             msgModel.FromUserId = Int32.Parse(userId);
             msgModel.Message = message;
+            msgModel.PhoneNumber = phone;
             msgModel.Type = TypeConstant.MSG_FROM_CLIENT;
-
-            var sendMsgRes = await _chatService.SendMessage(msgModel);
-            var _message = new
+            
+            if (msgModel.FromUserId == 0)
             {
-                userId = sendMsgRes.Data.FromUserId,
-                userName = sendMsgRes.Data.UserName,
-                message = sendMsgRes.Data.Message,
-            };
-            await Clients.All.SendAsync("ReceiveMessage", _message);
+                msgModel.UserName = "temp";
+                var sendMsgRes = await _chatService.SendUnAuthMessage(msgModel);
+                var _message = new
+                {
+                    userId = sendMsgRes.Data.FromUserId,
+                    userName = sendMsgRes.Data.UserName,
+                    message = sendMsgRes.Data.Message,
+                };
+                await Clients.All.SendAsync("ReceiveMessage", _message);
+            } 
+            else
+            {
+                var sendMsgRes = await _chatService.SendMessage(msgModel);
+                var _message = new
+                {
+                    userId = sendMsgRes.Data.FromUserId,
+                    userName = sendMsgRes.Data.UserName,
+                    message = sendMsgRes.Data.Message,
+                };
+                await Clients.All.SendAsync("ReceiveMessage", _message);
+            }
+            
         }
         public async Task SendToAdminNoService(MessageHubModel request)
         {

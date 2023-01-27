@@ -43,25 +43,30 @@ connection.on("ReceiveFromAdmin", function (userName, message) {
 function sendMessage() {
     var userName = document.getElementById("userInputName").value
     var message = document.getElementById("messageInput").value;
-    var userId = document.getElementById("userInputId").value;
+    var userId = document.getElementById("userInputId").value; 
+    var phone = document.getElementById("userInputPhoneNumber").value;
 
     const params = {
         userName: userName,
         message: message,
-        userId: userId
+        userId: userId,
+        phone: phone
     }
-    console.log(params)
+    // console.log(params)
     if (message) {
         // Call function from server
-        connection.invoke("SendToAdmin", userId, message)
-            .then(function () {
-                // msg behavior
-                addMessageRight(userId, userName, message);
-                $("#messageInput").val("");
-            })
-            .catch(function (err) {
-                return console.error(err.toString());
-            });
+        connection.invoke("SendToAdmin",
+            userId,
+            phone,
+            message
+        ).then(function () {
+            // msg behavior
+            addMessageRight(userId, userName, message);
+            $("#messageInput").val("");
+        })
+        .catch(function (err) {
+            return console.error(err.toString());
+        });
     }
 };
 function sendMessageToAdmin(message) {
