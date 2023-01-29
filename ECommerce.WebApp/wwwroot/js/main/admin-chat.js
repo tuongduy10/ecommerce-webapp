@@ -18,9 +18,8 @@ $(document).on("click", ".msg_send_btn", function (event) {
 })
 
 connection.on("ReceiveMessage", function (_message) {
-    console.log(_message);
     var div = document.createElement("div");
-    document.getElementById(`msg_wrapper_${_message.userId}`).appendChild(div);
+    document.getElementById(`msg_wrapper_${_message.fromPhoneNumber}`).appendChild(div);
     // We can assign user-supplied strings to an element's textContent because it
     // is not interpreted as markup. If you're assigning in any other way, you 
     // should be aware of possible script injection concerns.
@@ -28,20 +27,27 @@ connection.on("ReceiveMessage", function (_message) {
 });
 
 function sendMessage() {
-    var fromUserId = $(".fromUserId").val();
-    var toUserId = $(".toUserId").val();
-    var userName = $(".userInputName").val();
+    var fromName = $(".userInputName").val();
+    var fromPhoneNumber = $(".fromPhoneNumber").val();
+    var toPhoneNumber = $(".toPhoneNumber").val();
     var message = $(".write_msg").val();
+    
+    var params = {
+        FromName: fromName,
+        FromPhoneNumber: fromPhoneNumber,
+        Message: message,
+        ToPhoneNumber: toPhoneNumber
+    }
 
-    if (message && userName) {
+    if (message && fromName) {
         // Call function from server
-        connection.invoke("SendToClient", fromUserId, toUserId, userName, message).catch(function (err) {
+        connection.invoke("SendToClient", params).catch(function (err) {
             return console.error(err.toString());
         });
 
         // msg behavior
         var div = document.createElement("div");
-        document.getElementById(`msg_wrapper_${toUserId}`).appendChild(div);
+        document.getElementById(`msg_wrapper_${toPhoneNumber}`).appendChild(div);
         div.innerHTML = htmlOutGoing_msg(message);
         $(".write_msg").val("");
     }
@@ -55,7 +61,7 @@ function htmlInComing_msg(msg) {
             <div class="received_msg">
                 <div class="received_withd_msg">
                     <p>${msg.message}</p>
-                    <span class="time_date">${msg.userName} - ${_now} </span>
+                    <span class="time_date">${msg.fromName} - ${_now} </span>
                 </div>
             </div>
         </div>

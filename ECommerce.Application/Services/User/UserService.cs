@@ -115,6 +115,7 @@ namespace ECommerce.Application.Services.User
             user.UserId = result.UserId;
             user.UserFullName = result.UserFullName;
             user.UserRoles = roles;
+            user.UserPhone = result.UserPhone;
 
             return new ApiSuccessResponse("Đăng nhập thành công", user);
         }

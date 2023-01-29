@@ -11,10 +11,9 @@ namespace ECommerce.Application.Services.Chat.Dtos
         public string? Attachment { get; set; }
         public DateTime? CreateDate { get; set; }
         public string? CreateDateLabel { get; set; }
-        public int FromUserId { get; set; }
-        public string UserName { get; set; }
-        public string PhoneNumber { get; set; }
-        public int? ToUserId { get; set; }
+        public string FromName { get; set; }
+        public string FromPhoneNumber { get; set; }
+        public string? ToPhoneNumber { get; set; }
         public string? Type { get; set; }
         public string? Status { get; set; }
     }

@@ -844,9 +844,13 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.Message).HasMaxLength(500);
 
-                entity.Property(e => e.UserName).HasMaxLength(100);
+                entity.Property(e => e.FromName).HasMaxLength(100);
 
-                entity.Property(e => e.PhoneNumber)
+                entity.Property(e => e.FromPhoneNumber)
+                    .IsUnicode(false)
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.ToPhoneNumber)
                     .IsUnicode(false)
                     .HasMaxLength(50);
 

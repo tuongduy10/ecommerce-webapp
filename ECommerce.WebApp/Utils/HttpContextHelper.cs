@@ -19,6 +19,12 @@ namespace ECommerce.WebApp.Utils
                 Int32.Parse(_httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(i => i.Type == "UserId").Value) : 0;
             return id;
         }
+        public string GetCurrentUserPhone()
+        {
+            var phone = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(i => i.Type == "UserPhone") != null ?
+                _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(i => i.Type == "UserPhone").Value : "";
+            return phone;
+        }
         public System.Security.Claims.ClaimsPrincipal GetCurrentUser()
         {
             return _httpContextAccessor.HttpContext.User;

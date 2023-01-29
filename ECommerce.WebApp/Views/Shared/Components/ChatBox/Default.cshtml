@@ -88,7 +88,7 @@
         </div>
     <div class="auth-chat-wrapper @if (!User.Identity.IsAuthenticated) { @Html.Raw("d-none") }">
         <div class="box-message-log">
-            <div id="message-list-@ViewBag.UserId" class="message-list">
+            <div id="message-list-@ViewBag.UserPhone" class="message-list">
                 <div class="message-wrapper message-left welcome-message-onlinechat">
                     <span class="user-name">
                         <img src="@(Configuration["ImagePath:Favicon"] + config.FaviconPath)" alt="">
@@ -111,9 +111,8 @@
             </div>
         </div>
         <div class="flex-al-jus-center chat-input">
-            <input id="userInputId" type="number" value="@ViewBag.UserId" hidden />
+            <input id="userInputPhoneNumber" type="text" value="@ViewBag.UserPhone" hidden />
             <input id="userInputName" type="text" value="@User.Identity.Name" hidden />
-            <input id="userInputPhoneNumber" type="text" hidden />
             <input id="messageInput" type="text" placeholder="Nhập tin nhắn" />
             <!--
             <label class="mb-0" for="chat-input-file" style="height: 20px;">
@@ -186,8 +185,8 @@
         var phoneNumber = $(".phone-number").val();
         var textContent = $(".text-content").val();
         var params = {
-            UserName: userName,
-            PhoneNumber: phoneNumber,
+            FromName: userName,
+            FromPhoneNumber: phoneNumber,
             Message: textContent
         }
 
@@ -200,10 +199,9 @@
     })
 
     function changeToOnlineChat(user){
-        $("#userInputId").attr('value', user.fromUserId);
-        $("#userInputName").val(user.userName);
-        $("#userInputPhoneNumber").val(user.phoneNumber);
-        $("#message-list-0").attr("id", `message-list-${user.fromUserId}`);
+        $("#userInputName").val(user.fromName);
+        $("#userInputPhoneNumber").val(user.fromPhoneNumber);
+        $("#message-list-").attr("id", `message-list-${user.fromPhoneNumber}`);
 
         $(".welcome-message-onlinechat").addClass("d-none");
         $(".chat-body").addClass("d-none");

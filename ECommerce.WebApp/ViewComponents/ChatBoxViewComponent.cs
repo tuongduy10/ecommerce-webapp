@@ -19,6 +19,7 @@ namespace ECommerce.WebApp.ViewComponents
         public async Task<IViewComponentResult> InvokeAsync()
         {
             ViewBag.UserId = _contextHelper.GetCurrentUserId();
+            ViewBag.UserPhone = _contextHelper.GetCurrentUserPhone();
 
             return View();
         }
