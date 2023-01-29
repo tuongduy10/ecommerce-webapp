@@ -11,5 +11,6 @@ namespace ECommerce.Application.Constants
         public const string MSG_ANONYMOUS = "ANONYMOUS_MSG";
         public const string MSG_FROM_ADMIN = "FROM_ADMIN_MSG";
         public const string MSG_FROM_CLIENT = "FROM_CLIENT_MSG";
+        public const string MSG_ADMIN_ADMIN = "ADMIN_ADMIN_MSG";
     }
 }
