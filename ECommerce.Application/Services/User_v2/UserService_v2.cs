@@ -197,33 +197,5 @@ namespace ECommerce.Application.Services.User_v2
                 return new FailResponse<UserGetModel>(error.ToString());
             }
         }
-        public async Task<Response<MessageModel>> SendMessage(MessageModel request)
-        {
-            try
-            {
-                if (String.IsNullOrEmpty(request.Message))
-                    return new FailResponse<MessageModel>("Nhập nội dung");
-                if (request.Message.Length > 500)
-                    return new FailResponse<MessageModel>("Không được nhập quá 500 ký tự");
-
-                var message = new MessageHistory();
-                message.CreateDate = DateTime.Now;
-                message.Message = request.Message.Trim();
-                message.FromUserId = request.FromUserId;
-                message.ToUserId = request.ToUserId;
-                message.Status = StatusConstant.MSG_UNREAD;
-                if(!String.IsNullOrEmpty(request.Attachment))
-                    message.Attachment = request.Attachment.Trim();
-
-                await _messageRepo.AddAsync(message);
-                await _messageRepo.SaveChangesAsync();
-
-                return new SuccessResponse<MessageModel>("");
-            }
-            catch (Exception error)
-            {
-                return new FailResponse<MessageModel>(error.ToString());
-            }
-        }
     }
 }

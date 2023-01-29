@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Constants;
 using ECommerce.Application.Services.Chat;
+using ECommerce.Application.Services.Chat.Dtos;
 using ECommerce.Application.Services.User;
 using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -35,9 +36,9 @@ namespace ECommerce.WebApp.Controllers.Seller
 
             return View();
         }
-        public async Task<IActionResult> GetMessages(int userId = 0)
+        public async Task<IActionResult> GetMessages(MessageGetModel request)
         {
-            var list = await _chatService.GetMessages(userId);
+            var list = await _chatService.GetMessages(request);
             return Ok(list);
         }
     }

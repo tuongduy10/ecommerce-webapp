@@ -21,60 +21,59 @@ namespace ECommerce.WebApp.Hubs
             _chatService = chatService;
             _contextHelper = new HttpContextHelper();
         }
-        public async Task SendToAdmin(string userId, string phone, string message)
+        public async Task SendToAdmin(MessageHubModel request)
         {
             var msgModel = new MessageModel();
-            msgModel.FromUserId = Int32.Parse(userId);
-            msgModel.Message = message;
-            msgModel.PhoneNumber = phone;
+            msgModel.Message = request.Message;
+            msgModel.FromName = request.FromName;
+            msgModel.FromPhoneNumber = request.FromPhoneNumber;
             msgModel.Type = TypeConstant.MSG_FROM_CLIENT;
-            
-            if (msgModel.FromUserId == 0)
-            {
-                msgModel.UserName = "temp";
-                var sendMsgRes = await _chatService.SendUnAuthMessage(msgModel);
-                var _message = new
-                {
-                    userId = sendMsgRes.Data.FromUserId,
-                    userName = sendMsgRes.Data.UserName,
-                    message = sendMsgRes.Data.Message,
-                };
-                await Clients.All.SendAsync("ReceiveMessage", _message);
-            } 
-            else
+
+            if (String.IsNullOrEmpty(msgModel.FromName))
             {
                 var sendMsgRes = await _chatService.SendMessage(msgModel);
                 var _message = new
                 {
-                    userId = sendMsgRes.Data.FromUserId,
-                    userName = sendMsgRes.Data.UserName,
+                    fromPhoneNumber = sendMsgRes.Data.FromPhoneNumber,
+                    fromName = sendMsgRes.Data.FromName,
                     message = sendMsgRes.Data.Message,
                 };
                 await Clients.All.SendAsync("ReceiveMessage", _message);
             }
-            
+            else
+            {
+                var sendMsgRes = await _chatService.SendUnAuthMessage(msgModel);
+                var _message = new
+                {
+                    fromPhoneNumber = sendMsgRes.Data.FromPhoneNumber,
+                    fromName = sendMsgRes.Data.FromName,
+                    message = sendMsgRes.Data.Message,
+                };
+                await Clients.All.SendAsync("ReceiveMessage", _message);
+            }
         }
-        public async Task SendToAdminNoService(MessageHubModel request)
+        public async Task SendToAdminNoService(MessageHubModel model)
         {
             var _message = new
             {
-                userId = request.FromUserId,
-                userName = request.UserName,
-                message = request.Message,
+                fromPhoneNumber = model.FromPhoneNumber,
+                fromName = model.FromName,
+                message = model.Message,
             };
             await Clients.All.SendAsync("ReceiveMessage", _message);
         }
-        public async Task SendToClient(string fromUserId, string toUserId, string userName, string message)
+        public async Task SendToClient(MessageHubModel model)
         {
             var msgModel = new MessageModel();
-            msgModel.FromUserId = !String.IsNullOrEmpty(fromUserId) ? Int32.Parse(fromUserId) : 0;
-            msgModel.ToUserId = !String.IsNullOrEmpty(toUserId) ? Int32.Parse(toUserId) : 0;
+            msgModel.FromName = !String.IsNullOrEmpty(model.FromName) ? model.FromName : "";
+            msgModel.FromPhoneNumber = !String.IsNullOrEmpty(model.FromPhoneNumber) ? model.FromPhoneNumber : "";
+            msgModel.ToPhoneNumber = !String.IsNullOrEmpty(model.ToPhoneNumber) ? model.ToPhoneNumber : "";
             msgModel.Type = TypeConstant.MSG_FROM_ADMIN;
-            msgModel.Message = message;
+            msgModel.Message = model.Message;
 
             var sendMsgRes = await _chatService.SendMessage(msgModel);
 
-            await Clients.All.SendAsync("ReceiveFromAdmin", userName, message);
+            await Clients.All.SendAsync("ReceiveFromAdmin", sendMsgRes.Data);
         }
     }
 }

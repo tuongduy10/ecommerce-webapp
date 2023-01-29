@@ -31,37 +31,31 @@ $("#button-send").on("click", function () {
 });
 
 // Receive from server
-connection.on("ReceiveFromAdmin", function (userName, message) {
-    var userId = document.getElementById("userInputId").value;
+connection.on("ReceiveFromAdmin", function (res) {
+    var phone = document.getElementById("userInputPhoneNumber").value;
     var div = document.createElement("div");
     div.className = "message-wrapper message-left";
-    document.getElementById(`message-list-${userId}`).appendChild(div);
-    div.innerHTML = htmlMessageLeft(userName, message);
+    document.getElementById(`message-list-${phone}`).appendChild(div);
+    div.innerHTML = htmlMessageLeft(res.fromName, res.message);
 });
 
 
 function sendMessage() {
     var userName = document.getElementById("userInputName").value
     var message = document.getElementById("messageInput").value;
-    var userId = document.getElementById("userInputId").value; 
     var phone = document.getElementById("userInputPhoneNumber").value;
 
     const params = {
-        userName: userName,
-        message: message,
-        userId: userId,
-        phone: phone
+        Message: message,
+        FromName: userName,
+        FromPhoneNumber: phone
     }
-    // console.log(params)
+
     if (message) {
         // Call function from server
-        connection.invoke("SendToAdmin",
-            userId,
-            phone,
-            message
-        ).then(function () {
+        connection.invoke("SendToAdmin", params).then(function () {
             // msg behavior
-            addMessageRight(userId, userName, message);
+            addMessageRight(params);
             $("#messageInput").val("");
         })
         .catch(function (err) {
@@ -71,15 +65,15 @@ function sendMessage() {
 };
 function sendMessageToAdmin(message) {
     var request = {
-        FromUserId: message.fromUserId,
         Message: message.message,
-        UserName: message.userName
+        FromName: message.fromName,
+        FromPhoneNumber: message.fromPhoneNumber
     }
     if (request.Message) {
         // Call function from server
         connection.invoke("SendToAdminNoService", request)
             .then(function () {
-                addMessageRight(request.FromUserId, request.UserName, request.Message);
+                addMessageRight(request);
             })
             .catch(function (err) {
                 return console.error(err.toString());
@@ -107,11 +101,11 @@ function loadEmoji() {
         });
     }
 }
-function addMessageRight(userId, userName, message) {
+function addMessageRight(msg) {
     var div = document.createElement("div");
     div.className = "message-wrapper message-right";
-    div.innerHTML = htmlMessageRight(userName, message);
-    $(`#message-list-${userId}`).append(div);
+    div.innerHTML = htmlMessageRight(msg.FromName, msg.Message);
+    $(`#message-list-${msg.FromPhoneNumber}`).append(div);
 }
 
 // html

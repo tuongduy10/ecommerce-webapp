@@ -16,6 +16,6 @@ namespace ECommerce.Application.Services.Chat
         Task<Response<List<UserMessage>>> GetUserMessagesAsync(int userId = 0);
         Task<Response<List<UserMessage>>> GetAllUserMessagesAsync(int sellerId = 0);
         Task<Response<List<UserMessage>>> GetUserList();
-        Task<Response<List<MessageModel>>> GetMessages(int userId = 0);
+        Task<Response<List<MessageModel>>> GetMessages(MessageGetModel request);
     }
 }

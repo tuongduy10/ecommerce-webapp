@@ -83,11 +83,13 @@ namespace ECommerce.WebApp.Controllers.Admin
             var username = user.GetProperty("UserFullName").GetValue(result.ObjectData, null).ToString();
             var userid = user.GetProperty("UserId").GetValue(result.ObjectData, null).ToString();
             var userroles = user.GetProperty("UserRoles").GetValue(result.ObjectData, null) as List<string>;
+            var userPhone = user.GetProperty("UserPhone").GetValue(result.ObjectData, null).ToString();
 
             var claims = new List<Claim>
             {
                 new Claim("TokenId", Guid.NewGuid().ToString()),
                 new Claim("UserId", userid),
+                new Claim("UserPhone", userPhone),
                 new Claim(ClaimTypes.Name, username),
             };
             foreach (var item in userroles)
@@ -124,7 +126,6 @@ namespace ECommerce.WebApp.Controllers.Admin
             
             return BadRequest(result.Message);
         }
-
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword()
         {

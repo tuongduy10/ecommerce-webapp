@@ -12,22 +12,23 @@
                     {
                         foreach (var user in ViewBag.UserMessages)
                         {
-                            if (user.UserId != Int32.Parse(User.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value))
+                            if (user.FromPhoneNumber != User.Claims.FirstOrDefault(claim => claim.Type == "UserPhone").Value)
                             {
                                 var lastestMsg = user.LatestMessage;
-                                <div class="chat_list chat_list_@user.UserId @if(lastestMsg.Status == "UN_READ") {@Html.Raw("active_chat")}" onclick="openChat(@user.UserId)">
+                                <div class="chat_list chat_list_@user.FromPhoneNumber @if(lastestMsg.Status == "UN_READ") {@Html.Raw("active_chat")}"
+                                    onclick="openChat('@user.FromPhoneNumber')">
                                     <div class="chat_people">
                                         <div class="chat_img">
                                             <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
                                         </div>
                                         <div class="chat_ib">
-                                            <h5>@user.UserName <span class="chat_date">@lastestMsg.CreateDateLabel</span></h5>
-                                            <p>@user.PhoneNumber</p>
+                                            <h5>@user.FromName <span class="chat_date">@lastestMsg.CreateDateLabel</span></h5>
+                                            <p>@user.FromPhoneNumber</p>
                                         </div>
                                     </div>
                                     @if (lastestMsg.Status == StatusConstant.MSG_UNREAD)
                                     {
-                                        <span class="unread_chat_@user.UserId unread_chat"></span>
+                                        <span class="unread_chat_@user.FromPhoneNumber unread_chat"></span>
                                     }
                                 </div>
                             }
@@ -52,36 +53,36 @@
 <script type="text/javascript" src="/js/main/manage-online.js"></script>
 <script type="text/javascript" src="/js/main/admin-chat.js"></script>
 <script type="text/javascript">
-    function openChat(id) {
+    function openChat(toPhoneNumber) {
         /*
          * id: from user
          */
         $(".msg_history").empty();
-        $(".msg_history").html(`<div id="msg_wrapper_${id}" class="msg_wrapper"></div>`);
+        $(".msg_history").html(`<div id="msg_wrapper_${toPhoneNumber}" class="msg_wrapper"></div>`);
 
-        var userName = '@User.Identity.Name';
-        var fromUserId = @User.Claims.FirstOrDefault(i => i.Type == "UserId").Value
-            $(".input_msg_write").empty();
+        var fromName = '@User.Identity.Name';
+        var fromPhoneNumber = '@User.Claims.FirstOrDefault(i => i.Type == "UserPhone").Value';
+        $(".input_msg_write").empty();
         $(".input_msg_write").html(`
-                <input type="text" class="toUserId" value="${id}" hidden />
-                <input type="text" class="fromUserId" value="${fromUserId}" hidden/>
-                <input type="text" class="userInputName" value="${userName}" hidden/>
-                <input type="text" class="write_msg" placeholder="Nhập tin nhắn" />
-                <button class="msg_send_btn" type="button">
-                    <i class="fa fa-paper-plane"aria-hidden="true"></i>
-                </button>
-            `);
+            <input type="text" class="userInputName" value="${fromName}" hidden/>
+            <input type="text" class="fromPhoneNumber" value="${fromPhoneNumber}" hidden/>
+                <input type="text" class="toPhoneNumber" value="${toPhoneNumber}" hidden/>
+            <input type="text" class="write_msg" placeholder="Nhập tin nhắn" />
+            <button class="msg_send_btn" type="button">
+                <i class="fa fa-paper-plane"aria-hidden="true"></i>
+            </button>
+        `);
 
-        PostApi("/Chat/GetMessages", { userId: id })
+        PostApi("/Chat/GetMessages", { fromPhoneNumber: toPhoneNumber })
             .then(function (res) {
                 if (res.isSucceed && res.data.length > 0) {
                     res.data.forEach(msg => {
-                        if (fromUserId == msg.fromUserId) {
+                        if (fromPhoneNumber == msg.fromPhoneNumber) {
                             let msgHtml = outGoingMsg(msg);
-                            $(`#msg_wrapper_${id}`).append(msgHtml);
+                            $(`#msg_wrapper_${toPhoneNumber}`).append(msgHtml);
                         } else {
                             let msgHtml = inComingMsg(msg);
-                            $(`#msg_wrapper_${id}`).append(msgHtml);
+                            $(`#msg_wrapper_${toPhoneNumber}`).append(msgHtml);
                         }
                     });
                 }
@@ -91,8 +92,8 @@
             });
 
         // read the message box
-        $(`.unread_chat_${id}`).remove();
-        $(`.chat_list_${id}`).removeClass("active_chat");
+        $(`.unread_chat_${toPhoneNumber}`).remove();
+        $(`.chat_list_${toPhoneNumber}`).removeClass("active_chat");
     }
 
     function inComingMsg(msg) {
@@ -102,24 +103,24 @@
         }
 
         return `
-                <div class="incoming_msg">
-                    <div class="received_msg">
-                        <div class="received_withd_msg">
-                            ${pMsg}
-                            <span class="time_date">${msg.userName} - ${msg.createDateLabel}</span>
-                        </div>
+            <div class="incoming_msg">
+                <div class="received_msg">
+                    <div class="received_withd_msg">
+                        ${pMsg}
+                        <span class="time_date">${msg.fromName} - ${msg.createDateLabel}</span>
                     </div>
                 </div>
-            `;
+            </div>
+        `;
     }
     function outGoingMsg(msg) {
         return `
-                <div class="outgoing_msg">
-                    <div class="sent_msg">
-                        <p>${msg.message}</p>
-                        <span class="time_date"> ${msg.createDateLabel} </span>
-                    </div>
+            <div class="outgoing_msg">
+                <div class="sent_msg">
+                    <p>${msg.message}</p>
+                    <span class="time_date"> ${msg.createDateLabel} </span>
                 </div>
-            `;
+            </div>
+        `;
     }
 </script>

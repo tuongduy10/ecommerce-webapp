@@ -41,16 +41,15 @@ namespace ECommerce.Application.Services.Chat
             {
                 if (String.IsNullOrEmpty(request.Message))
                     return new FailResponse<MessageModel>("Nội dung không được để trống");
-                var fromUserInfo = await _userRepo.GetUserInfo(request.FromUserId);
+                var fromUserInfo = await _userRepo.FindAsyncWhere(user => user.UserPhone == request.FromPhoneNumber);
 
                 var newMessageHistory = new MessageHistory();
                 newMessageHistory.Message = request.Message.Trim();
                 newMessageHistory.CreateDate = DateTime.Now;
                 newMessageHistory.Status = StatusConstant.MSG_UNREAD;
-                newMessageHistory.FromUserId = request.FromUserId;
-                newMessageHistory.ToUserId = request.ToUserId;
-                newMessageHistory.UserName = fromUserInfo != null ? fromUserInfo.UserFullName : "";
-                newMessageHistory.PhoneNumber = fromUserInfo != null ? fromUserInfo.UserPhone : "";
+                newMessageHistory.ToPhoneNumber = request.ToPhoneNumber;
+                newMessageHistory.FromName = fromUserInfo != null ? fromUserInfo.UserFullName : "";
+                newMessageHistory.FromPhoneNumber = fromUserInfo != null ? fromUserInfo.UserPhone : "";
                 newMessageHistory.Type = request.Type;
                 if(!String.IsNullOrEmpty(request.Attachment))
                     newMessageHistory.Attachment = request.Attachment.Trim();
@@ -62,14 +61,14 @@ namespace ECommerce.Application.Services.Chat
                 var resModel = new MessageModel();
                 resModel.Message = newMessageHistory.Message;
                 resModel.CreateDate = newMessageHistory.CreateDate;
-                resModel.ToUserId = newMessageHistory.ToUserId;
-                resModel.FromUserId = newMessageHistory.FromUserId;
-                resModel.UserName = newMessageHistory.UserName;
+                resModel.ToPhoneNumber = newMessageHistory.ToPhoneNumber;
+                resModel.FromPhoneNumber = newMessageHistory.FromPhoneNumber;
+                resModel.FromName = newMessageHistory.FromName;
                 resModel.Attachment = newMessageHistory.Attachment;
                 resModel.Type = newMessageHistory.Type;
                 resModel.Status = newMessageHistory.Status;
 
-                return new SuccessResponse<MessageModel>("", resModel);
+                return new SuccessResponse<MessageModel>("success", resModel);
             }
             catch (Exception error)
             {
@@ -80,44 +79,41 @@ namespace ECommerce.Application.Services.Chat
         {
             try
             {
-                if (String.IsNullOrEmpty(request.UserName))
+                if (String.IsNullOrEmpty(request.FromName))
                     return new FailResponse<MessageModel>("Tên không được để trống");
-                if (String.IsNullOrEmpty(request.PhoneNumber))
+                if (String.IsNullOrEmpty(request.FromPhoneNumber))
                     return new FailResponse<MessageModel>("Số điện thoại không được để trống");
                 if (String.IsNullOrEmpty(request.Message))
                     return new FailResponse<MessageModel>("Nội dung không được để trống");
 
-                if (request.PhoneNumber.Contains("+84"))
+                if (request.FromPhoneNumber.Contains("+84"))
                 {
-                    request.PhoneNumber = request.PhoneNumber.Replace("+84", "");
-                    if (!request.PhoneNumber.StartsWith("0"))
+                    request.FromPhoneNumber = request.FromPhoneNumber.Replace("+84", "");
+                    if (!request.FromPhoneNumber.StartsWith("0"))
                     {
-                        request.PhoneNumber = "0" + request.PhoneNumber;
+                        request.FromPhoneNumber = "0" + request.FromPhoneNumber;
                     }
                 }
-                var userInfo = await _userRepo.FindAsyncWhere(i => i.UserPhone == request.PhoneNumber);
+                var userInfo = await _userRepo.FindAsyncWhere(i => i.UserPhone == request.FromPhoneNumber);
                 if (userInfo != null)
                 {
-                    request.UserName = userInfo.UserFullName;
-                    request.FromUserId = userInfo.UserId;
+                    request.FromName = userInfo.UserFullName;
                 } 
                 else
                 {
-                    var userMsg = await _msgRepo.FindAsyncWhere(i => i.PhoneNumber == request.PhoneNumber);
+                    var userMsg = await _msgRepo.FindAsyncWhere(i => i.FromPhoneNumber == request.FromPhoneNumber);
                     if (userMsg != null)
                     {
-                        request.UserName = userMsg.UserName;
-                        request.FromUserId = userMsg.FromUserId;
+                        request.FromName = userMsg.FromName;
                     }
                 }
 
                 var newMessageHistory = new MessageHistory();
                 newMessageHistory.Message = request.Message.Trim();
                 newMessageHistory.CreateDate = DateTime.Now;
-                newMessageHistory.FromUserId = request.FromUserId;
-                newMessageHistory.ToUserId = request.ToUserId;
-                newMessageHistory.UserName = request.UserName.Trim();
-                newMessageHistory.PhoneNumber = request.PhoneNumber.Trim();
+                newMessageHistory.ToPhoneNumber = request.ToPhoneNumber;
+                newMessageHistory.FromName = request.FromName.Trim();
+                newMessageHistory.FromPhoneNumber = request.FromPhoneNumber.Trim();
                 newMessageHistory.Type = TypeConstant.MSG_FROM_CLIENT;
                 newMessageHistory.Status = StatusConstant.MSG_UNREAD;
 
@@ -128,10 +124,9 @@ namespace ECommerce.Application.Services.Chat
                 var resModel = new MessageModel();
                 resModel.Message = newMessageHistory.Message;
                 resModel.CreateDate = newMessageHistory.CreateDate;
-                resModel.ToUserId = newMessageHistory.ToUserId;
-                resModel.FromUserId = newMessageHistory.FromUserId;
-                resModel.UserName = newMessageHistory.UserName;
-                resModel.PhoneNumber = newMessageHistory.PhoneNumber;
+                resModel.ToPhoneNumber = newMessageHistory.ToPhoneNumber;
+                resModel.FromName = newMessageHistory.FromName;
+                resModel.FromPhoneNumber = newMessageHistory.FromPhoneNumber;
                 resModel.Attachment = newMessageHistory.Attachment;
                 resModel.Type = newMessageHistory.Type;
                 resModel.Status = newMessageHistory.Status;
@@ -151,16 +146,16 @@ namespace ECommerce.Application.Services.Chat
                     .Query()
                     .Select(i => new UserMessage() { 
                         UserId = i.UserId,
-                        UserName = i.UserFullName,
-                        PhoneNumber = i.UserPhone,
+                        FromName = i.UserFullName,
+                        FromPhoneNumber = i.UserPhone,
                         MessageList = _DbContext.MessageHistories
-                            .Where(msg => msg.FromUserId == i.UserId)
+                            .Where(msg => msg.FromPhoneNumber == i.UserPhone)
                             .Select(msg => new MessageModel() { 
                                 Id = msg.Id,
                                 Message = msg.Message,
                                 Attachment = msg.Attachment,
                                 CreateDate = msg.CreateDate,
-                                ToUserId = msg.ToUserId,
+                                ToPhoneNumber = msg.ToPhoneNumber,
                                 Status = msg.Status
                             })
                             .ToList()
@@ -184,9 +179,8 @@ namespace ECommerce.Application.Services.Chat
                 var groupMsg = from msg in _msgRepo.Query().ToList()
                                group msg by new
                                {
-                                   msg.FromUserId,
-                                   msg.UserName,
-                                   msg.PhoneNumber
+                                   msg.FromName,
+                                   msg.FromPhoneNumber
                                };
                     
                 var list = new List<UserMessage>();
@@ -195,8 +189,7 @@ namespace ECommerce.Application.Services.Chat
                     var messageList = msg
                         .Select(i => new MessageModel() 
                         {
-                            FromUserId = i.FromUserId,
-                            ToUserId = i.ToUserId,
+                            ToPhoneNumber = i.ToPhoneNumber,
                             CreateDate = i.CreateDate,
                             CreateDateLabel = ((DateTime)i.CreateDate).ToString(ConfigConstant.DATE_FORMAT),
                             Message = i.Message,
@@ -206,9 +199,8 @@ namespace ECommerce.Application.Services.Chat
                         })
                         .ToList();
                     list.Add(new UserMessage() { 
-                        UserId = msg.Key.FromUserId,
-                        UserName = msg.Key.UserName,
-                        PhoneNumber = msg.Key.PhoneNumber,
+                        FromName = msg.Key.FromName,
+                        FromPhoneNumber = msg.Key.FromPhoneNumber,
                         MessageList = messageList,
                         LatestMessage = messageList.Count > 0 ? messageList[messageList.Count - 1] : null
                     });
@@ -229,9 +221,8 @@ namespace ECommerce.Application.Services.Chat
                                where msg.Type == TypeConstant.MSG_FROM_CLIENT
                                group msg by new
                                {
-                                   msg.FromUserId,
-                                   msg.UserName,
-                                   msg.PhoneNumber
+                                   msg.FromName,
+                                   msg.FromPhoneNumber
                                };
 
                 var list = new List<UserMessage>();
@@ -240,9 +231,9 @@ namespace ECommerce.Application.Services.Chat
                     var messages = await _msgRepo
                             .Query()
                             .Where(item =>
-                                (item.FromUserId == msg.Key.FromUserId && item.ToUserId == null) ||
-                                item.FromUserId == msg.Key.FromUserId ||
-                                item.ToUserId == msg.Key.FromUserId)
+                                item.FromPhoneNumber == msg.Key.FromPhoneNumber && 
+                                item.ToPhoneNumber == null
+                            )
                             .Select(i => new MessageModel()
                             {
                                 Message = i.Message,
@@ -253,9 +244,8 @@ namespace ECommerce.Application.Services.Chat
                             .ToListAsync();
                     list.Add(new UserMessage()
                     {
-                        UserId = msg.Key.FromUserId,
-                        UserName = msg.Key.UserName,
-                        PhoneNumber = msg.Key.PhoneNumber,
+                        FromName = msg.Key.FromName,
+                        FromPhoneNumber = msg.Key.FromPhoneNumber,
                         LatestMessage = messages[messages.Count() - 1]
                     });
                 }
@@ -267,35 +257,36 @@ namespace ECommerce.Application.Services.Chat
                 return new FailResponse<List<UserMessage>>(error.ToString());
             }
         }
-        public async Task<Response<List<MessageModel>>> GetMessages(int userId = 0)
+        public async Task<Response<List<MessageModel>>> GetMessages(MessageGetModel request)
         {
             try
             {
                 var list = await _msgRepo
                     .Query()
-                    .Select(msg => new MessageModel() {
+                    .Where(item => 
+                        (item.FromPhoneNumber == request.fromPhoneNumber && item.ToPhoneNumber == null) ||
+                        item.ToPhoneNumber == request.fromPhoneNumber
+                    ).Select(msg => new MessageModel() {
                         Id = msg.Id,
                         Attachment = msg.Attachment,
                         CreateDate = msg.CreateDate,
                         CreateDateLabel = ((DateTime)msg.CreateDate).ToString(ConfigConstant.DATE_FORMAT),
                         Message = msg.Message,
-                        FromUserId = msg.FromUserId,
-                        UserName = msg.UserName,
-                        ToUserId = msg.ToUserId,
+                        FromName = msg.FromName,
+                        FromPhoneNumber = msg.FromPhoneNumber,
+                        ToPhoneNumber = msg.ToPhoneNumber,
                         Type = msg.Type,
                         Status = msg.Status,
                     })
+                    .OrderBy(item => item.CreateDate)
                     .ToListAsync();
 
-                list = list.Where(item =>
-                    (item.FromUserId == userId && item.ToUserId == null) ||
-                    item.FromUserId == userId ||
-                    item.ToUserId == userId).ToList();
-                list = list.OrderBy(item => item.CreateDate).ToList();
-
-                // read the messages
-                await ReadMessageAsync(list);
-
+                if (list != null && list.Count() > 0)
+                {
+                    // read the messages
+                    await ReadMessageAsync(list);
+                }
+                
                 return new SuccessResponse<List<MessageModel>>(list);
             }
             catch (Exception error)
@@ -325,15 +316,15 @@ namespace ECommerce.Application.Services.Chat
         {
             try
             {
-                if (String.IsNullOrEmpty(request.PhoneNumber))
+                if (String.IsNullOrEmpty(request.FromPhoneNumber))
                     return new FailResponse<MessageModel>("Số điện thoại không được để trống");
-                if (String.IsNullOrEmpty(request.UserName))
+                if (String.IsNullOrEmpty(request.FromName))
                     return new FailResponse<MessageModel>("Tên không được để trống");
                 if (String.IsNullOrEmpty(request.Message))
                     return new FailResponse<MessageModel>("Nội dung không được để trống");
-                if (request.PhoneNumber.Count() > 10)
+                if (request.FromPhoneNumber.Count() > 10)
                     return new FailResponse<MessageModel>("Số điện thoại không hợp lệ");
-                if (request.UserName.Count() > 100)
+                if (request.FromName.Count() > 100)
                     return new FailResponse<MessageModel>("Tên không hợp lệ");
                 if (request.Message.Count() > 500)
                     return new FailResponse<MessageModel>("Nội dung không được vượt quá 500 ký tự");
@@ -341,8 +332,8 @@ namespace ECommerce.Application.Services.Chat
 
                 var messageModel = new MessageHistory();
                 messageModel.Message = request.Message.Trim();
-                messageModel.UserName = request.UserName.Trim();
-                messageModel.PhoneNumber = request.PhoneNumber.Trim();
+                messageModel.FromName = request.FromName.Trim();
+                messageModel.FromPhoneNumber = request.FromPhoneNumber.Trim();
                 await _msgRepo.AddAsync(messageModel);
                 await _msgRepo.SaveChangesAsync();
 
