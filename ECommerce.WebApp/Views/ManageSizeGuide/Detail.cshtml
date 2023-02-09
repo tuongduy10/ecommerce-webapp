@@ -76,7 +76,7 @@
         //    })
         PostApi("/ManageSizeGuide/UpdateSizeGuide", request)
             .then(function (res) {
-                alert(res);
+                nSucces(res);
                 window.location.reload();
             })
     })
@@ -90,11 +90,13 @@
         //        alert(error.responseText);
         //        console.log(error)
         //    })
-        PostApi("/ManageSizeGuide/DeleteSizeGuide", { id: @Model.SizeGuide.SizeGuideId})
-            .then(function (res) {
-                alert(res);
-                window.location = "/ManageSizeGuide/Index";
-            })
+        if(confirm("Xác nhận xóa")){
+            PostApi("/ManageSizeGuide/DeleteSizeGuide", { id: @Model.SizeGuide.SizeGuideId})
+                .then(function (res) {
+                    nSucces(res);
+                    window.location = "/ManageSizeGuide/Index";
+                })
+        }
     })
 </script>
 <script>

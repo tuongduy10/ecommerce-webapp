@@ -59,7 +59,9 @@ namespace ECommerce.WebApp.Controllers.Admin
         }
         public async Task<IActionResult> DeleteSizeGuide(int id)
         {
-            return Ok();
+            var result = await _productService.DeleteSizeGuide(id);
+            if (result.isSucceed) return Ok(result.Message);
+            return BadRequest(result.Message);
         }
     }
 }
