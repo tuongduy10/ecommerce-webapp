@@ -198,10 +198,10 @@
                                     }
                                 </div>
                             </td>
-                            @*<td class="text-center">
+                            <td class="text-center">
                                 <a class="btn btn-primary brand-update" value="@item.BrandId" onclick="updateBrand(@item.BrandId)">Cập nhật</a>
                                 <a class="btn btn-danger" onclick="deleteBrand(@item.BrandId)">Xóa</a>
-                            </td>*@
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -311,11 +311,11 @@
             processData: false,
             contentType: false,
             success: function (response) {
-                new Notyf().success('Cập nhật thành công');
+                nSuccess('Cập nhật thành công');
             },
             error: function (error) {
                 console.log(error);
-                new Notyf().error(error);
+                nError(error);
             }
         });
     }
@@ -372,7 +372,7 @@
             //    })
             PostApi("/ManageBrand/DeleteBrands", { ids: ids })
                 .then(function (response) {
-                    alert(response);
+                    nSuccess(response);
                     location.reload();
                 })
         }
@@ -398,7 +398,7 @@
             //    })
             PostApi("/ManageBrand/UpdateBrandsStatus", { ids: ids, status: true })
                 .then(function (response) {
-                    alert(response);
+                    nSuccess(response);
                     location.reload();
                 })
         }
@@ -424,7 +424,7 @@
             //    })
             PostApi("/ManageBrand/UpdateBrandsStatus", { ids: ids, status: false })
                 .then(function (response) {
-                    alert(response);
+                    nSuccess(response);
                     location.reload();
                 })
         }
@@ -462,7 +462,7 @@
                 </div>
                 <a class="mr-2 btn btn-primary show-brands">Hiện</a>
                 <a class="mr-2 btn btn-secondary hide-brands">Ẩn</a>
-                <!-- <a class="mr-2 btn btn-danger delete-brands">Xóa</a> -->
+                <a class="mr-2 btn btn-danger delete-brands">Xóa</a>
             `);
             if (count == 0) {
                 $('.select-actions').html(``);

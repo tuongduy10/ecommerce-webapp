@@ -114,9 +114,20 @@ function AjaxPostForm(_url, _formData, errorMessage = true) {
     });
 }
 
-// Date format
-//$(function () {
-//    $('.date-picker').datepicker({
-//        format: 'dd-mm-yyyy',
-//    });
-//});
+function nSuccess(msg) {
+    new Notyf({
+        position: {
+            x: 'right',
+            y: 'top',
+        }
+    }).success(msg);
+}
+
+function nError(msg) {
+    new Notyf({
+        position: {
+            x: 'right',
+            y: 'top',
+        }
+    }).error(msg);
+}
