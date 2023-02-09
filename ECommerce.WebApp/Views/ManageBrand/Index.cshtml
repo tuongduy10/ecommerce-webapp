@@ -311,12 +311,11 @@
             processData: false,
             contentType: false,
             success: function (response) {
-                location.reload();
+                new Notyf().success('Cập nhật thành công');
             },
             error: function (error) {
                 console.log(error);
-                alert(error.responseText);
-                location.reload();
+                new Notyf().error(error);
             }
         });
     }
