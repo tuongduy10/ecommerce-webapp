@@ -1243,6 +1243,42 @@ namespace ECommerce.Application.Services.Product
                 return new FailResponse<SizeGuide>("Lấy thông tin thất bại, thử lại sau");
             }
         }
+        public async Task<ApiResponse> DeleteSizeGuide(int id)
+        {
+            try
+            {
+                if (id == 0)
+                    return new ApiFailResponse("Vui lòng chọn bảng");
+
+                var subCategories = await _DbContext.SubCategories
+                    .Where(i => i.SizeGuideId == id)
+                    .ToListAsync();
+                if (subCategories != null)
+                {
+                    foreach (var subc in subCategories)
+                    {
+                        subc.SizeGuideId = null;
+                    }
+                    _DbContext.SubCategories.UpdateRange(subCategories);
+                }
+
+                var sizeGuide = await _DbContext.SizeGuides
+                    .Where(i => i.SizeGuideId == id)
+                    .FirstOrDefaultAsync();
+                if (sizeGuide != null)
+                {
+                    _DbContext.SizeGuides.Remove(sizeGuide);
+                }
+
+                _DbContext.SaveChangesAsync().Wait();
+
+                return new ApiSuccessResponse("Xóa thành công");
+            }
+            catch(Exception error)
+            {
+                return new ApiFailResponse(error.ToString());
+            }
+        }
         public async Task<Response<SizeGuide>> GetSizeGuideBySub(int id)
         {
             var size = await _DbContext.SubCategories

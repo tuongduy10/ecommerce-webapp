@@ -342,27 +342,20 @@ namespace ECommerce.Application.Services.Brand
             {
                 if (id == 0) return new FailResponse<string>("Vui lòng chọn thương hiệu"); 
 
-                var brand = await _DbContext.Brands.Where(i => i.BrandId == id).FirstOrDefaultAsync();
-
                 var productCount = await _DbContext.Products.Where(i => i.BrandId == id).CountAsync();
                 var hasProduct = productCount > 0;
                 if (hasProduct)
-                {
                     return new FailResponse<string>($"Thương hiệu này đang tồn tại { productCount } sản phẩm, không thể xóa");
-                }
-
-                var shopCount = await _DbContext.ShopBrands.Where(i => i.BrandId == id).CountAsync();
-                var hasShop = shopCount > 0;
-                if (hasShop)
-                {
-                    return new FailResponse<string>($"Thương hiệu đang được { shopCount } shop quản lý, không thể xóa");
-                }
-
+                
+                var shopBrands = await _DbContext.ShopBrands.Where(i => i.BrandId == id).ToListAsync();
+                if (shopBrands != null)
+                    _DbContext.ShopBrands.RemoveRange(shopBrands);
                 var brandCategories = await _DbContext.BrandCategories.Where(i => i.BrandId == id).ToListAsync();
-                _DbContext.BrandCategories.RemoveRange(brandCategories);
-                _DbContext.SaveChangesAsync().Wait();
-
-                _DbContext.Brands.Remove(brand);
+                if (brandCategories != null)
+                    _DbContext.BrandCategories.RemoveRange(brandCategories);
+                var brand = await _DbContext.Brands.Where(i => i.BrandId == id).FirstOrDefaultAsync();
+                if(brand != null)
+                    _DbContext.Brands.Remove(brand);
                 _DbContext.SaveChangesAsync().Wait();
                  
                 return new SuccessResponse<string>("Xóa thành công", brand.BrandImagePath);
@@ -378,10 +371,6 @@ namespace ECommerce.Application.Services.Brand
             {
                 if (ids == null) return new FailResponse<List<string>>("Vui lòng chọn thương hiệu");
 
-                var brands = await _DbContext.Brands
-                    .Where(i => ids.Contains(i.BrandId))
-                    .ToListAsync();
-
                 var productCount = await _DbContext.Products
                     .Where(i => ids.Contains(i.BrandId))
                     .CountAsync();
@@ -389,22 +378,26 @@ namespace ECommerce.Application.Services.Brand
                 if (hasProduct)
                     return new FailResponse<List<string>>($"Có thương hiệu đang tồn tại sản phẩm, không thể xóa");
                 
-                var shopCount = await _DbContext.ShopBrands
+                var shopBrands = await _DbContext.ShopBrands
                     .Where(i => ids.Contains(i.BrandId))
-                    .CountAsync();
-                var hasShop = shopCount > 0;
-                if (hasShop)
-                    return new FailResponse<List<string>>($"Có thương hiệu đang có shop quản lý, không thể xóa");
-                
-                var brandCategories = await _DbContext.BrandCategories.Where(i => ids.Contains(i.BrandId)).ToListAsync();
-                _DbContext.BrandCategories.RemoveRange(brandCategories);
-                _DbContext.SaveChangesAsync().Wait();
+                    .ToListAsync();
+                if (shopBrands != null)
+                    _DbContext.ShopBrands.RemoveRange(shopBrands);
 
-                _DbContext.Brands.RemoveRange(brands);
+                var brandCategories = await _DbContext.BrandCategories
+                    .Where(i => ids.Contains(i.BrandId))
+                    .ToListAsync();
+                if (brandCategories != null)
+                    _DbContext.BrandCategories.RemoveRange(brandCategories);
+                
+                var brands = await _DbContext.Brands
+                    .Where(i => ids.Contains(i.BrandId))
+                    .ToListAsync();
+                if (brands != null)
+                    _DbContext.Brands.RemoveRange(brands);
                 _DbContext.SaveChangesAsync().Wait();
 
                 List<string> paths = brands.Select(item => item.BrandImagePath).ToList();
-
                 return new SuccessResponse<List<string>>("Xóa thành công", paths);
             }
             catch
