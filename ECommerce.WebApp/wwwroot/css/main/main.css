@@ -1730,8 +1730,12 @@ hr {
 
 /* Blog */
 .blog-content {
-    width: calc(100% - 17.70833vw - 3.125vw);
+    /*width: calc(100% - 17.70833vw - 3.125vw);*/
 }
+    .blog-content img {
+        max-width: 100%;
+        height: auto;
+    }
 
 .blog-header {
     font-size: calc(22px + (50 - 24) * ((100vw - 375px)/ (1920 - 375)));
