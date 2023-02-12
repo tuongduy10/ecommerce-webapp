@@ -447,7 +447,7 @@ namespace ECommerce.Application.Services.Product
                          select new { product, brand, shop }).AsQueryable();
             // Select from query
             var list = await query
-                .Where(i => i.product.Highlights == true)
+                .Where(i => i.product.Highlights == true && i.product.Status == 1)
                 .OrderByDescending(i => i.product.ProductAddedDate)
                 .Take(12)
                 .Select(i => new ProductInBrandModel() {
