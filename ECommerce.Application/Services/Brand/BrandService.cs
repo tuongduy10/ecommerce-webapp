@@ -371,12 +371,15 @@ namespace ECommerce.Application.Services.Brand
             {
                 if (ids == null) return new FailResponse<List<string>>("Vui lòng chọn thương hiệu");
 
-                var productCount = await _DbContext.Products
+                var products = await _DbContext.Products
                     .Where(i => ids.Contains(i.BrandId))
-                    .CountAsync();
-                var hasProduct = productCount > 0;
+                    .ToListAsync();
+                var hasProduct = products.Count() > 0;
                 if (hasProduct)
-                    return new FailResponse<List<string>>($"Có thương hiệu đang tồn tại sản phẩm, không thể xóa");
+                {
+                    var idList = String.Join(", ", products.Select(i => i.Ppc).ToList());
+                    return new FailResponse<List<string>>($"Có thương hiệu đang tồn tại sản phẩm {idList}, không thể xóa");
+                }
                 
                 var shopBrands = await _DbContext.ShopBrands
                     .Where(i => ids.Contains(i.BrandId))
