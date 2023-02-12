@@ -1510,7 +1510,8 @@ hr {
 .tab__content-block {
     margin-bottom: calc(80px + (70 - 27) * ((100vw - 375px)/ (1920 - 375)));
 }
-.product-detail iframe { 
+.product-detail video,
+.product-detail iframe {
     max-width: 100%;
 }
 .product-detail .title {
