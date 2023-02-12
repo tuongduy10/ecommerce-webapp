@@ -374,17 +374,17 @@
                     </div>
                     <div class="col-sm-12 mb-4">
                         <!-- Description Desktop -->
-                        <div class="text-left mb-2 text-primary"><strong>Mô tả cho máy tính (rộng: 700px)</strong></div>
+                        <div class="text-left mb-2 text-primary"><strong>Mô tả</strong></div>
                         <div class="form-group mb-4">
                             <textarea class="form-control" id="product-desciptions" rows="8"
                                       cols="50">@Model.product.ProductDescription</textarea>
                         </div>
                         <!-- Description Mobile -->
-                        <div class="text-left mb-2 text-primary"><strong>Mô tả cho điện thoại (rộng: 300px)</strong></div>
+@*                        <div class="text-left mb-2 text-primary"><strong>Mô tả cho điện thoại (rộng: 300px)</strong></div>
                         <div class="form-group mb-4">
                             <textarea class="form-control" id="product-desciptions-mobile" rows="8"
                                       cols="50">@Model.product.ProductDescriptionMobile</textarea>
-                        </div>
+                        </div>*@
                         <!-- Size Guide -->
                         <div class="text-left mb-2 text-primary">
                             <strong>Hướng dẫn chọn size</strong>
@@ -645,7 +645,7 @@
         var name = $(".pro-name").val();
         var stock = $(".pro-stock").val();
         var description = tinymce.get("product-desciptions").getContent();
-        var descriptionMobile = tinymce.get("product-desciptions-mobile").getContent();
+        //var descriptionMobile = tinymce.get("product-desciptions-mobile").getContent();
         var size = tinymce.get("product-sizeguide").getContent();
         var note = $(".pro-note").val();
         var link = $(".pro-link").val();
@@ -714,7 +714,7 @@
         formData.append('name', name);
         formData.append('stock', stock);
         formData.append('description', description);
-        formData.append('descriptionMobile', descriptionMobile);
+        //formData.append('descriptionMobile', descriptionMobile);
         formData.append('size', size);
         formData.append('note', note);
         formData.append('link', link);
