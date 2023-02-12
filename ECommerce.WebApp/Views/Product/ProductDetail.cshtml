@@ -341,15 +341,15 @@
                 <div class="product__tab-control">
                     <ul class="d-flex justify-content-around">
                         <li class="mx-2">
-                            <a class="control-tab detail-title control__tab-info">Thông tin sản phẩm</a>
+                            <a class="control-tab detail-title control__tab-info active">Thông tin sản phẩm</a>
                         </li>
                         <li class="mx-2">
-                            <a class="control-tab detail-title control__tab-comment active">Đánh giá sản phẩm</a>
+                            <a class="control-tab detail-title control__tab-comment">Đánh giá sản phẩm</a>
                         </li>
                     </ul>
                 </div>
                 <div class="product__tab-content">
-                    <div class="content-tab tab__product-info">
+                    <div class="content-tab tab__product-info active">
                         <div class="product-detail">
                             <ul class="detail-list d-flex mb-4 flex-wrap justify-content-between">
                                 @foreach (var attr in Model.product.Attributes)
@@ -367,12 +367,12 @@
                             <div class="description">
                                 @Html.Raw(Model.product.ProductDescription)
                             </div>
-                            <div class="description-mobile">
+                            @*<div class="description-mobile">
                                 @Html.Raw(Model.product.ProductDescriptionMobile)
-                            </div>
+                            </div>*@
                         </div>
                     </div>
-                    <div class="content-tab tab__product-comment active">
+                    <div class="content-tab tab__product-comment">
                         <!-- Rate -->
                         <div class="product-comment">
                             @if (!User.Identity.IsAuthenticated)
