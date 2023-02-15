@@ -460,7 +460,7 @@ namespace ECommerce.Data.Context
 
                 entity.ToTable("ProductAttribute");
 
-                entity.Property(e => e.Value).HasMaxLength(50);
+                entity.Property(e => e.Value).HasMaxLength(500);
 
                 entity.HasOne(d => d.Attribute)
                     .WithMany(p => p.ProductAttributes)
