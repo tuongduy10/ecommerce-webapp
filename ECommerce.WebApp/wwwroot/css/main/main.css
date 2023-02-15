@@ -1481,6 +1481,7 @@ hr {
 
     .detail-item span:first-child {
         width: 50%;
+        padding-right: 8px;
     }
 
     .detail-item span {
