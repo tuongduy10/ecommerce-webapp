@@ -310,6 +310,10 @@ namespace ECommerce.Application.Services.Comment
 
                     if (commentIds != null && commentIds.Count > 0)
                         await _commentImageRepo.RemoveRangeAsyncWhere(i => commentIds.Contains(i.RateId == null ? 0 : (int)i.RateId));
+
+                    var interestes = await _interestRepo.ToListAsyncWhere(i => commentIds.Contains((int)i.RateId));
+                    if (interestes != null && interestes.Count() > 0)
+                        _interestRepo.RemoveRange(interestes);
                     
                     _commentRepo.RemoveRange(comments);
                     await SaveChangesAsync();
@@ -321,7 +325,7 @@ namespace ECommerce.Application.Services.Comment
             }
             catch (Exception error)
             {
-                return new FailResponse<List<string>>("Xóa không thành công: \n\n" + error);
+                return new FailResponse<List<string>>("Xóa không thành công: \n\n" + error.ToString());
             }
         }
         public async Task<Response<List<string>>> DeleteByUserId(int _userId)

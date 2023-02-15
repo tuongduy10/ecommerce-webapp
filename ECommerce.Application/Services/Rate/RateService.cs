@@ -626,21 +626,23 @@ namespace ECommerce.Application.Services.Rate
             try
             {
                 var comments = await _DbContext.Rates.Where(i => i.ProductId == id).ToListAsync();
-                if (comments.Count > 0)
-                {
-                    var commentIds = comments.Select(i => i.RateId).ToList();
-                    if (commentIds.Count > 0)
-                    {
-                        foreach (var commentId in commentIds)
-                        {
-                            var images = await _DbContext.RatingImages.Where(i => i.RateId == commentId).ToListAsync();
-                            _DbContext.RatingImages.RemoveRange(images);
-                        }
-                    }
-                    _DbContext.Rates.RemoveRange(comments);
-                }
+                if (comments.Count == 0)
+                    return new ApiFailResponse("Không có bình luận để xóa");
                 
-                await _DbContext.SaveChangesAsync();
+                var commentIds = comments.Select(i => i.RateId).ToList();
+                
+                // Images
+                var images = await _DbContext.RatingImages.Where(i => commentIds.Contains((int)i.RateId)).ToListAsync();
+                if (images.Count > 0)
+                    _DbContext.RatingImages.RemoveRange(images);
+                // Like/dislike
+                var interests = await _DbContext.Interests.Where(i => commentIds.Contains(i.RateId)).ToListAsync();
+                if (interests.Count > 0)
+                    _DbContext.Interests.RemoveRange(interests);
+
+                _DbContext.Rates.RemoveRange(comments);
+
+                // await _DbContext.SaveChangesAsync();
 
                 return new ApiSuccessResponse("Xóa thành công");
             }
