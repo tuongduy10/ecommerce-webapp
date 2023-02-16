@@ -20,7 +20,9 @@ namespace ECommerce.Application.Services.Rate
         Task<Response<LikeAndDislike>> LikeComment(LikeAndDislikeCount request);
         Task<Response<List<string>>> UpdateComment(UpdateCommentRequest request);
         Task<Response<List<string>>> DeleteComment(int id);
+        Task<Response<List<string>>> DeleteComments(List<int> ids);
         Task<Response<List<string>>> DeleteImages(List<int> id);
         Task<ApiResponse> deleteCommentByProductId(int id);
+        Task<Response<List<string>>> DeleteCommentsByProductIds(List<int> ids);
     }
 }

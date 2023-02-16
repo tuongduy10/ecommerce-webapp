@@ -1065,20 +1065,11 @@ namespace ECommerce.Application.Services.Product
                 var opts = await _DbContext.ProductOptionValues.Where(i => i.ProductId == id).ToListAsync();
                 if (opts.Count > 0) 
                     _DbContext.ProductOptionValues.RemoveRange(opts);
-                // Product's comments
-                var ratingImages = new List<string>();
-                var rateIds = await _DbContext.Rates.Where(i => i.ProductId == id).Select(i => i.RateId).ToListAsync();
-                if(rateIds.Count > 0)
-                {
-                    var rateRs = await _rateService.DeleteComments(rateIds);
-                    ratingImages = rateRs.isSucceed ? rateRs.Data : null;
-                }
 
                 var data = new ProductDeleteResponse
                 {
                     systemImages = sysImages.Select(i => i.ProductImagePath).ToList(),
                     userImages = userImages.Select(i => i.ProductUserImagePath).ToList(),
-                    ratingImages = ratingImages
                 };
 
                 // Remove product and save changes
@@ -1089,7 +1080,7 @@ namespace ECommerce.Application.Services.Product
             }
             catch (Exception error)
             {
-                return new FailResponse<ProductDeleteResponse>("Xóa thất bại " + error.Message);
+                return new FailResponse<ProductDeleteResponse>("Xóa thất bại " + error.ToString());
             }
         }
         public async Task<Response<ProductDeleteResponse>> DeleteProducts(List<int> ids)
@@ -1116,25 +1107,25 @@ namespace ECommerce.Application.Services.Product
                 var opts = await _DbContext.ProductOptionValues.Where(i => ids.Contains(i.ProductId)).ToListAsync();
                 if (opts.Count > 0) _DbContext.ProductOptionValues.RemoveRange(opts);
                 // Product's comments
-                foreach (var id in ids)
-                {
-                    await _rateService.deleteCommentByProductId(id);
-                }
-
-                // Remove product and save changes
-                _DbContext.Products.RemoveRange(products);
-                _DbContext.SaveChangesAsync().Wait();
+                var ratingImages = new List<string>();
+                var rateRs = await _rateService.DeleteCommentsByProductIds(ids);
+                ratingImages = rateRs.isSucceed ? rateRs.Data : null;
 
                 var data = new ProductDeleteResponse
                 {
                     systemImages = sysImages.Select(i => i.ProductImagePath).ToList(),
-                    userImages = userImages.Select(i => i.ProductUserImagePath).ToList()
+                    userImages = userImages.Select(i => i.ProductUserImagePath).ToList(),
+                    ratingImages = ratingImages
                 };
+
+                // Remove product and save changes
+                _DbContext.Products.RemoveRange(products);
+                _DbContext.SaveChangesAsync().Wait();
                 return new SuccessResponse<ProductDeleteResponse>("Xóa thành công", data);
             }
             catch (Exception error)
             {
-                return new FailResponse<ProductDeleteResponse>("Xóa thất bại, vui lòng thử lại sau\n" + error.Message);
+                return new FailResponse<ProductDeleteResponse>("Xóa thất bại, vui lòng thử lại sau\n" + error.ToString());
             }
         }
         public async Task<ApiResponse> DisableProducts(List<int> ids)

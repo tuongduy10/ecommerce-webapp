@@ -101,24 +101,6 @@ namespace ECommerce.WebApp.Controllers.Seller
             return View(brands);
         }
         [HttpPost]
-        public async Task<IActionResult> DeleteProduct(int id)
-        {
-            var deleteCommentRes = await _commentService.DeleteByProductId(id);
-            if (deleteCommentRes.isSucceed)
-            {
-                _manageFiles.DeleteFiles(deleteCommentRes.Data, FilePathConstant.RATE_FILEPATH);
-            }
-
-            var result = await _productService.DeleteProduct(id);
-            if (result.isSucceed)
-            {
-                _manageFiles.DeleteFiles(result.Data.systemImages, FILE_PATH);
-                _manageFiles.DeleteFiles(result.Data.userImages, FILE_PATH);
-                return Ok(result.Message);
-            }
-            return BadRequest(result.Message);
-        }
-        [HttpPost]
         public async Task<IActionResult> DisableProducts(List<int> ids)
         {
             var result = await _productService.DisableProducts(ids);
@@ -134,6 +116,24 @@ namespace ECommerce.WebApp.Controllers.Seller
             var result = await _productService.ApproveProducts(ids);
             if (result.isSucceed)
             {
+                return Ok(result.Message);
+            }
+            return BadRequest(result.Message);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            var deleteCommentRes = await _commentService.DeleteByProductId(id);
+            if (deleteCommentRes.isSucceed)
+            {
+                _manageFiles.DeleteFiles(deleteCommentRes.Data, RATING_FILE_PATH);
+            }
+
+            var result = await _productService.DeleteProduct(id);
+            if (result.isSucceed)
+            {
+                _manageFiles.DeleteFiles(result.Data.systemImages, FILE_PATH);
+                _manageFiles.DeleteFiles(result.Data.userImages, FILE_PATH);
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);
