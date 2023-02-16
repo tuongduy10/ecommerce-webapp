@@ -10,5 +10,6 @@ namespace ECommerce.Application.Services.Product.Dtos
     {
         public List<string> systemImages { get; set; }
         public List<string> userImages { get; set; }
+        public List<string> ratingImages { get; set; }
     }
 }

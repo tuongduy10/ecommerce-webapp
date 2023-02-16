@@ -29,6 +29,7 @@ namespace ECommerce.WebApp.Controllers.Seller
         private IShopService _shopService;
         private ICommentService _commentService;
         private ManageFiles _manageFiles;
+        private string RATING_FILE_PATH = FilePathConstant.RATE_FILEPATH;
         private string FILE_PATH = FilePathConstant.PRODUCT_FILEPATH;
         private string FILE_PREFIX = FilePathConstant.PRODUCT_FILEPREFIX;
         public SaleProductController(
@@ -145,6 +146,7 @@ namespace ECommerce.WebApp.Controllers.Seller
             {
                 _manageFiles.DeleteFiles(result.Data.systemImages, FILE_PATH);
                 _manageFiles.DeleteFiles(result.Data.userImages, FILE_PATH);
+                _manageFiles.DeleteFiles(result.Data.ratingImages, RATING_FILE_PATH);
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);

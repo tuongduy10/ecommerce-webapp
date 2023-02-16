@@ -167,17 +167,19 @@ namespace ECommerce.WebApp.Controllers.Client
 
                 foreach (var price in item.Price)
                 {
+                    // Hàng đặt trước
                     if (price.ProductTypeId == (int)enumProductType.PreOrder && price.Price != null)
                     {
                         pro.ProductTypeName = ProductTypeConst.PreOrderName;
                         pro.Price = price.Price;
                         pro.PriceOnSell = price.PriceOnSell == null ? null : price.PriceOnSell;
                     }
+                    // Hàng có sẵn
                     else
                     {
                         if (price.ProductTypeId == (int)enumProductType.Available && price.Price != null)
                         {
-                            pro.ProductTypeName = ProductTypeConst.PreOrderName;
+                            pro.ProductTypeName = ProductTypeConst.AvailableName;
                             pro.Price = price.Price;
                             pro.PriceOnSell = price.PriceOnSell == null ? null : price.PriceOnSell;
                         }
