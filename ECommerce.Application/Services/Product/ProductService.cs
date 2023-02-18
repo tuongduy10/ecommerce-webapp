@@ -42,6 +42,7 @@ namespace ECommerce.Application.Services.Product
             }
 
             var result = await query
+                .Where(i => i.Status == 1)
                 .Select(i => new ProductShopListModel()
                 {
                     ProductId = i.ProductId,
@@ -322,6 +323,7 @@ namespace ECommerce.Application.Services.Product
 
                 // Select from query
                 var list = query
+                    .Where(i => i.product.Status == 1)
                     .OrderByDescending(i => i.product.ProductAddedDate)
                     .Select(i => new ProductInBrandModel()
                     {
@@ -394,6 +396,7 @@ namespace ECommerce.Application.Services.Product
 
             // Select from query
             var list = query
+                .Where(i => i.product.Status == 1)
                 .OrderByDescending(i => i.product.ProductAddedDate)
                 .Select(i => new ProductInBrandModel()
                 {
@@ -492,6 +495,7 @@ namespace ECommerce.Application.Services.Product
             }
 
             var result = await query
+                .Where(i => i.Status == 1)
                 .Select(i => new ProductShopListModel()
                 {
                     ProductId = i.ProductId,
