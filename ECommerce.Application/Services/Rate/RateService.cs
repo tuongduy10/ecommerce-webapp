@@ -594,6 +594,98 @@ namespace ECommerce.Application.Services.Rate
             }
             catch (Exception error)
             {
+                return new FailResponse<List<string>>("Xóa không thành công: \n\n" + error.ToString());
+            }
+        }
+        public async Task<Response<List<string>>> DeleteComments(List<int> ids)
+        {
+            try
+            {
+                List<string> deleteImages = new List<string>();
+                List<int> deleteNotiIds = new List<int>();
+
+                var imagesStr = await _DbContext.RatingImages
+                    .Where(i => ids.Contains((int)i.RateId))
+                    .Select(i => i.RatingImagePath)
+                    .ToListAsync();
+                deleteImages.AddRange(imagesStr);
+
+                var comment = await _DbContext.Rates.Where(i => ids.Contains((int)i.RateId)).FirstOrDefaultAsync();
+                if (comment != null)
+                    _DbContext.Rates.Remove(comment);
+                var commentImages = await _DbContext.RatingImages.Where(i => ids.Contains((int)i.RateId)).ToListAsync();
+                if (commentImages != null)
+                    _DbContext.RatingImages.RemoveRange(commentImages);
+                var interests = await _DbContext.Interests.Where(i => ids.Contains((int)i.RateId)).ToListAsync();
+                if (interests != null)
+                    _DbContext.Interests.RemoveRange(interests);
+
+                deleteNotiIds.Add(comment.RateId);
+
+                // Delete by parentId
+                var replies = await _DbContext.Rates.Where(i => i.ParentId == comment.RateId).ToListAsync();
+                if (replies != null)
+                {
+                    foreach (var reply in replies)
+                    {
+                        var imgStr = await _DbContext.RatingImages
+                            .Where(i => i.RateId == reply.RateId)
+                            .Select(i => i.RatingImagePath)
+                            .ToListAsync();
+                        deleteImages.AddRange(imgStr);
+
+                        var replyImages = await _DbContext.RatingImages.Where(i => i.RateId == reply.RateId).ToListAsync();
+                        if (replyImages != null)
+                            _DbContext.RatingImages.RemoveRange(replyImages);
+                        var replyInterests = await _DbContext.Interests.Where(i => i.RateId == reply.RateId).ToListAsync();
+                        if (replyInterests != null)
+                            _DbContext.Interests.RemoveRange(replyInterests);
+
+                        deleteNotiIds.Add(reply.RateId);
+                    }
+                    _DbContext.Rates.RemoveRange(replies);
+                }
+
+                // Delete replied
+                var repliesByRepliedId = await _DbContext.Rates
+                    .Where(i => i.IdsToDelete != null && i.IdsToDelete.Contains(comment.RateId.ToString()))
+                    .ToListAsync();
+                if (repliesByRepliedId != null)
+                {
+                    foreach (var reply in repliesByRepliedId)
+                    {
+                        var imgStr = await _DbContext.RatingImages
+                            .Where(i => i.RateId == reply.RateId)
+                            .Select(i => i.RatingImagePath)
+                            .ToListAsync();
+                        deleteImages.AddRange(imgStr);
+
+                        var replyImages = await _DbContext.RatingImages.Where(i => i.RateId == reply.RateId).ToListAsync();
+                        if (replyImages != null)
+                            _DbContext.RatingImages.RemoveRange(replyImages);
+                        var replyInterests = await _DbContext.Interests.Where(i => i.RateId == reply.RateId).ToListAsync();
+                        if (replyInterests != null)
+                            _DbContext.Interests.RemoveRange(replyInterests);
+
+                        deleteNotiIds.Add(reply.RateId);
+                    }
+                    _DbContext.Rates.RemoveRange(repliesByRepliedId);
+                }
+
+                // Notifications
+                var notifications = await _DbContext.Notifications
+                    .Where(item => deleteNotiIds.Contains((int)item.InfoId))
+                    .ToListAsync();
+                if (notifications != null && notifications.Count > 0)
+                    _DbContext.Notifications.RemoveRange(notifications);
+
+                await _DbContext.SaveChangesAsync();
+
+
+                return new SuccessResponse<List<string>>("Xóa thành công", deleteImages);
+            }
+            catch (Exception error)
+            {
                 return new FailResponse<List<string>>("Xóa không thành công: \n\n" + error);
             }
         }
@@ -641,14 +733,33 @@ namespace ECommerce.Application.Services.Rate
                     _DbContext.Interests.RemoveRange(interests);
 
                 _DbContext.Rates.RemoveRange(comments);
-
-                // await _DbContext.SaveChangesAsync();
+                _DbContext.SaveChangesAsync().Wait();
 
                 return new ApiSuccessResponse("Xóa thành công");
             }
             catch (Exception error)
             {
                 return new ApiFailResponse("Xóa không thành công: " + error);
+            }
+        }
+        public async Task<Response<List<string>>> DeleteCommentsByProductIds(List<int> ids)
+        {
+            try
+            {
+                var comments = await _DbContext.Rates.Where(i => ids.Contains((int)i.ProductId)).ToListAsync();
+                if (comments.Count == 0)
+                    return new FailResponse<List<string>>("Xóa không có bình luận để xóa");
+
+                var commentIds = comments.Select(i => i.RateId).ToList();
+                var result = await DeleteComments(commentIds);
+                if(result.isSucceed)
+                    return new SuccessResponse<List<string>>("Xóa thành công", result.Data);
+
+                return new SuccessResponse<List<string>>("Xóa không thành công: " + result.Message);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<List<string>>("Xóa không thành công: " + error.ToString());
             }
         }
     }
