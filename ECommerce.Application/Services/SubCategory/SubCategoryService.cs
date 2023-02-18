@@ -137,10 +137,18 @@ namespace ECommerce.Application.Services.SubCategory
                             AttributeId = attr
                         };
                         await _DbContext.SubCategoryAttributes.AddRangeAsync(newAttr);
-                        await _DbContext.SaveChangesAsync();
                     }
+                    await _DbContext.SaveChangesAsync();
                 }
-                await _DbContext.SaveChangesAsync();
+                var attrIds = await _DbContext.SubCategoryAttributes
+                    .Where(i => i.SubCategoryId == request.id)
+                    .Select(i => i.AttributeId)
+                    .ToListAsync();
+                var proAttrs = await _DbContext.ProductAttributes
+                    .Where(i => !attrIds.Contains(i.AttributeId))
+                    .ToListAsync();
+                _DbContext.ProductAttributes.RemoveRange(proAttrs);
+                _DbContext.SaveChangesAsync().Wait();
 
                 return new ApiSuccessResponse("Cập nhật thành công");
             }
