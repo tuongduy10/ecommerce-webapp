@@ -167,9 +167,9 @@
                             if (listOrderBy[j] == listDist[i])
                             {
                                 var count = 0;
-                                <h4>@listOrderBy[j]</h4>
-                                <div class="d-flex flex-wrap">
-                                    @foreach (var item in Model.listBrand)
+                                                <h4>@listOrderBy[j]</h4>
+                                                <div class="d-flex flex-wrap">
+                                                    @foreach (var item in Model.listBrand)
                                     {
                                         if (listOrderBy[j] == item.BrandName.Substring(0, 1).ToUpper())
                                         {
@@ -178,20 +178,20 @@
                                             {
                                                 continue;
                                             }
-                                            <div class="bran__list-item card" style="border: .5px solid #ddd; padding: 12px;">
-                                                <a href="@Url.Action("ProductInBrand","Product", new { @BrandId = item.BrandId, @PageIndex = 1})">
-                                                    <div class="border bran__list-img d-flex align-items-center justify-content-between py-2 px-4 mx-auto" style="background-color: #fff;">
-                                                        <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" class="mw-100 mh-100 mx-auto" alt="@item.BrandName">
-                                                    </div>
-                                                    <div class="card-body text-center p-2 align-items-center justify-content-center">
-                                                        <h5 class="bran__list-name card-title mb-0">@item.BrandName</h5>
-                                                        <h6 class="bran__list-type card-text">@item.Category</h6>
-                                                    </div>
-                                                </a>
-                                            </div>
+                                                            <div class="bran__list-item card" style="border: .5px solid #ddd; padding: 12px;">
+                                                                <a href="@Url.Action("ProductInBrand","Product", new { @BrandId = item.BrandId, @PageIndex = 1})">
+                                                                    <div class="border bran__list-img d-flex align-items-center justify-content-between py-2 px-4 mx-auto" style="background-color: #fff;">
+                                                                        <img src="@Configuration["ImagePath:Brand"]@item.BrandImagePath" class="mw-100 mh-100 mx-auto" alt="@item.BrandName">
+                                                                    </div>
+                                                                    <div class="card-body text-center p-2 align-items-center justify-content-center">
+                                                                        <h5 class="bran__list-name card-title mb-0">@item.BrandName</h5>
+                                                                        <h6 class="bran__list-type card-text">@item.Category</h6>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
                                         }
                                     }
-                                </div>
+                                                </div>
                             }
                         }
                     }
@@ -342,27 +342,25 @@
             tempList.push(listBrand[i].brandName[0].toUpperCase());
         }
         var listDist = tempList.filter(function (value, index) { return tempList.indexOf(value) == index });
+        var countBrands = 0;
         for (var i = 0; i < listDist.length; i++) {
             $('.bran__list-items').append(`<h4>${listDist[i]}</h4>`)
             var data = '';
             listBrand.forEach(brand => {
                 if (listDist[i] == brand.brandName[0].toUpperCase()) {
-                    data += `
-                        <div class="bran__list-item card" style=" border: .5px solid #ddd; padding: 12px;">
-                            <a href="/Product/ProductInBrand?BrandId=${brand.brandId}&PageIndex=1">
-                                <div class="border bran__list-img d-flex align-items-center justify-content-between py-2 px-4 mx-auto" style="background-color: #fff;">
-                                    <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="mw-100 mh-100 mx-auto" alt="${brand.brandName}">
-                                </div>
-                                <div class="card-body text-center p-2 align-items-center justify-content-center">
-                                    <h5 class="bran__list-name card-title mb-0">${brand.brandName}</h5>
-                                    <h6 class="bran__list-type card-text">${brand.category}</h6>
-                                </div>
-                            </a>
-                        </div>
-                    `;
+                    countBrands++;
+                    data += htmlBrand(brand);
                 }
             })
             $('.bran__list-items').append(`<div class="d-flex flex-wrap">${data}</div`)
+        }
+        // Xem thêm
+        if (countBrands > 0) {
+            $('.bran__list-items').append(
+                `<div class="w-100 text-center d-block">
+                    <a class="bran__viewmore d-inline-block" style="cursor: pointer">Xem thêm</a>
+                </div>`
+            );
         }
     }
     function renderBrandListOrdered(listBrand, sortBy) {
@@ -371,26 +369,22 @@
             tempList.push(listBrand[i].brandName[0].toUpperCase()); // array of first letter of brandname
         }
         var listDist = tempList.filter(function (value, index) { return tempList.indexOf(value) == index }); // distincted array array of first letter of brandname
+        var countBrands = 0;
         for (var i = 0; i < listDist.length; i++) {
             for (var j = 0; j < sortBy.length; j++) {
                 if (sortBy[j] == listDist[i]) {
                     $('.bran__list-items').append(`<h4>${sortBy[j]}</h4>`)
                     var data = '';
+                    // count here
+                    var count = 0;
                     listBrand.forEach(brand => {
                         if (sortBy[j] == brand.brandName[0].toUpperCase()) {
-                            data += `
-                                <div class="bran__list-item card" style=" border: .5px solid #ddd; padding: 12px;">
-                                    <a href="/Product/ProductInBrand?BrandId=${brand.brandId}&PageIndex=1">
-                                        <div class="border bran__list-img d-flex align-items-center justify-content-between py-2 px-4 mx-auto" style="background-color: #fff;">
-                                            <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="mw-100 mh-100 mx-auto" alt="${brand.brandName}">
-                                        </div>
-                                        <div class="card-body text-center p-2 align-items-center justify-content-center">
-                                            <h5 class="bran__list-name card-title mb-0">${brand.brandName}</h5>
-                                            <h6 class="bran__list-type card-text">${brand.category}</h6>
-                                        </div>
-                                    </a>
-                                </div>
-                            `;
+                            countBrands++;
+                            count++;
+                            if(count > 10){
+                                return;
+                            }
+                            data += htmlBrand(brand);
                         }
                     })
                     $('.bran__list-items').append(`<div class="d-flex flex-wrap">${data}</div`)
@@ -398,13 +392,29 @@
             }
         }
         // Xem thêm
-        if(listBrand.length > 0){
+        if(countBrands > 0){
             $('.bran__list-items').append(`
                 <div class="w-100 text-center d-block">
                     <a class="bran__viewmore d-inline-block" style="cursor: pointer">Xem thêm</a>
                 </div>
             `);
         }
+    }
+
+    function htmlBrand(brand){
+        return `
+            <div class="bran__list-item card" style=" border: .5px solid #ddd; padding: 12px;">
+                <a href="/Product/ProductInBrand?BrandId=${brand.brandId}&PageIndex=1">
+                    <div class="border bran__list-img d-flex align-items-center justify-content-between py-2 px-4 mx-auto" style="background-color: #fff;">
+                        <img src="@Configuration["ImagePath:Brand"]${brand.brandImagePath}" class="mw-100 mh-100 mx-auto" alt="${brand.brandName}">
+                    </div>
+                    <div class="card-body text-center p-2 align-items-center justify-content-center">
+                        <h5 class="bran__list-name card-title mb-0">${brand.brandName}</h5>
+                        <h6 class="bran__list-type card-text">${brand.category}</h6>
+                    </div>
+                </a>
+            </div>
+        `
     }
 </script>
 <script type="text/javascript" src="//cdn.jsdelivr.net/gh/kenwheeler/slick@1.8.1/slick/slick.min.js"></script>
