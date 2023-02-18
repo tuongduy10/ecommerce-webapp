@@ -42,7 +42,6 @@ namespace ECommerce.Application.Services.Product
             }
 
             var result = await query
-                .Where(i => i.Status == 1)
                 .Select(i => new ProductShopListModel()
                 {
                     ProductId = i.ProductId,
