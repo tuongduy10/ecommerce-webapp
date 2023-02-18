@@ -142,7 +142,7 @@
                             <input class="form-control mb-2" id="myInput" type="text" placeholder="Tìm..." autocomplete="off">
                             @foreach (var brand in Model.Brands)
                             {
-                                @if (Model.Shop.ShopBrands.Contains(brand.BrandId))
+                                @if (Model.Shop.ShopBrands != null && Model.Shop.ShopBrands.Contains(brand.BrandId))
                                 {
                                     <li>
                                         <div>

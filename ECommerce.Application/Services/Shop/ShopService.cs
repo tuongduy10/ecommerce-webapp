@@ -265,6 +265,20 @@ namespace ECommerce.Application.Services.Shop
         }
         public async Task<ShopDetailManagedModel> getShopDetailManage(int shopId)
         {
+            var brands = _DbContext.ShopBrands
+                        .Where(br => br.ShopId == shopId)
+                        .Select(br => br.BrandId)
+                        .ToList();
+            var bank = _DbContext.ShopBanks
+                        .Where(b => b.ShopId == shopId)
+                        .Select(b => new ShopBankModel()
+                        {
+                            ShopAccountName = b.ShopAccountName,
+                            ShopBankName = b.ShopBankName,
+                            ShopAccountNumber = b.ShopAccountNumber
+                        })
+                        .FirstOrDefault();
+
             var shop = await _DbContext.Shops
                 .Where(i => i.ShopId == shopId)
                 .Select(i => new ShopDetailManagedModel
@@ -281,19 +295,8 @@ namespace ECommerce.Application.Services.Shop
                     ShopWardCode = i.ShopWardCode,
                     Status = (byte)i.Status,
                     Tax = (byte)i.Tax,
-                    ShopBank = _DbContext.ShopBanks
-                        .Where(b => b.ShopId == shopId)
-                        .Select(b => new ShopBankModel()
-                        {
-                            ShopAccountName = b.ShopAccountName,
-                            ShopBankName = b.ShopBankName,
-                            ShopAccountNumber = b.ShopAccountNumber
-                        })
-                        .FirstOrDefault(),
-                    ShopBrands = _DbContext.ShopBrands
-                        .Where(br => br.ShopId == shopId)
-                        .Select(br => br.BrandId)
-                        .ToList()
+                    ShopBank = bank == null ? null : bank,
+                    ShopBrands = brands.Count() == 0 ? null : brands
                 })
                 .FirstOrDefaultAsync();
 
