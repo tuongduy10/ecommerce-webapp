@@ -1521,6 +1521,10 @@ hr {
     margin-bottom: calc(10px + (30 - 10) * ((100vw - 375px)/ (1920 - 375)));
     font-weight: 600;
 }
+.product-detail .description img {
+    max-width: 100%;
+    height: auto;
+}
 /*.product-detail .description-mobile {
     display: none;
 }
@@ -1532,7 +1536,6 @@ hr {
         display: block;
     }
 }*/
-
 .input-title {
     font-size: calc(16px + (20 - 16) * ((100vw - 375px)/ (1920 - 375)));
     line-height: 25px;
