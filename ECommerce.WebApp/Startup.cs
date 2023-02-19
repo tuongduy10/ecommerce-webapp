@@ -163,6 +163,7 @@ namespace ECommerce.WebApp
 
             app.UseCookiePolicy();
 
+            app.UseMiddleware<NoCacheMiddleware>();
             app.UseCustomAuthorizationMiddleware();
 
             app.UseEndpoints(routes =>
