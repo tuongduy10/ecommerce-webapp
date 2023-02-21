@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 namespace ECommerce.WebApp.Controllers.Admin
 {
     [Authorize(AuthenticationSchemes = "AdminAuth")]
-    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = "Seller")]
     public class ManageProductController : Controller
     {
         private IProductService _productService;
