@@ -74,7 +74,7 @@
 }
 
 #imagemodal .modal-dialog {
-    max-width: 40%;
+    /*max-width: 40%;*/
 }
 
 @media only screen and (max-width: 1400px) {
