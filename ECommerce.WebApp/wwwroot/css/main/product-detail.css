@@ -77,6 +77,21 @@
     /*max-width: 40%;*/
 }
 
+#imagemodal .modal-content {
+    width: 90vh;
+    height: 90vh;
+}
+
+#imagemodal .modal-content {
+    position: relative;
+}
+
+#imagemodal .close-modal {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+}
+
 @media only screen and (max-width: 1400px) {
     .product__detail-content .lSSlideWrapper {
         height: 467.64px;
@@ -90,6 +105,11 @@
 }
 
 @media only screen and (max-width: 992px) {
+    #imagemodal .modal-content {
+        width: 80%;
+        height: 80vw;
+    }
+
     .product__detail-content .lSSlideWrapper {
         height: 374px;
     }
@@ -98,6 +118,11 @@
 @media only screen and (max-width: 768px) {
     #imagemodal .modal-dialog {
         max-width: 100%;
+    }
+
+    #imagemodal .modal-content {
+        width: 100%;
+        height: 100vh;
     }
 
     .product__images-slider .lSAction > .lSPrev,
