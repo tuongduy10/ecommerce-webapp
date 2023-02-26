@@ -1,8 +1,8 @@
 # Document
 
 ## Technologies:
-`.Net Core 5.0`
-`Entity Framework 5.0`
+`.Net Core 3.1`
+`Entity Framework 3.1`
 `Cookie Authentication`
 `Firebase Authentication`
 `SignalR`
@@ -11,28 +11,28 @@
 
 In "ECommerce.Data":
 
-`Microft.EntityFrameworkCore.SqlServer (5.0.0)`
+`Microft.EntityFrameworkCore.SqlServer (3.1.0)`
 
-`Microft.EntityFrameworkCore.Tools (5.0.0)`
+`Microft.EntityFrameworkCore.Tools (3.1.0)`
 
-`Microft.EntityFrameworkCore.Design (5.0.0)`
+`Microft.EntityFrameworkCore.Design (3.1.0)`
 
-`Microft.Extensions.Configuration.FileExtensions (5.0.0)`
+`Microft.Extensions.Configuration.FileExtensions (3.1.0)`
 
-`Microft.Extensions.Configuration.Json (5.0.0)`
+`Microft.Extensions.Configuration.Json (3.1.0)`
 
 
 In ECommerce.WebApp too:
 
-`Microft.EntityFrameworkCore.SqlServer (5.0.0)`
+`Microft.EntityFrameworkCore.SqlServer (3.1.0)`
 
-`Microft.EntityFrameworkCore.Tools (5.0.0)`
+`Microft.EntityFrameworkCore.Tools (3.1.0)`
 
-`Microft.EntityFrameworkCore.Design (5.0.0)`
+`Microft.EntityFrameworkCore.Design (3.1.0)`
 
-`Microft.EntityFrameworkCore.Design (5.0.0)`
+`Microft.EntityFrameworkCore.Design (3.1.0)`
 
-`Microft.VisualStudio.Web.CodeGeneration.Design (5.0.0)`
+`Microft.VisualStudio.Web.CodeGeneration.Design (3.1.0)`
 
 ## Models
 
