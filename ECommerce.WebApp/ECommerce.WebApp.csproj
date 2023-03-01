@@ -25,6 +25,38 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\images\icon\award.svg" />
+    <None Include="wwwroot\images\icon\chevron-down.svg" />
+    <None Include="wwwroot\images\icon\chevron-left.svg" />
+    <None Include="wwwroot\images\icon\chevron-right.svg" />
+    <None Include="wwwroot\images\icon\chinhhang.svg" />
+    <None Include="wwwroot\images\icon\comment.svg" />
+    <None Include="wwwroot\images\icon\copy.svg" />
+    <None Include="wwwroot\images\icon\doitra.svg" />
+    <None Include="wwwroot\images\icon\edit-3.svg" />
+    <None Include="wwwroot\images\icon\edit.svg" />
+    <None Include="wwwroot\images\icon\facebook.svg" />
+    <None Include="wwwroot\images\icon\filter.svg" />
+    <None Include="wwwroot\images\icon\freeshipping.svg" />
+    <None Include="wwwroot\images\icon\heart.svg" />
+    <None Include="wwwroot\images\icon\help-circle.svg" />
+    <None Include="wwwroot\images\icon\info.svg" />
+    <None Include="wwwroot\images\icon\list.svg" />
+    <None Include="wwwroot\images\icon\log-in.svg" />
+    <None Include="wwwroot\images\icon\log-out.svg" />
+    <None Include="wwwroot\images\icon\mail.svg" />
+    <None Include="wwwroot\images\icon\map-pin.svg" />
+    <None Include="wwwroot\images\icon\menu.svg" />
+    <None Include="wwwroot\images\icon\message-circle.svg" />
+    <None Include="wwwroot\images\icon\message-square.svg" />
+    <None Include="wwwroot\images\icon\more-horizontal.svg" />
+    <None Include="wwwroot\images\icon\phone.svg" />
+    <None Include="wwwroot\images\icon\plus-circle.svg" />
+    <None Include="wwwroot\images\icon\search.svg" />
+    <None Include="wwwroot\images\icon\shopping-bag.svg" />
+    <None Include="wwwroot\images\icon\smartphone.svg" />
+    <None Include="wwwroot\images\icon\user.svg" />
+    <None Include="wwwroot\images\icon\x.svg" />
     <None Include="wwwroot\js\main\main.js" />
   </ItemGroup>
 

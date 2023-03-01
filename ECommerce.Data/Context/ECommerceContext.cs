@@ -132,6 +132,8 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.CreatedDate).HasColumnType("date");
 
+                entity.Property(e => e.Description).HasColumnType("ntext");
+
                 entity.HasOne(d => d.Discount)
                     .WithMany(p => p.Brands)
                     .HasForeignKey(d => d.DiscountId)
