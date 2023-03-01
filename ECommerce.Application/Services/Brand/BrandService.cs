@@ -36,10 +36,10 @@ namespace ECommerce.Application.Services.Brand
                     BrandImagePath = request.BrandImagePath.Trim(),
                     CreatedDate = DateTime.Now,
                     Status = true,
-                    Highlights = request.Highlights
+                    Highlights = request.Highlights,
+                    Description = !String.IsNullOrEmpty(request.Description) ? request.Description : null,
                 };
                 await _DbContext.Brands.AddAsync(brand);
-                await _DbContext.SaveChangesAsync();
 
                 // Shop brans
                 foreach (var categoryId in request.CategoryIds)
@@ -50,8 +50,8 @@ namespace ECommerce.Application.Services.Brand
                         CategoryId = categoryId,
                     };
                     await _DbContext.BrandCategories.AddAsync(brandCategory);
-                    await _DbContext.SaveChangesAsync();
                 }
+                await _DbContext.SaveChangesAsync();
 
                 return new ApiSuccessResponse("Thêm thành công");
             }
