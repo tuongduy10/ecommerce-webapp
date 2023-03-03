@@ -17,6 +17,7 @@ namespace ECommerce.Application.Services.Brand.Dtos
         public List<int> CategoryIds { get; set; }
         public bool? Highlights { get; set; }
         public bool? New { get; set; }
+        public string? Description { get; set; }
         public IFormFile ImagePath { get; set; }
         public bool imageChanged { get; set; }
     }

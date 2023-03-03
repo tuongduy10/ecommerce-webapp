@@ -80,6 +80,7 @@ namespace ECommerce.Application.Services.Brand
                 brand.BrandName = request.BrandName.Trim();
                 brand.Highlights = request.Highlights;
                 brand.Status = request.Status;
+                brand.Description = !String.IsNullOrEmpty(request.Description) ? request.Description.Trim() : null; 
                 await _DbContext.SaveChangesAsync();
 
                 var brandCategory = await _DbContext.BrandCategories
