@@ -205,7 +205,7 @@
                             </td>
                             <td class="text-center">
                                 <a class="btn btn-primary brand-update" value="@item.BrandId" onclick="updateBrand(@item.BrandId)">Cập nhật</a>
-                                <a class="btn border">Chỉnh sửa mô tả</a>
+                                <a class="btn border" href="@Url.Action("BrandDetail", "ManageBrand", new { BrandId = item.BrandId })">Chỉnh sửa mô tả</a>
                                 <a class="btn btn-danger" onclick="deleteBrand(@item.BrandId)">Xóa</a>
                             </td>
                         </tr>

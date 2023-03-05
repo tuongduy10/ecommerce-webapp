@@ -1,0 +1,17 @@
+﻿@using Microsoft.Extensions.Configuration
+@using ECommerce.Application.Constants
+@inject IConfiguration Configuration
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Chi tiết</h6>
+    </div>
+    <div class="card-body">
+        <div class="form-group">
+            <label>Mô tả thương hiệu</label>
+            <textarea class="form-control" id="brand-description"></textarea>
+        </div>
+    </div>
+</div>

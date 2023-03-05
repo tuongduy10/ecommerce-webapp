@@ -331,6 +331,7 @@ namespace ECommerce.Application.Services.Brand
                     Status = i.Status,
                     CreatedDate = i.CreatedDate,
                     Highlights = i.Highlights,
+                    Description = i.Description,
                     New = i.New
                 })
                 .SingleOrDefaultAsync();

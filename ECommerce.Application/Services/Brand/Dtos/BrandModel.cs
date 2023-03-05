@@ -15,6 +15,7 @@ namespace ECommerce.Application.Services.Brand.Dtos
         public DateTime CreatedDate { get; set; }
         public bool? Highlights { get; set; }
         public bool? New { get; set; }
+        public string? Description { get; set; }
         public string Category { get; set; }
         public List<int> CategoryIds { get; set; }
         public List<ShopManage> Shops { get; set; }
