@@ -107,6 +107,18 @@
                                 <div class="product__detail-brand">
                                     <a>@Model.product.ShopName</a>
                                 </div>
+                                <div class="product__detail-brand">
+                                    <div style="display: flex; align-items: center;">
+                                        <div class="mr-4" style="width: 130px; height: auto">
+                                            <img style="width: 100%; height: auto" src="@(Configuration["ImagePath:Brand"] + "healthy-care.jpg")" />
+                                        </div>
+                                        <a style="text-decoration: underline; cursor: pointer; font-size: calc(16px + (20 - 14) * ((100vw - 375px)/ (1920 - 375)));" 
+                                           data-toggle="modal"
+                                           data-target="#brandDescriptionModal">
+                                            Mô tả
+                                        </a>
+                                    </div>
+                                </div>
                                 @if (Model.product.ProductImportDate != null)
                                 {
                                     <div class="product__detail-brand">
@@ -971,6 +983,20 @@
                     <span class="sr-only">Đóng</span>
                 </button>
                 <img src="" class="imagepreview h-100">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="brandDescriptionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body w-100 h-100">
+                <button type="button" class="close close-modal" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Đóng</span>
+                </button>
+                
             </div>
         </div>
     </div>

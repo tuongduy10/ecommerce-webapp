@@ -22,6 +22,7 @@ namespace ECommerce.Data.Models
         public bool? Highlights { get; set; }
         public bool? New { get; set; }
         public int? DiscountId { get; set; }
+        public string? DescriptionTitle { get; set; }
         public string? Description { get; set; }
 
         public virtual Discount Discount { get; set; }

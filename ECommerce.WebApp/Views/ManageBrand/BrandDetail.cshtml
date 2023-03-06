@@ -11,7 +11,29 @@
     <div class="card-body">
         <div class="form-group">
             <label>Mô tả thương hiệu</label>
-            <textarea class="form-control" id="brand-description"></textarea>
+            <input class="form-control mb-2 brand-description-title" placeholder="Tiêu đề">
+            <textarea class="form-control" id="brand-description" placeholder="Nội dung">
+                @ViewBag.Brand.Description
+            </textarea>
+        </div>
+        <div class="text-right">
+            <button class="update-brand btn btn-primary">Cập nhật</button>
         </div>
     </div>
 </div>
+<script>
+    $(".update-brand").click(function(){
+
+        var descriptionTitle = $('.brand-description-title').val();
+        var description = tinymce.get("brand-description").getContent();
+
+        const param = {
+            DescriptionTitle: descriptionTitle,
+            Description: description
+        }
+        PostApi("/ManageBrand/UpdateBrand", param)
+            .then(function(res){
+                nSuccess(res);
+            })
+    })
+</script>

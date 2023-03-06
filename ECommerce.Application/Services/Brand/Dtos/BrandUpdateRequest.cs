@@ -18,6 +18,7 @@ namespace ECommerce.Application.Services.Brand.Dtos
         public bool? Highlights { get; set; }
         public bool? New { get; set; }
         public string? Description { get; set; }
+        public string? DescriptionTitle { get; set; }
         public IFormFile ImagePath { get; set; }
         public bool imageChanged { get; set; }
     }

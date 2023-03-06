@@ -17,7 +17,8 @@
             </div>
             <div class="form-group">
                 <label>Mô tả thương hiệu</label>
-                <textarea class="form-control" id="brand-description"></textarea>
+                <input class="form-control mb-2 brand-description-title" placeholder="Tiêu đề">
+                <textarea class="form-control" id="brand-description" placeholder="Nội dung"></textarea>
             </div>
             <div class="form-group">
                 <label class="mr-2" for="brand-highlights">Nổi bật</label>
@@ -223,12 +224,16 @@
         var name = $('.brand-name').val();
         var file = $('.image-uploaded').prop('files')[0];
         var highlight = $('.brand-highlights').is(":checked") ? true : false;
+        var descriptionTitle = $('.brand-description-title').val();
+        var description = tinymce.get('brand-description').getContent();
 
         // data
         var formData = new FormData();
         formData.append('ImagePath', file);
         formData.append('BrandName', name);
         formData.append('Highlights', highlight);
+        formData.append('Description', description);
+        formData.append('DescriptionTitle', descriptionTitle);
 
         // Add new brand
         if (!id) {

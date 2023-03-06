@@ -38,8 +38,10 @@ namespace ECommerce.Application.Services.Brand
                     Status = true,
                     Highlights = request.Highlights,
                     Description = !String.IsNullOrEmpty(request.Description) ? request.Description : null,
+                    DescriptionTitle = !String.IsNullOrEmpty(request.DescriptionTitle) ? request.DescriptionTitle.Trim() : null,
                 };
                 await _DbContext.Brands.AddAsync(brand);
+                await _DbContext.SaveChangesAsync();
 
                 // Shop brans
                 foreach (var categoryId in request.CategoryIds)
@@ -55,9 +57,9 @@ namespace ECommerce.Application.Services.Brand
 
                 return new ApiSuccessResponse("Thêm thành công");
             }
-            catch
+            catch(Exception error)
             {
-                return new ApiFailResponse("Thêm thất bại");
+                return new ApiFailResponse("Thêm thất bại: " + error.ToString());
             }
         }
         public async Task<Response<FileChangedResponse>> Update(BrandUpdateRequest request)
@@ -80,8 +82,8 @@ namespace ECommerce.Application.Services.Brand
                 brand.BrandName = request.BrandName.Trim();
                 brand.Highlights = request.Highlights;
                 brand.Status = request.Status;
-                brand.Description = !String.IsNullOrEmpty(request.Description) ? request.Description.Trim() : null; 
-                await _DbContext.SaveChangesAsync();
+                brand.Description = !String.IsNullOrEmpty(request.Description) ? request.Description.Trim() : null;
+                brand.DescriptionTitle = !String.IsNullOrEmpty(request.DescriptionTitle) ? request.DescriptionTitle.Trim() : null;
 
                 var brandCategory = await _DbContext.BrandCategories
                     .Where(i => i.BrandId == request.BrandId)
@@ -89,8 +91,8 @@ namespace ECommerce.Application.Services.Brand
                 if (brandCategory.Count > 0)
                 {
                     _DbContext.BrandCategories.RemoveRange(brandCategory);
-                    _DbContext.SaveChangesAsync().Wait();
                 }
+                var listBrandCategory = new List<BrandCategory>();
                 foreach (var id in request.CategoryIds)
                 {
                     var newBrandCategory = new BrandCategory
@@ -98,9 +100,10 @@ namespace ECommerce.Application.Services.Brand
                         BrandId = request.BrandId,
                         CategoryId = id,
                     };
-                    await _DbContext.BrandCategories.AddAsync(newBrandCategory);
-                    await _DbContext.SaveChangesAsync();
+                    listBrandCategory.Add(newBrandCategory);
                 }
+                await _DbContext.BrandCategories.AddRangeAsync(listBrandCategory);
+                await _DbContext.SaveChangesAsync();
 
                 return new SuccessResponse<FileChangedResponse>("Cập nhật thành công", fileChange);
             }
@@ -332,6 +335,7 @@ namespace ECommerce.Application.Services.Brand
                     CreatedDate = i.CreatedDate,
                     Highlights = i.Highlights,
                     Description = i.Description,
+                    DescriptionTitle = i.DescriptionTitle,
                     New = i.New
                 })
                 .SingleOrDefaultAsync();
