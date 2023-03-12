@@ -326,45 +326,14 @@
                 <div class="product__images-slider">
                     <h1 class="detail-title mb-0"><strong>HÌNH ẢNH THỰC TẾ</strong></h1>
                     <hr class="mt-0">
-                    <div class="d-flex w-100" style="overflow-x: scroll">
-                        <div class="d-flex justify-content-center" style="overflow: scroll;">
-                            <ul class="d-flex w-100">
-                                @foreach (var item in Model.product.ProductUserImages)
-                                {
-                                    <li style="height: 70px">
-                                        <img class="pop h-100" src="@(Configuration["ImagePath:Product"] + item)" alt="">
-                                    </li>
-                                    <li style="height: 70px">
-                                        <img class="pop h-100" src="@(Configuration["ImagePath:Product"] + item)" alt="">
-                                    </li>
-                                    <li style="height: 70px">
-                                        <img class="pop h-100" src="@(Configuration["ImagePath:Product"] + item)" alt="">
-                                    </li>
-                                    <li style="height: 70px">
-                                        <img class="pop h-100" src="@(Configuration["ImagePath:Product"] + item)" alt="">
-                                    </li>
-                                    <li style="height: 70px">
-                                        <img class="pop h-100" src="@(Configuration["ImagePath:Product"] + item)" alt="">
-                                    </li>
-                                    <li style="height: 70px">
-                                        <img class="pop h-100" src="@(Configuration["ImagePath:Product"] + item)" alt="">
-                                    </li>
-                                    <li style="height: 70px">
-                                        <img class="pop h-100" src="@(Configuration["ImagePath:Product"] + item)" alt="">
-                                    </li>
-                                    <li style="height: 70px">
-                                        <img class="pop h-100" src="@(Configuration["ImagePath:Product"] + item)" alt="">
-                                    </li>
-                                    <li style="height: 70px">
-                                        <img class="pop h-100" src="@(Configuration["ImagePath:Product"] + item)" alt="">
-                                    </li>
-                                    <li style="height: 70px">
-                                        <img class="pop h-100" src="@(Configuration["ImagePath:Product"] + item)" alt="">
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    </div>
+                    <ul id="content-slider">
+                        @foreach (var item in Model.product.ProductUserImages)
+                        {
+                            <li>
+                                <img class="pop" src="@(Configuration["ImagePath:Product"] + item)" alt="">
+                            </li>
+                        }
+                    </ul>
                 </div>
             }
             <!-- Attributes and desciption -->

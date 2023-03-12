@@ -511,6 +511,16 @@ a:hover{
     opacity: 1;
 }
 
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hidden {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+}
+
 /* Variable */
 :root {
     /* Colors */
