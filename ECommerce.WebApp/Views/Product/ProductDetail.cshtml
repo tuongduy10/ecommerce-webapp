@@ -1090,11 +1090,22 @@
             thumbItem: 6
         });
         $('.lSSlideOuter .lSPager').css('height', $('.lSSlideOuter .lSPager li').width() + 4)
-        $('#content-slider').lightSlider({
-            keyPress: false,
-            item: 5,
-            loop: true
-        })
+        const userImageCounts = @Model.product.ProductUserImages.Count
+        if(userImageCounts > 0){
+            $('#content-slider').lightSlider({
+                item: 5,
+                keyPress: false,
+                loop: false,
+                responsive : [
+                    {
+                        breakpoint:821,
+                        settings: {
+                            item: userImageCounts < 5 ? userImageCounts : 5,
+                        }
+                    }
+                ]
+            })
+        }
         $('#content-slider').css('height', $('#content-slider li').width())
         $(document).resize(function () {
             $('.lSPager').css('height', $('.lSPager li').width() + 4)
@@ -1118,7 +1129,7 @@
         }
     })
     // View image in large size (open Modal)
-    $('.pop').on('touchend click', function () {
+    $('.pop').on('click', function () {
         $('.imagepreview').attr('src', $(this).attr('src'));
         $('#imagemodal').modal('show');
     });
