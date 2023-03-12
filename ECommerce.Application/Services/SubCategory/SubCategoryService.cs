@@ -348,42 +348,25 @@ namespace ECommerce.Application.Services.SubCategory
                     await _DbContext.SaveChangesAsync();
 
                     // update option in subcategory
-                    foreach (var id in request.ids)
-                    {
-                        var subs = await _DbContext.SubCategoryOptions
-                            .Where(i => i.SubCategoryId == id && i.OptionId == newOption.OptionId)
-                            .FirstOrDefaultAsync();
-                        if (subs == null)
+                    var newSubOpts = request.ids
+                        .Select(id => new Data.Models.SubCategoryOption
                         {
-                            var newSubOpt = new Data.Models.SubCategoryOption
-                            {
-                                SubCategoryId = id,
-                                OptionId = newOption.OptionId
-                            };
-                            await _DbContext.SubCategoryOptions.AddAsync(newSubOpt);
-                            await _DbContext.SaveChangesAsync();
-                        }
-                    }
-                    
-                }
-                if (option != null) // Update option in subcategory
+                            SubCategoryId = id,
+                            OptionId = newOption.OptionId
+                        });
+                    await _DbContext.SubCategoryOptions.AddRangeAsync(newSubOpts);
+                    await _DbContext.SaveChangesAsync();
+                } 
+                else // Update option in subcategory
                 {
-                    foreach (var id in request.ids)
-                    {
-                        var subs = await _DbContext.SubCategoryOptions
-                            .Where(i => i.SubCategoryId == id && i.OptionId == option.OptionId)
-                            .FirstOrDefaultAsync();
-                        if (subs == null)
+                    var newSubOpt = request.ids
+                        .Select(id => new Data.Models.SubCategoryOption
                         {
-                            var newSubOpt = new Data.Models.SubCategoryOption
-                            {
-                                SubCategoryId = id,
-                                OptionId = option.OptionId
-                            };
-                            await _DbContext.SubCategoryOptions.AddAsync(newSubOpt);
-                            await _DbContext.SaveChangesAsync();
-                        }
-                    }
+                            SubCategoryId = id,
+                            OptionId = option.OptionId
+                        });
+                    await _DbContext.SubCategoryOptions.AddRangeAsync(newSubOpt);
+                    await _DbContext.SaveChangesAsync();
                 }
                 return new ApiSuccessResponse("Cập nhật thành công");
             }
