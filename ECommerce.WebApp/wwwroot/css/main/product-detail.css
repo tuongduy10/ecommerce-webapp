@@ -78,9 +78,9 @@
 }
 
 #imagemodal .modal-content {
-    max-width: 90vh;
+    /*max-width: 90vh;*/
     width: auto;
-    height: 90%;
+    height: 90vh;
 }
 
 #imagemodal .modal-content {
@@ -109,7 +109,7 @@
     #imagemodal .modal-content {
         width: 80%;
         height: auto;
-        max-height: 80vw;
+        /*max-height: 80vw;*/
     }
 
     .product__detail-content .lSSlideWrapper {
@@ -125,7 +125,7 @@
     #imagemodal .modal-content {
         width: 100%;
         height: auto;
-        max-height: 100vh;
+        /*max-height: 100vh;*/
     }
 
     .product__images-slider .lSAction > .lSPrev,
@@ -152,7 +152,7 @@
     #imagemodal .modal-content {
         width: 100%;
         height: auto;
-        max-height: 100vw;
+        /*max-height: 100vw;*/
     }
 }
 
