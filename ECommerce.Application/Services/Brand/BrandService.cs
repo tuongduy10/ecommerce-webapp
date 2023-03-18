@@ -143,6 +143,27 @@ namespace ECommerce.Application.Services.Brand
                 return new ApiFailResponse("Cập nhật thất bại");
             }
         }
+        public async Task<ApiResponse> UpdateBrandDescription(BrandUpdateRequest request)
+        {
+            try
+            {
+                var brand = await _DbContext.Brands.Where(i => i.BrandId == request.BrandId).FirstOrDefaultAsync();
+                if (brand != null)
+                {
+                    brand.Description = !String.IsNullOrEmpty(request.Description) ? request.Description : null;
+                    brand.DescriptionTitle = !String.IsNullOrEmpty(request.DescriptionTitle) ? request.DescriptionTitle.Trim() : null;
+
+                    _DbContext.Brands.Update(brand);
+                    _DbContext.SaveChangesAsync().Wait();
+                }
+
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            catch(Exception error)
+            {
+                return new ApiFailResponse("Cập nhật thất bại: " + error.Message);
+            }
+        }
         public async Task<List<BrandModel>> getAll()
         {
             var list = await _DbContext.Brands

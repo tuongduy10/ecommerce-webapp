@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Constants;
+﻿using ECommerce.Application.Common;
+using ECommerce.Application.Constants;
 using ECommerce.Application.Services.Brand;
 using ECommerce.Application.Services.Brand.Dtos;
 using ECommerce.Application.Services.Category;
@@ -104,6 +105,13 @@ namespace ECommerce.WebApp.Controllers.Admin
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);
+        }
+        public async Task<IActionResult> UpdateBrandDescription(BrandUpdateRequest request)
+        {
+            var result = await _brandService.UpdateBrandDescription(request);
+            if (!result.isSucceed) 
+                return BadRequest(result.Message);
+            return Ok(result.Message);
         }
         public async Task<IActionResult> BrandDetail(int BrandId)
         {

@@ -24,14 +24,16 @@
 <script>
     $(".update-brand").click(function(){
 
+        var brandId = @ViewBag.Brand.BrandId;
         var descriptionTitle = $('.brand-description-title').val();
         var description = tinymce.get("brand-description").getContent();
 
         const param = {
+            BrandId: brandId,
             DescriptionTitle: descriptionTitle,
             Description: description
         }
-        PostApi("/ManageBrand/UpdateBrand", param)
+        PostApi("/ManageBrand/UpdateBrandDescription", param)
             .then(function(res){
                 nSuccess(res);
             })
