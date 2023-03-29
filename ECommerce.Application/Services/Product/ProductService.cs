@@ -147,6 +147,7 @@ namespace ECommerce.Application.Services.Product
                     SubCategoryId = i.SubCategoryId,
                     BrandId = i.Brand.BrandId,
                     BrandName = i.Brand.BrandName,
+                    BrandDescriptionTitle = i.Brand.DescriptionTitle,
                     ShopName = i.Shop.ShopName,
                     ShopId = i.Shop.ShopId,
                     ProductRate = productRate,

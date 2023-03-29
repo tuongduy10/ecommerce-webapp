@@ -28,6 +28,7 @@ namespace ECommerce.Application.Services.Product.Dtos
         public int ShopId { get; set; }
         public int BrandId { get; set; } //
         public string BrandName { get; set; } //
+        public string? BrandDescriptionTitle { get; set; }
         public DateTime? ProductImportDate { get; set; } //
         public Rate ProductRate { get; set; } //
 
