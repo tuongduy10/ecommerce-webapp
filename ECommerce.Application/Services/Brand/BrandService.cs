@@ -41,7 +41,6 @@ namespace ECommerce.Application.Services.Brand
                     DescriptionTitle = !String.IsNullOrEmpty(request.DescriptionTitle) ? request.DescriptionTitle.Trim() : null,
                 };
                 await _DbContext.Brands.AddAsync(brand);
-                await _DbContext.SaveChangesAsync();
 
                 // Shop brans
                 foreach (var categoryId in request.CategoryIds)
