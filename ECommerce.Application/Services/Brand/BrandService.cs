@@ -83,6 +83,8 @@ namespace ECommerce.Application.Services.Brand
                 brand.Status = request.Status;
                 brand.Description = !String.IsNullOrEmpty(request.Description) ? request.Description.Trim() : null;
                 brand.DescriptionTitle = !String.IsNullOrEmpty(request.DescriptionTitle) ? request.DescriptionTitle.Trim() : null;
+                brand.Description = !String.IsNullOrEmpty(request.Description) ? request.Description.Trim() : null; 
+                await _DbContext.SaveChangesAsync();
 
                 var brandCategory = await _DbContext.BrandCategories
                     .Where(i => i.BrandId == request.BrandId)
