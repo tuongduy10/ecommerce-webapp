@@ -1,4 +1,5 @@
 ﻿@using Microsoft.Extensions.Configuration
+@using ECommerce.Application.Constants
 @inject IConfiguration Configuration
 @{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
@@ -13,6 +14,11 @@
                 <input class="brand-id" type="number" hidden />
                 <label>Tên thương hiệu</label>
                 <input class="form-control brand-name">
+            </div>
+            <div class="form-group">
+                <label>Mô tả thương hiệu</label>
+                <input class="form-control mb-2 brand-description-title" placeholder="Tiêu đề">
+                <textarea class="form-control" id="brand-description" placeholder="Nội dung"></textarea>
             </div>
             <div class="form-group">
                 <label class="mr-2" for="brand-highlights">Nổi bật</label>
@@ -93,7 +99,7 @@
                         <th class="text-center">Nổi bật</th>
                         <th class="text-center">Trạng thái</th>
                         <th style="max-width: 200px; width: 100%">Cửa hàng</th>
-                        @*<th></th>*@
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -200,6 +206,7 @@
                             </td>
                             <td class="text-center">
                                 <a class="btn btn-primary brand-update" value="@item.BrandId" onclick="updateBrand(@item.BrandId)">Cập nhật</a>
+                                <a class="btn border" href="@Url.Action("BrandDetail", "ManageBrand", new { BrandId = item.BrandId })">Chỉnh sửa mô tả</a>
                                 <a class="btn btn-danger" onclick="deleteBrand(@item.BrandId)">Xóa</a>
                             </td>
                         </tr>
@@ -217,12 +224,16 @@
         var name = $('.brand-name').val();
         var file = $('.image-uploaded').prop('files')[0];
         var highlight = $('.brand-highlights').is(":checked") ? true : false;
+        var descriptionTitle = $('.brand-description-title').val();
+        var description = tinymce.get('brand-description').getContent();
 
         // data
         var formData = new FormData();
         formData.append('ImagePath', file);
         formData.append('BrandName', name);
         formData.append('Highlights', highlight);
+        formData.append('Description', description);
+        formData.append('DescriptionTitle', descriptionTitle);
 
         // Add new brand
         if (!id) {
@@ -506,4 +517,14 @@
             $(this).siblings('input').removeClass('d-none');
         }
     })
+</script>
+<script>
+    tinymce.init({
+        selector: 'textarea',
+        plugins: '@ConfigConstant.TINY_PLUGINS',
+        toolbar: '@ConfigConstant.TINY_TOOLBAR',
+        toolbar_mode: 'floating',
+        tinycomments_mode: 'embedded',
+        tinycomments_author: 'Author name',
+    });
 </script>

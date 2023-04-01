@@ -14,6 +14,7 @@ namespace ECommerce.Application.Services.Brand
         Task<Response<FileChangedResponse>> Update(BrandUpdateRequest request);
         Task<ApiResponse> UpdateStatus(int id, bool status);
         Task<ApiResponse> UpdateBrandsStatus(List<int> ids, bool status);
+        Task<ApiResponse> UpdateBrandDescription(BrandUpdateRequest request);
         Task<BrandModel> getBrandById(int BrandId);
         Task<List<BrandModel>> getAll();
         Task<List<BrandModel>> getAllManage();

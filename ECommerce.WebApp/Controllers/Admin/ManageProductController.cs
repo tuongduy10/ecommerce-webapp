@@ -132,7 +132,7 @@ namespace ECommerce.WebApp.Controllers.Admin
 
             var shops = await _shopService.getShopList();
             var brands = await _brandService.getBrandsByShop(product.ShopId);
-            var subCategories = await _subCategoryService.getSubCategoryInBrand(product.BrandId);
+            var subCategories = await _subCategoryService.getSubCategoryInBrand(product.Brand.BrandId);
             var subSizes = await _subCategoryService.getAll();
             var model = new ProductDetailViewModel
             {

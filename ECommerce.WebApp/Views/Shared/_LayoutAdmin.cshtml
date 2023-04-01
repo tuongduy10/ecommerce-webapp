@@ -1,5 +1,6 @@
 ﻿@using Microsoft.Extensions.Configuration
 @using ECommerce.Application.Services.Configurations;
+@using ECommerce.Application.Constants;
 @inject IConfiguration Configuration
 @inject IConfigurationService _configurationService
 @{
@@ -9,7 +10,6 @@
 
 <html lang="en">
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -37,6 +37,9 @@
 
     <!-- Core plugin JavaScript-->
     <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- TinyMCE -->
+    <script src="https://cdn.tiny.cloud/1/4ctr9pi6o8mlflu8si6gdszgl62tn4zl73knhf3tkqalszsx/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
     <!-- Custom styles for year picker -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
@@ -345,8 +348,8 @@
     <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
     <!-- Page level custom scripts -->
-    @*<script src="/js/demo/chart-area-demo.js"></script>
-        <script src="/js/demo/chart-pie-demo.js"></script>*@
+    @*<script src="/js/demo/chart-area-demo.js"></script>*@
+    @*<script src="/js/demo/chart-pie-demo.js"></script>*@
     <script src="/js/demo/datatables-demo.js"></script>
 
     <!-- Auto Formatting Currency -->
@@ -355,5 +358,16 @@
     <script type="text/javascript" src="/js/main/site.js"></script>
     <!-- Toast notify -->
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <!-- TinyMCE -->
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: '@ConfigConstant.TINY_PLUGINS',
+            toolbar: '@ConfigConstant.TINY_TOOLBAR',
+            toolbar_mode: 'floating',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+        });
+    </script>
 </body>
 </html>

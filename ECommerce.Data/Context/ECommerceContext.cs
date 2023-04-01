@@ -132,6 +132,10 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.CreatedDate).HasColumnType("date");
 
+                entity.Property(e => e.Description).HasColumnType("ntext");
+
+                entity.Property(e => e.DescriptionTitle).HasMaxLength(500);
+
                 entity.HasOne(d => d.Discount)
                     .WithMany(p => p.Brands)
                     .HasForeignKey(d => d.DiscountId)

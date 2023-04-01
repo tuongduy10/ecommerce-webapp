@@ -36,10 +36,11 @@ namespace ECommerce.Application.Services.Brand
                     BrandImagePath = request.BrandImagePath.Trim(),
                     CreatedDate = DateTime.Now,
                     Status = true,
-                    Highlights = request.Highlights
+                    Highlights = request.Highlights,
+                    Description = !String.IsNullOrEmpty(request.Description) ? request.Description : null,
+                    DescriptionTitle = !String.IsNullOrEmpty(request.DescriptionTitle) ? request.DescriptionTitle.Trim() : null,
                 };
                 await _DbContext.Brands.AddAsync(brand);
-                await _DbContext.SaveChangesAsync();
 
                 // Shop brans
                 foreach (var categoryId in request.CategoryIds)
@@ -50,14 +51,14 @@ namespace ECommerce.Application.Services.Brand
                         CategoryId = categoryId,
                     };
                     await _DbContext.BrandCategories.AddAsync(brandCategory);
-                    await _DbContext.SaveChangesAsync();
                 }
+                await _DbContext.SaveChangesAsync();
 
                 return new ApiSuccessResponse("Thêm thành công");
             }
-            catch
+            catch(Exception error)
             {
-                return new ApiFailResponse("Thêm thất bại");
+                return new ApiFailResponse("Thêm thất bại: " + error.ToString());
             }
         }
         public async Task<Response<FileChangedResponse>> Update(BrandUpdateRequest request)
@@ -80,6 +81,9 @@ namespace ECommerce.Application.Services.Brand
                 brand.BrandName = request.BrandName.Trim();
                 brand.Highlights = request.Highlights;
                 brand.Status = request.Status;
+                brand.Description = !String.IsNullOrEmpty(request.Description) ? request.Description.Trim() : null;
+                brand.DescriptionTitle = !String.IsNullOrEmpty(request.DescriptionTitle) ? request.DescriptionTitle.Trim() : null;
+                brand.Description = !String.IsNullOrEmpty(request.Description) ? request.Description.Trim() : null; 
                 await _DbContext.SaveChangesAsync();
 
                 var brandCategory = await _DbContext.BrandCategories
@@ -88,8 +92,8 @@ namespace ECommerce.Application.Services.Brand
                 if (brandCategory.Count > 0)
                 {
                     _DbContext.BrandCategories.RemoveRange(brandCategory);
-                    _DbContext.SaveChangesAsync().Wait();
                 }
+                var listBrandCategory = new List<BrandCategory>();
                 foreach (var id in request.CategoryIds)
                 {
                     var newBrandCategory = new BrandCategory
@@ -97,9 +101,10 @@ namespace ECommerce.Application.Services.Brand
                         BrandId = request.BrandId,
                         CategoryId = id,
                     };
-                    await _DbContext.BrandCategories.AddAsync(newBrandCategory);
-                    await _DbContext.SaveChangesAsync();
+                    listBrandCategory.Add(newBrandCategory);
                 }
+                await _DbContext.BrandCategories.AddRangeAsync(listBrandCategory);
+                await _DbContext.SaveChangesAsync();
 
                 return new SuccessResponse<FileChangedResponse>("Cập nhật thành công", fileChange);
             }
@@ -137,6 +142,27 @@ namespace ECommerce.Application.Services.Brand
             catch
             {
                 return new ApiFailResponse("Cập nhật thất bại");
+            }
+        }
+        public async Task<ApiResponse> UpdateBrandDescription(BrandUpdateRequest request)
+        {
+            try
+            {
+                var brand = await _DbContext.Brands.Where(i => i.BrandId == request.BrandId).FirstOrDefaultAsync();
+                if (brand != null)
+                {
+                    brand.Description = !String.IsNullOrEmpty(request.Description) ? request.Description : null;
+                    brand.DescriptionTitle = !String.IsNullOrEmpty(request.DescriptionTitle) ? request.DescriptionTitle.Trim() : null;
+
+                    _DbContext.Brands.Update(brand);
+                    _DbContext.SaveChangesAsync().Wait();
+                }
+
+                return new ApiSuccessResponse("Cập nhật thành công");
+            }
+            catch(Exception error)
+            {
+                return new ApiFailResponse("Cập nhật thất bại: " + error.Message);
             }
         }
         public async Task<List<BrandModel>> getAll()
@@ -330,6 +356,8 @@ namespace ECommerce.Application.Services.Brand
                     Status = i.Status,
                     CreatedDate = i.CreatedDate,
                     Highlights = i.Highlights,
+                    Description = i.Description,
+                    DescriptionTitle = i.DescriptionTitle,
                     New = i.New
                 })
                 .SingleOrDefaultAsync();
