@@ -343,7 +343,7 @@
                     <ul id="content-slider">
                         @foreach (var item in Model.product.ProductUserImages)
                         {
-                            <li>
+                            <li class="slider-item" data-thumb="@(Configuration["ImagePath:Product"] + item)">
                                 <img class="pop" src="@(Configuration["ImagePath:Product"] + item)" alt="">
                             </li>
                         }
@@ -979,12 +979,12 @@
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width: unset; display: flex; justify-content: center; align-items: center; text-align: center">
         <div class="modal-content">
-            <div class="modal-body w-100 h-100">
+            <div class="modal-body w-100 h-100" style="display: flex; justify-content: center; align-items: center;">
                 <button type="button" class="close close-modal" data-dismiss="modal">
                     <span aria-hidden="true">&times;</span>
                     <span class="sr-only">Đóng</span>
                 </button>
-                <img src="" class="imagepreview h-100">
+                <img src="" class="imagepreview mh-100">
             </div>
         </div>
     </div>
@@ -1118,11 +1118,22 @@
             thumbItem: 6
         });
         $('.lSSlideOuter .lSPager').css('height', $('.lSSlideOuter .lSPager li').width() + 4)
-        $('#content-slider').lightSlider({
-            keyPress: false,
-            item: 5,
-            loop: true
-        })
+        const userImageCounts = @Model.product.ProductUserImages.Count
+        if(userImageCounts > 0){
+            $('#content-slider').lightSlider({
+                item: 5,
+                keyPress: false,
+                loop: false,
+                responsive : [
+                    {
+                        breakpoint:821,
+                        settings: {
+                            item: userImageCounts < 5 ? userImageCounts : 5,
+                        }
+                    }
+                ]
+            })
+        }
         $('#content-slider').css('height', $('#content-slider li').width())
         $(document).resize(function () {
             $('.lSPager').css('height', $('.lSPager li').width() + 4)
@@ -1154,43 +1165,45 @@
     var arrFiles = [];
     if (window.File && window.FileList && window.FileReader) {
         var filesInput = document.getElementById("image-upload");
-        filesInput.addEventListener("change", function (event) {
-            var files = event.target.files; //FileList object
-            if (files.length > 3)
-                return;
-            var output = document.getElementById("image-preview");
-            $('#image-preview').empty();
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                //Only pics
-                if (!file.type.match('image'))
-                    continue;
+        if(filesInput){
+            filesInput.addEventListener("change", function (event) {
+                var files = event.target.files; //FileList object
+                if (files.length > 3)
+                    return;
+                var output = document.getElementById("image-preview");
+                $('#image-preview').empty();
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    //Only pics
+                    if (!file.type.match('image'))
+                        continue;
 
-                arrFiles.push(file)
+                    arrFiles.push(file)
 
-                var picReader = new FileReader();
-                picReader.fileName = file.name;
-                picReader.addEventListener("load", function (event) {
-                    var picFile = event.target;
-                    var div = document.createElement("div");
-                    div.classList.add(`image__upload-item`);
-                    div.innerHTML = "<div class='image-uploaded' style='position: relative; width: 100px; height: 100px; margin-right: 4px'><img src='" + picFile.result + "'" + "title='" + picFile.name + "' style='height: 100%; width: 100%; object-fit: contain'/><span class='remove__upload' style='position: absolute; top: 0; right: 0; cursor: pointer'><svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='red' stroke-width='1' stroke-linecap='round' stroke-linejoin='round' class='feather feather-x'><line x1='18' y1='6' x2='6' y2='18'></line><line x1='6' y1='6' x2='18' y2='18'></line></svg><span></div>";
-                    var removeUpload = div.querySelector(".image-uploaded .remove__upload");
-                    removeUpload.addEventListener("click", function (evt) {
-                        arrFiles.forEach(function (file, index) {
-                            if (file.name == event.target.fileName) {
-                                arrFiles.splice(index, 1);
-                            }
-                        })
-                        div.remove();
+                    var picReader = new FileReader();
+                    picReader.fileName = file.name;
+                    picReader.addEventListener("load", function (event) {
+                        var picFile = event.target;
+                        var div = document.createElement("div");
+                        div.classList.add(`image__upload-item`);
+                        div.innerHTML = "<div class='image-uploaded' style='position: relative; width: 100px; height: 100px; margin-right: 4px'><img src='" + picFile.result + "'" + "title='" + picFile.name + "' style='height: 100%; width: 100%; object-fit: contain'/><span class='remove__upload' style='position: absolute; top: 0; right: 0; cursor: pointer'><svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='red' stroke-width='1' stroke-linecap='round' stroke-linejoin='round' class='feather feather-x'><line x1='18' y1='6' x2='6' y2='18'></line><line x1='6' y1='6' x2='18' y2='18'></line></svg><span></div>";
+                        var removeUpload = div.querySelector(".image-uploaded .remove__upload");
+                        removeUpload.addEventListener("click", function (evt) {
+                            arrFiles.forEach(function (file, index) {
+                                if (file.name == event.target.fileName) {
+                                    arrFiles.splice(index, 1);
+                                }
+                            })
+                            div.remove();
+                        });
+                        output.insertBefore(div, null);
                     });
-                    output.insertBefore(div, null);
-                });
-                //Read the image
-                picReader.readAsDataURL(file);
-            }
-            event.target.value = '';
-        });
+                    //Read the image
+                    picReader.readAsDataURL(file);
+                }
+                event.target.value = '';
+            });
+        }
     }
 
     arrFilesReply = []
