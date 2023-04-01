@@ -1,9 +1,11 @@
-﻿using ECommerce.Application.Services.Brand;
+﻿using ECommerce.Application.Constants;
+using ECommerce.Application.Services.Brand;
 using ECommerce.Application.Services.Category;
 using ECommerce.Application.Services.Chat;
 using ECommerce.Application.Services.Chat.Dtos;
 using ECommerce.Application.Services.Configurations;
 using ECommerce.WebApp.Models;
+using ECommerce.WebApp.Models.Blog;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -66,10 +68,27 @@ namespace ECommerce.WebApp.Controllers
             if (result.isSucceed) return Ok(result);
             return BadRequest(result.Message);
         }
-        public async Task<IActionResult> BlogDetail(int BlogId)
+        public async Task<IActionResult> BlogDetail(BlogRequest request)
         {
-            var result = await _footerService.getBlogDetail(BlogId);
-            return View(result);
+            var model = new BlogViewModel();
+            if (request.Type == BlogTypeConstant.BLOG)
+            {
+                var result = await _footerService.getBlogDetail(request.Id);
+                model.Type = BlogTypeConstant.BLOG;
+                model.Id = result.BlogId;
+                model.BlogTitle = result.BlogTitle;
+                model.BlogContent = result.BlogContent;
+            } 
+            else if (request.Type == BlogTypeConstant.BRAND)
+            {
+                var brand = await _brandService.getBrandById(request.Id);
+                model.Type = BlogTypeConstant.BRAND;
+                model.Id = brand.BrandId;
+                model.BlogTitle = brand.DescriptionTitle;
+                model.BlogContent = brand.Description;
+            }
+            
+            return View(model);
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

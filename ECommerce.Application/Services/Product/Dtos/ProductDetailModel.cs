@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.SubCategory.Dtos;
+﻿using ECommerce.Application.Services.Brand.Dtos;
+using ECommerce.Application.Services.SubCategory.Dtos;
 using ECommerce.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -26,9 +27,8 @@ namespace ECommerce.Application.Services.Product.Dtos
         public int SubCategoryId { get; set; }
         public string ShopName { get; set; } //
         public int ShopId { get; set; }
-        public int BrandId { get; set; } //
-        public string BrandName { get; set; } //
-        public string? BrandDescriptionTitle { get; set; }
+        // public int BrandId { get; set; } //
+        public BrandModel? Brand { get; set; }
         public DateTime? ProductImportDate { get; set; } //
         public Rate ProductRate { get; set; } //
 

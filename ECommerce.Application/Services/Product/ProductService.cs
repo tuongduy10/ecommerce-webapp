@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Helpers;
+using ECommerce.Application.Services.Brand.Dtos;
 using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Application.Services.Product.Enum;
 using ECommerce.Application.Services.Product.Models;
@@ -145,9 +146,15 @@ namespace ECommerce.Application.Services.Product
                     Insurance = i.Insurance,
 
                     SubCategoryId = i.SubCategoryId,
-                    BrandId = i.Brand.BrandId,
-                    BrandName = i.Brand.BrandName,
-                    BrandDescriptionTitle = i.Brand.DescriptionTitle,
+                    Brand = new BrandModel 
+                    { 
+                        BrandId = i.BrandId,
+                        BrandName = i.Brand.BrandName,
+                        Description = i.Brand.Description,
+                        DescriptionTitle = i.Brand.DescriptionTitle,
+                        BrandImagePath = i.Brand.BrandImagePath
+                    },
+
                     ShopName = i.Shop.ShopName,
                     ShopId = i.Shop.ShopId,
                     ProductRate = productRate,
@@ -216,7 +223,14 @@ namespace ECommerce.Application.Services.Product
                     Insurance = i.Insurance,
 
                     SubCategoryId = i.SubCategoryId,
-                    BrandId = i.BrandId,                                                
+                    Brand = new BrandModel
+                    {
+                        BrandId = i.BrandId,
+                        BrandName = i.Brand.BrandName,
+                        Description = i.Brand.Description,
+                        DescriptionTitle = i.Brand.DescriptionTitle,
+                        BrandImagePath = i.Brand.BrandImagePath
+                    },
                     ShopId = i.ShopId,
                     ProductRate = productRate,
 

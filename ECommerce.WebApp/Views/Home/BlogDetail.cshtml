@@ -4,7 +4,7 @@
         <div class="content__inner w-100">
             <ul class="web__directional">
                 <li><a href="/">Trang chủ</a></li>
-                <li><a href="@Url.Action("BlogDetail", "Home", new { BlogId = @Model.BlogId })">@Model.BlogTitle</a></li>
+                <li><a href="@Url.Action("BlogDetail", "Home", new { Id = Model.Id, Type = Model.Type })">@Model.BlogTitle</a></li>
             </ul>
             <div class="blog-content">
                 @Html.Raw(Model.BlogContent)

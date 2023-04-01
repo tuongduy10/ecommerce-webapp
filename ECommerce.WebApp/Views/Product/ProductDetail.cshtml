@@ -1,5 +1,6 @@
 ﻿@using Microsoft.Extensions.Configuration
 @using ECommerce.Application.Services.Configurations;
+@using ECommerce.Application.Constants;
 @inject IConfiguration Configuration
 @inject IConfigurationService _configurationService
 @{
@@ -16,7 +17,9 @@
                     <a href="/">Trang chủ</a>
                 </li>
                 <li>
-                    <a href="@Url.Action("ProductInBrand", "Product", new { BrandId = Model.product.BrandId, PageIndex = 1})">@Model.product.BrandName</a>
+                    <a href="@Url.Action("ProductInBrand", "Product", new { BrandId = Model.product.Brand.BrandId, PageIndex = 1})">
+                        @Model.product.Brand.BrandName
+                    </a>
                 </li>
                 <li>
                     <a href="">@Model.product.ProductName</a>
@@ -110,12 +113,11 @@
                                 <div class="product__detail-brand">
                                     <div style="display: flex; align-items: center;">
                                         <div class="mr-4" style="width: 130px; height: auto">
-                                            <img style="width: 100%; height: auto" src="@(Configuration["ImagePath:Brand"] + "healthy-care.jpg")" />
+                                            <img style="width: 100%; height: auto" src="@(Configuration["ImagePath:Brand"] + Model.product.Brand.BrandImagePath)" />
                                         </div>
                                         <a style="text-decoration: underline; cursor: pointer; font-size: calc(16px + (20 - 14) * ((100vw - 375px)/ (1920 - 375)));" 
-                                           data-toggle="modal"
-                                           data-target="#brandDescriptionModal">
-                                            @Model.product.BrandDescriptionTitle
+                                           href="@Url.Action("BlogDetail", "Home", new { Id = Model.product.Brand.BrandId, Type = BlogTypeConstant.BRAND})">
+                                            @Model.product.Brand.DescriptionTitle
                                         </a>
                                     </div>
                                 </div>

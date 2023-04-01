@@ -86,7 +86,7 @@ namespace ECommerce.WebApp.Controllers.Client
             var suggestion = await _productService.getProductSuggestion();
             var phone = await _configurationService.getPhoneNumber();
             var options = await _productService.getProductOption(ProductId);
-            var discount = await _discountService.getDisount(product.ShopId, product.BrandId);
+            var discount = await _discountService.getDisount(product.ShopId, product.Brand.BrandId);
             var sizeGuides = await _productService.SizeGuideList();
 
             var model = new ProductDetailViewModel
