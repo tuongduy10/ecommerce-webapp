@@ -250,7 +250,7 @@
                                 <button class="btn border dropdown-toggle brand_select-text" type="button" data-toggle="dropdown">
                                     @foreach (var item in Model.brands)
                                     {
-                                        @if (item.BrandId == Model.product.BrandId)
+                                        @if (item.BrandId == Model.product.Brand.BrandId)
                                         {
                                             @Html.Raw(item.BrandName)
                                         }
@@ -262,7 +262,7 @@
                                     @foreach (var item in Model.brands)
                                     {
                                         <li class="d-flex align-items-center">
-                                            @if (item.BrandId == Model.product.BrandId)
+                                            @if (item.BrandId == Model.product.Brand.BrandId)
                                             {
                                                 <input name="brand" class="brand_select mr-2" id="br_@item.BrandId" type="radio" value="@item.BrandId" checked>
                                             }
