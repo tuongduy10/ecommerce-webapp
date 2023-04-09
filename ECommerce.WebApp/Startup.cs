@@ -83,10 +83,6 @@ namespace ECommerce.WebApp
                     option.ExpireTimeSpan = TimeSpan.FromHours(4);
                     option.Cookie.MaxAge = option.ExpireTimeSpan;
                 });
-            services.AddMvc(options => {
-                //options.Filters.Add(new HttpResponseExceptionFilter());
-                options.Filters.Add(new GlobalActionFilter(new UserService(DbContext(services))));
-            });
             services.AddControllers();
             services.AddSignalR();
             services.AddHttpContextAccessor();
@@ -124,7 +120,7 @@ namespace ECommerce.WebApp
             /*
              * Config Services
              */
-            services.AddScoped<GlobalActionFilter>();
+            //services.AddScoped<GlobalActionFilter>();
             //services.AddScoped<IAuthorizationHandler, CustomAuthorizationHandler>();
             //services.Configure<SecurityStampValidatorOptions>(option => option.ValidationInterval = TimeSpan.FromSeconds(10));
             //services.AddHttpContextAccessor();
@@ -164,7 +160,6 @@ namespace ECommerce.WebApp
             app.UseCookiePolicy();
 
             app.UseMiddleware<NoCacheMiddleware>();
-            app.UseCustomAuthorizationMiddleware();
 
             // same like app.UseMiddleware<NoCacheMiddleware>();
             app.Use(async (context, next) =>
