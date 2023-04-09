@@ -37,6 +37,7 @@ using ECommerce.Application.Services.User_v2;
 using Microsoft.Extensions.Logging;
 using ECommerce.Data.Models;
 using ECommerce.Application.Services.Chat;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 namespace ECommerce.WebApp
 {
@@ -83,10 +84,6 @@ namespace ECommerce.WebApp
                     option.ExpireTimeSpan = TimeSpan.FromHours(4);
                     option.Cookie.MaxAge = option.ExpireTimeSpan;
                 });
-            services.AddMvc(options => {
-                //options.Filters.Add(new HttpResponseExceptionFilter());
-                options.Filters.Add(new GlobalActionFilter(new UserService(DbContext(services))));
-            });
             services.AddControllers();
             services.AddSignalR();
             services.AddHttpContextAccessor();
@@ -121,14 +118,11 @@ namespace ECommerce.WebApp
             services.AddScoped<IUserService_v2, UserService_v2>();
             services.AddScoped<IChatService, ChatService>();
 
-            /*
-             * Config Services
-             */
-            services.AddScoped<GlobalActionFilter>();
-            //services.AddScoped<IAuthorizationHandler, CustomAuthorizationHandler>();
-            //services.Configure<SecurityStampValidatorOptions>(option => option.ValidationInterval = TimeSpan.FromSeconds(10));
-            //services.AddHttpContextAccessor();
-            //services.AddScoped<IUserService>();
+            // In production, the React files will be served from this directory
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/build";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -155,6 +149,7 @@ namespace ECommerce.WebApp
             app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
             app.UseAuthentication();
             app.UseRouting();
@@ -164,7 +159,7 @@ namespace ECommerce.WebApp
             app.UseCookiePolicy();
 
             app.UseMiddleware<NoCacheMiddleware>();
-            app.UseCustomAuthorizationMiddleware();
+            //app.UseCustomAuthorizationMiddleware();
 
             // same like app.UseMiddleware<NoCacheMiddleware>();
             app.Use(async (context, next) =>
@@ -186,7 +181,7 @@ namespace ECommerce.WebApp
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller}/{action=Index}/{id?}");
             });
             app.UseEndpoints(endpoints =>
             {
@@ -194,7 +189,15 @@ namespace ECommerce.WebApp
                     name: "admin",
                     pattern: "{controller=Admin}/{action=Index}/{id?}");
             });
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ClientApp";
 
+                if (env.IsDevelopment())
+                {
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
+            });
         }
     
         private ECommerceContext DbContext(IServiceCollection services)
