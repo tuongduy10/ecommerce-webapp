@@ -484,19 +484,32 @@ namespace ECommerce.Application.Services.SubCategory
                             .Where(i => i.OptionId == id)
                             .Select(i => i.SubCategoryId)
                             .ToListAsync();
-                        var pros = await _DbContext.Products
+                        if (sub_optIds.Count > 0)
+                        {
+                            var pros = await _DbContext.Products
                             .Where(i => sub_optIds.Contains(i.SubCategoryId))
                             .ToListAsync();
-                        if (pros.Count > 0)
-                        {
-                            foreach (var pro in pros)
+                            if (pros.Count > 0)
                             {
-                                var newProductOptionValue = new Data.Models.ProductOptionValue
+                                #region using for to remove option values from option values and product option
+                                //foreach (var pro in pros)
+                                //{
+                                //    var newProductOptionValue = new Data.Models.ProductOptionValue
+                                //    {
+                                //        ProductId = pro.ProductId,
+                                //        OptionValueId = newValue.OptionValueId
+                                //    };
+                                //    await _DbContext.ProductOptionValues.AddAsync(newProductOptionValue);
+                                //    await _DbContext.SaveChangesAsync();
+                                //}
+                                #endregion
+                                
+                                var newProOptVals = pros.Select(pro => new Data.Models.ProductOptionValue
                                 {
                                     ProductId = pro.ProductId,
                                     OptionValueId = newValue.OptionValueId
-                                };
-                                await _DbContext.ProductOptionValues.AddAsync(newProductOptionValue);
+                                });
+                                await _DbContext.ProductOptionValues.AddRangeAsync(newProOptVals);
                                 await _DbContext.SaveChangesAsync();
                             }
                         }
@@ -509,9 +522,9 @@ namespace ECommerce.Application.Services.SubCategory
                 }
                 return new ApiSuccessResponse("Thêm thành công");
             }
-            catch
+            catch(Exception error)
             {
-                return new ApiFailResponse("Thêm bại vui lòng thử lại sau");
+                return new ApiFailResponse("Thêm thất bại: \n" + error.Message.ToString());
             }
         }
         public async Task<ApiResponse> UpdateOptionBaseValue(OptionBaseValueUpdateRequest request)
@@ -547,27 +560,39 @@ namespace ECommerce.Application.Services.SubCategory
                     // Remove option values not included in request list id
                     else
                     {
-                        foreach (var value in optionValues)
-                        {
-                            if (!request.ids.Contains(value.OptionValueId))
-                            {
-                                var pro_optVals = await _DbContext.ProductOptionValues
-                                    .Where(i => i.OptionValueId == value.OptionValueId)
-                                    .ToListAsync();
-                                _DbContext.ProductOptionValues.RemoveRange(pro_optVals);
-                                _DbContext.OptionValues.Remove(value);
-                                _DbContext.SaveChangesAsync().Wait();
-                            }
-                        }
+                        #region using for to remove option values from option values and product option
+                        //foreach (var value in optionValues)
+                        //{
+                        //    if (!request.ids.Contains(value.OptionValueId))
+                        //    {
+                        //        var pro_optVals = await _DbContext.ProductOptionValues
+                        //            .Where(i => i.OptionValueId == value.OptionValueId)
+                        //            .ToListAsync();
+                        //        _DbContext.ProductOptionValues.RemoveRange(pro_optVals);
+                        //        _DbContext.OptionValues.Remove(value);
+                        //        _DbContext.SaveChangesAsync().Wait();
+                        //    }
+                        //}
+                        #endregion
+
+                        var optionValueIdsToRemove = optionValues
+                            .Where(value => !request.ids.Contains(value.OptionValueId))
+                            .Select(value => value.OptionValueId)
+                            .ToList();
+                        var proOptValsToRemove = await _DbContext.ProductOptionValues
+                            .Where(i => optionValueIdsToRemove.Contains(i.OptionValueId))
+                            .ToListAsync();
+                        _DbContext.ProductOptionValues.RemoveRange(proOptValsToRemove);
+                        _DbContext.OptionValues.RemoveRange(optionValues.Where(value => optionValueIdsToRemove.Contains(value.OptionValueId)));
+                        await _DbContext.SaveChangesAsync();
                     }
                 }
 
-
                 return new ApiSuccessResponse("Cập nhật thành công");
             }
-            catch
+            catch (Exception error)
             {
-                return new ApiFailResponse("Cập nhật thất bại vui lòng thử lại sau");
+                return new ApiFailResponse("Cập nhật thất bại: \n" + error.Message.ToString());
             }
         }
         public async Task<ApiResponse> DeleteOption(int id)
