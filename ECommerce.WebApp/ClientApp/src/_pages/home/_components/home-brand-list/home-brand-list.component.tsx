@@ -1,11 +1,8 @@
 import { useCallback, useRef } from 'react';
+import { ICON_NAME } from 'src/_shared/_components/mui-icon/_enums/mui-icon.enum';
+import MuiIcon from 'src/_shared/_components/mui-icon/mui-icon.component';
 import { Pagination, Navigation } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
-
-// const autoplay = {
-//     delay: 2500,
-//     disableOnInteraction: false,
-// }
 
 const HomeBrandList = () => {
     const navigationPrevRef = useRef<any>(null);
@@ -35,10 +32,11 @@ const HomeBrandList = () => {
                     ref={sliderRef}
                     slidesPerView={5}
                     spaceBetween={10}
-                    loop={true}
                     navigation={{
+                        enabled: true,
                         prevEl: navigationPrevRef.current,
                         nextEl: navigationNextRef.current,
+                        disabledClass: 'pointer-events-none'
                     }}
                     onBeforeInit={(swiper) => {
                         swiper.navigation.nextEl = navigationNextRef.current;
@@ -83,8 +81,18 @@ const HomeBrandList = () => {
                         </a>
                     </SwiperSlide>
                 </Swiper>
-                <div className='w-[50px] h-[50px] absolute bg-black left-[-50px] top-1/2' ref={navigationPrevRef} onClick={handlePrev}>lui</div>
-                <div className='w-[50px] h-[50px] absolute bg-black right-[-50px] top-1/2' ref={navigationNextRef} onClick={handleNext} />
+                <button className='absolute left-[-50px] bottom-1/2 translate-y-1/2' ref={navigationPrevRef} onClick={handlePrev}>
+                    <MuiIcon
+                        name={ICON_NAME.CHEVRON_LEFT}
+                        className='w-[36px] h-[36px] border border-solid border-black hover:border-[#3b99fc] text-black hover:text-[#3b99fc]'
+                    />
+                </button>
+                <button className='absolute right-[-50px] bottom-1/2 translate-y-1/2' ref={navigationNextRef} onClick={handleNext}>
+                    <MuiIcon
+                        name={ICON_NAME.CHEVRON_RIGHT}
+                        className='w-[36px] h-[36px] border border-solid border-black hover:border-[#3b99fc] text-black hover:text-[#3b99fc]'
+                    />
+                </button>
             </div>
             <div className="w-full text-center block">
                 <a className="bran__viewmore inline-block" style={{ cursor: 'pointer' }} href="/">Xem thêm</a>

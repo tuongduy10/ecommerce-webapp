@@ -22,14 +22,14 @@ export const FOOTER_MENU_COL_2 = [
     { path: '/blog/7', name: 'Chính sách giao hàng' },
 ]
 export const FOOTER_MENU_COL_3 = [
-    { path: '/facebook', icon: ICON_NAME.FACEBOOK_ROUNDED, name: 'Facebook' },
+    { path: '/facebook', icon: ICON_NAME.ROUNDED.FACEBOOK, name: 'Facebook' },
     { path: '/youtube', icon: ICON_NAME.YOUTUBE, name: 'Youtube' },
     { path: '/instagram', icon: ICON_NAME.INSTAGRAM, name: 'Instagram' },
-    { path: '/messenger', icon: ICON_NAME.SEND_ROUNDED, name: 'Messenger' },
+    { path: '/messenger', icon: ICON_NAME.MESSENGER, name: 'Messenger' },
 ]
 export const FOOTER_MENU_COL_4 = [
     { path: '/zalo', icon: ICON_NAME.PHONE_ANDROID, name: 'Zalo: 0397974403' },
-    { path: '/mail', icon: ICON_NAME.MAIL_OUTLINED, name: 'Mail: vtngduy101120@gmail.com' },
-    { path: '/location', icon: ICON_NAME.LOCATION_OUTLINED, name: 'Số 01, Lê Lợi' },
-    { path: '/time', icon: ICON_NAME.ACCESS_TIME_OUTLINED, name: '08:30 - 17:30' },
+    { path: '/mail', icon: ICON_NAME.OUTLINED.MAIL, name: 'Mail: vtngduy101120@gmail.com' },
+    { path: '/location', icon: ICON_NAME.OUTLINED.LOCATION, name: 'Số 01, Lê Lợi' },
+    { path: '/time', icon: ICON_NAME.OUTLINED.ACCESS_TIME, name: '08:30 - 17:30' },
 ]

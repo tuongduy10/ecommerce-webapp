@@ -39,8 +39,8 @@ const Footer = () => {
                                 <ul className="footer__info-list">
                                     {FOOTER_MENU_COL_3.map((item: any) => (
                                         <li key={`footer-col-3-${item.path}`} className="footer__info-link pb-2">
-                                            <a href={item.path} target="_blank" rel="noopener noreferrer">
-                                                <MuiIcon name={item.icon} className='mr-2' fontSize="small" /> {item.name}
+                                            <a href={item.path} className="flex items-center" target="_blank" rel="noopener noreferrer">
+                                                <MuiIcon name={item.icon} className='mr-3' fontSize="small" /> {item.name}
                                             </a>
                                         </li>
                                     ))}

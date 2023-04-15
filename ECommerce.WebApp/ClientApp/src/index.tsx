@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import 'src/_shared/_styles/main/global.css';
-import 'src/_shared/_styles/main/header.css';
-import 'src/_shared/_styles/main/footer.css';
-import 'src/_shared/_styles/main/main.css';
+import 'src/_shared/_assets/_styles/main/global.css';
+import 'src/_shared/_assets/_styles/main/header.css';
+import 'src/_shared/_assets/_styles/main/footer.css';
+import 'src/_shared/_assets/_styles/main/main.css';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
