@@ -5,9 +5,14 @@ import MuiIcon from "src/_shared/_components/mui-icon/mui-icon.component";
 
 const Header = () => {
     const [isOpenedNav, setIsOpenedNav] = useState(false);
+    const [isOpenedSearch, setIsOpenedSearch] = useState(false);
 
     const onToggleNav = () => {
         setIsOpenedNav(toggle => !toggle);
+    }
+
+    const onToggleSearch = () => {
+        setIsOpenedSearch(toggle => !toggle);
     }
 
     return (
@@ -49,7 +54,7 @@ const Header = () => {
                         <li>
                             <a href="/" className="header-searchform header__top-link">
                                 <span className="text">
-                                    <input type="text" placeholder="Thương hiệu/ Dịch vụ/ Sản phẩm cần tìm" />
+                                    <input type="text" placeholder="Thương hiệu, Dịch vụ, Sản phẩm cần tìm" />
                                 </span>
                                 <span className="icon">
                                     <MuiIcon name={ICON_NAME.FEATHER.SEARCH} />
@@ -133,8 +138,8 @@ const Header = () => {
                                 <MuiIcon name={ICON_NAME.FEATHER.MENU} />
                             </label>
 
-                            <a href="/" className="header__mobile-searchicon">
-                                <MuiIcon name={ICON_NAME.FEATHER.SEARCH} />
+                            <a href="javascript:void(0);" className="header__mobile-searchicon" onClick={onToggleSearch}>
+                                <MuiIcon name={ICON_NAME.FEATHER.SEARCH} style={{ stroke: !isOpenedSearch ? '' : '#3b99fc' }} />
                             </a>
 
                             <a href="/" className="profile-mobile">
@@ -152,8 +157,32 @@ const Header = () => {
                                 <MuiIcon name={ICON_NAME.FEATHER.SHOPPING_BAG} />
                             </a>
                         </div>
+                        <div className={`searchform__wrapper py-2 px-[20px] ${!isOpenedSearch ? 'hidden' : ''}`}>
+                            <div className="searchform input-group rounded w-full">
+                                <input type="search" id="search-input" className="form-control"
+                                    placeholder="Thương hiệu, dịch vụ, sản phẩm cần tìm" aria-label="Search"
+                                    aria-describedby="search-addon" />
+                            </div>
+                            <div className="searchresult hidden">
+                                <p>
+                                    <a href="/">Thế giới di động (Điện thoại di động)</a>
+                                </p>
+                                <p>
+                                    <a href="/">FPT Shop (Điện thoại di động)</a>
+                                </p>
+                                <p>
+                                    <a href="/">Samsung Galaxy S20 Ultra</a>
+                                </p>
+                                <p>
+                                    <a href="/">Geforce RTX 3080TI Asus</a>
+                                </p>
+                                <div className="text-center w-100">
+                                    <a href="/" className="search-viewmore">Xem thêm</a>
+                                </div>
+                            </div>
+                        </div>
                     </nav>
-                    <div className="search__overlay hidden"></div>
+                    <div className={`search__overlay ${!isOpenedSearch ? 'hidden' : ''}`} onClick={onToggleSearch}></div>
                     <nav className="nav__pc">
                         <ul className="nav__pc-items nav__default flex">
                             {HEADER_MENU.map((item: any) => (
