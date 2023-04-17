@@ -20,6 +20,8 @@ import { ReactComponent as UserIcon } from 'src/_shared/_assets/_icons/user.svg'
 import { ReactComponent as SearchIcon } from 'src/_shared/_assets/_icons/search.svg';
 import { ReactComponent as HeartIcon } from 'src/_shared/_assets/_icons/heart.svg';
 import { ReactComponent as ShoppingBagIcon } from 'src/_shared/_assets/_icons/shopping-bag.svg';
+import { ReactComponent as MenuIcon } from 'src/_shared/_assets/_icons/menu.svg';
+import { ReactComponent as XIcon } from 'src/_shared/_assets/_icons/x.svg';
 
 const MuiIcon = (props: any) => {
     const { name } = props;
@@ -37,12 +39,12 @@ const MuiIcon = (props: any) => {
         case ICON_NAME.OUTLINED.LOCATION: return <LocationOnOutlinedIcon {...props} />
         case ICON_NAME.OUTLINED.ACCESS_TIME: return <AccessTimeOutlinedIcon {...props} />
 
-        
+
         // MUI ROUNDED ICONS
         case ICON_NAME.ROUNDED.SEND: return <SendRoundedIcon {...props} />
         case ICON_NAME.ROUNDED.ARROW_LEFT: return <KeyboardArrowLeftRoundedIcon {...props} />
         case ICON_NAME.ROUNDED.ARROW_RIGHT: return <KeyboardArrowRightRoundedIcon {...props} />
-        
+
         // FEATHER ICONS
         case ICON_NAME.CHEVRON_RIGHT: return <ChevronRightIcon {...props} />;
         case ICON_NAME.CHEVRON_LEFT: return <ChevronLeftIcon {...props} />;
@@ -52,6 +54,8 @@ const MuiIcon = (props: any) => {
         case ICON_NAME.FEATHER.SEARCH: return <SearchIcon {...props} />;
         case ICON_NAME.FEATHER.HEART: return <HeartIcon {...props} />;
         case ICON_NAME.FEATHER.SHOPPING_BAG: return <ShoppingBagIcon {...props} />;
+        case ICON_NAME.FEATHER.MENU: return <MenuIcon {...props} />
+        case ICON_NAME.FEATHER.X: return <XIcon {...props} />
 
         default: return <></>
     }

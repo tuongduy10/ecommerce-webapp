@@ -23,6 +23,8 @@ export const ICON_NAME = {
         USER: 'USER',
         SEARCH: 'SEARCH',
         HEART: 'HEART',
-        SHOPPING_BAG: 'SHOPPING_BAG'
+        SHOPPING_BAG: 'SHOPPING_BAG',
+        MENU: 'MENU',
+        X: 'X',
     }
 }
