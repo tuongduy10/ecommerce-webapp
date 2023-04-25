@@ -83,13 +83,13 @@ const HomeBrandList = () => {
                 </Swiper>
                 <button className='absolute left-[-50px] bottom-1/2 translate-y-1/2' ref={navigationPrevRef} onClick={handlePrev}>
                     <MuiIcon
-                        name={ICON_NAME.CHEVRON_LEFT}
+                        name={ICON_NAME.FEATHER.CHEVRON_LEFT}
                         className='w-[36px] h-[36px] border border-solid border-black hover:border-[#3b99fc] text-black hover:text-[#3b99fc]'
                     />
                 </button>
                 <button className='absolute right-[-50px] bottom-1/2 translate-y-1/2' ref={navigationNextRef} onClick={handleNext}>
                     <MuiIcon
-                        name={ICON_NAME.CHEVRON_RIGHT}
+                        name={ICON_NAME.FEATHER.CHEVRON_RIGHT}
                         className='w-[36px] h-[36px] border border-solid border-black hover:border-[#3b99fc] text-black hover:text-[#3b99fc]'
                     />
                 </button>

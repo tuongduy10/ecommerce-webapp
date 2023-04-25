@@ -12,8 +12,9 @@ import KeyboardArrowLeftRoundedIcon from '@mui/icons-material/KeyboardArrowLeftR
 import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
 
 import { ReactComponent as MessengerIcon } from 'src/_shared/_assets/_icons/messenger.svg';
-import { ReactComponent as ChevronLeftIcon } from 'src/_shared/_assets/_icons/chevron-left.svg';
 import { ReactComponent as ChevronRightIcon } from 'src/_shared/_assets/_icons/chevron-right.svg';
+import { ReactComponent as ChevronLeftIcon } from 'src/_shared/_assets/_icons/chevron-left.svg';
+import { ReactComponent as ChevronDownIcon } from 'src/_shared/_assets/_icons/chevron-down.svg';
 import { ReactComponent as HelpCircleIcon } from 'src/_shared/_assets/_icons/help-circle.svg';
 import { ReactComponent as SmartPhoneIcon } from 'src/_shared/_assets/_icons/smartphone.svg';
 import { ReactComponent as UserIcon } from 'src/_shared/_assets/_icons/user.svg';
@@ -46,8 +47,9 @@ const MuiIcon = (props: any) => {
         case ICON_NAME.ROUNDED.ARROW_RIGHT: return <KeyboardArrowRightRoundedIcon {...props} />
 
         // FEATHER ICONS
-        case ICON_NAME.CHEVRON_RIGHT: return <ChevronRightIcon {...props} />;
-        case ICON_NAME.CHEVRON_LEFT: return <ChevronLeftIcon {...props} />;
+        case ICON_NAME.FEATHER.CHEVRON_RIGHT: return <ChevronRightIcon {...props} />;
+        case ICON_NAME.FEATHER.CHEVRON_LEFT: return <ChevronLeftIcon {...props} />;
+        case ICON_NAME.FEATHER.CHEVRON_DOWN: return <ChevronDownIcon {...props} />;
         case ICON_NAME.FEATHER.HELP_CIRCLE: return <HelpCircleIcon {...props} />;
         case ICON_NAME.FEATHER.SMARTPHONE: return <SmartPhoneIcon {...props} />;
         case ICON_NAME.FEATHER.USER: return <UserIcon {...props} />;
