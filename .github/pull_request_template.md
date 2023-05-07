@@ -3,7 +3,7 @@
 ### Changes
 - [ ] No stash
 - [ ] No config changes
-- [ ] No database changes _(Has changes: Add query or desctiption below)_
+- [ ] No database changes
 
 ### Jira
-- [TicketId](https://hihichi.atlassian.net/browse/ECM-id) : Feature/ Enhance / Bug
+- [TicketId](https://hihichi.atlassian.net/browse/ECM-id) : Feature / Enhance / Bug
