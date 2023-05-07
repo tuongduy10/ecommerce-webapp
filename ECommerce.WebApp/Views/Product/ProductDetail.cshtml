@@ -151,22 +151,22 @@
                                                 <span class="bullet-text">@Model.product.Insurance</span>
                                             </div>
                                         }
-                                        @if (Model.product.FreeReturn == true)
+                                        @if (!string.IsNullOrEmpty(Model.product.Repay))
                                         {
                                             <div class="d-flex align-items-center mb-2">
                                                 <span class="mr-2">
                                                     <img src="/images/icon/return.png" alt="">
                                                 </span>
-                                                <span class="bullet-text">Đổi trả miễn phí</span>
+                                                <span class="bullet-text">@Model.product.Repay</span>
                                             </div>
                                         }
-                                        @if (Model.product.FreeDelivery == true)
+                                        @if (!string.IsNullOrEmpty(Model.product.Delivery))
                                         {
                                             <div class="d-flex align-items-center mb-2">
                                                 <span class="mr-2">
                                                     <img src="/images/icon/giaohang.png" alt="">
                                                 </span>
-                                                <span class="bullet-text">Giao hàng miễn phí</span>
+                                                <span class="bullet-text">@Model.product.Delivery</span>
                                             </div>
                                         }
                                     </div>

@@ -83,18 +83,18 @@
                                 <label class="mb-0" for="legit">Sản phẩm chính hãng</label>
                             </div>
                         </div>
-                        <!-- Free return -->
+                        <!-- Repay -->
                         <div class="form-group mb-4">
+                            <label class="required">Đổi trả</label>
                             <div class="d-flex align-items-center">
-                                <input type="checkbox" class="pro-freereturn mr-2" id="return">
-                                <label class="mb-0" for="return">Đổi trả miễn phí</label>
+                                <input type="text" class="form-control pro-Repay">
                             </div>
                         </div>
-                        <!-- Free delivery -->
+                        <!-- Delivery -->
                         <div class="form-group mb-4">
+                            <label class="required">Giao hàng</label>
                             <div class="d-flex align-items-center">
-                                <input type="checkbox" class="pro-freedelivery mr-2" id="delivery">
-                                <label class="mb-0" for="delivery">Miễn phí giao hàng</label>
+                                <input type="text" class="form-control pro-Delivery">
                             </div>
                         </div>
                         <!-- Insurance -->
@@ -399,8 +399,8 @@
         var isNew = $('.pro-new').is(":checked") ? true : false;
         var isLegit = $('.pro-legit').is(":checked") ? true : false;
         var isHighlight = $('.pro-highlight').is(":checked") ? true : false;
-        var isFreeReturn = $('.pro-freereturn').is(":checked") ? true : false;
-        var isFreeDelivery = $('.pro-freedelivery').is(":checked") ? true : false;
+        var repay = $('.pro-Repay').val();
+        var delivery = $('.pro-Delivery').val();
         var insurance = $(".pro-insurance").val();
         // Relationship data
         var attributes = [];
@@ -464,8 +464,8 @@
         formData.append('isNew', isNew);
         formData.append('isLegit', isLegit);
         formData.append('isHighlight', isHighlight);
-        formData.append('isFreeReturn', isFreeReturn);
-        formData.append('isFreeDelivery', isFreeDelivery);
+        formData.append('repay', repay);
+        formData.append('delivery', delivery);
         formData.append('insurance', insurance);
         formData.append('discountPercent', discountPercent);
         formData.append('shopId', shopId);

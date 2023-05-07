@@ -28,8 +28,8 @@ namespace ECommerce.Application.Services.Product.Dtos
         public bool isNew { get; set; } // Mới
         public bool isHighlight { get; set; } // Nổi bật
         public bool isLegit { get; set; } // Chính hãng
-        public bool isFreeReturn { get; set; } // Đổi trả miễn phí
-        public bool isFreeDelivery { get; set; } // Giao hàng miễn phí
+        public string repay { get; set; } // Đổi trả miễn phí
+        public string delivery { get; set; } // Giao hàng miễn phí
         public string insurance { get; set; } // Bảo hành
         // Relationship data
         public string currentOptions { get; set; }

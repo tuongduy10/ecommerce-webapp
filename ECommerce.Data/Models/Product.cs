@@ -29,8 +29,8 @@ namespace ECommerce.Data.Models
         public byte? Status { get; set; }
         public bool? New { get; set; }
         public bool? Highlights { get; set; }
-        public bool? FreeDelivery { get; set; }
-        public bool? FreeReturn { get; set; }
+        public string? Delivery { get; set; }
+        public string? Repay { get; set; }
         public bool? Legit { get; set; }
         public string Insurance { get; set; }
         public int SubCategoryId { get; set; }
