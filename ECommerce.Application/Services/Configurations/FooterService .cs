@@ -2,6 +2,7 @@
 using ECommerce.Application.Services.Configurations.Dtos;
 using ECommerce.Application.Services.Configurations.Dtos.Footer;
 using ECommerce.Data.Context;
+using ECommerce.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -104,7 +105,30 @@ namespace ECommerce.Application.Services.Configurations
 
             return new ApiFailResponse("Xóa không thành công");
         }
+        public async Task<Response<BlogModel>> GetBlog(BlogDto request)
+        {
+            try
+            {
+                var blog = await _DbContext.Blogs
+                    .Where(i => i.BlogId == request.id)
+                    .Select(i => new BlogModel()
+                    {
+                        BlogId = i.BlogId,
+                        BlogContent = i.BlogContent,
+                        BlogPosition = i.BlogPosition,
+                        BlogTitle = i.BlogTitle,
+                        Type = request.type
+                    })
+                    .FirstOrDefaultAsync();
+                if (blog == null) return new FailResponse<BlogModel>("Không tìm thấy");
 
+                return new SuccessResponse<BlogModel>(blog);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<BlogModel>("");
+            }
+        }
         public async Task<ApiResponse> UpdateSocial(SocialUpdateRequest request)
         {
             var social = await _DbContext.Socials.Where(i => i.SocialId == request.SocialId).FirstOrDefaultAsync();
