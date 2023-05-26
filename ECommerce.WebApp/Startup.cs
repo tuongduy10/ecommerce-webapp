@@ -86,6 +86,7 @@ namespace ECommerce.WebApp
             services.AddControllers();
             services.AddSignalR();
             services.AddHttpContextAccessor();
+            services.AddCors();
 
 
             /*
@@ -160,6 +161,7 @@ namespace ECommerce.WebApp
             app.UseCookiePolicy();
 
             app.UseMiddleware<NoCacheMiddleware>();
+            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"));
 
             // same like app.UseMiddleware<NoCacheMiddleware>();
             app.Use(async (context, next) =>

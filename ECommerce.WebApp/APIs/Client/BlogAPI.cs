@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace ECommerce.WebApp.APIs.Client
+namespace ECommerce.WebApp.APIs
 {
     [Route("api/blog")]
     [ApiController]
-    public class BlogController : ControllerBase
+    public class BlogAPI : ControllerBase
     {
         private readonly IFooterService _footerService;
-        public BlogController(
+        public BlogAPI(
             IFooterService footerService
         )
         {
