@@ -48,6 +48,16 @@ namespace ECommerce.WebApp.Controllers.Admin
             _commentService = commentService;
             _manageFiles = new ManageFiles(webHostEnvironment);
         }
+        public async Task<IActionResult> ProductProfit()
+        {
+            var products = await _productService.getAllManaged(0);
+            var subCategories = await _subCategoryService.getAll();
+
+            ViewBag.Products = products;
+            ViewBag.SubCategories = subCategories;
+
+            return View();
+        }
         public async Task<IActionResult> ProductList(int subCategoryId = 0)
         {
             var model = new ProductListViewModel()
