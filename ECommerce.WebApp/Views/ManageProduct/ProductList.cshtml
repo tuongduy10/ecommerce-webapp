@@ -81,28 +81,10 @@
                             </td>
                             <td>@product.ShopName</td>
                             <td>
-                                @foreach (var price in product.Price)
-                                {
-                                    @if (price.ProductTypeId == 1)
-                                    {
-                                        @if(price.Price != null)
-                                        {
-                                            @String.Format("{0:0,0} ₫", price.Price)
-                                        }
-                                    }
-                                }
+                                @String.Format("{0:0,0} ₫", product.PriceAvailable ?? 0)
                             </td>
                             <td>
-                                @foreach (var price in product.Price)
-                                {
-                                    @if (price.ProductTypeId == 2)
-                                    {
-                                        @if (price.Price != null)
-                                        {
-                                            @String.Format("{0:0,0} ₫", price.Price)
-                                        }
-                                    }
-                                }
+                                @String.Format("{0:0,0} ₫", product.PricePreOrder ?? 0)
                             </td>
                             <td>@product.SubCategoryName</td>
                             <td>@product.CategoryName</td>

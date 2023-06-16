@@ -28,8 +28,8 @@
                         <th>Shop</th>
                         <th>Giá có sẵn</th>
                         <th>Giá đặt trước</th>
-                        <th>Giá nhập hàng</th>
                         <th>Giá cho Seller</th>
+                        <th>Giá nhập hàng</th>
                         <th>Loại sản phẩm</th>
                         <th>Danh mục</th>
                         <th></th>
@@ -58,33 +58,18 @@
                             </td>
                             <td>@product.ShopName</td>
                             <td>
-                                @foreach (var price in product.Price)
-                                {
-                                    @if (price.ProductTypeId == 1)
-                                    {
-                                        @if (price.Price != null)
-                                        {
-                                            @String.Format("{0:0,0} ₫", price.Price)
-                                            <div class="font-weight-bold">Lãi: 100,000 ₫</div>
-                                        }
-                                    }
-                                }
+                                @String.Format("{0:0,0} ₫", product.PriceAvailable ?? 0)
+                                <div class="font-weight-bold">Lãi: @String.Format("{0:0,0} ₫", product.ProfitAvailable ?? 0)</div>
                             </td>
                             <td>
-                                @foreach (var price in product.Price)
-                                {
-                                    @if (price.ProductTypeId == 2)
-                                    {
-                                        @if (price.Price != null)
-                                        {
-                                            @String.Format("{0:0,0} ₫", price.Price)
-                                            <div class="font-weight-bold">Lãi: 100,000 ₫</div>
-                                        }
-                                    }
-                                }
+                                @String.Format("{0:0,0} ₫", product.PricePreOrder ?? 0)
+                                <div class="font-weight-bold">Lãi: @String.Format("{0:0,0} ₫", product.ProfitPreOrder ?? 0)</div>
                             </td>
-                            <td>100,000 ₫</td>
-                            <td>100,000 ₫</td>
+                            <td>
+                                @String.Format("{0:0,0} ₫", product.PriceForSeller ?? 0)
+                                <div class="font-weight-bold">Lãi: @String.Format("{0:0,0} ₫", product.ProfitForSeller ?? 0)</div>
+                            </td>
+                            <td>@String.Format("{0:0,0} ₫", product.PriceImport ?? 0)</td>
                             <td>@product.SubCategoryName</td>
                             <td>@product.CategoryName</td>
                             <td class="text-center">
