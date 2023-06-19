@@ -16,6 +16,7 @@ namespace ECommerce.Application.Services.Configurations
         Task<ApiResponse> DeleteBlog(int id);
         Task<List<BlogModel>> getAllBlog(); // 2 cột, 8 blog
         Task<BlogModel> getBlogDetail(int BlogId);
+        Task<Response<BlogModel>> GetBlog(BlogDto request);
 
         // Social
         Task<ApiResponse> UpdateSocial(SocialUpdateRequest request);

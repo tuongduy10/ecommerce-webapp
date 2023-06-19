@@ -87,6 +87,7 @@ namespace ECommerce.WebApp
             services.AddControllers();
             services.AddSignalR();
             services.AddHttpContextAccessor();
+            services.AddCors();
 
 
             /*
@@ -123,6 +124,14 @@ namespace ECommerce.WebApp
             {
                 configuration.RootPath = "ClientApp/build";
             });
+            /*
+             * Config Services
+             */
+            //services.AddScoped<GlobalActionFilter>();
+            //services.AddScoped<IAuthorizationHandler, CustomAuthorizationHandler>();
+            //services.Configure<SecurityStampValidatorOptions>(option => option.ValidationInterval = TimeSpan.FromSeconds(10));
+            //services.AddHttpContextAccessor();
+            //services.AddScoped<IUserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -160,6 +169,7 @@ namespace ECommerce.WebApp
 
             app.UseMiddleware<NoCacheMiddleware>();
             //app.UseCustomAuthorizationMiddleware();
+            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"));
 
             // same like app.UseMiddleware<NoCacheMiddleware>();
             app.Use(async (context, next) =>

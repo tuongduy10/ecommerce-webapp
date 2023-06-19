@@ -140,8 +140,8 @@ namespace ECommerce.Application.Services.Product
                     //ProductDescriptionMobile = i.ProductDescriptionMobile,
                     SizeGuide = i.SizeGuide,
 
-                    FreeDelivery = i.FreeDelivery,
-                    FreeReturn = i.FreeReturn,
+                    Delivery = i.Delivery,
+                    Repay = i.Repay,
                     Legit = i.Legit,
                     Insurance = i.Insurance,
 
@@ -217,8 +217,8 @@ namespace ECommerce.Application.Services.Product
 
                     New = i.New,
                     Highlight = i.Highlights,
-                    FreeDelivery = i.FreeDelivery,
-                    FreeReturn = i.FreeReturn,
+                    Delivery = i.Delivery,
+                    Repay = i.Repay,
                     Legit = i.Legit,
                     Insurance = i.Insurance,
 
@@ -588,9 +588,9 @@ namespace ECommerce.Application.Services.Product
                     DiscountPercent = request.discountPercent,
                     Legit = request.isLegit,
                     Highlights = request.isHighlight,
-                    FreeDelivery = request.isFreeDelivery,
+                    Delivery = !string.IsNullOrEmpty(request.delivery) ? request.delivery.Trim() : null,
                     ProductStock = request.stock,
-                    FreeReturn = request.isFreeReturn,
+                    Repay = !string.IsNullOrEmpty(request.repay) ? request.repay.Trim() : null,
                     Insurance = string.IsNullOrEmpty(request.insurance) ? "" : request.insurance.Trim(),
                     New = request.isNew,
                     ShopId = request.shopId,
@@ -809,9 +809,9 @@ namespace ECommerce.Application.Services.Product
                 product.DiscountPercent = request.discountPercent;
                 product.Legit = request.isLegit;
                 product.Highlights = request.isHighlight;
-                product.FreeDelivery = request.isFreeDelivery;
+                product.Delivery = !string.IsNullOrEmpty(request.delivery) ? request.delivery.Trim() : null;
                 product.ProductStock = request.stock;
-                product.FreeReturn = request.isFreeReturn;
+                product.Repay = !string.IsNullOrEmpty(request.repay) ? request.repay.Trim() : null;
                 product.Insurance = request.insurance == null ? "" : request.insurance.Trim();
                 product.New = request.isNew;
                 product.ShopId = request.shopId;

@@ -13,5 +13,6 @@ namespace ECommerce.Application.Services.Configurations.Dtos.Footer
         public string BlogTitle { get; set; }
         public string BlogContent { get; set; }
         public byte? Status { get; set; }
+        public string? Type { get; set; }
     }
 }

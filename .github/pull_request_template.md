@@ -4,9 +4,7 @@ _summary_
 ### Changes
 - [ ] No stash
 - [ ] No config changes
-- [ ] No database changes 
-    _changes_
+- [ ] No database changes
 
 ### Jira
-- Hotfix, No tickets
-- [#TicketId](https://hihichi.atlassian.net/browse/ECM-id) : Feature / Enhance / Bug
+- [#ECM-TicketId](https://hihichi.atlassian.net/browse/ECM-TicketId) : Feature / Enhance / Bug

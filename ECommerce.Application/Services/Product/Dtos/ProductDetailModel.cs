@@ -20,8 +20,8 @@ namespace ECommerce.Application.Services.Product.Dtos
         public int Stock { get; set; }
         public bool? New { get; set; }
         public bool? Highlight { get; set; }
-        public bool? FreeDelivery { get; set; } //
-        public bool? FreeReturn { get; set; } //
+        public string? Delivery { get; set; } //
+        public string? Repay { get; set; } //
         public bool? Legit { get; set; } //
         public string Insurance { get; set; } //
         public int SubCategoryId { get; set; }

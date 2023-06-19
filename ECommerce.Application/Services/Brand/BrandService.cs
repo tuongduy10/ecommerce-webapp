@@ -41,17 +41,16 @@ namespace ECommerce.Application.Services.Brand
                     DescriptionTitle = !String.IsNullOrEmpty(request.DescriptionTitle) ? request.DescriptionTitle.Trim() : null,
                 };
                 await _DbContext.Brands.AddAsync(brand);
+                await _DbContext.SaveChangesAsync();
 
                 // Shop brans
-                foreach (var categoryId in request.CategoryIds)
-                {
-                    var brandCategory = new BrandCategory
+                var brandCategories = request.CategoryIds
+                    .Select(id => new BrandCategory
                     {
                         BrandId = brand.BrandId,
-                        CategoryId = categoryId,
-                    };
-                    await _DbContext.BrandCategories.AddAsync(brandCategory);
-                }
+                        CategoryId = id
+                    });
+                await _DbContext.BrandCategories.AddRangeAsync(brandCategories);
                 await _DbContext.SaveChangesAsync();
 
                 return new ApiSuccessResponse("Thêm thành công");

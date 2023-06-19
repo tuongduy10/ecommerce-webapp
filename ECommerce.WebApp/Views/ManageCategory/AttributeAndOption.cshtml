@@ -121,8 +121,7 @@
         //    })
         PostApi("/ManageCategory/UpdateOptionBaseValue", request)
             .then(function (res) {
-                alert(res);
-                window.location.reload();
+                nSuccess(res);
             })
     }
     function deleteOption(id) {
