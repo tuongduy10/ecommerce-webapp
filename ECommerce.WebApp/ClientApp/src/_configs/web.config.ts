@@ -28,8 +28,8 @@ export const FOOTER_MENU_COL_3 = [
     { path: '/messenger', icon: ICON_NAME.MESSENGER, name: 'Messenger' },
 ]
 export const FOOTER_MENU_COL_4 = [
-    { path: '/zalo', icon: ICON_NAME.PHONE_ANDROID, name: 'Zalo: 0397974403' },
-    { path: '/mail', icon: ICON_NAME.OUTLINED.MAIL, name: 'Mail: vtngduy101120@gmail.com' },
+    { path: '/zalo', icon: ICON_NAME.PHONE_ANDROID, name: 'Zalo: 0123456789' },
+    { path: '/mail', icon: ICON_NAME.OUTLINED.MAIL, name: 'Mail: mail@gmail.com' },
     { path: '/location', icon: ICON_NAME.OUTLINED.LOCATION, name: 'Số 01, Lê Lợi' },
     { path: '/time', icon: ICON_NAME.OUTLINED.ACCESS_TIME, name: '08:30 - 17:30' },
 ]

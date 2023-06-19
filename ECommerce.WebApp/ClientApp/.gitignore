@@ -49,7 +49,7 @@ node_modules/
 
 # Optional npm cache directory
 .npm
-
+4
 # Optional eslint cache
 .eslintcache
 
@@ -64,3 +64,5 @@ node_modules/
 
 # dotenv environment variables file
 .env
+
+build/

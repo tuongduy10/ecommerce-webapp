@@ -1,4 +1,4 @@
-import { ERROR_MESSAGE } from './../_enums/message.enum';
+import { ERROR_MESSAGE } from '../_enums/message.enum';
 const handleError = (error: any) => {
   if (error.response) {
     // The request was made and the server responded with a status code
@@ -11,7 +11,7 @@ const handleError = (error: any) => {
         window.location.href = '/access-denied';
         return;
       case 404: 
-        window.location.href = '/note-found';
+        window.location.href = '/not-found';
         return;
       case 500: 
         alert(ERROR_MESSAGE.STH_WENT_WRONG);
