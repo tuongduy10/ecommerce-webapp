@@ -43,6 +43,8 @@ namespace ECommerce.WebApp
 {
     public class Startup
     {
+        private readonly string myCorsPolicy = "_myCorsPolicy";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -84,10 +86,19 @@ namespace ECommerce.WebApp
                     option.ExpireTimeSpan = TimeSpan.FromHours(4);
                     option.Cookie.MaxAge = option.ExpireTimeSpan;
                 });
+            services.AddCors(options =>
+            {
+                options.AddPolicy(myCorsPolicy,
+                    builder =>
+                    {
+                        builder.WithOrigins("https://localhost:44330", "http://localhost:3000", "https://hihichi.com")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
             services.AddControllers();
             services.AddSignalR();
             services.AddHttpContextAccessor();
-            services.AddCors();
 
 
             /*
@@ -169,7 +180,7 @@ namespace ECommerce.WebApp
 
             app.UseMiddleware<NoCacheMiddleware>();
             //app.UseCustomAuthorizationMiddleware();
-            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"));
+            app.UseCors(myCorsPolicy);
 
             // same like app.UseMiddleware<NoCacheMiddleware>();
             app.Use(async (context, next) =>
@@ -191,7 +202,7 @@ namespace ECommerce.WebApp
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
             app.UseSpa(spa =>
             {
