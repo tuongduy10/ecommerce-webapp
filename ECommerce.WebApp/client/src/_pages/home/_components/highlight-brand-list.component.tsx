@@ -51,32 +51,20 @@ const HomeBrandList = () => {
               className='brand-slider my-4'
             >
               {homeStore.highLightBrands.map(item => (
-                <>
-                  <SwiperSlide key={`slc-${item.brandId}`}>
-                    <a href="/" className="bran__logo p-4" style={{ cursor: 'pointer' }}>
-                      <img src={ENV.IMAGE_URL + "/brand/" + item.brandImagePath} alt="" />
-                    </a>
-                  </SwiperSlide>
-                  <SwiperSlide key={`slc-${item.brandId}`}>
-                    <a href="/" className="bran__logo p-4" style={{ cursor: 'pointer' }}>
-                      <img src={ENV.IMAGE_URL + "/brand/" + item.brandImagePath} alt="" />
-                    </a>
-                  </SwiperSlide>
-                  <SwiperSlide key={`slc-${item.brandId}`}>
-                    <a href="/" className="bran__logo p-4" style={{ cursor: 'pointer' }}>
-                      <img src={ENV.IMAGE_URL + "/brand/" + item.brandImagePath} alt="" />
-                    </a>
-                  </SwiperSlide>
-                </>
+                <SwiperSlide key={`slc-${item.brandId}`}>
+                  <a href="/" className="bran__logo p-4" style={{ cursor: 'pointer' }}>
+                    <img src={ENV.IMAGE_URL + "/brand/" + item.brandImagePath} alt="" />
+                  </a>
+                </SwiperSlide>
               ))}
             </Swiper>
-            <button className='absolute left-[-50px] bottom-1/2 translate-y-1/2 hover:bg-red' ref={navigationPrevRef} onClick={handlePrev}>
+            <button className='absolute left-[-50px] bottom-1/2 translate-y-1/2' ref={navigationPrevRef} onClick={handlePrev}>
               <MuiIcon
                 name={ICON_NAME.FEATHER.CHEVRON_LEFT}
                 className='w-[36px] h-[36px] border border-solid border-black hover:border-[#3b99fc] text-black hover:text-[#3b99fc]'
               />
             </button>
-            <button className='absolute right-[-50px] bottom-1/2 translate-y-1/2 hover:bg-red' ref={navigationNextRef} onClick={handleNext}>
+            <button className='absolute right-[-50px] bottom-1/2 translate-y-1/2' ref={navigationNextRef} onClick={handleNext}>
               <MuiIcon
                 name={ICON_NAME.FEATHER.CHEVRON_RIGHT}
                 className='w-[36px] h-[36px] border border-solid border-black hover:border-[#3b99fc] text-black hover:text-[#3b99fc]'

@@ -37,6 +37,7 @@ using ECommerce.Application.Services.User_v2;
 using Microsoft.Extensions.Logging;
 using ECommerce.Data.Models;
 using ECommerce.Application.Services.Chat;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 namespace ECommerce.WebApp
 {
@@ -163,6 +164,7 @@ namespace ECommerce.WebApp
             app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
             app.UseAuthentication();
             app.UseRouting();
@@ -201,6 +203,15 @@ namespace ECommerce.WebApp
                 endpoints.MapControllerRoute(
                     name: "admin",
                     pattern: "{controller=Admin}/{action=Index}/{id?}");
+            });
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "client";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
             });
 
         }

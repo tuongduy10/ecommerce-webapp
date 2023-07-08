@@ -20,7 +20,7 @@ const Banner = () => {
 
   useEffect(() => {
     const path = [
-      '/product-detail'
+      '/v2/product-detail'
     ];
     if (path.includes(window.location.pathname)) {
       setHideBanner(true);

@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { MuiIcon } from "src/_shares/_components";
-import CustomIcon from "src/_shares/_components/mui-icon/_custom/mui-icon.custom";
 import ProductDetailTabReplyBox from "../product-detail-tab-reply-box.component";
 import ProductDetailTabReplyLv2 from "../product-detail-tab-reply-lv2.component";
 import ImageCommentDialog from "src/_pages/product-detail/_dialogs/product-detail-img-comment.dialog";
 import ProductDetailUpdateInfoComment from "../_update/product-detail-update-info-comment.component";
 import ProductDetailUpdateReplyLv2 from "../_update/product-detail-update-reply-lv2.component";
+import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 const ProductDetailTab = () => {
@@ -384,7 +384,7 @@ const ProductDetailTab = () => {
                           >
                             {increaseLike === 0 && (
                               <MuiIcon
-                                name="LIKE"
+                                name={ICON_NAME.FEATHER.THUMBS_UP}
                                 className="feather feather-thumbs-up like-svg"
                                 style={{ cursor: "pointer" }}
                                 onClick={handleIncreaseLike}
