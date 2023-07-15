@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { MuiIcon } from "src/_shares/_components";
 
-const ProductDetailUpdateReplyLv2 = (props: any) => {
+const UpdateReplyLv2 = (props: any) => {
   const { handleCloseUpdateReplyLv2 } = props;
   const [selectedImages, setSelectedImages] = useState<
     { id: number; src: string }[]
@@ -135,4 +135,4 @@ const ProductDetailUpdateReplyLv2 = (props: any) => {
   );
 };
 
-export default ProductDetailUpdateReplyLv2;
+export default UpdateReplyLv2;

@@ -41,6 +41,8 @@ import { ReactComponent as MenuIcon } from "src/_shares/_assets/_icons/menu.svg"
 import { ReactComponent as XIcon } from "src/_shares/_assets/_icons/x.svg";
 import { ReactComponent as ThumbsUpIcon } from "src/_shares/_assets/_icons/thumbs-up.svg";
 import { ReactComponent as ThumbsDownIcon } from "src/_shares/_assets/_icons/thumbs-down.svg";
+import { ReactComponent as PhoneIcon } from "src/_shares/_assets/_icons/phone.svg";
+import { ReactComponent as StarIcon } from "src/_shares/_assets/_icons/star.svg";
 
 const MuiIcon = (props: any) => {
   const { name } = props;
@@ -94,6 +96,8 @@ const MuiIcon = (props: any) => {
       return <KeyboardArrowLeftRoundedIcon {...props} />;
     case ICON_NAME.ROUNDED.ARROW_RIGHT:
       return <KeyboardArrowRightRoundedIcon {...props} />;
+    case ICON_NAME.ROUNDED.STAR:
+      return <StarRoundedIcon {...props} />;
 
     // FEATHER ICONS
     case ICON_NAME.FEATHER.CHEVRON_RIGHT:
@@ -118,8 +122,6 @@ const MuiIcon = (props: any) => {
       return <ThumbUpOffAltIcon {...props} />;
     case ICON_NAME.FEATHER.DISLIKE:
       return <ThumbDownOffAltIcon {...props} />;
-    case ICON_NAME.FEATHER.STAR:
-      return <StarRoundedIcon {...props} />;
     case ICON_NAME.FEATHER.PHONE:
       return <PhoneOutlinedIcon {...props} />;
     case ICON_NAME.FEATHER.EDIT:
@@ -132,6 +134,10 @@ const MuiIcon = (props: any) => {
       return <ThumbsUpIcon {...props} />;
     case ICON_NAME.FEATHER.THUMBS_DOWN:
       return <ThumbsDownIcon {...props} />;
+    case ICON_NAME.FEATHER.PHONE_PRODUCT_DETAIL:
+      return <PhoneIcon {...props} />;
+    case ICON_NAME.FEATHER.STAR:
+      return <StarIcon {...props} />;
 
     default:
       return <></>;

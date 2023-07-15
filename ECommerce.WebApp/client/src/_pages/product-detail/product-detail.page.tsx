@@ -1,10 +1,10 @@
 import { WebDirectional } from "src/_shares/_components";
-import ProductDetailFooter from "./_components/_layout/product-detail-footer.component";
-import ProductDetailTab from "./_components/_product-tab/_main/product-detail-tab.component";
+import ProductDetailFooter from "./_components/layout/product-detail-footer.component";
+import ProductDetailTab from "./_components/tab/main/product-detail-tab.component";
 import ProductDetailInfo from "./_components/product-detail-info.component";
 
-import ProductDetailRealImages from "./_components/product-detail-real-images.component";
-import ProductDetailSlide from "./_components/product-detail-slide.component";
+import ProductDetailRealImages from "./_components/silde/product-detail-real-images.component";
+import ProductDetailSlide from "./_components/silde/product-detail-slide.component";
 
 const ProductDetailPage = () => {
   return (

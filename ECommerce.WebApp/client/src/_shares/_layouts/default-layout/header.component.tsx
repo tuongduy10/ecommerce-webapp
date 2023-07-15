@@ -77,7 +77,7 @@ const Header = () => {
                         <ul className="nav__pc-items nav__default flex">
                             {HEADER_MENU.map((item: any) => (
                                 <li key={`nav-pc-${item.path}`} className="nav__link">
-                                    <a href={item.path} className="py-3">{item.name}</a>
+                                    <a href={item.path} className="py-3 text-[#707070]">{item.name}</a>
                                 </li>
                             ))}
                         </ul>

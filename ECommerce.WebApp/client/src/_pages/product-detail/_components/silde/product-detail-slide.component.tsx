@@ -3,11 +3,15 @@
 import { useState } from "react";
 import SwiperCore, { Pagination, Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
-import GalleryDialog from "../_dialogs/product-detail-gallery.dialog";
+import GalleryDialog from "../dialog/product-detail-gallery.dialog";
 
 export const imagesSlide = [
   "https://hihichi.com/images/products/product_b0214a36-2678-428d-b589-fc451905e4a6.jpg",
   "https://hihichi.com/images/products/product_5cf18ba2-cf25-4301-8925-fdc6aac87374.jpg",
+  "https://hihichi.com/images/products/product_ea42cf0b-685c-42fc-90d3-aa1a8cdf438b.jpg",
+  "https://hihichi.com/images/products/product_ea42cf0b-685c-42fc-90d3-aa1a8cdf438b.jpg",
+  "https://hihichi.com/images/products/product_ea42cf0b-685c-42fc-90d3-aa1a8cdf438b.jpg",
+  "https://hihichi.com/images/products/product_ea42cf0b-685c-42fc-90d3-aa1a8cdf438b.jpg",
   "https://hihichi.com/images/products/product_ea42cf0b-685c-42fc-90d3-aa1a8cdf438b.jpg",
 ];
 
@@ -63,7 +67,6 @@ const ProductDetailSlide = () => {
                 {imagesSlide.map((image, index) => (
                   <SwiperSlide key={image}>
                     <img
-                      id="h-full"
                       className="cursor-grab"
                       src={image}
                       alt=""

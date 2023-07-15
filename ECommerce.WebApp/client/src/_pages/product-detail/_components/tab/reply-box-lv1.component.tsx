@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { MuiIcon } from "src/_shares/_components";
 
-const ProductDetailTabReplyBox = (props: { handleCloseReplyBox: any }) => {
+const ReplyBoxLv1 = (props: { handleCloseReplyBox: any }) => {
   const { handleCloseReplyBox } = props;
   const [selectedImagesReplyBox, setSelectedImagesReplyBox] = useState<
     { id: number; src: string }[]
@@ -48,7 +48,7 @@ const ProductDetailTabReplyBox = (props: { handleCloseReplyBox: any }) => {
         <textarea
           name=""
           id=""
-          placeholder="Bình luận"
+          placeholder="Bình luận lv1"
           className="flex w-full mb-2 rep-comment-val-lv1"
         ></textarea>
       </div>
@@ -137,4 +137,4 @@ const ProductDetailTabReplyBox = (props: { handleCloseReplyBox: any }) => {
   );
 };
 
-export default ProductDetailTabReplyBox;
+export default ReplyBoxLv1;

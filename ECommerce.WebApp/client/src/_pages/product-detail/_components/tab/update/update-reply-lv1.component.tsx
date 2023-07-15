@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { MuiIcon } from "src/_shares/_components";
 
-const ProductDetailUpdateInfoComment = (props: any) => {
+const UpdateReplyLv1 = (props: any) => {
   const { handleCloseUpdateCommentInfo } = props;
   const [checkStar, setCheckStar] = useState(0);
   const [selectedImages, setSelectedImages] = useState<
@@ -154,4 +154,4 @@ const ProductDetailUpdateInfoComment = (props: any) => {
   );
 };
 
-export default ProductDetailUpdateInfoComment;
+export default UpdateReplyLv1;

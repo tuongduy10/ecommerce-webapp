@@ -1,7 +1,7 @@
 import Dialog from "@mui/material/Dialog";
 
 import DialogContent from "@mui/material/DialogContent";
-import { imagesSlide } from "../_components/product-detail-slide.component";
+import { imagesSlide } from "../silde/product-detail-slide.component";
 import { MuiIcon } from "src/_shares/_components";
 
 export default function GalleryDialog(props: any) {

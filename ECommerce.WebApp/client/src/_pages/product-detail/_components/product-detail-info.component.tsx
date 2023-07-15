@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 import { useState } from "react";
 import { MuiIcon } from "src/_shares/_components";
+import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 const ProductDetailInfo = () => {
@@ -29,12 +30,13 @@ const ProductDetailInfo = () => {
             <span>123456</span>
           </a>
           <button className="product-rating flex gap-2 mb-2 items-center">
-            <div className="stars">
+            <div className="stars flex">
               {[...Array(5)].map((_, index) => (
                 <MuiIcon
                   key={index}
-                  name="STAR"
-                  className="checked text-[1.2rem]"
+                  name={ICON_NAME.FEATHER.STAR}
+                  className="checked"
+                  sx={{fontSize: '1.5rem important;'}}
                 />
               ))}
             </div>
@@ -45,17 +47,17 @@ const ProductDetailInfo = () => {
           <div className="w-6/12">
             <a className="product__detail-action" href="tel: 0935939401">
               <span className="icon mr-2">
-                <MuiIcon name="PHONE" className="feather feather-phone" />
+                <MuiIcon name={ICON_NAME.FEATHER.PHONE_PRODUCT_DETAIL} className="feather feather-phone" />
               </span>
-              <span className="text">0935939401</span>
+              <span className="text text-[#707070]">0935939401</span>
             </a>
           </div>
           <div className="w-6/12">
             <a className="product__detail-action">
               <span className="icon mr-2">
-                <MuiIcon name="HEART" className="feather feather-heart" />
+                <MuiIcon name={ICON_NAME.FEATHER.HEART} className="feather feather-heart" />
               </span>
-              <span className="text">Yêu Thích</span>
+              <span className="text text-[#707070]">Yêu Thích</span>
             </a>
           </div>
         </div>
@@ -73,7 +75,7 @@ const ProductDetailInfo = () => {
               />
             </div>
             <a
-              className="hover-tag-a"
+              className="hover-tag-a text-[#707070]"
               style={{
                 textDecoration: "underline",
                 cursor: "pointer",

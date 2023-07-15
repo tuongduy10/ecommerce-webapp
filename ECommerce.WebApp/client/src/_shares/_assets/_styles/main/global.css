@@ -54,7 +54,7 @@ select {
   /* for Chrome */
   -webkit-appearance: none;
 }
-a:not([href]):not([tabindex]) {
+/* a:not([href]):not([tabindex]) {
   color: inherit;
   text-decoration: none;
 }
@@ -62,7 +62,7 @@ a:not([href]):not([tabindex]):focus,
 a:not([href]):not([tabindex]):hover {
   color: inherit;
   text-decoration: none;
-}
+} */
 .point-red-quantity {
   position: absolute;
   border-radius: 50%;

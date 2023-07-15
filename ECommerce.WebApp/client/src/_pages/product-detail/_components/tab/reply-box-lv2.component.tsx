@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from "react";
 import { MuiIcon } from "src/_shares/_components";
+import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
 
-const ProductDetailTabReplyLv2 = (props: any) => {
+const ReplyBoxLv2 = (props: any) => {
   const { setOpenUpdateReplyLv2, isOpenUpdateReplyLv2 } = props;
   const [increaseLike, setIncreaseLike] = useState(0);
   const [increaseDisLike, setIncreaseDisLike] = useState(0);
@@ -97,7 +98,7 @@ const ProductDetailTabReplyLv2 = (props: any) => {
             className="user__comment-role ml-2 px-1"
             style={{ whiteSpace: "nowrap" }}
           >
-            Quản trị viên
+            Người bán
           </span>
         </div>
         <span className="user__comment-time ml-2">19:39, 09/06/2023</span>
@@ -129,22 +130,12 @@ const ProductDetailTabReplyLv2 = (props: any) => {
               color: "#288ad9",
             }}
           >
-            {increaseLike === 0 && (
-              <MuiIcon
-                name="LIKE"
-                className="feather feather-thumbs-up like-svg"
-                style={{ cursor: "pointer" }}
-                onClick={handleIncreaseLike}
-              />
-            )}
-            {increaseLike > 0 && (
-              <MuiIcon
-                name="LIKE_FILL"
-                className="feather feather-thumbs-up like-svg"
-                style={{ cursor: "pointer" }}
-                onClick={handleDecreaseLike}
-              />
-            )}
+            <MuiIcon
+              className="cursor-pointer"
+              name={ICON_NAME.FEATHER.THUMBS_UP}
+              fill={increaseLike > 0 ? 'currentColor' : 'none'}
+              onClick={increaseLike > 0 ? handleDecreaseLike : handleIncreaseLike}
+            />
             <span
               className="user__comment-time ml-2 like count"
               style={{ color: "#707070" }}
@@ -161,22 +152,12 @@ const ProductDetailTabReplyLv2 = (props: any) => {
               color: "#288ad9",
             }}
           >
-            {increaseDisLike === 0 && (
-              <MuiIcon
-                name="DISLIKE"
-                className="feather feather-thumbs-down dislike-svg"
-                style={{ cursor: "pointer" }}
-                onClick={handleIncreaseDisLike}
-              />
-            )}
-            {increaseDisLike > 0 && (
-              <MuiIcon
-                name="DISLIKE_FILL"
-                className="feather feather-thumbs-down dislike-svg"
-                style={{ cursor: "pointer" }}
-                onClick={handleDecreaseDisLike}
-              />
-            )}
+            <MuiIcon
+              className="cursor-pointer"
+              name={ICON_NAME.FEATHER.THUMBS_DOWN}
+              fill={increaseDisLike > 0 ? 'currentColor' : 'none'}
+              onClick={increaseDisLike > 0 ? handleDecreaseDisLike : handleIncreaseDisLike}
+            />
             <span
               className="user__comment-time ml-2 dislike count"
               style={{ color: "#707070" }}
@@ -253,101 +234,103 @@ const ProductDetailTabReplyLv2 = (props: any) => {
           </div>
         </div>
       )}
-      <div className={`reply-box ${isOpenedReplyBox ? "" : "hidden"}`}>
-        <div className="flex mt-2">
-          <textarea
-            name=""
-            id=""
-            placeholder="Bình luận"
-            className="flex w-full mb-2 rep-comment-val-lv1"
-          ></textarea>
-        </div>
-        <div className="text-left">
-          <div className="upload-image mb-2 mt-2">
-            <label htmlFor="image-upload-reply-lv2" className="input-tile mb-2">
-              <a className="upload">Chọn ảnh</a>
-              <span className="ml-2">Thêm hình ảnh nếu có (Tối đa 3)</span>
-            </label>
-            <input
-              id="image-upload-reply-lv2"
-              type="file"
-              multiple
-              hidden
-              onChange={handleImageUploadReplyBox}
-            />
-            <output className="images-uploaded flex" id="image-reply-preview">
-              {selectedImagesReplyBox.map((image) => (
-                <div
-                  className="image__upload-new-item image__upload-item mr-2 mt-2"
-                  key={image.id}
-                >
-                  <div className="border mb-2 mx-auto">
-                    <div
-                      className="image-uploaded"
-                      style={{
-                        position: "relative",
-                        width: "95px",
-                        height: "95px",
-                        marginRight: "4px",
-                      }}
-                    >
-                      <img
-                        src={image.src}
-                        alt="Ảnh của bạn"
+      {isOpenedReplyBox && (
+        <div className="reply-box">
+          <div className="flex mt-2">
+            <textarea
+              name=""
+              id=""
+              placeholder="Bình luận lv2"
+              className="flex w-full mb-2 rep-comment-val-lv1"
+            ></textarea>
+          </div>
+          <div className="text-left">
+            <div className="upload-image mb-2 mt-2">
+              <label htmlFor="image-upload-reply-lv2" className="input-tile mb-2">
+                <a className="upload">Chọn ảnh</a>
+                <span className="ml-2">Thêm hình ảnh nếu có (Tối đa 3)</span>
+              </label>
+              <input
+                id="image-upload-reply-lv2"
+                type="file"
+                multiple
+                hidden
+                onChange={handleImageUploadReplyBox}
+              />
+              <output className="images-uploaded flex" id="image-reply-preview">
+                {selectedImagesReplyBox.map((image) => (
+                  <div
+                    className="image__upload-new-item image__upload-item mr-2 mt-2"
+                    key={image.id}
+                  >
+                    <div className="border mb-2 mx-auto">
+                      <div
+                        className="image-uploaded"
                         style={{
-                          height: "100%",
-                          width: "100%",
-                          objectFit: "contain",
-                        }}
-                      />
-                      <span
-                        className="remove__upload"
-                        style={{
-                          position: "absolute",
-                          top: "0",
-                          right: "0",
-                          cursor: "pointer",
-                          backgroundColor: "#B22B27",
-                          borderRadius: "50%",
+                          position: "relative",
+                          width: "95px",
+                          height: "95px",
+                          marginRight: "4px",
                         }}
                       >
-                        <MuiIcon
-                          name="X"
+                        <img
+                          src={image.src}
+                          alt="Ảnh của bạn"
                           style={{
-                            stroke: "#FFFBF1",
-                            fontWeight: "900",
+                            height: "100%",
+                            width: "100%",
+                            objectFit: "contain",
                           }}
-                          className="feather feather-x"
-                          onClick={() => handleRemoveImageReplyBox(image.id)}
                         />
-                      </span>
+                        <span
+                          className="remove__upload"
+                          style={{
+                            position: "absolute",
+                            top: "0",
+                            right: "0",
+                            cursor: "pointer",
+                            backgroundColor: "#B22B27",
+                            borderRadius: "50%",
+                          }}
+                        >
+                          <MuiIcon
+                            name="X"
+                            style={{
+                              stroke: "#FFFBF1",
+                              fontWeight: "900",
+                            }}
+                            className="feather feather-x"
+                            onClick={() => handleRemoveImageReplyBox(image.id)}
+                          />
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </output>
+                ))}
+              </output>
+            </div>
+          </div>
+          <div className="text-right flex justify-end ">
+            <input
+              onClick={handleCloseReplyBox}
+              type="button"
+              value="Hủy"
+              style={{
+                padding: " 6px 11px",
+                cursor: "pointer",
+                backgroundColor: "#unset",
+                border: "1px solid #333",
+                color: "#333",
+                marginRight: "4px",
+                marginTop: "px",
+              }}
+            />
+            <button type="button">Gửi</button>
           </div>
         </div>
-        <div className="text-right flex justify-end ">
-          <input
-            onClick={handleCloseReplyBox}
-            type="button"
-            value="Hủy"
-            style={{
-              padding: " 6px 11px",
-              cursor: "pointer",
-              backgroundColor: "#unset",
-              border: "1px solid #333",
-              color: "#333",
-              marginRight: "4px",
-              marginTop: "px",
-            }}
-          />
-          <button type="button">Gửi</button>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
 
-export default ProductDetailTabReplyLv2;
+export default ReplyBoxLv2;
