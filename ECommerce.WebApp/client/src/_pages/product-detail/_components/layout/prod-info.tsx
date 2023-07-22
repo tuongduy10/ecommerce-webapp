@@ -147,7 +147,7 @@ const ProductDetailInfo = () => {
               <div className="option-title">Option Name</div>
               <div className="options-wrapper">
                 <select className="options form-select w-full pro-options md:h-[33px]">
-                  <option disabled selected>
+                  <option disabled>
                     - Chọn -
                   </option>
 
@@ -187,8 +187,6 @@ const ProductDetailInfo = () => {
                 <span className="saleprice">
                   <p className="line-through">{formattedSalePrice}</p>
                 </span>
-
-                {/* <span className="price mr-2">500 ₫</span> */}
               </label>
             </div>
 
@@ -215,8 +213,6 @@ const ProductDetailInfo = () => {
                 <span className="saleprice">
                   <p className="line-through">{formattedSalePrice}</p>
                 </span>
-
-                {/* <span className="price mr-2">{formattedPrice}</span> */}
               </label>
             </div>
 

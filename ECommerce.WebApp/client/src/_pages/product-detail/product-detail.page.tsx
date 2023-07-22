@@ -1,10 +1,10 @@
 import { WebDirectional } from "src/_shares/_components";
-import ProductDetailFooter from "./_components/layout/product-detail-footer.component";
-import ProductDetailTab from "./_components/tab/main/product-detail-tab.component";
-import ProductDetailInfo from "./_components/product-detail-info.component";
+import ProductDetailFooter from "./_components/layout/prod-suggestion";
+import ProductDetailTab from "./_components/tab/prod-tab";
+import ProductDetailInfo from "./_components/layout/prod-info";
 
-import ProductDetailRealImages from "./_components/silde/product-detail-real-images.component";
-import ProductDetailSlide from "./_components/silde/product-detail-slide.component";
+import ProductDetailRealImages from "./_components/slide/prod-real-images";
+import ProductDetailSlide from "./_components/slide/prod-slide";
 
 const ProductDetailPage = () => {
   return (
@@ -14,7 +14,7 @@ const ProductDetailPage = () => {
           <WebDirectional
             items={[
               {
-                path: "/product-detail",
+                path: "/product-list",
                 name: "Tên nhãn hàng",
               },
               {

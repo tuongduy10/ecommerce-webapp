@@ -1,9 +1,7 @@
-/* eslint-disable jsx-a11y/anchor-has-content */
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import { useState } from "react";
 import SwiperCore, { Pagination, Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
-import GalleryDialog from "../dialog/product-detail-gallery.dialog";
+import GalleryDialog from "../dialog/prod-gallery";
 
 export const imagesSlide = [
   "https://hihichi.com/images/products/product_b0214a36-2678-428d-b589-fc451905e4a6.jpg",
@@ -18,9 +16,7 @@ export const imagesSlide = [
 const ProductDetailSlide = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [swiperInstance, setSwiperInstance] = useState<SwiperCore | null>(null);
-
   const [openDialog, setOpenDialog] = useState(false);
-
   const [selectedImage, setSelectedImage] = useState("");
 
   const handleClickOpenDialog = (index: number) => {
@@ -65,7 +61,7 @@ const ProductDetailSlide = () => {
                 onSlideChange={handleSwiperSlideChange}
               >
                 {imagesSlide.map((image, index) => (
-                  <SwiperSlide key={image}>
+                  <SwiperSlide key={`main-img-${index}`}>
                     <img
                       className="cursor-grab"
                       src={image}
@@ -89,8 +85,8 @@ const ProductDetailSlide = () => {
             >
               {imagesSlide.map((image, index) => (
                 <li
+                  key={`child-img-${index}`}
                   className={`${activeSlide === index ? "active" : ""} mr-2`}
-                  key={index}
                   onClick={() => handleGalleryItemClick(index)}
                   style={{ borderRadius: "5px", cursor: "pointer" }}
                 >

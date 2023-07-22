@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { IUserComment } from "src/_pages/product-detail/_interfaces/comment.interface";
 import { MuiIcon } from "src/_shares/_components";
+import UploadInput from "src/_shares/_components/input/upload";
 import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
 
 const UserComment = (props: IUserComment) => {
-    const { type } = props;
-    const [selectedImages, setSelectedImages] = useState<{ id: number; src: string }[]>([]);
+    const { id, type } = props;
     const [enableActions, setEnableActions] = useState<boolean>(false);
     const [enableEdit, setEnableEdit] = useState<boolean>(false);
     const [enableReply, setEnableReply] = useState<boolean>(false);
@@ -30,40 +30,13 @@ const UserComment = (props: IUserComment) => {
         }
     }
 
-    const handleImageUpload = (e: { target: { files: any } }) => {
-        const files = e.target.files;
-        const imageArray: any = [];
-
-        for (let i = 0; i < files.length; i++) {
-            if (i < 3) {
-                const rd = new FileReader();
-
-                rd.onload = (e) => {
-                    if (e.target) {
-                        const imageObject = {
-                            id: i,
-                            src: e.target.result as string,
-                        };
-                        imageArray.push(imageObject);
-                        if (imageArray.length === Math.min(files.length, 3)) {
-                            setSelectedImages(imageArray);
-                        }
-                    }
-                };
-
-                rd.readAsDataURL(files[i]);
-            }
-        }
-    };
-
-    const handleRemoveImage = (id: number) => {
-        const updatedImages = selectedImages.filter((image) => image.id !== id);
-        setSelectedImages(updatedImages);
-    };
+    const onUpload = (e: any) => {
+        console.log(e);
+    }
 
     return (
         <div className={type === 'reply' ? 'reply mb-2' : ''}>
-            {type === 'post' ? null : (
+            {type !== 'post' && (
                 <div className="flex items-center justify-between flex-wrap">
                     <div className="flex items-center mb-2">
                         <span className="user__comment-name mr-2">
@@ -128,14 +101,14 @@ const UserComment = (props: IUserComment) => {
             )}
             {!enableReply && type !== 'post' && (
                 <div className="flex items-center mb-2 reply-action action-box">
-                    <a
+                    <div
                         className="mr-2"
                         style={{ color: "#288ad9", cursor: "pointer" }}
                         onClick={() => setEnableReply(true)}
                     >
                         Trả lời
-                    </a>
-                    <a
+                    </div>
+                    <div
                         className="favor flex items-center"
                         style={{
                             cursor: "default",
@@ -143,18 +116,18 @@ const UserComment = (props: IUserComment) => {
                             height: "18px",
                             color: "#288ad9",
                         }}
-                        onClick={() => toggleLikeDislike('like')}
                     >
                         <MuiIcon
                             name={ICON_NAME.FEATHER.THUMBS_UP}
                             className="cursor-pointer"
                             fill={likeDislike === 'like' ? 'currentColor' : 'none'}
+                            onClick={() => toggleLikeDislike('like')}
                         />
                         <span className="user__comment-time ml-2 like count" style={{ color: "#707070" }}>
                             10
                         </span>
-                    </a>
-                    <a
+                    </div>
+                    <div
                         className="favor flex items-center"
                         style={{
                             cursor: "default",
@@ -162,12 +135,12 @@ const UserComment = (props: IUserComment) => {
                             height: "18px",
                             color: "#288ad9",
                         }}
-                        onClick={() => toggleLikeDislike('dislike')}
                     >
                         <MuiIcon
                             name={ICON_NAME.FEATHER.THUMBS_DOWN}
                             className="cursor-pointer"
                             fill={likeDislike === 'dislike' ? 'currentColor' : 'none'}
+                            onClick={() => toggleLikeDislike('dislike')}
                         />
                         <span
                             className="user__comment-time ml-2 dislike count"
@@ -175,14 +148,10 @@ const UserComment = (props: IUserComment) => {
                         >
                             5
                         </span>
-                    </a>
+                    </div>
                     <div style={{ position: "relative" }}>
-                        <a
-                            className="favor flex items-center"
-                            style={{
-                                marginRight: "5px",
-                                height: "18px",
-                            }}
+                        <div
+                            className="favor flex items-center h-[18px] mr-[5px]"
                             onClick={() => setEnableActions(toggle => !toggle)}
                         >
                             <span
@@ -207,7 +176,7 @@ const UserComment = (props: IUserComment) => {
                                     }}
                                 />
                             </span>
-                        </a>
+                        </div>
                         {enableActions && (
                             <div
                                 className={`action-list`}
@@ -225,15 +194,13 @@ const UserComment = (props: IUserComment) => {
                             >
                                 <ul className="text-center">
                                     <li className="border-bottom">
-                                        <a className="text-[var(--blue-dior)]"
-                                            onClick={onEnableEdit}
-                                        >Chỉnh sửa</a>
+                                        <span className="text-[var(--blue-dior)]" onClick={onEnableEdit}>Chỉnh sửa</span>
                                     </li>
                                     <li className="border-bottom">
-                                        <a className="text-[red]">Xóa</a>
+                                        <span className="text-[red]">Xóa</span>
                                     </li>
                                     <li>
-                                        <a onClick={() => setEnableActions(false)}>Hủy</a>
+                                        <span onClick={() => setEnableActions(false)}>Hủy</span>
                                     </li>
                                 </ul>
                             </div>
@@ -252,70 +219,20 @@ const UserComment = (props: IUserComment) => {
                 </div>
                 <div className="text-left">
                     <div className="upload-image mb-2 mt-2">
-                        <label htmlFor="image-upload-reply" className="input-tile mb-2">
+                        <label htmlFor={id} className="input-tile mb-2">
                             <span className="upload">Chọn ảnh</span>
                             <span className="ml-2">Thêm hình ảnh nếu có (Tối đa 3)</span>
                         </label>
-                        <input
-                            id="image-upload-reply"
-                            type="file"
-                            multiple
+                        <UploadInput 
+                            id={id}
+                            multiple 
                             hidden
-                            onChange={handleImageUpload}
+                            onChangeFiles={onUpload} 
                         />
-                        <output
-                            className="images-uploaded flex mt-2"
-                            id="image-reply-preview"
-                        >
-                            {selectedImages.map((image) => (
-                                <div className="image__upload-item" key={image.id}>
-                                    <div
-                                        className="image-uploaded"
-                                        style={{
-                                            position: "relative",
-                                            width: "100px",
-                                            height: "100px",
-                                            marginRight: "4px",
-                                        }}
-                                    >
-                                        <img
-                                            src={image.src}
-                                            alt="Ảnh của bạn"
-                                            style={{
-                                                height: "100%",
-                                                width: "100%",
-                                                objectFit: "contain",
-                                            }}
-                                        />
-                                        <span
-                                            className="remove__upload"
-                                            style={{
-                                                position: "absolute",
-                                                top: "0",
-                                                right: "0",
-                                                cursor: "pointer",
-                                                backgroundColor: "#B22B27",
-                                                borderRadius: "50%",
-                                            }}
-                                        >
-                                            <MuiIcon
-                                                name="X"
-                                                style={{
-                                                    stroke: "#FFFBF1",
-                                                    fontWeight: "900",
-                                                }}
-                                                className="feather feather-x"
-                                                onClick={() => handleRemoveImage(image.id)}
-                                            />
-                                        </span>
-                                    </div>
-                                </div>
-                            ))}
-                        </output>
                     </div>
                 </div>
                 <div className="text-right flex justify-end ">
-                    { type !== 'post' && (
+                    {type !== 'post' && (
                         <input
                             type="button"
                             value="Hủy"
@@ -332,6 +249,7 @@ const UserComment = (props: IUserComment) => {
                     )}
                     <button type="button">
                         {type === 'post' && 'Gủi bình luận'}
+                        {['reply', 'comment'].includes(type) && 'Gửi'}
                     </button>
                 </div>
             </>)}

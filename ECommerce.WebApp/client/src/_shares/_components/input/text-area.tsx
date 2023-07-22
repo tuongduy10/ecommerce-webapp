@@ -1,6 +1,10 @@
-const TextArea = (props: any) => {
+interface ITextArea extends React.HTMLProps<HTMLTextAreaElement> {
+
+}
+
+const TextArea = (props: ITextArea) => {
     return (
-        <textarea rows={4} cols={50}>
+        <textarea {...props}>
             At w3schools.com you will learn how to make a website. They offer free tutorials in all web development technologies.
         </textarea>
     )
