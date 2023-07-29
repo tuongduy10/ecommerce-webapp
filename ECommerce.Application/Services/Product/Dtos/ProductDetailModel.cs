@@ -32,6 +32,17 @@ namespace ECommerce.Application.Services.Product.Dtos
         public DateTime? ProductImportDate { get; set; } //
         public Rate ProductRate { get; set; } //
 
+        // Price
+        public decimal? PriceAvailable { get; set; }
+        public decimal? DiscountAvailable { get; set; }
+        public decimal? PricePreOrder { get; set; }
+        public decimal? DiscountPreOrder { get; set; }
+        public decimal? PriceImport { get; set; }
+        public decimal? PriceForSeller { get; set; }
+        public decimal? ProfitAvailable { get; set; }
+        public decimal? ProfitPreOrder { get; set; }
+        public decimal? ProfitForSeller { get; set; }
+
         public List<string> ProductImages { get; set; } // for view only
         public List<string> ProductUserImages { get; set; } // for view only
 

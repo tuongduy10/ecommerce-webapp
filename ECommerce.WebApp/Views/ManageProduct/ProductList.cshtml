@@ -9,22 +9,6 @@
         <h6 class="m-0 font-weight-bold text-primary">Quản lý sản phẩm</h6>
     </div>
     <div class="card-body">
-        @*<div class="form-group mb-2">
-            <select class="form-control get-products" aria-label="Default select example">
-                <option value="all">Tất cả</option>
-                @foreach (var sub in Model.subCategories)
-                {
-                    if (Context.Request.Query["subCategoryId"].ToString() == sub.SubCategoryId.ToString())
-                    {
-                        <option value="@sub.SubCategoryId" selected>@sub.SubCategoryName</option>
-                    }
-                    else
-                    {
-                        <option value="@sub.SubCategoryId">@sub.SubCategoryName</option>
-                    }
-                }
-            </select>
-        </div>*@
         <div class="d-flex align-items-center flex-wrap mb-2">
             <div class="mr-4">
                 <input type="checkbox" name="select-all" id="select-all">
@@ -81,28 +65,10 @@
                             </td>
                             <td>@product.ShopName</td>
                             <td>
-                                @foreach (var price in product.Price)
-                                {
-                                    @if (price.ProductTypeId == 1)
-                                    {
-                                        @if(price.Price != null)
-                                        {
-                                            @String.Format("{0:0,0} ₫", price.Price)
-                                        }
-                                    }
-                                }
+                                @String.Format("{0:0,0} ₫", product.PriceAvailable ?? 0)
                             </td>
                             <td>
-                                @foreach (var price in product.Price)
-                                {
-                                    @if (price.ProductTypeId == 2)
-                                    {
-                                        @if (price.Price != null)
-                                        {
-                                            @String.Format("{0:0,0} ₫", price.Price)
-                                        }
-                                    }
-                                }
+                                @String.Format("{0:0,0} ₫", product.PricePreOrder ?? 0)
                             </td>
                             <td>@product.SubCategoryName</td>
                             <td>@product.CategoryName</td>

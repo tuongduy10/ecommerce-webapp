@@ -215,61 +215,52 @@
                                         <span class="sales-value">Giảm @Model.product.DiscountPercent%</span>
                                     }
 
-                                    @foreach (var item in Model.product.Prices)
-                                    {
-                                        if (item.ProductTypeId == 1 && item.Price != null)
+                                <div class="option-price form-check form-check-inline w-100">
+                                    <div class="option-title">
+                                        <input class="form-check-input" type="radio"
+                                                name="pro-type" id="inlineRadio1" value="1">
+                                        <label class="form-check-label" for="inlineRadio1">
+                                            Có sẵn
+                                        </label>
+                                    </div>
+                                    <label class="form-check-label d-flex align-items-center" for="inlineRadio1">
+                                        @if (Model.product.DiscountAvailable != null)
                                         {
-                                            <div class="option-price form-check form-check-inline w-100">
-                                                <div class="option-title">
-                                                    <input class="form-check-input" type="radio"
-                                                           name="pro-type" id="inlineRadio1" value="1">
-                                                    <label class="form-check-label" for="inlineRadio1">
-                                                        Có sẵn
-                                                    </label>
-                                                </div>
-                                                <label class="form-check-label d-flex align-items-center"
-                                                       for="inlineRadio1">
-                                                    @if (item.PriceOnSell != null)
-                                                    {
-                                                        <span class="price mr-2">@String.Format("{0:0,0} ₫", item.PriceOnSell)</span>
-                                                        <span class="saleprice">
-                                                            <strike>@String.Format("{0:0,0} ₫", item.Price)</strike>
-                                                        </span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="price mr-2">@String.Format("{0:0,0} ₫", item.Price)</span>
-                                                    }
-                                                </label>
-                                            </div>
+                                            <span class="price mr-2">@String.Format("{0:0,0} ₫", Model.product.DiscountAvailable)</span>
+                                            <span class="saleprice">
+                                                <strike>@String.Format("{0:0,0} ₫", Model.product.PriceAvailable)</strike>
+                                            </span>
                                         }
-                                        if (item.ProductTypeId == 2 && item.Price != null)
+                                        else
                                         {
-                                            <div class="option-price form-check form-check-inline w-100">
-                                                <div class="option-title">
-                                                    <input class="form-check-input" type="radio"
-                                                           name="pro-type" id="inlineRadio2" value="2">
-                                                    <label class="form-check-label" for="inlineRadio2">
-                                                        Đặt trước
-                                                    </label>
-                                                </div>
-                                                <label class="form-check-label d-flex align-items-center"
-                                                       for="inlineRadio2">
-                                                    @if (item.PriceOnSell != null)
-                                                    {
-                                                        <span class="price mr-2">@String.Format("{0:0,0} ₫", item.PriceOnSell)</span>
-                                                        <span class="saleprice">
-                                                            <strike>@String.Format("{0:0,0} ₫", item.Price)</strike>
-                                                        </span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="price mr-2">@String.Format("{0:0,0} ₫", item.Price)</span>
-                                                    }
-                                                </label>
-                                            </div>
+                                            <span class="price mr-2">@String.Format("{0:0,0} ₫", Model.product.PriceAvailable ?? 0)</span>
                                         }
-                                    }
+                                    </label>
+                                </div>
+
+                                <div class="option-price form-check form-check-inline w-100">
+                                    <div class="option-title">
+                                        <input class="form-check-input" type="radio"
+                                                name="pro-type" id="inlineRadio2" value="2">
+                                        <label class="form-check-label" for="inlineRadio2">
+                                            Đặt trước
+                                        </label>
+                                    </div>
+                                    <label class="form-check-label d-flex align-items-center" for="inlineRadio2">
+                                        @if (Model.product.DiscountPreOrder != null)
+                                        {
+                                            <span class="price mr-2">@String.Format("{0:0,0} ₫", Model.product.DiscountPreOrder)</span>
+                                            <span class="saleprice">
+                                                <strike>@String.Format("{0:0,0} ₫", Model.product.PricePreOrder)</strike>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="price mr-2">@String.Format("{0:0,0} ₫", Model.product.PricePreOrder ?? 0)</span>
+                                        }
+                                    </label>
+                                </div>
+
                                     <!-- Discount -->
                                     @if (Model.discount != null)
                                     {
@@ -941,13 +932,13 @@
 
                                             @if (product.PriceOnSell == null)
                                             {
-                                                <div class="product-subprice" style="visibility: hidden">@String.Format("{0:0,0} ₫", product.Price)</div>
-                                                <div class="product-price">@String.Format("{0:0,0} ₫", product.Price)</div>
+                                                <div class="product-subprice" style="visibility: hidden">@String.Format("{0:0,0} ₫", product.Price ?? 0)</div>
+                                                <div class="product-price">@String.Format("{0:0,0} ₫", product.Price ?? 0)</div>
                                             }
                                             else
                                             {
-                                                <div class="product-subprice">@String.Format("{0:0,0} ₫", product.Price)</div>
-                                                <div class="product-price">@String.Format("{0:0,0} ₫", product.PriceOnSell)</div>
+                                                <div class="product-subprice">@String.Format("{0:0,0} ₫", product.Price ?? 0)</div>
+                                                <div class="product-price">@String.Format("{0:0,0} ₫", product.PriceOnSell ?? 0)</div>
                                             }
 
                                             <div class="product-btn">
