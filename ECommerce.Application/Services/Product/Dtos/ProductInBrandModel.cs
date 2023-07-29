@@ -15,6 +15,13 @@ namespace ECommerce.Application.Services.Product.Dtos
         public int SubCategoryId { get; set; }
         public string ShopName { get; set; }
         public string BrandName { get; set; }
+
+        public decimal? PriceAvailable { get; set; }
+        public decimal? DiscountAvailable { get; set; }
+        public decimal? PricePreOrder { get; set; }
+        public decimal? DiscountPreOrder { get; set; }
+
+
         public DateTime? ProductImportDate { get; set; }
         public string ProductImages { get; set; }
         public List<ProductPrice> Price { get; set; }

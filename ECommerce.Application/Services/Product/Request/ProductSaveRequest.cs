@@ -39,7 +39,13 @@ namespace ECommerce.Application.Services.Product.Dtos
         public List<IFormFile> userImage { get; set; }
         public List<string> systemFileName { get; set; }
         public List<string> userFileName { get; set; }
-        public string priceAvailable { get; set; }
-        public string pricePreorder { get; set; }
+
+        //Price
+        public decimal? priceAvailable { get; set; }
+        public decimal? discountAvailable { get; set; }
+        public decimal? pricePreOrder { get; set; }
+        public decimal? discountPreOrder { get; set; }
+        public decimal? priceImport { get; set; }
+        public decimal? priceForSeller { get; set; }
     }
 }

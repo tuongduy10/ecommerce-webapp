@@ -164,76 +164,11 @@ namespace ECommerce.WebApp.Controllers.Client
                 pro.BrandName = item.BrandName;
                 pro.ProductImportDate = item.ProductImportDate;
                 pro.Status = item.Status;
-
-                foreach (var price in item.Price)
-                {
-                    // Hàng đặt trước
-                    if (price.ProductTypeId == (int)enumProductType.PreOrder && price.Price != null)
-                    {
-                        pro.ProductTypeName = ProductTypeConst.PreOrderName;
-                        pro.Price = price.Price;
-                        pro.PriceOnSell = price.PriceOnSell == null ? null : price.PriceOnSell;
-                    }
-                    // Hàng có sẵn
-                    else
-                    {
-                        if (price.ProductTypeId == (int)enumProductType.Available && price.Price != null)
-                        {
-                            pro.ProductTypeName = ProductTypeConst.AvailableName;
-                            pro.Price = price.Price;
-                            pro.PriceOnSell = price.PriceOnSell == null ? null : price.PriceOnSell;
-                        }
-                    } 
-                }
-
-                //if (item.Type.Count == 1)
-                //{
-                //    pro.ProductTypeName = item.Type[0].ProductTypeName;
-                //}
-                //if (item.Type.Count == 2)
-                //{
-                //    foreach (var type in item.Type)
-                //    {
-                //        if (type.ProductTypeId == 1)
-                //        {
-                //            pro.ProductTypeName = type.ProductTypeName;
-                //        }
-                //    }
-                //}
-
-                //// price
-                //if (item.Price.Count == 2)
-                //{
-                //    foreach (var price in item.Price)
-                //    {
-                //        if (price.ProductTypeId == 2)
-                //        {
-                //            if (price.PriceOnSell == null)
-                //            {
-                //                pro.Price = price.Price;
-                //                pro.PriceOnSell = null;
-                //            }
-                //            else
-                //            {
-                //                pro.Price = price.Price;
-                //                pro.PriceOnSell = price.PriceOnSell;
-                //            }
-                //        }
-                //    }
-                //}
-                //if (item.Price.Count == 1)
-                //{
-                //    if (item.Price[0].PriceOnSell == null)
-                //    {
-                //        pro.Price = item.Price[0].Price;
-                //        pro.PriceOnSell = null;
-                //    }
-                //    else
-                //    {
-                //        pro.Price = item.Price[0].Price;
-                //        pro.PriceOnSell = item.Price[0].PriceOnSell;
-                //    }
-                //}
+                pro.Price = item.PricePreOrder ?? item.PriceAvailable;
+                pro.PriceOnSell = item.DiscountPreOrder ?? item.DiscountAvailable;
+                pro.ProductTypeName = 
+                    (item.PricePreOrder != null || item.DiscountAvailable != null) ? "Hàng đặt trước" : 
+                    (item.PricePreOrder != null || item.DiscountAvailable != null) ? "Hàng có sẵn" : "" ;
 
                 _list.Add(pro);
             }

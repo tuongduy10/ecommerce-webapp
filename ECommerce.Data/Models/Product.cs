@@ -42,6 +42,17 @@ namespace ECommerce.Data.Models
         public string SizeGuide { get; set; }
         public string Link { get; set; }
 
+        // Price
+        public decimal? PriceAvailable { get; set; }
+        public decimal? DiscountAvailable { get; set; }
+        public decimal? PricePreOrder { get; set; }
+        public decimal? DiscountPreOrder { get; set; }
+        public decimal? PriceImport { get; set; }
+        public decimal? PriceForSeller { get; set; }
+        public decimal? ProfitAvailable { get; set; }
+        public decimal? ProfitPreOrder { get; set; }
+        public decimal? ProfitForSeller { get; set; }
+
         public virtual Brand Brand { get; set; }
         public virtual Shop Shop { get; set; }
         public virtual SubCategory SubCategory { get; set; }

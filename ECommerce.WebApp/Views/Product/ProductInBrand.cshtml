@@ -399,13 +399,13 @@
 
                                                     @if (product.PriceOnSell == null)
                                                     {
-                                                        <div class="product-subprice" style="visibility: hidden">@String.Format("{0:0,0} ₫", product.Price)</div>
-                                                        <div class="product-price">@String.Format("{0:0,0} ₫", product.Price)</div>
+                                                        <div class="product-subprice" style="visibility: hidden">@String.Format("{0:0,0} ₫", product.Price ?? 0)</div>
+                                                        <div class="product-price">@String.Format("{0:0,0} ₫", product.Price ?? 0)</div>
                                                     }
                                                     else
                                                     {
-                                                        <div class="product-subprice">@String.Format("{0:0,0} ₫", product.Price)</div>
-                                                        <div class="product-price">@String.Format("{0:0,0} ₫", product.PriceOnSell)</div>
+                                                        <div class="product-subprice">@String.Format("{0:0,0} ₫", product.Price ?? 0)</div>
+                                                        <div class="product-price">@String.Format("{0:0,0} ₫", product.PriceOnSell ?? 0)</div>
                                                     }
 
                                                     <div class="product-btn">
