@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import MuiIcon from "../mui-icon/mui-icon.component";
+import { ICON_NAME } from "../mui-icon/_enums/mui-icon.enum";
 
 interface IUploadProps extends React.HTMLProps<HTMLInputElement> {
     onChangeFiles: (e: any) => void,
@@ -87,7 +88,7 @@ const UploadInput = (props: IUploadProps) => {
                             }}
                         >
                             <MuiIcon
-                                name="X"
+                                name={ICON_NAME.FEATHER.X}
                                 style={{
                                     stroke: "#FFFBF1",
                                     fontWeight: "900",
