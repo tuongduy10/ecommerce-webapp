@@ -37,11 +37,13 @@ using ECommerce.Application.Services.User_v2;
 using Microsoft.Extensions.Logging;
 using ECommerce.Data.Models;
 using ECommerce.Application.Services.Chat;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 namespace ECommerce.WebApp
 {
     public class Startup
     {
+        private readonly string myCorsPolicy = "_myCorsPolicy";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -83,6 +85,16 @@ namespace ECommerce.WebApp
                     option.ExpireTimeSpan = TimeSpan.FromHours(4);
                     option.Cookie.MaxAge = option.ExpireTimeSpan;
                 });
+            services.AddCors(options =>
+            {
+                options.AddPolicy(myCorsPolicy,
+                    builder =>
+                    {
+                        builder.WithOrigins("https://localhost:44330", "http://localhost:3000", "https://hihichi.com")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
             services.AddControllers();
             services.AddSignalR();
             services.AddHttpContextAccessor();
@@ -126,6 +138,12 @@ namespace ECommerce.WebApp
             //services.Configure<SecurityStampValidatorOptions>(option => option.ValidationInterval = TimeSpan.FromSeconds(10));
             //services.AddHttpContextAccessor();
             //services.AddScoped<IUserService>();
+
+            // In production, the React files will be served from this directory
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "client/build";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -152,6 +170,7 @@ namespace ECommerce.WebApp
             app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
             app.UseAuthentication();
             app.UseRouting();
@@ -161,7 +180,7 @@ namespace ECommerce.WebApp
             app.UseCookiePolicy();
 
             app.UseMiddleware<NoCacheMiddleware>();
-            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"));
+            app.UseCors(myCorsPolicy); ;
 
             // same like app.UseMiddleware<NoCacheMiddleware>();
             app.Use(async (context, next) =>
@@ -190,6 +209,15 @@ namespace ECommerce.WebApp
                 endpoints.MapControllerRoute(
                     name: "admin",
                     pattern: "{controller=Admin}/{action=Index}/{id?}");
+            });
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "client";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
             });
 
         }
