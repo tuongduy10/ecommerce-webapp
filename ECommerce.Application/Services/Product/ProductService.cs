@@ -148,7 +148,6 @@ namespace ECommerce.Application.Services.Product
                     PPC = i.Ppc,
                     ProductName = i.ProductName,
                     ProductDescription = i.ProductDescription,
-                    //ProductDescriptionMobile = i.ProductDescriptionMobile,
                     SizeGuide = i.SizeGuide,
 
                     Delivery = i.Delivery,
@@ -282,6 +281,9 @@ namespace ECommerce.Application.Services.Product
                     PricePreOrder = i.PricePreOrder,
                     DiscountAvailable = i.DiscountAvailable,
                     DiscountPreOrder = i.DiscountPreOrder,
+                    ProfitAvailable = i.ProfitAvailable,
+                    ProfitPreOrder = i.ProfitPreOrder,
+                    ProfitForSeller = i.ProfitForSeller,
 
                     ProductImages = _DbContext.ProductImages.Where(img => img.ProductId == id).Select(img => img.ProductImagePath).ToList(), // for view only
                     ProductUserImages = _DbContext.ProductUserImages.Where(img => img.ProductId == id).Select(img => img.ProductUserImagePath).ToList(), // for view only

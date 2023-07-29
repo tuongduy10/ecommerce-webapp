@@ -9,22 +9,6 @@
         <h6 class="m-0 font-weight-bold text-primary">Quản lý sản phẩm</h6>
     </div>
     <div class="card-body">
-        @*<div class="form-group mb-2">
-            <select class="form-control get-products" aria-label="Default select example">
-                <option value="all">Tất cả</option>
-                @foreach (var sub in Model.subCategories)
-                {
-                    if (Context.Request.Query["subCategoryId"].ToString() == sub.SubCategoryId.ToString())
-                    {
-                        <option value="@sub.SubCategoryId" selected>@sub.SubCategoryName</option>
-                    }
-                    else
-                    {
-                        <option value="@sub.SubCategoryId">@sub.SubCategoryName</option>
-                    }
-                }
-            </select>
-        </div>*@
         <div class="d-flex align-items-center flex-wrap mb-2">
             <div class="mr-4">
                 <input type="checkbox" name="select-all" id="select-all">

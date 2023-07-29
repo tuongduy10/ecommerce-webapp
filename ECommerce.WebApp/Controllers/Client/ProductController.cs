@@ -166,9 +166,9 @@ namespace ECommerce.WebApp.Controllers.Client
                 pro.Status = item.Status;
                 pro.Price = item.PricePreOrder ?? item.PriceAvailable;
                 pro.PriceOnSell = item.DiscountPreOrder ?? item.DiscountAvailable;
-                pro.ProductTypeName = (item.PricePreOrder != null || item.DiscountAvailable != null)
-                                        ? "Hàng đặt trước"
-                                        : (item.PricePreOrder != null || item.DiscountAvailable != null) ? "Hàng có sẵn" : "" ;
+                pro.ProductTypeName = 
+                    (item.PricePreOrder != null || item.DiscountAvailable != null) ? "Hàng đặt trước" : 
+                    (item.PricePreOrder != null || item.DiscountAvailable != null) ? "Hàng có sẵn" : "" ;
 
                 _list.Add(pro);
             }

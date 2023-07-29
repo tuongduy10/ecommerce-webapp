@@ -57,7 +57,7 @@
                             </div>
                         </div>
                         <div class="form-group mb-4">
-                            <label>Hàng có sẵn</label>
+                            <label>Giá có sẵn</label>
                             <div class="d-flex align-items-center">
                                 @if (Model.product.PriceAvailable != null)
                                 {
@@ -70,7 +70,7 @@
                             </div>
                         </div>
                         <div class="form-group mb-4">
-                            <label>Hàng đặt trước</label>
+                            <label>Giá đặt trước</label>
                             <div class="d-flex align-items-center">
                                 @if (Model.product.PricePreOrder != null)
                                 {
@@ -128,7 +128,7 @@
                                 }
                                 @if (Model.product.DiscountPreOrder != null)
                                 {
-                                    <input type="text" class="form-control mb-2 pro-discpreorder @if (!isChecked) { @Html.Raw("d-none"); }" placeholder="Giá đã giảm đặt trước" value="@if (Model.product.DiscountPercent == null) { @Model.product.DiscountAvailable.ToString("#,##"); }" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" id="2">
+                                    <input type="text" class="form-control mb-2 pro-discpreorder @if (!isChecked) { @Html.Raw("d-none"); }" placeholder="Giá đã giảm đặt trước" value="@if (Model.product.DiscountPercent == null) { @Model.product.DiscountPreOrder.ToString("#,##"); }" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" id="2">
                                 }
                                 @if (Model.product.DiscountPreOrder == null)
                                 {
@@ -693,11 +693,11 @@
         var discountAvailable = null;
         var discountPreOrder = null;
         if ($(".pro-disc-select").is(":checked")) {
-            discountAvailable = $(".pro-discavailable").val() 
-                                ? Number($(".pro-discavailable").val()) 
+            discountAvailable = $(".pro-discavailable").val()
+                                ? Number($(".pro-discavailable").val().replace(",", ""))
                                 : null;
             discountPreOrder = $(".pro-discpreorder").val()
-                                ? Number($(".pro-discpreorder").val())
+                                ? Number($(".pro-discpreorder").val().replace(",", ""))
                                 : null;
         }
         var discountPercent = null;
