@@ -3,41 +3,48 @@ import MuiIcon from "../mui-icon/mui-icon.component";
 
 interface IUploadProps extends React.HTMLProps<HTMLInputElement> {
     onChangeFiles: (e: any) => void,
+    filesLimit?: number,
 }
 
 const UploadInput = (props: IUploadProps) => {
-    const { onChangeFiles, ...rest } = props;
+    const { 
+        onChangeFiles, 
+        filesLimit = 3, // default limit: 3
+        ...rest 
+    } = props;
     
     const inputElement = useRef<any>(null);
     const [selectedFiles, setSelectedFiles] = useState<{ id: number; src: string }[]>([]);
     
     const handleOnChange = (e: { target: { files: any } }) => {
         const files = e.target.files;
+        if (files.length > filesLimit) {
+            return;
+        } 
+
         const imageArray: any = [];
         const emitFiles: any = [];
-
         for (let i = 0; i < files.length; i++) {
-            if (i < 3) {
-                if (!files[i].type.match('image'))
-                    continue;
-                emitFiles.push(files[i]);
-                const rd = new FileReader();
-                rd.onload = (e) => {
-                    if (e.target) {
-                        const imageObject = {
-                            ...e.target,
-                            id: i,
-                            name: files[i].name as string,
-                            src: e.target.result as string,
-                        };
-                        imageArray.push(imageObject);
-                        if (imageArray.length === Math.min(files.length, 3)) {
-                            setSelectedFiles(imageArray)
-                        }
-                    }
-                };
-                rd.readAsDataURL(files[i]);
+            if (!files[i].type.match('image')) {
+                continue;
             }
+            emitFiles.push(files[i]);
+            const rd = new FileReader();
+            rd.onload = (e) => {
+                if (e.target) {
+                    const imageObject = {
+                        ...e.target,
+                        id: i,
+                        name: files[i].name as string,
+                        src: e.target.result as string,
+                    };
+                    imageArray.push(imageObject);
+                    if (imageArray.length === Math.min(files.length, 3)) {
+                        setSelectedFiles(imageArray)
+                    }
+                }
+            };
+            rd.readAsDataURL(files[i]);
         }
         onChangeFiles(emitFiles);
     };
