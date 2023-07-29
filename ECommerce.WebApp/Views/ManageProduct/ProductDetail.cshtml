@@ -694,10 +694,10 @@
         var discountPreOrder = null;
         if ($(".pro-disc-select").is(":checked")) {
             discountAvailable = $(".pro-discavailable").val()
-                                ? Number($(".pro-discavailable").val().replace(",", ""))
+                                ? Number($(".pro-discavailable").val().replaceAll(",", ""))
                                 : null;
             discountPreOrder = $(".pro-discpreorder").val()
-                                ? Number($(".pro-discpreorder").val().replace(",", ""))
+                                ? Number($(".pro-discpreorder").val().replaceAll(",", ""))
                                 : null;
         }
         var discountPercent = null;
