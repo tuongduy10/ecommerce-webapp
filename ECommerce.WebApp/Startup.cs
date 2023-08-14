@@ -198,18 +198,12 @@ namespace ECommerce.WebApp
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "client";
-
                 if (env.IsDevelopment())
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
 
-        }
-    
-        private ECommerceContext DbContext(IServiceCollection services)
-        {
-            return services.BuildServiceProvider().GetService<ECommerceContext>();
         }
     }
 }
