@@ -39,12 +39,12 @@ const ProlCategory = () => {
                 <li className="filter__sub-item">
                   <div className="checkbox flex items-center">
                     <input
-                      id="check__sub-item_@productOption.OptionValueId"
+                      id="sub00"
                       className="checkboxFilter"
                       type="checkbox"
                     />
                     <label
-                      htmlFor="check__sub-item_@productOption.OptionValueId"
+                      htmlFor="sub00"
                       className="flex items-center mb-0"
                     >
                       <div className="sub-item-cate">Tím</div>
@@ -55,12 +55,12 @@ const ProlCategory = () => {
                 <li className="filter__sub-item">
                   <div className="checkbox flex items-center">
                     <input
-                      id="check__sub-item_@productOption.OptionValueId"
+                      id="sub01"
                       className="checkboxFilter"
                       type="checkbox"
                     />
                     <label
-                      htmlFor="check__sub-item_@productOption.OptionValueId"
+                      htmlFor="sub01"
                       className="flex items-center mb-0"
                     >
                       <div className="sub-item-cate">Tím</div>
@@ -71,12 +71,12 @@ const ProlCategory = () => {
                 <li className="filter__sub-item">
                   <div className="checkbox flex items-center">
                     <input
-                      id="check__sub-item_@productOption.OptionValueId"
+                      id="sub02"
                       className="checkboxFilter"
                       type="checkbox"
                     />
                     <label
-                      htmlFor="check__sub-item_@productOption.OptionValueId"
+                      htmlFor="sub02"
                       className="flex items-center mb-0"
                     >
                       <div className="sub-item-cate">Tím</div>

@@ -17,5 +17,6 @@ namespace ECommerce.Application.Services.User_v2
         Task<ApiResponse> SetOnline(int userId = 0, bool isOnline = true);
         Task<Response<UserGetModel>> UpdateOnlineStatus(int _userId, bool _isOnline);
         Task<Response<UserGetModel>> UpdateOnlineHistory(int _userId);
+        Task<Response<UserGetModel>> ValidateUser(SignInRequest request);
     }
 }
