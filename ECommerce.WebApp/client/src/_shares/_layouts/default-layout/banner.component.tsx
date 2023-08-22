@@ -19,11 +19,12 @@ const Banner = () => {
   const [hideBanner, setHideBanner] = useState(false);
 
   useEffect(() => {
-    const path = [
+    const hiddenPath = [
       '/v2/product-detail',
       '/v2/cart',
+      '/v2/login',
     ];
-    if (path.includes(window.location.pathname)) {
+    if (hiddenPath.includes(window.location.pathname)) {
       setHideBanner(true);
     }
   }, []);
