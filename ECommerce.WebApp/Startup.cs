@@ -38,6 +38,10 @@ using Microsoft.Extensions.Logging;
 using ECommerce.Data.Models;
 using ECommerce.Application.Services.Chat;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using ECommerce.WebApp.Configs.AppSettings;
 
 namespace ECommerce.WebApp
 {
@@ -54,37 +58,27 @@ namespace ECommerce.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var secretKey = Configuration["AppSettings:SecretKey"];
+            var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
+
             services.AddDbContext<ECommerceContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("ECommerceDB")));
             services.AddControllersWithViews();
+
             services
-                .AddAuthorization(option =>
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(option => 
                 {
-                    option.AddPolicy("Admin", policy => {
-                        policy.RequireRole("Admin");
-                    });
-                    option.AddPolicy("Seller", policy => {
-                        policy.RequireRole("Admin", "Seller");
-                    });
-                    option.AddPolicy("Buyer", policy => {
-                        policy.RequireRole("Admin", "Seller", "Buyer");
-                    });
-                })
-                .AddAuthentication(option => option.DefaultAuthenticateScheme = "ClientAuth")
-                .AddCookie("ClientAuth", option => {
-                    option.AccessDeniedPath = "/Account/AccessDenied";
-                    option.LoginPath = "/Account/SignIn";
-                    option.Cookie.Name = "_clientcookie";
-                    option.ExpireTimeSpan = TimeSpan.FromDays(30);
-                    option.Cookie.MaxAge = option.ExpireTimeSpan;
-                })
-                .AddCookie("AdminAuth", option => {
-                    option.AccessDeniedPath = "/Account/AccessDenied";
-                    option.LoginPath = "/Admin/SignIn";
-                    option.Cookie.Name = "_admincookie";
-                    option.ExpireTimeSpan = TimeSpan.FromHours(4);
-                    option.Cookie.MaxAge = option.ExpireTimeSpan;
+                    option.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
+                        ClockSkew = TimeSpan.Zero
+                    };
                 });
+
             services.AddCors(options =>
             {
                 options.AddPolicy(myCorsPolicy,
@@ -98,8 +92,8 @@ namespace ECommerce.WebApp
             services.AddControllers();
             services.AddSignalR();
             services.AddHttpContextAccessor();
-            services.AddCors();
 
+            services.Configure<AppSetting>(Configuration.GetSection("AppSettings"));
 
             /*
              * Business Services
@@ -130,15 +124,6 @@ namespace ECommerce.WebApp
             services.AddScoped<IUserService_v2, UserService_v2>();
             services.AddScoped<IChatService, ChatService>();
 
-            /*
-             * Config Services
-             */
-            //services.AddScoped<GlobalActionFilter>();
-            //services.AddScoped<IAuthorizationHandler, CustomAuthorizationHandler>();
-            //services.Configure<SecurityStampValidatorOptions>(option => option.ValidationInterval = TimeSpan.FromSeconds(10));
-            //services.AddHttpContextAccessor();
-            //services.AddScoped<IUserService>();
-
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -167,7 +152,7 @@ namespace ECommerce.WebApp
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();

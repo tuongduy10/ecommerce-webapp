@@ -197,5 +197,51 @@ namespace ECommerce.Application.Services.User_v2
                 return new FailResponse<UserGetModel>(error.ToString());
             }
         }
+        public async Task<Response<UserGetModel>> ValidateUser(SignInRequest request)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.UserPhone) || string.IsNullOrEmpty(request.Password)) 
+                    return new FailResponse<UserGetModel>("Thông tin không được để trống");
+
+                var phonenumber = request.UserPhone;
+                if (phonenumber.Contains("+84"))
+                {
+                    phonenumber = phonenumber.Replace("+84", "");
+                    if (!phonenumber.StartsWith("0"))
+                    {
+                        phonenumber = "0" + phonenumber;
+                    }
+                }
+
+                var result = await _DbContext.Users
+                    .Where(i => i.UserPhone == phonenumber && i.Password == request.Password)
+                    .FirstOrDefaultAsync();
+
+                if (result == null) 
+                    return new FailResponse<UserGetModel>("Mật khẩu hoặc tài khoản không đúng");
+                if (result.Status == false) 
+                    return new FailResponse<UserGetModel>("Tài khoản đã bị khóa");
+
+                var roles = (
+                    from role in _DbContext.Roles
+                    from userrole in _DbContext.UserRoles
+                    where role.RoleId == userrole.RoleId && userrole.UserId == result.UserId
+                    select role.RoleName
+                ).Distinct().ToList();
+
+                UserGetModel user = new UserGetModel();
+                user.UserId = result.UserId;
+                user.UserFullName = result.UserFullName;
+                user.UserRoles = roles;
+                user.UserPhone = result.UserPhone;
+
+                return new SuccessResponse<UserGetModel>("Đăng nhập thành công", user);
+            }
+            catch(Exception error)
+            {
+                return new FailResponse<UserGetModel>("Đang xảy ra lỗi, vui lòng thử lại sau");
+            }
+        }
     }
 }

@@ -19,10 +19,17 @@ const Banner = () => {
   const [hideBanner, setHideBanner] = useState(false);
 
   useEffect(() => {
+<<<<<<< HEAD
     const path = [
       '/v2/product-detail'
+=======
+    const hiddenPath = [
+      '/v2/product-detail',
+      '/v2/cart',
+      '/v2/login',
+>>>>>>> 9cb11ae (JWT auth)
     ];
-    if (path.includes(window.location.pathname)) {
+    if (hiddenPath.includes(window.location.pathname)) {
       setHideBanner(true);
     }
   }, []);
