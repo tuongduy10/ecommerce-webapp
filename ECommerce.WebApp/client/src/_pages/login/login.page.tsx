@@ -43,10 +43,10 @@ const LoginPage = () => {
                     />
                   </div>
                   <div className="flex w-full flex-nowrap flex-1 items-center justify-between">
-                    <a href="/" className="text-base text-gray-800 hover:text-blue-600">
+                    <a href="/" className="text-base hover:text-blue-600">
                       Tạo tài khoản mới
                     </a>
-                    <a href="/" className="text-base text-gray-800 hover:text-blue-600">
+                    <a href="/" className="text-base hover:text-blue-600">
                       Quên mật khẩu?
                     </a>
                   </div>

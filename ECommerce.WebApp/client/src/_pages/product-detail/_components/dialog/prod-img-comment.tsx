@@ -2,6 +2,7 @@ import Dialog from "@mui/material/Dialog";
 
 import DialogContent from "@mui/material/DialogContent";
 import { MuiIcon } from "src/_shares/_components";
+import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
 
 export default function ImageCommentDialog(props: any) {
   const { handleClickCloseDialog, openDialog } = props;
@@ -27,7 +28,7 @@ export default function ImageCommentDialog(props: any) {
                 backgroundColor: "#B22B27",
                 borderRadius: "50%",
               }}
-              name="X"
+              name={ICON_NAME.FEATHER.X}
               onClick={handleClickCloseDialog}
             />
             <img

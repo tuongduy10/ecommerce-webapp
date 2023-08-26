@@ -11,6 +11,10 @@ import {
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import DefaultLayout from "src/_shares/_layouts/default-layout/default-layout.component";
 import AdminLayout from "src/_shares/_layouts/admin-layout/admin-layout.component";
+import { 
+  Login,
+  Dashboard,
+} from "src/_pages/admin/components";
 const Router = () => {
   const browserRoutes = createBrowserRouter([
     {
@@ -27,10 +31,11 @@ const Router = () => {
         { path: "/v2/product-detail", element: <ProductDetailPage /> },
       ],
     },
+    { path: "/v2/admin/login", element: <Login /> },
     {
       element: <AdminLayout />,
       children: [
-        { path: "/v2/admin", element: <div>admin</div> },
+        { path: "/v2/admin", element: <Dashboard /> },
         { path: "/v2/admin/manage-product", element: <div>product</div> }
       ],
     }

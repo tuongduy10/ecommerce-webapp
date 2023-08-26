@@ -600,17 +600,8 @@
     margin-right: 0;
   }
 
-  .product__filter {
-    display: none;
-  }
-
   .filter__block:not(:last-child) {
     margin-bottom: 0;
-  }
-
-  .filter__block {
-    display: none;
-    border-bottom: solid 1px #d4d4d4;
   }
 
   .products__list {
