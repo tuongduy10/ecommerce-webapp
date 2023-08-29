@@ -13,37 +13,7 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-  price: number,
-) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-    price,
-    history: [
-      {
-        date: '2020-01-05',
-        customerId: '11091700',
-        amount: 3,
-      },
-      {
-        date: '2020-01-02',
-        customerId: 'Anonymous',
-        amount: 1,
-      },
-    ],
-  };
-}
-
-function Row(props: { row: ReturnType<typeof createData> }) {
+function Row1(props: { row: any }) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
 
@@ -84,7 +54,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.history.map((historyRow) => (
+                  {/* {row.history.map((historyRow) => (
                     <TableRow key={historyRow.date}>
                       <TableCell component="th" scope="row">
                         {historyRow.date}
@@ -95,7 +65,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                         {Math.round(historyRow.amount * row.price * 100) / 100}
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ))} */}
                 </TableBody>
               </Table>
             </Box>
@@ -105,32 +75,69 @@ function Row(props: { row: ReturnType<typeof createData> }) {
     </React.Fragment>
   );
 }
+export interface ITableHeader {
+  field: string,
+  fieldName: string,
+  align?: "left" | "center" | "right" | "justify" | "inherit",
+}
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
-  createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-  createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
-];
+export interface ITableData {
+  [key: string]: any
+  externalData?: any,
+}
 
-export default function CollapsibleTable() {
+function Row(props: ITableData) {
+  const { rowData, hasExternalData, externalData } = props;
+  const [open, setOpen] = React.useState(false);
+  return (
+    <React.Fragment>
+      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+        {hasExternalData && (
+          <TableCell>
+            {externalData && (
+              <IconButton
+                aria-label="expand row"
+                size="small"
+                onClick={() => setOpen(!open)}
+              >
+                {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              </IconButton>
+            )}
+          </TableCell>
+        )}
+        {rowData && Object.keys(rowData).map((key) => (
+          <TableCell key={`cell-${key}`}>{rowData[key]}</TableCell>
+        ))}
+      </TableRow>
+    </React.Fragment>
+  )
+}
+
+export default function DataTable(props: {
+  header: ITableHeader[],
+  data: ITableData[],
+}) {
+  const { header, data } = props
+  const _hasExternalData = data.some(item => item.externalData && item.externalData.length > 0);
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
-            <TableCell />
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+            {_hasExternalData && <TableCell />}
+            {header.map((field) => (
+              <TableCell key={field.field} align={!field.align ? 'left' : field.align}>{field.fieldName}</TableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <Row key={row.name} row={row} />
+          {data.length > 0 && header.map((item, idx) => data[idx] && (
+            <Row
+              key={`row-${item.field}-${idx}`}
+              rowData={data[idx]}
+              hasExternalData={_hasExternalData}
+              externalData={data[idx]?.externalData}
+            />
           ))}
         </TableBody>
       </Table>
