@@ -35,8 +35,8 @@ function Row(props: any) {
                 </TableCell>
                 <TableCell>{rowData.category}</TableCell>
                 <TableCell>{rowData.image}</TableCell>
-                <TableCell>{rowData.price}</TableCell>
-                <TableCell>{rowData.date}</TableCell>
+                <TableCell align="right">{rowData.price}</TableCell>
+                <TableCell align="right">{rowData.date}</TableCell>
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>

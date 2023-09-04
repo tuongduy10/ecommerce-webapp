@@ -36,9 +36,11 @@ const HomeBrandList = () => {
               ))}
             </Swiper>
           </div>
-          <div className="w-full text-center block">
-            <a className="bran__viewmore inline-block" style={{ cursor: 'pointer' }} href="/">Xem thêm</a>
-          </div>
+          {homeStore.highLightBrands.length > 5 && (
+            <div className="w-full text-center block">
+              <a className="bran__viewmore inline-block" style={{ cursor: 'pointer' }} href="/">Xem thêm</a>
+            </div>
+          )}
         </>
       ) : null}
     </div>
