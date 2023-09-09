@@ -9,8 +9,8 @@ const BrandItem = (props: any) => {
                     <img src={ENV.IMAGE_URL + '/brand/' + data.brandImagePath} className="max-w-full max-h-full mx-auto" alt="name" />
                 </div>
                 <div className="card-body text-center p-2 items-center justify-center">
-                    <h5 className="bran__list-name card-title mb-0">{data.brandName}</h5>
-                    <h6 className="bran__list-type card-text">{data.category}</h6>
+                    <h5 className="bran__list-name card-title mb-0 leading-[1.2] font-medium text-[1.25rem]">{data.brandName}</h5>
+                    <h6 className="bran__list-type card-text leading-[1.2] font-medium text-[1rem]">{data.category}</h6>
                 </div>
             </a>
         </div>

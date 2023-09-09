@@ -3,8 +3,8 @@ import { useDispatch } from "react-redux";
 import CommonService from "src/_cores/_services/common.service";
 import { Child } from "./_components";
 import { WebDirectional } from "src/_shares/_components";
-import { addData, setData } from "./_store/example.reducer";
 import { useExampleStore } from "src/_cores/_store/root-store";
+import { addData, setData } from "src/_cores/_reducers";
 
 const ExamplePage = () => {
     const exampleStore = useExampleStore();

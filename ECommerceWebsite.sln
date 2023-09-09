@@ -5,15 +5,6 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECommerce.WebApp", "ECommerce.WebApp\ECommerce.WebApp.csproj", "{D3E4C853-730E-4F8B-AAFA-1776E21B349D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{21BE132B-1285-48F7-A2E3-A4559118E204}"
-	ProjectSection(SolutionItems) = preProject
-		ApiRequestFormat.txt = ApiRequestFormat.txt
-		Documents.txt = Documents.txt
-		ProductPaginatedList.txt = ProductPaginatedList.txt
-		README.txt = README.txt
-		web.config.txt = web.config.txt
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECommerce.Data", "ECommerce.Data\ECommerce.Data.csproj", "{8C56175F-7417-4945-BD8D-81CE7317BFC0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECommerce.Application", "ECommerce.Application\ECommerce.Application.csproj", "{25F2FE10-6B7E-4BA6-8FDA-6272F58A8133}"

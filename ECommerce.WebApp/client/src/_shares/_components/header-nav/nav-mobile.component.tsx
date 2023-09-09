@@ -1,4 +1,4 @@
-import { HEADER_MENU } from "src/_configs/web.config";
+import { FOOTER_MENU_COL_3, HEADER_MENU } from "src/_configs/web.config";
 import { ICON_NAME } from "../mui-icon/_enums/mui-icon.enum";
 import MuiIcon from "../mui-icon/mui-icon.component";
 import SearchForm from "../search-form/search-form.component";
@@ -22,9 +22,8 @@ const HeaderNavMobile = () => {
     <Fragment>
       <nav className="nav__mobile">
         <div
-          className={`nav__mobile-list flex flex-col ${
-            !isOpenedNav ? "nav-close" : "nav-open"
-          }`}
+          className={`nav__mobile-list flex flex-col ${!isOpenedNav ? "nav-close" : "nav-open"
+            }`}
           id="nav__mobile-list-open"
         >
           <div className="nav__mobile-logo flex p-4">
@@ -46,7 +45,7 @@ const HeaderNavMobile = () => {
               </a>
             </div>
           </div>
-          <div className="nav__list-mobile-wrapper py-4 pl-4">
+          <div className="nav__list-mobile-wrapper py-4 pl-4" style={{ height: '338px' }}>
             <div
               className="nav__list-mobile h-full"
               style={{ overflow: "hidden", overflowY: "scroll" }}
@@ -81,18 +80,22 @@ const HeaderNavMobile = () => {
               </li>
             </ul>
             <div className="nav__mobile-info p-4">
-              <p>
-                <a href="tel: 03979874403">Phone: 03979874403</a>
+              <p style={{ paddingBottom: '1rem' }}>
+                <a href="tel: 03979874403">Phone: 0906035526</a>
               </p>
-              <p>
+              <p style={{ paddingBottom: '1rem' }}>
                 <a href="mailto: mail@gmail.com">Mail: mail@gmail.com</a>
               </p>
-              <p>
-                <a href="/">Facebook: facebook</a>
-              </p>
+              {FOOTER_MENU_COL_3.map((item: any) => (
+                <p key={`footer-col-3-${item.path}`} style={{ paddingBottom: '1rem' }}>
+                  <a href={item.path} className="flex items-center">
+                    <MuiIcon name={item.icon} className='mr-3' fontSize="small" /> {item.name}
+                  </a>
+                </p>
+              ))}
             </div>
-          </div>
-        </div>
+          </div >
+        </div >
         <div className="nav__mobile-action flex justify-between py-2">
           <label
             className={`${!isOpenedNav ? "hidden" : ""} overlay block m-0`}
@@ -133,12 +136,12 @@ const HeaderNavMobile = () => {
           </a>
         </div>
         {isOpenedSearch ? <SearchForm /> : null}
-      </nav>
+      </nav >
       <div
         className={`search__overlay ${!isOpenedSearch ? "hidden" : ""}`}
         onClick={onToggleSearch}
       ></div>
-    </Fragment>
+    </Fragment >
   );
 };
 

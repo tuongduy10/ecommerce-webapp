@@ -1,8 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { SLICE_NAME } from "src/_cores/_enums/state.enum";
 import { IHomeInitState } from "src/_cores/_interfaces/state.interface";
-import { ALPHABET_VALUES } from "../_enums/sorting.enum";
 import { IBrand, ICategory } from "src/_cores/_interfaces/inventory.interface";
+import { ALPHABET_VALUES } from "src/_pages/home/_enums/sorting.enum";
 
 const initialState: IHomeInitState = {
   alphabetSelected: ALPHABET_VALUES[0].data,
