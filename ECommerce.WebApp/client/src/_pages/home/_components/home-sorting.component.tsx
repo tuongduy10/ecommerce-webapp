@@ -1,9 +1,9 @@
 import { ClickAwayListener } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { selectAlphabet, selectCategory } from "src/_cores/_reducers";
 import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
 import MuiIcon from "src/_shares/_components/mui-icon/mui-icon.component";
-import { selectAlphabet, selectCategory } from "../_store/home.reducer";
 
 const HomeSorting = (props: any) => {
     const { sortItems, sortType } = props;

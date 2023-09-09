@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { IValueNameBase } from 'src/_cores/_interfaces/req-res.interface';
 import { IBrand, ICategory } from 'src/_cores/_interfaces/inventory.interface';
 import { ALPHABET_VALUES } from './_enums/sorting.enum';
-import { setBrands, setCategories, setHighLightBrands } from './_store/home.reducer';
+import { setBrands, setCategories, setHighLightBrands } from "src/_cores/_reducers";
 
 const HomePage = () => {
   const dispatch = useDispatch();

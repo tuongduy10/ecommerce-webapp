@@ -10,13 +10,13 @@ export interface ICommonInitState {
 }
 
 export interface IAuthInitState { 
-  access_token: string;
-  userName: string;
-  phoneNumber: string;
-  password: string;
-  roles: string[];
-  loading: boolean;
-  resultMessage: string;
+  accessToken: string;
+  // userName: string;
+  // phoneNumber: string;
+  // password: string;
+  // roles: string[];
+  // loading: boolean;
+  // resultMessage: string;
 }
 
 export interface IHomeInitState { 

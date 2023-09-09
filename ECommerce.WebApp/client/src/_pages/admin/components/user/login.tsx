@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -12,17 +10,39 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import UserService from 'src/_cores/_services/user.service';
+import SessionService from 'src/_cores/_services/session.service';
+import { FAIL_MESSAGE } from 'src/_cores/_enums/message.enum';
+import { Navigate } from 'react-router-dom';
+import { ROUTE_NAME } from 'src/_cores/_enums/route-config.enum';
+import { useEffect } from 'react';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export default function Login() {
+const Login = () => {
+
+  useEffect(() => {
+    const token = SessionService.getAccessToken();
+    if (token) {
+      window.location.href = ROUTE_NAME.DASHBOARD
+    }
+  }, []);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+    const params = {
+      userPhone: data.get('userName'),
+      password: data.get('password')
+    }
+    UserService.login(params).then(resp => {
+      if (resp.data) {
+        SessionService.setAccessToken(resp.data);
+        window.location.href = ROUTE_NAME.DASHBOARD
+      }
+    }).catch(error => {
+      alert(FAIL_MESSAGE.LOGIN_FAIL);
     });
   };
 
@@ -86,3 +106,5 @@ export default function Login() {
     </ThemeProvider>
   );
 }
+
+export default Login;

@@ -16,11 +16,15 @@ import {
   Dashboard,
   ProductList
 } from "src/_pages/admin/components";
+import { PrivateRoute } from "./private-route";
+import { ROUTE_NAME } from "../_enums/route-config.enum";
+import { NotFoundLayout } from "src/_shares/_layouts/error-layout/notfound-layout";
 const Router = () => {
   const browserRoutes = createBrowserRouter([
     {
       path: "/",
       element: <DefaultLayout />,
+      errorElement: <NotFoundLayout />,
       children: [
         { path: "/v2", element: <HomePage /> },
         { path: "/v2/example", element: <ExamplePage /> },
@@ -32,12 +36,24 @@ const Router = () => {
         { path: "/v2/product-detail", element: <ProductDetailPage /> },
       ],
     },
-    { path: "/v2/admin/login", element: <Login /> },
+    { path: ROUTE_NAME.LOGIN, element: <Login /> },
     {
       element: <AdminLayout />,
       children: [
-        { path: "/v2/admin", element: <Dashboard /> },
-        { path: "/v2/admin/manage-product", element: <ProductList /> }
+        { 
+          path: ROUTE_NAME.DASHBOARD, 
+          element: 
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+        },
+        { 
+          path: ROUTE_NAME.MANAGE_PRODUCT, 
+          element: 
+            <PrivateRoute>
+              <ProductList />
+            </PrivateRoute>
+        }
       ],
     }
   ]);
