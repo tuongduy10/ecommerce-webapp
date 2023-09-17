@@ -1,7 +1,12 @@
 import { api } from "../_api/api";
+import SessionService from "./session.service";
 
 export default class UserService {
-  public static login(param: any) {
+  public static logout() {
+    SessionService.deleteAccessToken();
+  }
+  
+  public static login(param: any) { 
     return api.post("/user/login", param);
   }
 
@@ -15,5 +20,9 @@ export default class UserService {
 
   public static getUser(id: any) {
     return api.get<any>(`/get-user/${id}`);
+  }
+
+  public static getUserInfo() {
+    return api.post<any>(`/user/info`);
   }
 }

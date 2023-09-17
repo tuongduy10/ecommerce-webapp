@@ -16,13 +16,13 @@ const homeSlice = createSlice({
   name: SLICE_NAME.HOME,
   initialState: initialState,
   reducers: {
-    setHighLightBrands: (state, action:PayloadAction<IBrand[]>) => {
+    setHighLightBrands: (state, action: PayloadAction<IBrand[]>) => {
       state.highLightBrands = action.payload;
     },
-    setBrands: (state, action:PayloadAction<IBrand[]>) => {
+    setBrands: (state, action: PayloadAction<IBrand[]>) => {
       state.brands = action.payload;
     },
-    setCategories: (state, action:PayloadAction<ICategory[]>) => {
+    setCategories: (state, action: PayloadAction<ICategory[]>) => {
       state.categories = action.payload;
     },
     selectAlphabet: (state, action) => {

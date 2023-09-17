@@ -13,19 +13,21 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import UserService from 'src/_cores/_services/user.service';
 import SessionService from 'src/_cores/_services/session.service';
 import { FAIL_MESSAGE } from 'src/_cores/_enums/message.enum';
-import { Navigate } from 'react-router-dom';
-import { ROUTE_NAME } from 'src/_cores/_enums/route-config.enum';
-import { useEffect } from 'react';
+import { ADMIN_ROUTE_NAME } from 'src/_cores/_enums/route-config.enum';
+import DataUsageRoundedIcon from '@mui/icons-material/DataUsageRounded';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 const Login = () => {
-
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const token = SessionService.getAccessToken();
     if (token) {
-      window.location.href = ROUTE_NAME.DASHBOARD
+      navigate(ADMIN_ROUTE_NAME.DASHBOARD)
     }
   }, []);
 
@@ -36,13 +38,16 @@ const Login = () => {
       userPhone: data.get('userName'),
       password: data.get('password')
     }
+    setLoading(true);
     UserService.login(params).then(resp => {
       if (resp.data) {
         SessionService.setAccessToken(resp.data);
-        window.location.href = ROUTE_NAME.DASHBOARD
+        navigate(ADMIN_ROUTE_NAME.DASHBOARD)
       }
+      setLoading(false);
     }).catch(error => {
       alert(FAIL_MESSAGE.LOGIN_FAIL);
+      setLoading(false);
     });
   };
 
@@ -90,8 +95,11 @@ const Login = () => {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={loading}
             >
-              Đăng nhập
+              {loading
+                ? <DataUsageRoundedIcon className="animate-spin h-5 w-5 mr-3" />
+                : 'Đăng nhập'}
             </Button>
             <Grid container>
               <Grid item xs>
