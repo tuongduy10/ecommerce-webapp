@@ -1,5 +1,6 @@
 ﻿using ECommerce.Data.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Linq;
 using System.Security.Permissions;
@@ -24,6 +25,16 @@ namespace ECommerce.WebApp.Utils
             var phone = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(i => i.Type == "UserPhone") != null ?
                 _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(i => i.Type == "UserPhone").Value : "";
             return phone;
+        }
+        public string getAccessToken()
+        {
+            var authorizationHeader = _httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString();
+            if (string.IsNullOrWhiteSpace(authorizationHeader) || !authorizationHeader.StartsWith("Bearer "))
+            {
+                return "";
+            }
+            var token = authorizationHeader.Substring("Bearer ".Length);
+            return token;
         }
         public System.Security.Claims.ClaimsPrincipal GetCurrentUser()
         {

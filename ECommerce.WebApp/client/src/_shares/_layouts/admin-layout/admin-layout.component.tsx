@@ -25,7 +25,7 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { Outlet } from 'react-router-dom';
 import SessionService from 'src/_cores/_services/session.service';
-import { ROUTE_NAME } from 'src/_cores/_enums/route-config.enum';
+import { ADMIN_ROUTE_NAME } from 'src/_cores/_enums/route-config.enum';
 
 const mainListItems = [
     { name: "dashboard", icon: <HomeRoundedIcon />, label: "Trang chủ", path: "/" },
@@ -149,7 +149,7 @@ export default function Dashboard() {
                             <MenuItem onClick={() => { 
                                 setAnchorEl(null);
                                 SessionService.deleteAccessToken();
-                                window.location.href = ROUTE_NAME.LOGIN;
+                                window.location.href = ADMIN_ROUTE_NAME.LOGIN;
                             }}>Đăng xuất</MenuItem>
                         </Menu>
                     </Toolbar>

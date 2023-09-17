@@ -14,16 +14,20 @@ using System.Security.Claims;
 using System.Text;
 using System;
 using System.Threading.Tasks;
+using System.Linq;
+using ECommerce.WebApp.Utils;
 
 namespace ECommerce.WebApp.Controllers
 {
-    [Route("api/user")]
+    [Authorize]
     [ApiController]
+    [Route("api/user")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly IUserService_v2 _userServiceV2;
         private readonly ILogger<UserController> _logger;
+        private HttpContextHelper _contextHelper;
         private readonly AppSetting _appSetting;
         public UserController(
             ILogger<UserController> logger,
@@ -32,6 +36,7 @@ namespace ECommerce.WebApp.Controllers
             IUserService_v2 userServiceV2)
         {
             _logger = logger;
+            _contextHelper = new HttpContextHelper();
             _userService = userService;
             _userServiceV2 = userServiceV2;
             _appSetting = optionsMonitor.CurrentValue;
@@ -55,6 +60,23 @@ namespace ECommerce.WebApp.Controllers
                 Data = GenerateToken(result.Data)
             });
         }
+        [HttpPost("info")]
+        public IActionResult UserInfo()
+        {
+            var token = _contextHelper.getAccessToken();
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized();
+            }
+
+            var userClaims = this.DecodeToken(token).Claims;
+            var user = new UserGetModel()
+            {
+                UserFullName = userClaims.FirstOrDefault(claim => claim.Type == "fullName").Value,
+                UserPhone = userClaims.FirstOrDefault(claim => claim.Type == "phone").Value
+            };
+            return Ok(new SuccessResponse<UserGetModel>("success", user));
+        }
         private string GenerateToken(UserGetModel user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
@@ -75,6 +97,18 @@ namespace ECommerce.WebApp.Controllers
             var writeToken = jwtTokenHandler.WriteToken(createToken);
 
             return writeToken;
+        }
+        private ClaimsPrincipal DecodeToken(string token)
+        {
+            var secretKeyBytes = Encoding.UTF8.GetBytes(_appSetting.SecretKey);
+            var jwtTokenHandler = new JwtSecurityTokenHandler()
+                .ValidateToken(token, new TokenValidationParameters()
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                }, out SecurityToken secToken);
+            return jwtTokenHandler;
         }
         [HttpPost("sign-up")]
         public async Task<IActionResult> SignUp()

@@ -405,10 +405,6 @@
             .nav__mobile-account a:hover svg{
                 stroke: var(--blue-dior);
             }
-        .nav__mobile-footer{
-            position: absolute;
-            bottom: 0;
-        }
             .nav__mobile-footer ul{
                 border-top: 1px solid #ddd;
             }

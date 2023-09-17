@@ -10,7 +10,9 @@ export interface ICommonInitState {
 }
 
 export interface IAuthInitState { 
+  loading?: boolean,
   accessToken: string;
+  user: any;
   // userName: string;
   // phoneNumber: string;
   // password: string;

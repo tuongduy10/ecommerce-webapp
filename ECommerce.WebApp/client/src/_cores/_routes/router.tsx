@@ -17,7 +17,7 @@ import {
   ProductList
 } from "src/_pages/admin/components";
 import { PrivateRoute } from "./private-route";
-import { ROUTE_NAME } from "../_enums/route-config.enum";
+import { ADMIN_ROUTE_NAME } from "../_enums/route-config.enum";
 import { NotFoundLayout } from "src/_shares/_layouts/error-layout/notfound-layout";
 const Router = () => {
   const browserRoutes = createBrowserRouter([
@@ -36,19 +36,19 @@ const Router = () => {
         { path: "/v2/product-detail", element: <ProductDetailPage /> },
       ],
     },
-    { path: ROUTE_NAME.LOGIN, element: <Login /> },
+    { path: ADMIN_ROUTE_NAME.LOGIN, element: <Login /> },
     {
       element: <AdminLayout />,
       children: [
         { 
-          path: ROUTE_NAME.DASHBOARD, 
+          path: ADMIN_ROUTE_NAME.DASHBOARD, 
           element: 
             <PrivateRoute>
               <Dashboard />
             </PrivateRoute>
         },
         { 
-          path: ROUTE_NAME.MANAGE_PRODUCT, 
+          path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT, 
           element: 
             <PrivateRoute>
               <ProductList />

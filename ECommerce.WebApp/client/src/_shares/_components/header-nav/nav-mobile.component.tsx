@@ -2,11 +2,21 @@ import { FOOTER_MENU_COL_3, HEADER_MENU } from "src/_configs/web.config";
 import { ICON_NAME } from "../mui-icon/_enums/mui-icon.enum";
 import MuiIcon from "../mui-icon/mui-icon.component";
 import SearchForm from "../search-form/search-form.component";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 const HeaderNavMobile = () => {
   const [isOpenedNav, setIsOpenedNav] = useState(false);
   const [isOpenedSearch, setIsOpenedSearch] = useState(false);
+  const wrapperListRef = useRef<any>(null);
+  const logoRef = useRef<any>(null);
+  const footerRef = useRef<any>(null);
+  const [menuHeight, setMenuHeight] = useState(0);
+
+  useEffect(() => {
+    if (wrapperListRef.current && logoRef.current && footerRef.current) {
+      setMenuHeight(wrapperListRef.current.clientHeight - logoRef.current.clientHeight - footerRef.current.clientHeight);
+    }
+  }, []);
 
   const onToggleNav = () => {
     setIsOpenedNav((toggle) => !toggle);
@@ -22,11 +32,12 @@ const HeaderNavMobile = () => {
     <Fragment>
       <nav className="nav__mobile">
         <div
+          ref={wrapperListRef}
           className={`nav__mobile-list flex flex-col ${!isOpenedNav ? "nav-close" : "nav-open"
             }`}
           id="nav__mobile-list-open"
         >
-          <div className="nav__mobile-logo flex p-4">
+          <div ref={logoRef} className="nav__mobile-logo flex p-4">
             <div className="w-full text-center relative">
               <span
                 id="nav__mobile-list-close"
@@ -37,19 +48,15 @@ const HeaderNavMobile = () => {
               </span>
               <a href="/">
                 <img
-                  className="mx-auto"
+                  className="mx-auto max-h-[50px]"
                   src="https://hihichi.com/images/logo/logo_0052e058-a76f-46c6-ab29-0eaec8a3fc6c.png"
                   alt=""
-                  style={{ maxHeight: "50px" }}
                 />
               </a>
             </div>
           </div>
-          <div className="nav__list-mobile-wrapper py-4 pl-4" style={{ height: '338px' }}>
-            <div
-              className="nav__list-mobile h-full"
-              style={{ overflow: "hidden", overflowY: "scroll" }}
-            >
+          <div className="nav__list-mobile-wrapper py-4 pl-4" style={{ height: menuHeight + 'px' }}>
+            <div className="nav__list-mobile h-full overflow-x-hidden overflow-y-auto">
               {HEADER_MENU.map((item: any) => (
                 <div
                   key={`nav-mobile-${item.path}`}
@@ -60,7 +67,7 @@ const HeaderNavMobile = () => {
               ))}
             </div>
           </div>
-          <div className="nav__mobile-footer w-full">
+          <div ref={footerRef} className="nav__mobile-footer w-full mt-auto mb-0">
             <ul className="nav__mobile-account p-4">
               <li className="pb-4">
                 <button className="flex w-full">
@@ -70,7 +77,7 @@ const HeaderNavMobile = () => {
                   <span className="text">Tra cứu đơn hàng</span>
                 </button>
               </li>
-              <li className="pb-4">
+              <li>
                 <button className="flex w-full">
                   <span className="icon">
                     <MuiIcon name={ICON_NAME.FEATHER.USER} />
@@ -80,14 +87,14 @@ const HeaderNavMobile = () => {
               </li>
             </ul>
             <div className="nav__mobile-info p-4">
-              <p style={{ paddingBottom: '1rem' }}>
-                <a href="tel: 03979874403">Phone: 0906035526</a>
+              <p className="pb-[1rem]">
+                <a href="tel: 0906035526">Phone: 0906035526</a>
               </p>
-              <p style={{ paddingBottom: '1rem' }}>
-                <a href="mailto: mail@gmail.com">Mail: mail@gmail.com</a>
+              <p className="pb-[1rem]">
+                <a href="mailto: vantuanitc1989@gmail.com">Mail: vantuanitc1989@gmail.com</a>
               </p>
-              {FOOTER_MENU_COL_3.map((item: any) => (
-                <p key={`footer-col-3-${item.path}`} style={{ paddingBottom: '1rem' }}>
+              {FOOTER_MENU_COL_3.map((item: any, _idx: number) => (
+                <p key={`footer-col-3-${item.path}`} className={`${_idx !== FOOTER_MENU_COL_3.length - 1 ? 'pb-[1rem]' : ''}`}>
                   <a href={item.path} className="flex items-center">
                     <MuiIcon name={item.icon} className='mr-3' fontSize="small" /> {item.name}
                   </a>

@@ -8,12 +8,12 @@ export default class CookieHelper {
   public static getCookie(name: string) {
     const decodedCookie = decodeURIComponent(document.cookie);
     const ca = decodedCookie.split(";");
-    for (let i = 0; i < ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) === " ") {
+    for (const element of ca) {
+      let c = element;
+      while (c.startsWith(" ")) {
         c = c.substring(1);
       }
-      if (c.indexOf(name) === 0) {
+      if (c.startsWith(name)) {
         return c.substring(name.length + 1, c.length);
       }
     }
