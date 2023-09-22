@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerce.Application.Services.Product.Dtos
+namespace ECommerce.Application.BaseServices.Product.Dtos
 {
     public class ProductDeleteResponse
     {
