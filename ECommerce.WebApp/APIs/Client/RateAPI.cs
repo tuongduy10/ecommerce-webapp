@@ -1,6 +1,6 @@
 ﻿using ECommerce.Application.Constants;
-using ECommerce.Application.Services.Rate;
-using ECommerce.Application.Services.Rate.Dtos;
+using ECommerce.Application.BaseServices.Rate;
+using ECommerce.Application.BaseServices.Rate.Dtos;
 using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;

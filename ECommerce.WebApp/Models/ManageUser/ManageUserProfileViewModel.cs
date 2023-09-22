@@ -1,5 +1,5 @@
-﻿using ECommerce.Application.Services.Shop.Dtos;
-using ECommerce.Application.Services.User.Dtos;
+﻿using ECommerce.Application.BaseServices.Shop.Dtos;
+using ECommerce.Application.BaseServices.User.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;

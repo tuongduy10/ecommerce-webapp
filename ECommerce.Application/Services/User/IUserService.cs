@@ -1,28 +1,22 @@
 ﻿using ECommerce.Application.Common;
+using ECommerce.Application.BaseServices.User.Dtos;
 using ECommerce.Application.Services.User.Dtos;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ECommerce.Application.Services.User
 {
     public interface IUserService
     {
-        Task<List<UserGetModel>> getAll();
-        Task<List<UserGetModel>> getUsersByFiltered(UserGetRequest request);
-        Task<ApiResponse> SignIn(SignInRequest request);
-        Task<ApiResponse> SignUp(SignUpRequest request);
-        Task<ApiResponse> AddSeller(SignUpRequest request);
-        Task<UserGetModel> UserProfile(int id);
-        Task<ApiResponse> UpdateManageUserProfile(UserUpdateRequest request);
-        Task<ApiResponse> CheckUserPhoneNumber(string PhoneNumber);
-        Task<ApiResponse> UpdateUserProfile(UserUpdateRequest request);
-        Task<ApiResponse> UpdateUserPhoneNumber(int UserId, string PhoneNumber);
-        Task<ApiResponse> UpdateUserPassword(UpdatePasswordRequest request);
-        Task<ApiResponse> UpdateUserStatus(UserUpdateRequest request);
-        Task<ApiResponse> ResetPassword(UpdatePasswordRequest request);
-        Task<string> getUserRole(int userId);
-        Task<UserGetModel> getUserByShop(int shopId);
-        Task<ApiResponse> DeleteUser(int id);
-        bool IsAdmin(int id);
+        int GetCurrentUserId();
+        Task<Response<List<UserGetModel>>> GetUsers(UserGetRequest request = null);
+        Task<Response<UserGetModel>> GetUser(int userId);
+        Task<ApiResponse> SetOnline(int userId = 0, bool isOnline = true);
+        Task<Response<UserGetModel>> UpdateOnlineStatus(int _userId, bool _isOnline);
+        Task<Response<UserGetModel>> UpdateOnlineHistory(int _userId);
+        Task<Response<UserGetModel>> ValidateUser(SignInRequest request);
     }
 }

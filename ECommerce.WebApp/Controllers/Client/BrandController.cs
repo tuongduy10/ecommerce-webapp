@@ -1,5 +1,5 @@
-﻿using ECommerce.Application.Services.Brand;
-using ECommerce.Application.Services.Brand.Dtos;
+﻿using ECommerce.Application.BaseServices.Brand;
+using ECommerce.Application.BaseServices.Brand.Dtos;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

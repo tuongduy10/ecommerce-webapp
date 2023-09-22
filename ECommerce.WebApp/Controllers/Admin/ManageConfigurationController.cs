@@ -1,8 +1,8 @@
 ﻿using ECommerce.Application.Constants;
-using ECommerce.Application.Services.Bank;
-using ECommerce.Application.Services.Configurations;
-using ECommerce.Application.Services.Configurations.Dtos.Footer;
-using ECommerce.Application.Services.Configurations.Dtos.Header;
+using ECommerce.Application.BaseServices.Bank;
+using ECommerce.Application.BaseServices.Configurations;
+using ECommerce.Application.BaseServices.Configurations.Dtos.Footer;
+using ECommerce.Application.BaseServices.Configurations.Dtos.Header;
 using ECommerce.Data.Models;
 using ECommerce.WebApp.Models.Configurations.Footer;
 using ECommerce.WebApp.Models.Configurations.Header;

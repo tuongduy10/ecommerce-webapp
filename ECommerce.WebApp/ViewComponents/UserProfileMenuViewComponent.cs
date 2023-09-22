@@ -1,7 +1,7 @@
 ﻿using ECommerce.Application.Services.Notification;
-using ECommerce.Application.Services.Rate;
-using ECommerce.Application.Services.Shop;
-using ECommerce.Application.Services.User;
+using ECommerce.Application.BaseServices.Rate;
+using ECommerce.Application.BaseServices.Shop;
+using ECommerce.Application.BaseServices.User;
 using ECommerce.WebApp.Controllers.Client;
 using Microsoft.AspNetCore.Mvc;
 using System;

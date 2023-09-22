@@ -1,8 +1,8 @@
 ﻿using ECommerce.Application.Services.Notification;
-using ECommerce.Application.Services.Rate;
-using ECommerce.Application.Services.Shop;
+using ECommerce.Application.BaseServices.Rate;
+using ECommerce.Application.BaseServices.Shop;
+using ECommerce.Application.BaseServices.User;
 using ECommerce.Application.Services.User;
-using ECommerce.Application.Services.User_v2;
 using ECommerce.WebApp.Hubs;
 using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authentication;
@@ -20,8 +20,8 @@ namespace ECommerce.WebApp.Controllers.Client
     public class AccountController : Controller
     {
         private ILogger<AccountController> _logger;
-        private IUserService _userService;
-        private IUserService_v2 _userServiceV2;
+        private IUserBaseService _userService;
+        private IUserService _userServiceV2;
         private IShopService _shopService;
         private IRateService _rateService;
         private INotificationService _notificationService;
@@ -29,8 +29,8 @@ namespace ECommerce.WebApp.Controllers.Client
         private HttpContextHelper _contextHelper;
         public AccountController(
             ILogger<AccountController> logger,
-            IUserService userService,
-            IUserService_v2 userServiceV2,
+            IUserBaseService userService,
+            IUserService userServiceV2,
             IShopService shopService,
             IRateService rateService,
             IHubContext<ClientHub> clientHub,

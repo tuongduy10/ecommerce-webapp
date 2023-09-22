@@ -1,9 +1,9 @@
 ﻿using ECommerce.Application.Constants;
-using ECommerce.Application.Services.Brand;
-using ECommerce.Application.Services.Category;
+using ECommerce.Application.BaseServices.Brand;
+using ECommerce.Application.BaseServices.Category;
 using ECommerce.Application.Services.Chat;
 using ECommerce.Application.Services.Chat.Dtos;
-using ECommerce.Application.Services.Configurations;
+using ECommerce.Application.BaseServices.Configurations;
 using ECommerce.WebApp.Models;
 using ECommerce.WebApp.Models.Blog;
 using Microsoft.AspNetCore.Authorization;

@@ -1,5 +1,5 @@
-﻿using ECommerce.Application.Services.Discount;
-using ECommerce.Application.Services.Product;
+﻿using ECommerce.Application.BaseServices.Discount;
+using ECommerce.Application.BaseServices.Product;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -14,9 +14,9 @@ namespace ECommerce.WebApp.APIs
     [ApiController]
     public class CartAPI : ControllerBase
     {
-        private IProductService _productService;
+        private IProductBaseService _productService;
         private IDiscountService _discountService;
-        public CartAPI(IProductService productService, IDiscountService discountService)
+        public CartAPI(IProductBaseService productService, IDiscountService discountService)
         {
             _productService = productService;
             _discountService = discountService;

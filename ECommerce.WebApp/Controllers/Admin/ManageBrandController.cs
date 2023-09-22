@@ -1,8 +1,8 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Constants;
-using ECommerce.Application.Services.Brand;
-using ECommerce.Application.Services.Brand.Dtos;
-using ECommerce.Application.Services.Category;
+using ECommerce.Application.BaseServices.Brand;
+using ECommerce.Application.BaseServices.Brand.Dtos;
+using ECommerce.Application.BaseServices.Category;
 using ECommerce.WebApp.Models.Brand;
 using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authorization;

@@ -1,7 +1,7 @@
-﻿using ECommerce.Application.Services.Brand;
-using ECommerce.Application.Services.Product;
-using ECommerce.Application.Services.Product.Dtos;
-using ECommerce.Application.Services.SubCategory;
+﻿using ECommerce.Application.BaseServices.Brand;
+using ECommerce.Application.BaseServices.Product;
+using ECommerce.Application.BaseServices.Product.Dtos;
+using ECommerce.Application.BaseServices.SubCategory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -21,13 +21,13 @@ namespace ECommerce.WebApp.APIs.Seller
     public class SaleProductAPI : ControllerBase
     {
         //AddProductViewModel
-        private IProductService _productService;
+        private IProductBaseService _productService;
         private ISubCategoryService _subCategoryService;
         private IBrandService _brandService;
         private IWebHostEnvironment _webHostEnvironment;
         public SaleProductAPI(
             IWebHostEnvironment webHostEnvironment,
-            IProductService productService,
+            IProductBaseService productService,
             ISubCategoryService subCategoryService,
             IBrandService brandService)
         {
