@@ -1,54 +1,25 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
+import IconButton from "@mui/material/IconButton";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import { Fragment, useState } from "react";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { ITableData, ITableHeader } from "src/_shares/_components/data-table/data-table";
+import Collapse from "@mui/material/Collapse";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
-function createData(
-    name: string,
-    calories: number,
-    fat: number,
-    carbs: number,
-    protein: number,
-    price: number,
-) {
-    return {
-        name,
-        calories,
-        fat,
-        carbs,
-        protein,
-        price,
-        history: [
-            {
-                date: '2020-01-05',
-                customerId: '11091700',
-                amount: 3,
-            },
-            {
-                date: '2020-01-02',
-                customerId: 'Anonymous',
-                amount: 1,
-            },
-        ],
-    };
-}
-
-function Row(props: { row: ReturnType<typeof createData> }) {
-    const { row } = props;
-    const [open, setOpen] = React.useState(false);
+function Row(props: any) {
+    const { rowData, externalData } = props;
+    const [open, setOpen] = useState(false);
 
     return (
-        <React.Fragment>
+        <Fragment>
             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
                 <TableCell>
                     <IconButton
@@ -60,12 +31,12 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                     </IconButton>
                 </TableCell>
                 <TableCell component="th" scope="row">
-                    {row.name}
+                    {rowData.name}
                 </TableCell>
-                <TableCell align="right">{row.calories}</TableCell>
-                <TableCell align="right">{row.fat}</TableCell>
-                <TableCell align="right">{row.carbs}</TableCell>
-                <TableCell align="right">{row.protein}</TableCell>
+                <TableCell>{rowData.category}</TableCell>
+                <TableCell>{rowData.image}</TableCell>
+                <TableCell align="right">{rowData.price}</TableCell>
+                <TableCell align="right">{rowData.date}</TableCell>
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -84,53 +55,61 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {row.history.map((historyRow) => (
-                                        <TableRow key={historyRow.date}>
-                                            <TableCell component="th" scope="row">
-                                                {historyRow.date}
-                                            </TableCell>
-                                            <TableCell>{historyRow.customerId}</TableCell>
-                                            <TableCell align="right">{historyRow.amount}</TableCell>
-                                            <TableCell align="right">
-                                                {Math.round(historyRow.amount * row.price * 100) / 100}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">10/11/2000</TableCell>
+                                        <TableCell>1</TableCell>
+                                        <TableCell align="right">12</TableCell>
+                                        <TableCell align="right">100</TableCell>
+                                    </TableRow>
                                 </TableBody>
                             </Table>
                         </Box>
                     </Collapse>
                 </TableCell>
             </TableRow>
-        </React.Fragment>
+        </Fragment>
     );
 }
 
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
-    createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-    createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-    createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
-];
-
-export default function CollapsibleTable() {
+export default function ProductList() {
+    const header: ITableHeader[] = [
+        { field: 'name', fieldName: 'Tên sản phẩm', align: 'left' },
+        { field: 'category', fieldName: 'Loại sản phẩm', align: 'left' },
+        { field: 'image', fieldName: 'Ảnh sản phẩm', align: 'left' },
+        { field: 'price', fieldName: 'Giá sản phẩm', align: 'right' },
+        { field: 'date', fieldName: 'Ngày', align: 'right' },
+    ];
+    const data: ITableData[] = [
+        { id: "1", name: 'Tên 1', category: 'Loại 1', image: 'Ảnh 1', price: '1.000 đ', date: '20/10/2010', },
+        { id: "2", name: 'Tên 2', category: 'Loại 2', image: 'Ảnh 2', price: '1.000 đ', date: '20/10/2010', },
+        { id: "3", name: 'Tên 3', category: 'Loại 3', image: 'Ảnh 3', price: '1.000 đ', date: '20/10/2010', },
+        { id: "4", name: 'Tên 4', category: 'Loại 4', image: 'Ảnh 4', price: '1.000 đ', date: '20/10/2010', },
+        { id: "5", name: 'Tên 5', category: 'Loại 5', image: 'Ảnh 5', price: '1.000 đ', date: '20/10/2010', },
+        { id: "6", name: 'Tên 6', category: 'Loại 6', image: 'Ảnh 6', price: '1.000 đ', date: '20/10/2010', },
+        { id: "7", name: 'Tên 6', category: 'Loại 6', image: 'Ảnh 6', price: '1.000 đ', date: '20/10/2010', },
+        { id: "8", name: 'Tên 6', category: 'Loại 6', image: 'Ảnh 6', price: '1.000 đ', date: '20/10/2010', },
+        { id: "9", name: 'Tên 6', category: 'Loại 6', image: 'Ảnh 6', price: '1.000 đ', date: '20/10/2010', },
+        { id: "10", name: 'Tên 6', category: 'Loại 6', image: 'Ảnh 6', price: '1.000 đ', date: '20/10/2010', },
+        { id: "11", name: 'Tên 6', category: 'Loại 6', image: 'Ảnh 6', price: '1.000 đ', date: '20/10/2010', },
+    ]
     return (
         <TableContainer component={Paper}>
             <Table aria-label="collapsible table">
                 <TableHead>
                     <TableRow>
                         <TableCell />
-                        <TableCell>Dessert (100g serving)</TableCell>
-                        <TableCell align="right">Calories</TableCell>
-                        <TableCell align="right">Fat (g)</TableCell>
-                        <TableCell align="right">Carbs (g)</TableCell>
-                        <TableCell align="right">Protein (g)</TableCell>
+                        {header.map((field) => (
+                            <TableCell key={field.field} align={!field.align ? 'left' : field.align}>{field.fieldName}</TableCell>
+                        ))}
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => (
-                        <Row key={row.name} row={row} />
+                    {data.length > 0 && data.map((item, idx) => (
+                        <Row
+                            key={`row-${item.id}`}
+                            rowData={item}
+                            externalData={item?.externalData}
+                        />
                     ))}
                 </TableBody>
             </Table>

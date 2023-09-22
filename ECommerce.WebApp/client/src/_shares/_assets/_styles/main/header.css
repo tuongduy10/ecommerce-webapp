@@ -340,7 +340,6 @@
         .nav__mobile .searchform{
             box-shadow: unset;
         }
-        .nav__mobile a,
         .nav__menubar{
             height: 24px;
             width: 24px;
@@ -406,10 +405,6 @@
             .nav__mobile-account a:hover svg{
                 stroke: var(--blue-dior);
             }
-        .nav__mobile-footer{
-            position: absolute;
-            bottom: 0;
-        }
             .nav__mobile-footer ul{
                 border-top: 1px solid #ddd;
             }

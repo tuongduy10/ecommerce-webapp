@@ -66,7 +66,11 @@ namespace ECommerce.WebApp
             services.AddControllersWithViews();
 
             services
-                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddAuthentication(option =>
+                {
+                    option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
                 .AddJwtBearer(option => 
                 {
                     option.TokenValidationParameters = new TokenValidationParameters
@@ -139,15 +143,11 @@ namespace ECommerce.WebApp
         {
             if (env.IsDevelopment())
             {
-                app.UseExceptionHandler("/error");
-                app.UseStatusCodePagesWithRedirects("/error/{0}");
                 app.UseDeveloperExceptionPage();
-                // app.UseHsts();
             }
             else
             {
-                // app.UseExceptionHandler("/error");
-                // app.UseStatusCodePagesWithRedirects("/error/{0}");
+                app.UseExceptionHandler("/error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
