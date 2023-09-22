@@ -58,21 +58,22 @@ const UserComment = (props: IUserComment) => {
                 </div>
             )}
             {/* STAR LV1 */}
-            {['post', 'comment'].includes(type) && (
-                <div className="flex stars">
-                    {(type === 'post' || enableEdit) && (
-                        <span className="mr-2">Đánh giá</span>
-                    )}
-                    {[...Array(5)].map((_, index) => (
+            <div className="flex stars">
+                {(type === 'post' || enableEdit) && (
+                    <span className="mr-2">Đánh giá</span>
+                )}
+                {['post', 'comment'].includes(type) && (
+                    [...Array(5)].map((_, index) => (
                         <MuiIcon
                             key={index}
                             fill="orange"
                             name={ICON_NAME.FEATHER.STAR}
                             style={{ fontSize: "1.4rem" }}
+                            className={type === 'post' ? 'cursor-pointer' : ''}
                         />
-                    ))}
-                </div>
-            )}
+                    ))
+                )}
+            </div>
             {!enableEdit && type !== 'post' && (
                 <div>
                     {/* COMMENT LV1 */}

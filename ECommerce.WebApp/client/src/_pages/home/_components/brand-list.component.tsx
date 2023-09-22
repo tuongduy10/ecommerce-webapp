@@ -1,11 +1,11 @@
 import BrandItem from "./brand-item.component";
 import InventoryService from 'src/_cores/_services/inventory.service';
 import { useDispatch } from 'react-redux';
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { IBrand } from "src/_cores/_interfaces/inventory.interface";
 import React from "react";
 import { useHomeStore } from "src/_cores/_store/root-store";
-import { setBrands } from "../_store/home.reducer";
+import { setBrands } from "src/_cores/_reducers";
 
 const BrandList = () => {
     const homeStore = useHomeStore();

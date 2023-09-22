@@ -1,7 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
 import { SLICE_NAME } from "src/_cores/_enums/state.enum";
-import { RootState } from "src/_cores/_store/root-store";
 
 const initialState = {
   data: [] as any[],

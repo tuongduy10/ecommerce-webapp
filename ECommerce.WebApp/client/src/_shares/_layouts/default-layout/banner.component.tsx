@@ -19,15 +19,10 @@ const Banner = () => {
   const [hideBanner, setHideBanner] = useState(false);
 
   useEffect(() => {
-<<<<<<< HEAD
-    const path = [
-      '/v2/product-detail'
-=======
     const hiddenPath = [
       '/v2/product-detail',
       '/v2/cart',
       '/v2/login',
->>>>>>> 9cb11ae (JWT auth)
     ];
     if (hiddenPath.includes(window.location.pathname)) {
       setHideBanner(true);
@@ -42,19 +37,17 @@ const Banner = () => {
         slidesPerView={1}
         navigation={true}
         pagination={pagination}
-        style={{ maxHeight: "500px", minHeight: "33vw" }}
+        style={{ height: "calc(20vw*1.72)", minHeight: "33vw" }}
         modules={[Autoplay, Pagination, Navigation]}
       >
         <SwiperSlide>
           <img
-            className="w-full object-contain"
             src="https://hihichi.com/images/banner/banner_147f1f14-cf61-4808-b5cb-180a60d7fe8f.png"
             alt=""
           />
         </SwiperSlide>
         <SwiperSlide>
           <img
-            className="w-full object-contain"
             src="https://hihichi.com/images/banner/banner_947667cf-bb07-4ab8-9248-9fd7428f7837.jpg"
             alt=""
           />

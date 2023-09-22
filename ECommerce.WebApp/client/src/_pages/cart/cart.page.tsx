@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { WebDirectional } from "src/_shares/_components";
+import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
 import MuiIcon from "src/_shares/_components/mui-icon/mui-icon.component";
 
 const CartPage = () => {
@@ -88,7 +89,7 @@ const CartPage = () => {
                 </div>
               </div>
               <span className="cart-product__remove flex">
-                <MuiIcon name="X" />
+                <MuiIcon name={ICON_NAME.FEATHER.X} />
               </span>
             </div>
           </div>

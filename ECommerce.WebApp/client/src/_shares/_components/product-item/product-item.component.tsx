@@ -49,17 +49,17 @@ const ProductItem = (props: IProductItemProps) => {
       />
       <div className="product__info">
         <div className="product__info-detail text-center">
-          <div className="product-brand align-items-center">ShopName</div>
-          <div className="product-name mb-0">ProductName</div>
+          <div className="product-brand align-items-center">HihiChi</div>
+          <div className="product-name mb-0">Nồi cơm điện</div>
 
           {/* <div className="product-name">
                 Tạm hết đến @product.ProductImportDate.ToString("dd/MM/yyyy")
               </div> */}
-          {<div className="product-name">ProductTypeName</div>}
+          {<div className="product-name">(Hàng có sẵn)</div>}
           {/*  <div className="product-subprice" style="visibility: hidden">@String.Format("{0:0,0} ₫", product.Price)</div>
                                                         <div className="product-price">@String.Format("{0:0,0} ₫", product.Price)</div> */}
-          <div className="product-subprice">600.000</div>
-          <div className="product-price">400.000</div>
+          <div className="product-subprice">600.000 ₫</div>
+          <div className="product-price">400.000 ₫</div>
           <div className="product-btn">
             <a href="/">Xem nhanh</a>
           </div>
