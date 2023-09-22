@@ -1,4 +1,4 @@
-﻿using ECommerce.Application.Services.Configurations;
+﻿using ECommerce.Application.BaseServices.Configurations;
 using ECommerce.WebApp.Models.Components;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;

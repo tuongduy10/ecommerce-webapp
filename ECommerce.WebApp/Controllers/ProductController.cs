@@ -1,9 +1,9 @@
-using ECommerce.Application.Services.Brand;
-using ECommerce.Application.Services.FilterProduct;
-using ECommerce.Application.Services.Product;
-using ECommerce.Application.Services.Product.Dtos;
-using ECommerce.Application.Services.Product.Enum;
-using ECommerce.Application.Services.SubCategory;
+using ECommerce.Application.BaseServices.Brand;
+using ECommerce.Application.BaseServices.FilterProduct;
+using ECommerce.Application.BaseServices.Product;
+using ECommerce.Application.BaseServices.Product.Dtos;
+using ECommerce.Application.BaseServices.Product.Enum;
+using ECommerce.Application.BaseServices.SubCategory;
 using ECommerce.WebApp.Middlewares;
 using ECommerce.WebApp.Models.Products;
 using Microsoft.AspNetCore.Mvc;
@@ -17,12 +17,12 @@ namespace ECommerce.WebApp.Controllers
     [ApiController]
     public class ProductAPI : ControllerBase
     {
-        private readonly IProductService _productService;
+        private readonly IProductBaseService _productService;
         private readonly ISubCategoryService _subCategoryService;
         private readonly IBrandService _brandService;
         private readonly IFilterProductService _filterService;
         public ProductAPI(
-            IProductService productService, 
+            IProductBaseService productService, 
             ISubCategoryService subCategoryService, 
             IBrandService brandService, 
             IFilterProductService filterService)

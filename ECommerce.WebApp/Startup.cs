@@ -1,9 +1,9 @@
-using ECommerce.Application.Services.Brand;
-using ECommerce.Application.Services.SubCategory;
-using ECommerce.Application.Services.Category;
-using ECommerce.Application.Services.Configurations;
-using ECommerce.Application.Services.Product;
-using ECommerce.Application.Services.Discount;
+using ECommerce.Application.BaseServices.Brand;
+using ECommerce.Application.BaseServices.SubCategory;
+using ECommerce.Application.BaseServices.Category;
+using ECommerce.Application.BaseServices.Configurations;
+using ECommerce.Application.BaseServices.Product;
+using ECommerce.Application.BaseServices.Discount;
 using ECommerce.Data.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,12 +12,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using ECommerce.Application.Services.FilterProduct;
-using ECommerce.Application.Services.User;
-using ECommerce.Application.Services.Bank;
-using ECommerce.Application.Services.Shop;
-using ECommerce.Application.Services.Rate;
-using ECommerce.Application.Services.Role;
+using ECommerce.Application.BaseServices.FilterProduct;
+using ECommerce.Application.BaseServices.User;
+using ECommerce.Application.BaseServices.Bank;
+using ECommerce.Application.BaseServices.Shop;
+using ECommerce.Application.BaseServices.Rate;
+using ECommerce.Application.BaseServices.Role;
 using Microsoft.AspNetCore.Http;
 using ECommerce.WebApp.Middlewares;
 using Microsoft.AspNetCore.Identity;
@@ -32,8 +32,8 @@ using ECommerce.Application.Repositories;
 using ECommerce.Application.Services.Comment;
 using ECommerce.WebApp.Hubs;
 using Microsoft.AspNetCore.SignalR;
-using ECommerce.Application.Services.Product_v2;
-using ECommerce.Application.Services.User_v2;
+using ECommerce.Application.Services.Product;
+using ECommerce.Application.Services.User;
 using Microsoft.Extensions.Logging;
 using ECommerce.Data.Models;
 using ECommerce.Application.Services.Chat;
@@ -102,12 +102,11 @@ namespace ECommerce.WebApp
             /*
              * Business Services
              */
-            // Website Configuration
+            // Base Services
             services.AddTransient<IConfigurationService, ConfigurationService>();
             services.AddTransient<IHeaderService, HeaderService>();
             services.AddTransient<IFooterService, FooterService>();
-            // Website Data
-            services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<IProductBaseService, ProductBaseService>();
             services.AddTransient<ISubCategoryService, SubCategoryService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IBrandService, BrandService>();
@@ -115,17 +114,15 @@ namespace ECommerce.WebApp
             services.AddTransient<IBankService, BankService>();
             services.AddTransient<IRateService, RateService>();
             services.AddTransient<IDiscountService, DiscountService>();
-            // User
-            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IUserBaseService, UserBaseService>();
             services.AddTransient<IRoleService, RoleService>();
-            // Shop
             services.AddTransient<IShopService, ShopService>();
 
-            // Services ver 2
+            // Services
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<ICommentService, CommentService>();
-            services.AddScoped<IProductService_v2,ProductService_v2>();
-            services.AddScoped<IUserService_v2, UserService_v2>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IChatService, ChatService>();
 
             // In production, the React files will be served from this directory

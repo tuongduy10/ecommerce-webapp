@@ -1,6 +1,6 @@
-﻿using ECommerce.Application.Services.Brand;
-using ECommerce.Application.Services.Brand.Dtos;
-using ECommerce.Application.Services.Category;
+﻿using ECommerce.Application.BaseServices.Brand;
+using ECommerce.Application.BaseServices.Brand.Dtos;
+using ECommerce.Application.BaseServices.Category;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

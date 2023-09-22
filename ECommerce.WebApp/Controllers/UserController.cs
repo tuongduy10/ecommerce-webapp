@@ -1,7 +1,7 @@
 ﻿using ECommerce.Application.Common;
-using ECommerce.Application.Services.User.Dtos;
+using ECommerce.Application.BaseServices.User.Dtos;
+using ECommerce.Application.BaseServices.User;
 using ECommerce.Application.Services.User;
-using ECommerce.Application.Services.User_v2;
 using ECommerce.WebApp.Configs.AppSettings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -24,16 +24,16 @@ namespace ECommerce.WebApp.Controllers
     [Route("api/user")]
     public class UserController : ControllerBase
     {
-        private readonly IUserService _userService;
-        private readonly IUserService_v2 _userServiceV2;
+        private readonly IUserBaseService _userService;
+        private readonly IUserService _userServiceV2;
         private readonly ILogger<UserController> _logger;
         private HttpContextHelper _contextHelper;
         private readonly AppSetting _appSetting;
         public UserController(
             ILogger<UserController> logger,
             IOptionsMonitor<AppSetting> optionsMonitor,
-            IUserService userService,
-            IUserService_v2 userServiceV2)
+            IUserBaseService userService,
+            IUserService userServiceV2)
         {
             _logger = logger;
             _contextHelper = new HttpContextHelper();

@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ECommerce.Application.Services.User;
+using ECommerce.Application.BaseServices.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.WebApp.Middlewares
@@ -18,7 +18,7 @@ namespace ECommerce.WebApp.Middlewares
         {
             _next = next;
         }
-        public async Task InvokeAsync(HttpContext context, IUserService userService)
+        public async Task InvokeAsync(HttpContext context, IUserBaseService userService)
         {
             var _cookies = context.Request.Cookies; // _clientcookie or _admincookie
             var _authType = context.User.Identity.AuthenticationType; // ClientAuth or AdminAuth

@@ -1,11 +1,11 @@
 ﻿
-using ECommerce.Application.Services.Brand.Dtos;
-using ECommerce.Application.Services.Discount.Dtos;
-using ECommerce.Application.Services.Product.Dtos;
-using ECommerce.Application.Services.Product.Models;
-using ECommerce.Application.Services.Rate.Dtos;
-using ECommerce.Application.Services.Shop.Dtos;
-using ECommerce.Application.Services.SubCategory.Dtos;
+using ECommerce.Application.BaseServices.Brand.Dtos;
+using ECommerce.Application.BaseServices.Discount.Dtos;
+using ECommerce.Application.BaseServices.Product.Dtos;
+using ECommerce.Application.BaseServices.Product.Models;
+using ECommerce.Application.BaseServices.Rate.Dtos;
+using ECommerce.Application.BaseServices.Shop.Dtos;
+using ECommerce.Application.BaseServices.SubCategory.Dtos;
 using System.Collections.Generic;
 
 namespace ECommerce.WebApp.Models.Products

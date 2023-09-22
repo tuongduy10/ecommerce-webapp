@@ -1,7 +1,7 @@
-﻿using ECommerce.Application.Services.Brand;
-using ECommerce.Application.Services.Shop;
-using ECommerce.Application.Services.Shop.Dtos;
-using ECommerce.Application.Services.User;
+﻿using ECommerce.Application.BaseServices.Brand;
+using ECommerce.Application.BaseServices.Shop;
+using ECommerce.Application.BaseServices.Shop.Dtos;
+using ECommerce.Application.BaseServices.User;
 using ECommerce.WebApp.Models.Shop;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,8 +18,8 @@ namespace ECommerce.WebApp.Controllers.Admin
     {
         private IShopService _shopService;
         private IBrandService _brandService;
-        private IUserService _userService;
-        public ManageShopController(IShopService shopService, IBrandService brandService, IUserService userService)
+        private IUserBaseService _userService;
+        public ManageShopController(IShopService shopService, IBrandService brandService, IUserBaseService userService)
         {
             _shopService = shopService;
             _brandService = brandService;

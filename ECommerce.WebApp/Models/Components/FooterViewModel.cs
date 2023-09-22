@@ -1,5 +1,5 @@
-﻿using ECommerce.Application.Services.Configurations.Dtos;
-using ECommerce.Application.Services.Configurations.Dtos.Footer;
+﻿using ECommerce.Application.BaseServices.Configurations.Dtos;
+using ECommerce.Application.BaseServices.Configurations.Dtos.Footer;
 using System;
 using System.Collections.Generic;
 using System.Linq;

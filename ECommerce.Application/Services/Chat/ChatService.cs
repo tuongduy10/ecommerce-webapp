@@ -6,7 +6,7 @@ using ECommerce.Application.Repositories.Message.Dtos;
 using ECommerce.Application.Repositories.Notification;
 using ECommerce.Application.Repositories.User;
 using ECommerce.Application.Services.Chat.Dtos;
-using ECommerce.Application.Services.User_v2;
+using ECommerce.Application.Services.User;
 using ECommerce.Data.Context;
 using ECommerce.Data.Models;
 using Microsoft.EntityFrameworkCore;

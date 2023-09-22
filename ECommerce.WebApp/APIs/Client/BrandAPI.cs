@@ -1,4 +1,4 @@
-﻿using ECommerce.Application.Services.Brand;
+﻿using ECommerce.Application.BaseServices.Brand;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
