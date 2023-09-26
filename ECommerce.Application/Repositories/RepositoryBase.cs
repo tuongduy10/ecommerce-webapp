@@ -16,12 +16,21 @@ namespace ECommerce.Application.Repositories
         {
             _DbContext = DbContext;
         }
-        // Custom
+        // Base
         public virtual IQueryable<T> Query(Expression<Func<T, bool>> expression = null)
         {
             if (expression != null)
                 return _DbContext.Set<T>().Where(expression).AsNoTracking();
             return _DbContext.Set<T>().AsNoTracking();
+        }
+        public virtual DbSet<T> Entity()
+        {
+            return _DbContext.Set<T>();
+        }
+        // Custom
+        public virtual bool Any(Expression<Func<T, bool>> expression)
+        {
+            return _DbContext.Set<T>().Any(expression);
         }
         // Single Obj
         public virtual async Task<T> FindAsyncWhere(Expression<Func<T, bool>> expression)

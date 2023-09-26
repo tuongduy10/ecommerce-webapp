@@ -68,7 +68,7 @@ namespace ECommerce.WebApp.Controllers.Client
                 listProduct = listProduct,
                 listSubCategory = listSubCategory,
                 brand = brand,
-                listFilterModel = filter,
+                listFilterModel = filter, // not used
             };
 
             return View(model);
