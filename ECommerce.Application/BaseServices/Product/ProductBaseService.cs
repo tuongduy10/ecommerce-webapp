@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ECommerce.Application.Enums;
 
 namespace ECommerce.Application.BaseServices.Product
 {
@@ -311,7 +312,7 @@ namespace ECommerce.Application.BaseServices.Product
                 var query = (from product in _DbContext.Products
                              join brand in _DbContext.Brands on product.BrandId equals brand.BrandId
                              join shop in _DbContext.Shops on product.ShopId equals shop.ShopId
-                             where product.BrandId == BrandId && product.Status == (int)enumProductStatus.Available
+                             where product.BrandId == BrandId && product.Status == (int)ProductStatusEnum.Available
                              orderby product.SubCategoryId
                              select new { product, brand, shop }).AsQueryable();
 
@@ -582,7 +583,7 @@ namespace ECommerce.Application.BaseServices.Product
                     BrandId = request.brandId,
                     ProductAddedDate = DateTime.Now, // default
                     SubCategoryId = request.subCategoryId,
-                    Status = isAdmin ? (byte?)enumProductStatus.Available : (byte?)enumProductStatus.Pending,
+                    Status = isAdmin ? (byte?)ProductStatusEnum.Available : (byte?)ProductStatusEnum.Pending,
 
                     //Price
                     PriceAvailable = request.priceAvailable ?? null,
@@ -792,7 +793,7 @@ namespace ECommerce.Application.BaseServices.Product
                 product.ShopId = request.shopId;
                 product.BrandId = request.brandId;
                 product.SubCategoryId = request.subCategoryId;
-                product.Status = isAdmin ? (byte?)enumProductStatus.Available : (byte?)enumProductStatus.Pending;
+                product.Status = isAdmin ? (byte?)ProductStatusEnum.Available : (byte?)ProductStatusEnum.Pending;
                 product.PriceAvailable = request.priceAvailable ?? null;
                 product.PricePreOrder = request.pricePreOrder ?? null;
                 product.PriceForSeller = request.priceForSeller ?? null;
@@ -1093,7 +1094,7 @@ namespace ECommerce.Application.BaseServices.Product
                 foreach (var id in ids)
                 {
                     var product = await _DbContext.Products.Where(i => i.ProductId == id).FirstOrDefaultAsync();
-                    product.Status = (byte?)enumProductStatus.Disabled;
+                    product.Status = (byte?)ProductStatusEnum.Disabled;
                 }
                 
                 await _DbContext.SaveChangesAsync();
@@ -1112,7 +1113,7 @@ namespace ECommerce.Application.BaseServices.Product
                 foreach (var id in ids)
                 {
                     var product = await _DbContext.Products.Where(i => i.ProductId == id).FirstOrDefaultAsync();
-                    product.Status = (byte?)enumProductStatus.Available;
+                    product.Status = (byte?)ProductStatusEnum.Available;
                 }
                 await _DbContext.SaveChangesAsync();
                 return new ApiSuccessResponse("Cập nhật thành công");

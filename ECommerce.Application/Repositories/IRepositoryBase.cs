@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -9,8 +10,11 @@ namespace ECommerce.Application.Repositories
 {
     public interface IRepositoryBase<T> where T : class
     {
+        // Base 
+        DbSet<T> Entity();
         // Custom
         IQueryable<T> Query(Expression<Func<T, bool>> expression = null);
+        bool Any(Expression<Func<T, bool>> expression);
         // Single obj
         Task<T> FindAsyncWhere(Expression<Func<T, bool>> expression);
         Task<T> FindLastAsyncWhere(Expression<Func<T, bool>> expression);
