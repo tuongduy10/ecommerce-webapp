@@ -45,6 +45,10 @@ namespace ECommerce.Application.Services.Product
                 _subCategoryOptionRepo = new RepositoryBase<SubCategoryOption>(_DbContext);
             if (_productOptionValueRepo == null)
                 _productOptionValueRepo = new RepositoryBase<ProductOptionValue>(_DbContext);
+            if (_productImageRepo == null)
+                _productImageRepo = new RepositoryBase<ProductImage>(_DbContext);
+            if (_brandRepo == null)
+                _brandRepo = new RepositoryBase<Brand>(_DbContext);
             if (_shopRepo == null)
                 _shopRepo = new RepositoryBase<Shop>(_DbContext);
         }
@@ -61,7 +65,7 @@ namespace ECommerce.Application.Services.Product
                 List<int> listOptionValueId = request.optionValueIds;
 
                 var proIdsByOption = await _productOptionValueRepo.Entity()
-                        .Where(i => listOptionValueId.Contains(i.OptionValueId))
+                        .Where(i => listOptionValueId != null && listOptionValueId.Contains(i.OptionValueId))
                         .Select(i => i.ProductId)
                         .Distinct()
                         .ToListAsync();
