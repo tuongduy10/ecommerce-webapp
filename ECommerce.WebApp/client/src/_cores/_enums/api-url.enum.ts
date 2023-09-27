@@ -15,3 +15,7 @@ export const BRAND_API_URL = {
 export const CATEGORY_API_URL = {
     GET_ALL: '/categoryAPI/getAll'
 }
+
+export const PRODUCT_API_URL = {
+    PRODUCT_LIST: '/product/product-list',
+}

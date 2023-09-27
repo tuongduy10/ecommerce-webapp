@@ -1,8 +1,21 @@
 import ProductItem from "src/_shares/_components/product-item/product-item.component";
 import { ProlCategory, ProlCategoryMb, ProlFilter, ProlPagination } from "./_components";
 import { WebDirectional } from "src/_shares/_components";
+import { useEffect } from "react";
+import ProductService from "src/_cores/_services/product.service";
 
 const ProductListPage = () => {
+  useEffect(() => {
+    const params = {
+      pageIndex: 1,
+      brandId: 66,
+    }
+    ProductService.getProductList(params).then(res => {
+      if (res.data) {
+        console.log(res.data)
+      }
+    })
+  }, []);
   return (
     <div className="custom-container">
       <div className="content__wrapper products__content-wrapper">
