@@ -6,7 +6,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { ITableData, ITableHeader } from "src/_shares/_components/data-table/data-table";
@@ -72,6 +72,11 @@ function Row(props: any) {
 }
 
 export default function ProductList() {
+    
+    useEffect(() => {
+        // your logic
+    }, []);
+
     const header: ITableHeader[] = [
         { field: 'name', fieldName: 'Tên sản phẩm', align: 'left' },
         { field: 'category', fieldName: 'Loại sản phẩm', align: 'left' },
