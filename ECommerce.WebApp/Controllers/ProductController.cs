@@ -19,7 +19,7 @@ namespace ECommerce.WebApp.Controllers
         }
         [AllowAnonymous]
         [HttpPost("product-list")]
-        public async Task<IActionResult> getProductList([FromBody] ProductGetRequest request)
+        public async Task<IActionResult> getProductList(ProductGetRequest request)
         {
             var res = await _productService.getProductList(request);
             if (!res.isSucceed)
@@ -27,15 +27,16 @@ namespace ECommerce.WebApp.Controllers
             return Ok(res);
         }
         [HttpPost("managed-products")]
-        public async Task<IActionResult> getManagedProductList([FromBody] ProductGetRequest request)
+        public async Task<IActionResult> getManagedProductList(ProductGetRequest request)
         {
             var res = await _productService.getManagedProductList(request);
             if (!res.isSucceed)
                 return BadRequest(res);
             return Ok(res);
         }
+        [AllowAnonymous]
         [HttpPost("save")]
-        public async Task<IActionResult> save(ProductModel request)
+        public async Task<IActionResult> save(ProductSaveRequest request)
         {
             return Ok();
         }
