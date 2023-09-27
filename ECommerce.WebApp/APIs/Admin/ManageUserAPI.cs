@@ -1,5 +1,5 @@
-﻿using ECommerce.Application.Services.User;
-using ECommerce.Application.Services.User.Dtos;
+﻿using ECommerce.Application.BaseServices.User;
+using ECommerce.Application.BaseServices.User.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,8 +15,8 @@ namespace ECommerce.WebApp.APIs.Admin
     [Authorize(Policy = "Admin")]
     public class ManageUserAPI : ControllerBase
     {
-        private IUserService _userService;
-        public ManageUserAPI(IUserService userService)
+        private IUserBaseService _userService;
+        public ManageUserAPI(IUserBaseService userService)
         {
             _userService = userService;
         }

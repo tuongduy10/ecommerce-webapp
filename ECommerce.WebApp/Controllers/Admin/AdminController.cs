@@ -1,8 +1,8 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Constants;
-using ECommerce.Application.Services.Rate;
-using ECommerce.Application.Services.User;
-using ECommerce.Application.Services.User.Dtos;
+using ECommerce.Application.BaseServices.Rate;
+using ECommerce.Application.BaseServices.User;
+using ECommerce.Application.BaseServices.User.Dtos;
 using ECommerce.WebApp.Models.Admin;
 using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authentication;
@@ -25,11 +25,11 @@ namespace ECommerce.WebApp.Controllers.Admin
         private string RATE_FILE_PATH = FilePathConstant.RATE_FILEPATH;
         private string RATE_FILE_PREFIX = FilePathConstant.RATE_FILEPREFIX;
 
-        private IUserService _userService;
+        private IUserBaseService _userService;
         private IRateService _rateService;
         private ManageFiles _manageFiles;
         public AdminController(
-            IUserService userService, 
+            IUserBaseService userService, 
             IRateService rateService,
             IWebHostEnvironment webHostEnvironment
         ) {

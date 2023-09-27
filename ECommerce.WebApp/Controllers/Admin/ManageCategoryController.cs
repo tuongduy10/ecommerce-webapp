@@ -1,7 +1,7 @@
-﻿using ECommerce.Application.Services.Category;
-using ECommerce.Application.Services.Category.Dtos;
-using ECommerce.Application.Services.SubCategory;
-using ECommerce.Application.Services.SubCategory.Dtos;
+﻿using ECommerce.Application.BaseServices.Category;
+using ECommerce.Application.BaseServices.Category.Dtos;
+using ECommerce.Application.BaseServices.SubCategory;
+using ECommerce.Application.BaseServices.SubCategory.Dtos;
 using ECommerce.WebApp.Models.Category;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

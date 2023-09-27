@@ -1,5 +1,5 @@
-﻿using ECommerce.Application.Services.Category;
-using ECommerce.Application.Services.SubCategory;
+﻿using ECommerce.Application.BaseServices.Category;
+using ECommerce.Application.BaseServices.SubCategory;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 

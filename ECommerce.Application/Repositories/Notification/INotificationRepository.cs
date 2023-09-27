@@ -1,8 +1,8 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Repositories.Notification.Dtos;
-using ECommerce.Application.Services.Rate.Dtos;
-using ECommerce.Application.Services.Rate.Models;
-using ECommerce.Application.Services.User_v2.Dtos;
+using ECommerce.Application.BaseServices.Rate.Dtos;
+using ECommerce.Application.BaseServices.Rate.Models;
+using ECommerce.Application.Services.User.Dtos;
 using ECommerce.Data.Models;
 using System;
 using System.Collections.Generic;

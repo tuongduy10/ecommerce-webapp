@@ -9,11 +9,11 @@ namespace ECommerce.Application.Common
 {
     public class FailResponse<T> : Response<T>
     {
-        public FailResponse(string message)
+        public FailResponse(string message = "")
         {
             isSucceed = false;
             Status = StatusConstant.FAIL;
-            Message = message;
+            Message = !string.IsNullOrEmpty(message) ? message : MessageConstant.ERROR;
         }
     }
 }

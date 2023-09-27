@@ -1,12 +1,12 @@
 ﻿using ECommerce.Application.Constants;
 using ECommerce.Application.Services.Chat;
 using ECommerce.Application.Services.Comment;
-using ECommerce.Application.Services.Role;
-using ECommerce.Application.Services.Shop;
+using ECommerce.Application.BaseServices.Role;
+using ECommerce.Application.BaseServices.Shop;
+using ECommerce.Application.BaseServices.User;
+using ECommerce.Application.BaseServices.User.Dtos;
+using ECommerce.Application.BaseServices.User.Enums;
 using ECommerce.Application.Services.User;
-using ECommerce.Application.Services.User.Dtos;
-using ECommerce.Application.Services.User.Enums;
-using ECommerce.Application.Services.User_v2;
 using ECommerce.WebApp.Models.ManageUser;
 using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -22,8 +22,8 @@ namespace ECommerce.WebApp.Controllers.Admin
     [Authorize(Policy = "Admin")]
     public class ManageUserController : Controller
     {
-        private IUserService _userService;
-        private IUserService_v2 _userSerivceV2;
+        private IUserBaseService _userService;
+        private IUserService _userSerivceV2;
         private IShopService _shopService;
         private ICommentService _commentService;
         private IChatService _chatService;
@@ -33,8 +33,8 @@ namespace ECommerce.WebApp.Controllers.Admin
         private const string DATETIME_LABEL = ConfigConstant.DATE_FORMAT;
 
         public ManageUserController(
-            IUserService userService,
-            IUserService_v2 userSerivceV2,
+            IUserBaseService userService,
+            IUserService userSerivceV2,
             IShopService shopService,
             ICommentService commentService,
             IChatService chatService,

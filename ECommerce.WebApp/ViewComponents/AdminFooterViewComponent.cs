@@ -1,4 +1,4 @@
-﻿using ECommerce.Application.Services.Configurations;
+﻿using ECommerce.Application.BaseServices.Configurations;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;

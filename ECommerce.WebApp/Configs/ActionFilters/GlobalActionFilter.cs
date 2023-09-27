@@ -1,4 +1,4 @@
-﻿using ECommerce.Application.Services.User;
+﻿using ECommerce.Application.BaseServices.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -13,8 +13,8 @@ namespace ECommerce.WebApp.Configs.ActionFilters
 {
     public class GlobalActionFilter : ActionFilterAttribute
     {
-        private IUserService _userService;
-        public GlobalActionFilter(IUserService userService)
+        private IUserBaseService _userService;
+        public GlobalActionFilter(IUserBaseService userService)
         {
             _userService = userService;
         }

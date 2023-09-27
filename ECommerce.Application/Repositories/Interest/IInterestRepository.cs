@@ -1,5 +1,5 @@
-﻿using ECommerce.Application.Services.Rate.Dtos;
-using ECommerce.Application.Services.Rate.Models;
+﻿using ECommerce.Application.BaseServices.Rate.Dtos;
+using ECommerce.Application.BaseServices.Rate.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

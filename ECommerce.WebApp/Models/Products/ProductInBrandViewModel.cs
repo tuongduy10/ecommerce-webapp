@@ -1,7 +1,7 @@
-﻿using ECommerce.Application.Services.Brand.Dtos;
-using ECommerce.Application.Services.FilterProduct.Dtos;
-using ECommerce.Application.Services.Product.Dtos;
-using ECommerce.Application.Services.SubCategory.Dtos;
+﻿using ECommerce.Application.BaseServices.Brand.Dtos;
+using ECommerce.Application.BaseServices.FilterProduct.Dtos;
+using ECommerce.Application.BaseServices.Product.Dtos;
+using ECommerce.Application.BaseServices.SubCategory.Dtos;
 using System.Collections.Generic;
 
 namespace ECommerce.WebApp.Models.Products

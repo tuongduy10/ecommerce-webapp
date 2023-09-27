@@ -1,574 +1,246 @@
 ﻿using ECommerce.Application.Common;
-using ECommerce.Application.Services.User.Dtos;
-using ECommerce.Application.Services.User.Enums;
+using ECommerce.Application.Repositories.User;
+using ECommerce.Application.BaseServices.User.Dtos;
 using ECommerce.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using ECommerce.Application.Constants;
+using ECommerce.Data.Models;
+using ECommerce.Application.Repositories;
+using ECommerce.Application.Repositories.OnlineHistory;
+using ECommerce.Application.Services.User.Dtos;
+using ECommerce.Application.Repositories.Notification;
 
 namespace ECommerce.Application.Services.User
 {
     public class UserService : IUserService
     {
-        private readonly ECommerceContext _DbContext;
+        private ECommerceContext _DbContext;
+        private IUserRepository _userRepo;
+        private IOnlineHistoryRepository _onlineHistoryRepo;
+        private INotificationRepository _notiRepo;
+        private IRepositoryBase<MessageHistory> _messageRepo;
+        
         public UserService(ECommerceContext DbContext)
         {
             _DbContext = DbContext;
+            if (_userRepo == null)
+                _userRepo = new UserRepository(_DbContext);
+            if(_onlineHistoryRepo == null)
+                _onlineHistoryRepo = new OnlineHistoryRepository(_DbContext);
+            if (_notiRepo == null)
+                _notiRepo = new NotificationRepository(_DbContext);
+            if (_messageRepo == null)
+                _messageRepo = new RepositoryBase<MessageHistory>(_DbContext);
         }
-        public async Task<List<UserGetModel>> getAll()
+        public int GetCurrentUserId()
         {
-            var list = await _DbContext.Users.Select(i => new UserGetModel() { 
-                UserId = i.UserId,
-                UserFullName = i.UserFullName,
-                UserJoinDate = (DateTime)i.UserJoinDate,
-                UserMail = i.UserMail,
-                UserAddress = i.UserAddress,
-                UserWardCode = i.UserWardCode,
-                UserDistrictCode = i.UserDistrictCode,
-                UserCityCode = i.UserCityCode,
-                UserPhone = i.UserPhone,
-                Status = (bool)i.Status,
-            }).ToListAsync();
-            var result = list.OrderByDescending(i => i.UserJoinDate).ToList();
-            return result;
+            return 0;
         }
-        public async Task<List<UserGetModel>> getUsersByFiltered(UserGetRequest request)
-        {
-            var list = await _DbContext.Users
-                .Where(i => i.UserId != request.userId)
-                .Select(i => new UserGetModel() {
-                    UserId = i.UserId,
-                    UserFullName = i.UserFullName,
-                    UserJoinDate = (DateTime)i.UserJoinDate,
-                    UserMail = i.UserMail,
-                    UserAddress = i.UserAddress,
-                    UserWardCode = i.UserWardCode,
-                    UserDistrictCode = i.UserDistrictCode,
-                    UserCityCode = i.UserCityCode,
-                    UserPhone = i.UserPhone,
-                    isSystemAccount = i.IsSystemAccount == null ? false : (bool)i.IsSystemAccount,
-                    Status = i.Status == null ? false : (bool)i.Status,
-                    IsOnline = i.IsOnline == null ? false : (bool)i.IsOnline,
-                    LastOnline = (DateTime)i.LastOnline
-                })
-                .ToListAsync();
-
-            if (request.all == true) list = list.ToList();
-            if (request.isSystemAccount == true) list = list.Where(i => i.isSystemAccount == true).ToList();
-            
-            var result = list.OrderByDescending(i => i.UserJoinDate).ToList();
-            return result;
-        }
-        public async Task<ApiResponse> CheckUserPhoneNumber(string PhoneNumber)
-        {
-            if (string.IsNullOrEmpty(PhoneNumber)) return new ApiFailResponse("Thông tin không được để trống");
-
-            var phonenumber = PhoneNumber;
-            if (phonenumber.Contains("+84"))
-            {
-                phonenumber = phonenumber.Replace("+84", "");
-                if(!phonenumber.StartsWith("0"))
-                {
-                    phonenumber = "0" + phonenumber;
-                }
-            }
-
-            var result = await _DbContext.Users.Where(i => i.UserPhone == phonenumber).FirstOrDefaultAsync();
-            if (result != null)
-            {
-                return new ApiFailResponse("Số điện thoại đã tồn tại");
-            }
-
-            return new ApiSuccessResponse("Có thể tạo tài khoản với số điện thoại này");
-        }
-        public async Task<ApiResponse> SignIn(SignInRequest request)
-        {
-            if (string.IsNullOrEmpty(request.UserPhone) || string.IsNullOrEmpty(request.Password)) return new ApiFailResponse("Thông tin không được để trống");
-
-            var phonenumber = request.UserPhone;
-            if (phonenumber.Contains("+84"))
-            {
-                phonenumber = phonenumber.Replace("+84", "");
-                if (!phonenumber.StartsWith("0"))
-                {
-                    phonenumber = "0" + phonenumber;
-                }
-            }
-
-            var result = await _DbContext.Users
-                .Where(i => i.UserPhone == phonenumber && i.Password == request.Password)
-                .FirstOrDefaultAsync();
-            
-            if (result == null) return new ApiFailResponse("Mật khẩu hoặc tài khoản không đúng");
-            if (result.Status == false) return new ApiFailResponse("Tài khoản đã bị khóa");
-
-            var roles = (
-                from role in _DbContext.Roles
-                from userrole in _DbContext.UserRoles
-                where role.RoleId == userrole.RoleId && userrole.UserId == result.UserId
-                select role.RoleName
-            ).Distinct().ToList();
-
-            UserGetModel user = new UserGetModel();
-            user.UserId = result.UserId;
-            user.UserFullName = result.UserFullName;
-            user.UserRoles = roles;
-            user.UserPhone = result.UserPhone;
-
-            return new ApiSuccessResponse("Đăng nhập thành công", user);
-        }
-        public async Task<ApiResponse> SignUp(SignUpRequest request)
+        public IUserRepository User { get => _userRepo; }
+        public async Task<Response<List<UserGetModel>>> GetUsers(UserGetRequest request = null)
         {
             try
             {
-                if (string.IsNullOrEmpty(request.UserPhone)) return new ApiFailResponse("Số điện thoại không được để trống");
-                if (request.UserPhone.Contains("+84"))
-                {
-                    request.UserPhone = request.UserPhone.Replace("+84", "");
-                    if (!request.UserPhone.StartsWith("0"))
+                var list = await _userRepo
+                    .Query()
+                    .Select(i => new UserGetModel()
                     {
-                        request.UserPhone = "0" + request.UserPhone;
-                    }
+                        UserId = i.UserId,
+                        UserFullName = i.UserFullName,
+                        UserJoinDate = (DateTime)i.UserJoinDate,
+                        UserMail = i.UserMail,
+                        UserAddress = i.UserAddress,
+                        UserWardCode = i.UserWardCode,
+                        UserDistrictCode = i.UserDistrictCode,
+                        UserCityCode = i.UserCityCode,
+                        UserPhone = i.UserPhone,
+                        isSystemAccount = i.IsSystemAccount == null ? false : (bool)i.IsSystemAccount,
+                        Status = i.Status == null ? false : (bool)i.Status,
+                        IsOnline = i.IsOnline == null ? false : (bool)i.IsOnline,
+                        LastOnline = (DateTime)i.LastOnline
+                    })
+                    .ToListAsync();
+
+                if (request != null)
+                {
+                    if (request.all) list = list.ToList();
+                    if (request.userId != 0) list = list.Where(i => i.UserId == request.userId).ToList();
+                    if (request.isSystemAccount) list = list.Where(i => i.isSystemAccount == true).ToList();
+                    if (request.isOnline) list = list.Where(i => i.IsOnline == true).ToList();
+                    if (request.isOffline) list = list.Where(i => i.IsOnline == false).ToList();
                 }
 
-                if (string.IsNullOrEmpty(request.UserFullName)) return new ApiFailResponse("Vui lòng nhập họ tên");
-                if (string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.RePassword)) return new ApiFailResponse("Vui lòng nhập mật khẩu");
-                if (request.Password != request.RePassword) return new ApiFailResponse("Mật khẩu không trùng");
-
-                var checkMail = await _DbContext.Users.Where(i => i.UserMail == request.UserMail).FirstOrDefaultAsync();
-                if (checkMail != null) return new ApiFailResponse("Mail đã tồn tại");
-
-                var checkPhone = await _DbContext.Users.Where(i => i.UserPhone == request.UserPhone).FirstOrDefaultAsync();
-                if (checkPhone != null) return new ApiFailResponse("Số điện thoại đã tồn tại");
-
-                Data.Models.User user = new Data.Models.User();
-                user.UserMail = !string.IsNullOrEmpty(request.UserMail) ? request.UserMail.Trim() : null;
-                user.UserJoinDate = DateTime.Now;
-                user.UserFullName = !string.IsNullOrEmpty(request.UserFullName) ? request.UserFullName.Trim() : null;
-                user.UserPhone = !string.IsNullOrEmpty(request.UserPhone) ? request.UserPhone.Trim() : null;
-                user.UserAddress = !string.IsNullOrEmpty(request.UserAddress) ? request.UserAddress.Trim() : null;
-                user.UserDistrictCode = !string.IsNullOrEmpty(request.UserDistrictCode) ? request.UserDistrictCode.Trim() : null;
-                user.UserCityCode = !string.IsNullOrEmpty(request.UserCityCode) ? request.UserCityCode.Trim() : null;
-                user.UserWardCode = !string.IsNullOrEmpty(request.UserWardCode) ? request.UserWardCode.Trim() : null;
-                user.Password = !string.IsNullOrEmpty(request.RePassword) ? request.RePassword.Trim() : null;
-                user.Status = true;
-                user.IsSystemAccount = request.isSystemAccount;
-                await _DbContext.Users.AddAsync(user);
-                await _DbContext.SaveChangesAsync();
-
-                Data.Models.UserRole role = new Data.Models.UserRole();
-                role.RoleId = request.RoleId != 0 ? request.RoleId : (int)enumRole.Buyer;
-                role.UserId = user.UserId;
-                await _DbContext.UserRoles.AddAsync(role);
-                await _DbContext.SaveChangesAsync();
-
-                return new ApiSuccessResponse("Tạo tài khoản thành công");
+                var result = list.OrderByDescending(i => i.UserJoinDate).ToList();
+                return new SuccessResponse<List<UserGetModel>>(result);
             }
             catch (Exception error)
             {
-                return new ApiFailResponse("Tạo tài khoản không thành công, lỗi: " + error.Message);
+                return new FailResponse<List<UserGetModel>>("Lỗi: \n\n" + error.ToString());
             }
         }
-        public async Task<ApiResponse> AddSeller(SignUpRequest request)
+        public async Task<Response<UserGetModel>> GetUser(int userId)
         {
             try
             {
-                string phonenumber = null;
-                // Phone validate
-                if (!string.IsNullOrEmpty(request.UserPhone))
+                if (userId == 0) return new FailResponse<UserGetModel>("");
+                var user = await _userRepo.FindAsyncWhere(i => i.UserId == userId);
+
+                if (user == null) return new FailResponse<UserGetModel>("Không tìm thấy người dùng");
+                var result = new UserGetModel()
                 {
-                    phonenumber = request.UserPhone.Trim();
-                    if (phonenumber.Contains("+84"))
-                    {
-                        phonenumber = phonenumber.Replace("+84", "");
-                        if (!phonenumber.StartsWith("0"))
-                            phonenumber = "0" + phonenumber;
-                    }
-                }
+                    UserId = user.UserId,
+                    IsOnline = user.IsOnline != null ? (bool)user.IsOnline : false,
+                    LastOnlineLabel = user.LastOnline != null ? ((DateTime)user.LastOnline).ToString(ConfigConstant.DATE_FORMAT) : "",
+                };
 
-                if (string.IsNullOrEmpty(request.UserFullName)) 
-                    return new ApiFailResponse("Vui lòng nhập họ tên");
-                if (string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.RePassword)) 
-                    return new ApiFailResponse("Vui lòng nhập mật khẩu");
-                if (request.Password != request.RePassword) 
-                    return new ApiFailResponse("Mật khẩu không trùng");
-
-                var checkMail = await _DbContext.Users
-                    .Where(i => request.UserMail != null && i.UserMail == request.UserMail)
-                    .FirstOrDefaultAsync();
-                if (checkMail != null) 
-                    return new ApiFailResponse("Mail đã tồn tại");
-
-                var checkPhone = await _DbContext.Users.Where(i => i.UserPhone == request.UserPhone).FirstOrDefaultAsync();
-                if (checkPhone != null) 
-                    return new ApiFailResponse("Số điện thoại đã tồn tại");
-
-                Data.Models.User user = new Data.Models.User();
-                user.UserMail = request.UserMail != null ? request.UserMail.Trim() : null;
-                user.UserJoinDate = DateTime.Now;
-                user.UserFullName = request.UserFullName != null ? request.UserFullName.Trim() : null;
-                user.UserPhone = phonenumber;
-
-                user.UserPhone = request.UserPhone != null ? request.UserPhone.Trim() : null;
-                user.UserAddress = request.UserAddress != null ? request.UserAddress.Trim() : null;
-                user.UserDistrictCode = request.UserDistrictCode;
-                user.UserCityCode = request.UserCityCode;
-                user.UserWardCode = request.UserWardCode;
-                user.Password = request.RePassword != null ? request.RePassword.Trim() : null;
-                user.Status = true;
-                user.IsSystemAccount = request.isSystemAccount;
-                await _DbContext.Users.AddAsync(user);
-                await _DbContext.SaveChangesAsync();
-
-                // Role
-                Data.Models.UserRole role = new Data.Models.UserRole();
-                role.RoleId = (int)enumRole.Seller;
-                role.UserId = user.UserId;
-                await _DbContext.UserRoles.AddAsync(role);
-                await _DbContext.SaveChangesAsync();
-
-                // Shop
-                if (request.shopIds != null)
-                {
-                    foreach (var id in request.shopIds)
-                    {
-                        var shop = await _DbContext.Shops.Where(i => i.ShopId == id).FirstOrDefaultAsync();
-                        shop.UserId = user.UserId;
-                        await _DbContext.SaveChangesAsync();
-                    }
-                }
-
-                return new ApiSuccessResponse("Tạo tài khoản thành công");
+                return new SuccessResponse<UserGetModel>("", result);
             }
             catch (Exception error)
             {
-                return new ApiFailResponse("Tạo tài khoản không thành công, lỗi: " + error.Message);
+                return new FailResponse<UserGetModel>(error.ToString());
             }
         }
-        public async Task<UserGetModel> UserProfile(int id)
+        public async Task<ApiResponse> SetOnline(int _userId = 0, bool _isOnline = true)
         {
             try
             {
-                var user = await _DbContext.Users
-                                .Where(i => i.UserId == id)
-                                .Select(i => new UserGetModel
-                                {
-                                    UserId = i.UserId,
-                                    UserFullName = i.UserFullName,
-                                    UserJoinDate = (DateTime)i.UserJoinDate,
-                                    UserMail = i.UserMail,
-                                    UserAddress = i.UserAddress,
-                                    UserWardCode = i.UserWardCode,
-                                    UserDistrictCode = i.UserDistrictCode,
-                                    UserCityCode = i.UserCityCode,
-                                    UserPhone = i.UserPhone,
-                                    UserRoles = i.UserRoles
-                                        .Select(ur => ur.Role.RoleName)
-                                        .ToList(),
-                                    Status = (bool)i.Status,
-                                    IsOnline = (bool)i.IsOnline,
-                                }).FirstOrDefaultAsync();
-
-                return user;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-        public async Task<ApiResponse> UpdateUserProfile(UserUpdateRequest request)
-        {
-            if (string.IsNullOrEmpty(request.UserFullName)) return new ApiFailResponse("Họ tên không thể để trống");
-
-            var user = await _DbContext.Users
-                                .Where(i => i.UserId == request.UserId)
-                                .FirstOrDefaultAsync();
-            if (user != null)
-            {
-                user.UserFullName = request.UserFullName;
-                user.UserMail = request.UserMail;
-                user.UserAddress = request.UserAddress;
-                user.UserWardCode = request.UserWardCode;
-                user.UserDistrictCode = request.UserDistrictCode;
-                user.UserCityCode = request.UserCityCode;
-                await _DbContext.SaveChangesAsync();
-
-                var roles = (
-                    from role in _DbContext.Roles
-                    from userrole in _DbContext.UserRoles
-                    where role.RoleId == userrole.RoleId && userrole.UserId == request.UserId
-                    select role.RoleName
-                ).Distinct().ToList();
-
-                UserGetModel result = new UserGetModel();
-                result.UserId = user.UserId;
-                result.UserFullName = user.UserFullName;
-                result.UserRoles = roles;
-
-                return new ApiSuccessResponse("Cập nhật thành công", result);
-            }
-
-            return new ApiFailResponse("Cập nhật không thành công");
-        }
-        public async Task<ApiResponse> UpdateManageUserProfile(UserUpdateRequest request)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(request.UserFullName)) return new ApiFailResponse("Họ tên không thể để trống");
-
-                var user = await _DbContext.Users.Where(i => i.UserId == request.UserId).FirstOrDefaultAsync();
-                if (!string.IsNullOrEmpty(request.UserFullName)) user.UserFullName = request.UserFullName.Trim();
-
-                user.UserMail = null;
-                if (!string.IsNullOrEmpty(request.UserMail))
+                if(_userId != 0)
                 {
-                    var checkMail = await _DbContext.Users.Where(i => i.UserMail == request.UserMail.Trim() && i.UserId != request.UserId).FirstOrDefaultAsync();
-                    if (checkMail != null) return new ApiFailResponse("Mail đã tồn tại");
-                    user.UserMail = request.UserMail.Trim();
-                }
-
-                user.UserPhone = null;
-                if (!string.IsNullOrEmpty(request.UserPhone))
-                {
-                    var checkPhone = await _DbContext.Users.Where(i => i.UserPhone == request.UserPhone.Trim() && i.UserId != request.UserId).FirstOrDefaultAsync();
-                    if (checkPhone != null) return new ApiFailResponse("Số điện thoại đã tồn tại");
-                    // Phone validate
-                    string phonenumber = request.UserPhone.Trim();
-                    if (phonenumber.Contains("+84"))
+                    var user = await _userRepo.FindAsyncWhere(item => item.UserId == _userId);
+                    if (user != null)
                     {
-                        phonenumber = phonenumber.Replace("+84", "");
-                        if (!phonenumber.StartsWith("0"))
-                        {
-                            phonenumber = "0" + phonenumber;
-                        }
-                    }
-                    user.UserPhone = phonenumber;
-                }
-
-                user.UserAddress = null;
-                if (!string.IsNullOrEmpty(request.UserAddress)) user.UserAddress = request.UserAddress.Trim();
-                user.UserWardCode = null;
-                if (!string.IsNullOrEmpty(request.UserWardCode)) user.UserWardCode = request.UserWardCode.Trim();
-                user.UserDistrictCode = null;
-                if (!string.IsNullOrEmpty(request.UserDistrictCode)) user.UserDistrictCode = request.UserDistrictCode.Trim();
-                user.UserCityCode = null;
-                if (!string.IsNullOrEmpty(request.UserCityCode)) user.UserCityCode = request.UserCityCode.Trim();
-
-                var shops = await _DbContext.Shops.Where(i => i.UserId == request.UserId).ToListAsync();
-                if (shops.Count > 0)
-                {
-                    foreach (var shop in shops)
-                    {
-                        shop.UserId = null;
+                        user.IsOnline = _isOnline;
+                        user.LastOnline = DateTime.Now;
+                        _userRepo.Update(user);
+                        await _userRepo.SaveChangesAsync();
+                        return new ApiSuccessResponse("");
                     }
                 }
-                if (request.ShopIds != null)
-                {
-                    foreach (var id in request.ShopIds)
-                    {
-                        var shop = await _DbContext.Shops.Where(i => i.ShopId == id).FirstOrDefaultAsync();
-                        shop.UserId = request.UserId;
-                    }
-                }
-
-                await _DbContext.SaveChangesAsync();
-
-                return new ApiSuccessResponse("Cập nhật thành công");
+                return new ApiFailResponse("");
             }
             catch (Exception error)
-            {
-                return new ApiFailResponse("Có lỗi xảy ra, thử lại sau: " + error.Message);
-            }
-        }
-        public async Task<ApiResponse> UpdateUserPhoneNumber(int UserId, string PhoneNumber)
-        {
-            if (string.IsNullOrEmpty(PhoneNumber)) return new ApiFailResponse("Số điện thoại không được để trống");
-
-            var phonenumber = PhoneNumber;
-            if (phonenumber.Contains("+84"))
-            {
-                phonenumber = phonenumber.Replace("+84", "");
-                if (!phonenumber.StartsWith("0"))
-                {
-                    phonenumber = "0" + phonenumber;
-                }
-            }
-            var user = await _DbContext.Users
-                                .Where(i => i.UserId == UserId)
-                                .FirstOrDefaultAsync();
-            if (user != null)
-            {
-                user.UserPhone = phonenumber;
-                await _DbContext.SaveChangesAsync();
-                return new ApiSuccessResponse("Cập nhật số điện thoại thành công");
-            }
-
-            return new ApiFailResponse("Cập nhật số điện thoại không thành công");
-        }
-        public async Task<ApiResponse> UpdateUserPassword(UpdatePasswordRequest request)
-        {
-            if (string.IsNullOrEmpty(request.CurrentPassword)) return new ApiFailResponse("Thông tin không được để trống");
-            if (string.IsNullOrEmpty(request.NewPassword)) return new ApiFailResponse("Thông tin không được để trống");
-            if (string.IsNullOrEmpty(request.RePassword)) return new ApiFailResponse("Thông tin không được để trống");
-
-            var user = await _DbContext.Users
-                                .Where(i => i.UserId == request.UserId && i.Password == request.CurrentPassword)
-                                .FirstOrDefaultAsync();
-
-            if (user == null) return new ApiFailResponse("Mật khẩu không chính xác");
-            if (request.NewPassword != request.RePassword) return new ApiFailResponse("Mật khẩu không trùng");
-
-            user.Password = request.RePassword;
-            await _DbContext.SaveChangesAsync();
-
-            return new ApiSuccessResponse("Cập nhật mật khẩu thành công");
-        }
-        public async Task<ApiResponse> UpdateUserStatus(UserUpdateRequest request)
-        {
-            var user = await _DbContext.Users
-                                .Where(i => i.UserId == request.UserId)
-                                .FirstOrDefaultAsync();
-            if (user != null)
-            {
-                user.Status = request.Status;
-                _DbContext.SaveChangesAsync().Wait();
-                return new ApiSuccessResponse("Cập nhật thành công");
-            }
-
-            return new ApiFailResponse("Cập nhật thất bại");
-        }
-        public async Task<ApiResponse> ResetPassword(UpdatePasswordRequest request)
-        {
-            if (string.IsNullOrEmpty(request.PhoneNumber)) return new ApiFailResponse("Thông tin không được để trống");
-            if (request.PhoneNumber.Contains("+84"))
-            {
-                request.PhoneNumber = request.PhoneNumber.Replace("+84", "");
-                if (!request.PhoneNumber.StartsWith("0"))
-                {
-                    request.PhoneNumber = "0" + request.PhoneNumber;
-                }
-            }
-            if (string.IsNullOrEmpty(request.NewPassword)) return new ApiFailResponse("Thông tin không được để trống");
-            if (string.IsNullOrEmpty(request.RePassword)) return new ApiFailResponse("Thông tin không được để trống");
-            if (request.NewPassword != request.RePassword) return new ApiFailResponse("Mật khẩu không trùng");
-
-            var user = await _DbContext.Users
-                                .Where(i => i.UserPhone == request.PhoneNumber)
-                                .FirstOrDefaultAsync();
-            if (user != null) {
-                user.Password = request.RePassword;
-                await _DbContext.SaveChangesAsync();
-
-                return new ApiSuccessResponse("Cập nhật mật khẩu thành công");
-            } 
-            
-            return new ApiFailResponse("Mật khẩu không chính xác");
-        }
-        public async Task<string> getUserRole(int userId)
-        {
-            var role = await _DbContext.UserRoles
-                .Where(i => i.UserId == userId)
-                .Select(i => i.Role.RoleName)
-                .FirstOrDefaultAsync();
-            return role;
-        }
-        public async Task<UserGetModel> getUserByShop(int shopId)
-        {
-            // Get user id by shop id
-            var userId = await _DbContext.Shops
-                .Where(s => s.ShopId == shopId)
-                .Select(i => i.UserId)
-                .FirstOrDefaultAsync();
-
-            if (userId == null)
-                return null;
-            
-            // get user id by user id
-            var user = await _DbContext.Users
-                .Where(u => u.UserId == userId)
-                .Select(i => new UserGetModel
-                {
-                    UserId = i.UserId,
-                    UserFullName = i.UserFullName,
-                    UserJoinDate = (DateTime)i.UserJoinDate,
-                    UserMail = i.UserMail,
-                    UserAddress = i.UserAddress,
-                    UserWardCode = i.UserWardCode,
-                    UserDistrictCode = i.UserDistrictCode,
-                    UserCityCode = i.UserCityCode,
-                    UserPhone = i.UserPhone,
-                    Status = i.Status == null ? false : (bool)i.Status,
-                    IsOnline = i.IsOnline == null ? false : (bool)i.IsOnline,
-                })
-                .FirstOrDefaultAsync();
-            return user;
-        }
-        public async Task<ApiResponse> DeleteUser(int id)
-        {
-            try
-            {   
-                if (id == 0) return new ApiFailResponse("Vui lòng chọn User");
-                var userRole = await getUserRole(id);
-                if (userRole == RoleName.Admin) return new ApiFailResponse("Không thể xóa tài khoản này");
-
-                // User's shops
-                var shops = await _DbContext.Shops.Where(i => i.UserId == id).ToListAsync();
-                foreach (var shop in shops)
-                {
-                    shop.UserId = null;
-                }
-
-                // User's roles
-                var roles = await _DbContext.UserRoles.Where(i => i.UserId == id).ToListAsync();
-                _DbContext.UserRoles.RemoveRange(roles);
-
-                // User's comment
-                var rates = await _DbContext.Rates.Where(i => i.UserId == id).FirstOrDefaultAsync();
-                if (rates != null)
-                {
-                    // Images
-                    var rateImages = await _DbContext.RatingImages.Where(i => i.RateId == rates.RateId).ToListAsync();
-                    if (rateImages != null)
-                        _DbContext.RatingImages.RemoveRange(rateImages);
-
-                    // Like/Dislike
-                    var interests = await _DbContext.Interests.Where(i => i.UserId == id).ToListAsync();
-                    if (interests != null)
-                        _DbContext.Interests.RemoveRange(interests);
-                   
-                    _DbContext.Rates.Remove(rates);
-                }
-
-                // User
-                var user = await _DbContext.Users.Where(i => i.UserId == id).FirstOrDefaultAsync();
-                _DbContext.Users.Remove(user);
-                _DbContext.SaveChangesAsync().Wait();
-
-                return new ApiSuccessResponse("Đã xóa tài khoản");
-            }
-            catch(Exception error)
             {
                 return new ApiFailResponse(error.ToString());
             }
         }
-        public bool IsAdmin(int id)
+        public async Task<Response<UserGetModel>> UpdateOnlineStatus(int _userId, bool _isOnline)
         {
             try
             {
-                var userRoles = _DbContext.UserRoles
-                    .Where(i => i.UserId == id)
-                    .Select(i => i.Role.RoleName)
-                    .ToList();
-                if (userRoles != null)
-                    if (userRoles.Contains(RoleName.Admin))
-                        return true;
-                return false;
+                if (_userId == 0) return new FailResponse<UserGetModel>("");
+
+                var user = await _userRepo.FindAsyncWhere(item => item.UserId == _userId);
+                if(user == null) return new FailResponse<UserGetModel>("Không tìm thấy người dùng");
+
+                user.IsOnline = _isOnline;
+                if(_isOnline == false) user.LastOnline = DateTime.Now;
+                _userRepo.Update(user);
+                await _userRepo.SaveChangesAsync();
+
+                var ressult = new UserGetModel()
+                {
+                    UserId = user.UserId,
+                    IsOnline = user.IsOnline != null ? (bool)user.IsOnline : false,
+                    LastOnlineLabel = ((DateTime)user.LastOnline).ToString(ConfigConstant.DATE_FORMAT) 
+                };
+                return new SuccessResponse<UserGetModel>("", ressult);
             }
-            catch
+            catch (Exception error)
             {
-                return false;
+                return new FailResponse<UserGetModel>(error.ToString());
+            }
+        }
+        public async Task<Response<UserGetModel>> UpdateOnlineHistory(int _userId)
+        {
+            try
+            {
+                if (_userId == 0) return new FailResponse<UserGetModel>("");
+
+                var user = await _userRepo.FindAsyncWhere(item => item.UserId == _userId);
+                if (user == null) return new FailResponse<UserGetModel>("Không tìm thấy người dùng");
+
+                var history = await _onlineHistoryRepo.FindAsyncWhere(i => i.UserId == _userId && i.Duration == 0);
+                if (history == null)
+                {
+                    // create new logic here
+                    var newHistory = new OnlineHistory()
+                    {
+                        AccessDate = DateTime.Now,
+                        UserId = _userId,
+                        Duration = 0
+                    };
+                    await _onlineHistoryRepo.AddAsync(newHistory);
+                    await _onlineHistoryRepo.SaveChangesAsync();
+                }
+                else
+                {
+                    var totalMin = (DateTime.Now - (DateTime)user.LastOnline).TotalMinutes;
+                    // update when over 3 minutes
+                    if ((DateTime.Now - (DateTime)user.LastOnline).TotalSeconds >= 3)
+                    {
+                        int duration = Int32.Parse((DateTime.Now - (DateTime)history.AccessDate).TotalSeconds.ToString());
+                        history.Duration = duration;
+                        await _onlineHistoryRepo.SaveChangesAsync();
+                    }
+                }
+
+                return new SuccessResponse<UserGetModel>("");
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<UserGetModel>(error.ToString());
+            }
+        }
+        public async Task<Response<UserGetModel>> ValidateUser(SignInRequest request)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.UserPhone) || string.IsNullOrEmpty(request.Password)) 
+                    return new FailResponse<UserGetModel>("Thông tin không được để trống");
+
+                var phonenumber = request.UserPhone;
+                if (phonenumber.Contains("+84"))
+                {
+                    phonenumber = phonenumber.Replace("+84", "");
+                    if (!phonenumber.StartsWith("0"))
+                    {
+                        phonenumber = "0" + phonenumber;
+                    }
+                }
+
+                var result = await _DbContext.Users
+                    .Where(i => i.UserPhone == phonenumber && i.Password == request.Password)
+                    .FirstOrDefaultAsync();
+
+                if (result == null) 
+                    return new FailResponse<UserGetModel>("Mật khẩu hoặc tài khoản không đúng");
+                if (result.Status == false) 
+                    return new FailResponse<UserGetModel>("Tài khoản đã bị khóa");
+
+                var roles = (
+                    from role in _DbContext.Roles
+                    from userrole in _DbContext.UserRoles
+                    where role.RoleId == userrole.RoleId && userrole.UserId == result.UserId
+                    select role.RoleName
+                ).Distinct().ToList();
+
+                UserGetModel user = new UserGetModel();
+                user.UserId = result.UserId;
+                user.UserFullName = result.UserFullName;
+                user.UserRoles = roles;
+                user.UserPhone = result.UserPhone;
+
+                return new SuccessResponse<UserGetModel>("Đăng nhập thành công", user);
+            }
+            catch(Exception error)
+            {
+                return new FailResponse<UserGetModel>("Đang xảy ra lỗi, vui lòng thử lại sau");
             }
         }
     }

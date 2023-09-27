@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ECommerce.Application.BaseServices.Configurations.Dtos.Footer
+{
+    public class SocialUpdateRequest
+    {
+        public int SocialId { get; set; }
+        public string Icon { get; set; }
+        public string SocialName { get; set; }
+        public string SocialUrl { get; set; }
+        public byte? Status { get; set; }
+    }
+}

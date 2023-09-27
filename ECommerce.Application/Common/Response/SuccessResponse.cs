@@ -19,6 +19,7 @@ namespace ECommerce.Application.Common
         {
             isSucceed = true;
             Status = StatusConstant.SUCCESS;
+            Message = MessageConstant.SUCCESS;
             Data = data;
         }
         public SuccessResponse(string message, T data)

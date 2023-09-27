@@ -1,6 +1,6 @@
 ﻿using ECommerce.Application.Constants;
-using ECommerce.Application.Services.Configurations;
-using ECommerce.Application.Services.Configurations.Dtos.Footer;
+using ECommerce.Application.BaseServices.Configurations;
+using ECommerce.Application.BaseServices.Configurations.Dtos.Footer;
 using ECommerce.WebApp.Models.Blog;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

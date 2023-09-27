@@ -1,4 +1,4 @@
-﻿using ECommerce.Application.Services.User_v2;
+﻿using ECommerce.Application.Services.User;
 using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -9,12 +9,12 @@ namespace ECommerce.WebApp.Hubs
 {
     public class ClientHub : Hub
     {
-        private IUserService_v2 _userServiceV2;
+        private IUserService _userServiceV2;
         private HttpContextHelper _contextHelper;
         private ILogger<ClientHub> _logger;
         private IHubContext<CommonHub> _commonHub;
         public ClientHub(
-            IUserService_v2 userServiceV2, 
+            IUserService userServiceV2, 
             ILogger<ClientHub> logger,
             IHubContext<CommonHub> commonHub)
         {

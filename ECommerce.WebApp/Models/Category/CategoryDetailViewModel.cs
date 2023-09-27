@@ -1,5 +1,5 @@
-﻿using ECommerce.Application.Services.Category.Dtos;
-using ECommerce.Application.Services.SubCategory.Dtos;
+﻿using ECommerce.Application.BaseServices.Category.Dtos;
+using ECommerce.Application.BaseServices.SubCategory.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;

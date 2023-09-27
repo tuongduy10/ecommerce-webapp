@@ -1,6 +1,6 @@
-﻿using ECommerce.Application.Services.Product;
-using ECommerce.Application.Services.Product.Dtos;
-using ECommerce.Application.Services.SubCategory;
+﻿using ECommerce.Application.BaseServices.Product;
+using ECommerce.Application.BaseServices.Product.Dtos;
+using ECommerce.Application.BaseServices.SubCategory;
 using ECommerce.WebApp.Models.SizeGuide;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,8 +16,8 @@ namespace ECommerce.WebApp.Controllers.Admin
     public class ManageSizeGuide : Controller
     {
         private ISubCategoryService _subCategoryService;
-        private IProductService _productService;
-        public ManageSizeGuide(ISubCategoryService subCategoryService, IProductService productService)
+        private IProductBaseService _productService;
+        public ManageSizeGuide(ISubCategoryService subCategoryService, IProductBaseService productService)
         {
             _subCategoryService = subCategoryService;
             _productService = productService;
