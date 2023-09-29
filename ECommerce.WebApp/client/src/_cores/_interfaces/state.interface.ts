@@ -28,3 +28,13 @@ export interface IHomeInitState {
   brands: IBrand[];
   categories: ICategory[];
 }
+
+export interface IProductInitState { 
+  productList: any[]
+  param: {
+    pageIndex: number,
+    totalPage: number,
+    currentRecord: number,
+    totalRecord: number
+  }
+}
