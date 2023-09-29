@@ -3,8 +3,13 @@ import { ProlCategory, ProlCategoryMb, ProlFilter, ProlPagination } from "./_com
 import { WebDirectional } from "src/_shares/_components";
 import { useEffect } from "react";
 import ProductService from "src/_cores/_services/product.service";
+import { useProductStore } from "src/_cores/_store/root-store";
+import { useDispatch } from "react-redux";
+import { setParam, setProductList } from "src/_cores/_reducers/product.reducer";
 
 const ProductListPage = () => {
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const params = {
       pageIndex: 1,
@@ -12,10 +17,23 @@ const ProductListPage = () => {
     }
     ProductService.getProductList(params).then(res => {
       if (res.data) {
-        console.log(res.data)
+        const _data = res.data;
+        const param = {
+          pageIndex: _data.currentPage,
+          totalPage: _data.totalPage,
+          currentRecord: _data.currentRecord,
+          totalRecord: _data.totalRecord,
+        }
+        param.pageIndex = 1;
+        param.totalPage = 50;
+        param.currentRecord = 5;
+        param.totalRecord = 250;
+        dispatch(setParam(param));
+        dispatch(setProductList(_data.items));
       }
     })
   }, []);
+
   return (
     <div className="custom-container">
       <div className="content__wrapper products__content-wrapper">
