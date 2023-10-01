@@ -1,3 +1,4 @@
+import { ProductHelper } from './../../_shares/_helpers/product-helper';
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { SLICE_NAME } from "../_enums/state.enum";
 import { IProductInitState } from "../_interfaces/state.interface";
@@ -17,7 +18,7 @@ const productSlice = createSlice({
   initialState: initialState,
   reducers: {
     setProductList: (state, action: PayloadAction<any>) => {
-      state.productList = action.payload;
+      state.productList = ProductHelper.getProductListFormated(action.payload);
     },
     setParam: (state, action: PayloadAction<any>) => {
       state.param = action.payload;
