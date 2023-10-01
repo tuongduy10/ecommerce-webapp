@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { setParam, setProductList } from "src/_cores/_reducers/product.reducer";
 
 const ProductListPage = () => {
+  const productStore = useProductStore();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -15,7 +16,7 @@ const ProductListPage = () => {
       pageIndex: 1,
       brandId: 66,
     }
-    ProductService.getProductList(params).then(res => {
+    ProductService.getProductList(params).then((res: any) => {
       if (res.data) {
         const _data = res.data;
         const param = {
@@ -24,10 +25,6 @@ const ProductListPage = () => {
           currentRecord: _data.currentRecord,
           totalRecord: _data.totalRecord,
         }
-        param.pageIndex = 1;
-        param.totalPage = 50;
-        param.currentRecord = 5;
-        param.totalRecord = 250;
         dispatch(setParam(param));
         dispatch(setProductList(_data.items));
       }
@@ -54,9 +51,9 @@ const ProductListPage = () => {
               <div className="product__grid-wrapper">
                 <p className="product__grid-title text-center">Tất cả sản phẩm</p>
                 <div className="product__grid-inner w-full flex flex-wrap">
-                  <ProductItem grid={3} />
-                  <ProductItem grid={3} />
-                  <ProductItem grid={3} />
+                  {productStore.productList.length > 0 && productStore.productList.map((product) => (
+                    <ProductItem key={product.id} grid={3} data={product} />
+                  ))}
                 </div>
               </div>
               <div className="filter__control-bottom">

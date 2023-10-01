@@ -1,9 +1,48 @@
+import { useEffect, useState } from "react";
 import { useProductStore } from "src/_cores/_store/root-store";
 import { MuiIcon } from "src/_shares/_components";
 import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
 
 const ProlPagination = () => {
     const productStore = useProductStore();
+
+    const [showPrev, setShowPrev] = useState(false);
+    const [showNext, setShowNext] = useState(false);
+    const [isFirstIndexes, setIsFirstIndexes] = useState(false);
+    const [isLastIndexes, setIsLastIndexes] = useState(false);
+
+    useEffect(() => {
+        setShowPrev(productStore.param.pageIndex > 2);
+        setShowNext(productStore.param.pageIndex < productStore.param.totalPage - 1);
+        setIsFirstIndexes(productStore.param.pageIndex < 3);
+        setIsLastIndexes(productStore.param.totalPage - productStore.param.pageIndex < 3);
+    }, [productStore.param.pageIndex]);
+
+    const generatePaginationItems = (start: number, end: number) => {
+        const items = [];
+        for (let i = start; i <= end; i++) {
+          items.push(
+            <li key={i} className={`pagination-item pagination-item__page ${productStore.param.pageIndex === i && 'active'}`}>
+              <button className="pagination-link">
+                {i}
+              </button>
+            </li>
+          );
+        }
+        return items;
+      };
+      
+      const renderPagination = () => {
+        if (!isFirstIndexes && !isLastIndexes) {
+          return generatePaginationItems(productStore.param.pageIndex - 1, productStore.param.pageIndex + 1);
+        } else if (isFirstIndexes) {
+          return generatePaginationItems(1, 3);
+        } else {
+          const start = productStore.param.totalPage - 2;
+          const end = productStore.param.totalPage;
+          return generatePaginationItems(start, end);
+        }
+      };
 
     return (<>
         <div className="filter__number">
@@ -14,23 +53,15 @@ const ProlPagination = () => {
         </div>
         <div className="filter__pagination">
             <ul className="pagination">
-                {productStore.param.totalPage > 3 && productStore.param.pageIndex > 2 && (
+                {showPrev && (
                     <li className="pagination-item pagination-item__page previous">
                         <button className="pagination-link pagination-item__page h-[24px]">
                             <MuiIcon name={ICON_NAME.FEATHER.CHEVRON_LEFT} />
                         </button>
                     </li>
                 )}
-                <li className={`pagination-item pagination-item__page`}>
-                    <button className="pagination-link">{productStore.param.pageIndex === 1 ? 1 : productStore.param.pageIndex - 1}</button>
-                </li>
-                <li className={`pagination-item pagination-item__page ${productStore.param.pageIndex && 'active'}`}>
-                    <button className="pagination-link">{productStore.param.pageIndex === 1 ? 2 : productStore.param.pageIndex}</button>
-                </li>
-                <li className={`pagination-item pagination-item__page`}>
-                    <button className="pagination-link">{productStore.param.pageIndex === 1 ? 3 : productStore.param.pageIndex + 1}</button>
-                </li>
-                {productStore.param.totalPage > 3 && productStore.param.totalPage - productStore.param.pageIndex > 1 && (
+                {productStore.param.totalPage > 1 && renderPagination()}
+                {showNext && (
                     <li className="pagination-item pagination-item__page next">
                         <button className="pagination-link h-[24px]">
                             <MuiIcon name={ICON_NAME.FEATHER.CHEVRON_RIGHT} />
