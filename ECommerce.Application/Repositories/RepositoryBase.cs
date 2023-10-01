@@ -28,7 +28,7 @@ namespace ECommerce.Application.Repositories
             return _DbContext.Set<T>();
         }
         // Custom
-        public virtual bool Any(Expression<Func<T, bool>> expression)
+        public virtual bool AnyAsync(Expression<Func<T, bool>> expression)
         {
             return _DbContext.Set<T>().Any(expression);
         }

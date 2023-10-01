@@ -14,7 +14,7 @@ namespace ECommerce.Application.Repositories
         DbSet<T> Entity();
         // Custom
         IQueryable<T> Query(Expression<Func<T, bool>> expression = null);
-        bool Any(Expression<Func<T, bool>> expression);
+        Task<bool> AnyAsync(Expression<Func<T, bool>> expression);
         // Single obj
         Task<T> FindAsyncWhere(Expression<Func<T, bool>> expression);
         Task<T> FindLastAsyncWhere(Expression<Func<T, bool>> expression);

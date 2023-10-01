@@ -220,9 +220,7 @@ namespace ECommerce.Application.Services.Product
                 if (request.pricePreOrder < request.discountPreOrder)
                     return new FailResponse<bool>("Giá giảm không thể lớn hơn giá gốc !");
                 
-                var hasCode = await _productRepo.Entity()
-                    .Where(i => request.code != null && i.ProductCode == request.code.Trim())
-                    .AnyAsync();
+                var hasCode = await _productRepo.AnyAsync(i => request.code != null && i.ProductCode == request.code.Trim());
                 if (hasCode)
                     return new FailResponse<bool>("Mã này đã tồn tại !");
 

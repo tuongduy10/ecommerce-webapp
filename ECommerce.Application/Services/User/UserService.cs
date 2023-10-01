@@ -197,12 +197,12 @@ namespace ECommerce.Application.Services.User
                 return new FailResponse<UserGetModel>(error.ToString());
             }
         }
-        public async Task<Response<UserGetModel>> ValidateUser(SignInRequest request)
+        public async Task<Response<UserModel>> ValidateUser(SignInRequest request)
         {
             try
             {
                 if (string.IsNullOrEmpty(request.UserPhone) || string.IsNullOrEmpty(request.Password)) 
-                    return new FailResponse<UserGetModel>("Thông tin không được để trống");
+                    return new FailResponse<UserModel>("Thông tin không được để trống");
 
                 var phonenumber = request.UserPhone;
                 if (phonenumber.Contains("+84"))
@@ -219,9 +219,9 @@ namespace ECommerce.Application.Services.User
                     .FirstOrDefaultAsync();
 
                 if (result == null) 
-                    return new FailResponse<UserGetModel>("Mật khẩu hoặc tài khoản không đúng");
+                    return new FailResponse<UserModel>("Mật khẩu hoặc tài khoản không đúng");
                 if (result.Status == false) 
-                    return new FailResponse<UserGetModel>("Tài khoản đã bị khóa");
+                    return new FailResponse<UserModel>("Tài khoản đã bị khóa");
 
                 var roles = (
                     from role in _DbContext.Roles
@@ -230,17 +230,81 @@ namespace ECommerce.Application.Services.User
                     select role.RoleName
                 ).Distinct().ToList();
 
-                UserGetModel user = new UserGetModel();
-                user.UserId = result.UserId;
-                user.UserFullName = result.UserFullName;
-                user.UserRoles = roles;
-                user.UserPhone = result.UserPhone;
-
-                return new SuccessResponse<UserGetModel>("Đăng nhập thành công", user);
+                var user = new UserModel()
+                {
+                    fullName = result.UserFullName,
+                    mail = result.UserMail,
+                    phone = result.UserPhone,
+                    roles = roles,
+                    addressInfo =
+                    {
+                        address = result.UserAddress,
+                        wardCode = result.UserWardCode,
+                        districtCode = result.UserDistrictCode,
+                        cityCode = result.UserCityCode,
+                    }
+                };
+                return new SuccessResponse<UserModel>("Đăng nhập thành công", user);
             }
             catch(Exception error)
             {
-                return new FailResponse<UserGetModel>("Đang xảy ra lỗi, vui lòng thử lại sau");
+                return new FailResponse<UserModel>("Đang xảy ra lỗi, vui lòng thử lại sau:\n" + error.Message);
+            }
+        }
+        public async Task<Response<UserModel>> updateUser(UserSaveRequest request)
+        {
+            try
+            {
+                var user = await _userRepo.FindAsyncWhere(i => i.UserId == request.id);
+                if (user == null)
+                    return new FailResponse<UserModel>("Người dùng không tồn tại");
+
+                if (!string.IsNullOrEmpty(request.fullName))
+                    user.UserFullName = request.fullName.Trim();
+                if (!string.IsNullOrEmpty(request.addressInfo?.address))
+                    user.UserAddress = request.addressInfo?.address?.Trim();
+                if (!string.IsNullOrEmpty(request.addressInfo?.districtCode))
+                    user.UserDistrictCode = request.addressInfo?.districtCode?.Trim();
+                if (!string.IsNullOrEmpty(request.addressInfo?.wardCode))
+                    user.UserWardCode = request.addressInfo?.wardCode?.Trim();
+                if (!string.IsNullOrEmpty(request.addressInfo?.cityCode))
+                    user.UserCityCode = request.addressInfo?.cityCode?.Trim();
+
+                if (!string.IsNullOrEmpty(request.mail))
+                {
+                    var isMailExist = await _userRepo.AnyAsync(u => u.UserMail == request.mail.Trim());
+                    if (isMailExist)
+                        return new FailResponse<UserModel>("Mail đã tồn tại");
+                    user.UserMail = request.mail.Trim();
+                }
+
+                if (!string.IsNullOrEmpty(request.phone))
+                {
+                    var isPhoneExist = await _userRepo.AnyAsync(u => u.UserPhone == request.phone.Trim());
+                    if (isPhoneExist)
+                        return new FailResponse<UserModel>("Số điện thoại đã tồn tại");
+
+                    // Phone validate
+                    string phoneNumber = request.phone.Trim();
+                    if (phoneNumber.Contains("+84"))
+                    {
+                        phoneNumber = phoneNumber.Replace("+84", "");
+                        if (!phoneNumber.StartsWith("0"))
+                        {
+                            phoneNumber = "0" + phoneNumber;
+                        }
+                    }
+
+                    user.UserPhone = phoneNumber;
+                }
+
+                await _userRepo.SaveChangesAsync();
+
+                return new SuccessResponse<UserModel>();
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<UserModel>(error.Message);
             }
         }
     }
