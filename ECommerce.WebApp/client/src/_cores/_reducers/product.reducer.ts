@@ -2,10 +2,12 @@ import { ProductHelper } from "./../../_shares/_helpers/product-helper";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { SLICE_NAME } from "../_enums/state.enum";
 import { IProductInitState } from "../_interfaces/state.interface";
+import { useSearchParams } from "react-router-dom";
 
 const initialState: IProductInitState = {
   productList: [],
   param: {
+    brandId: 0,
     orderBy: '',
     pageIndex: 0,
     totalPage: 0,

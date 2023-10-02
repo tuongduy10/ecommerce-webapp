@@ -9,7 +9,7 @@ const BrandItem = (props: any) => {
     const goToProductList = () => {
         navigate({
             pathname: ROUTE_NAME.PRODUCT_LIST,
-            search: `?pageIndex=1&brandId=${data.brandId}`
+            search: `?pageIndex=1&brandId=${data.brandId}&orderBy=`
         });
     }
 
