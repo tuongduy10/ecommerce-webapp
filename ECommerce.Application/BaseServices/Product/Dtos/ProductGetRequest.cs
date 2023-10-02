@@ -10,7 +10,7 @@ namespace ECommerce.Application.Services.Product.Dtos
         public int? id { get; set; }
         public int brandId { get; set; }
         public int subCategoryId { get; set; }
-        public string orderBy { get; set; } // newest | discount
+        public string orderBy { get; set; } // newest | discount | asc | desc
         public List<int> optionValueIds { get; set; }
         public string getBy { get; set; }
 

@@ -65,10 +65,10 @@ namespace ECommerce.Application.Services.Product
                 List<int> listOptionValueId = request.optionValueIds;
 
                 var proIdsByOption = await _productOptionValueRepo.Entity()
-                        .Where(i => listOptionValueId != null && listOptionValueId.Contains(i.OptionValueId))
-                        .Select(i => i.ProductId)
-                        .Distinct()
-                        .ToListAsync();
+                    .Where(i => listOptionValueId != null && listOptionValueId.Contains(i.OptionValueId))
+                    .Select(i => i.ProductId)
+                    .Distinct()
+                    .ToListAsync();
 
                 var query = _productRepo.Entity()
                     .Join(_brandRepo.Entity(),
@@ -93,8 +93,7 @@ namespace ECommerce.Application.Services.Product
                         (subCategoryId > -1 && q.product.SubCategoryId == subCategoryId) ||
                         (orderBy == "newest" ? q.product.New == true : q.product.New == false) ||
                         (orderBy == "discount" ? q.product.DiscountPercent > 0 : q.product.DiscountPercent > -1))
-                    .OrderBy(combined => combined.product.SubCategoryId)
-                    .OrderByDescending(i => i.product.ProductAddedDate);
+                    .OrderBy(combined => combined.product.SubCategoryId);
 
                 var list = query
                     .Select(i => new ProductModel()
@@ -105,6 +104,7 @@ namespace ECommerce.Application.Services.Product
                         status = i.product.Status,
                         isHighlights = i.product.Highlights,
                         isNew = i.product.New,
+                        createdDate = i.product.ProductAddedDate,
                         importDate = i.product.ProductImportDate,
                         subCategoryId = i.product.SubCategoryId,
 
@@ -120,6 +120,19 @@ namespace ECommerce.Application.Services.Product
                         brandName = i.brand.BrandName,
                         shopName = i.shop.ShopName,
                     });
+
+                if (orderBy == "asc")
+                {
+                    list = list.OrderBy(i => i.discountPreOrder ?? i.discountAvailable ?? i.pricePreOrder ?? i.priceAvailable);
+                }
+                else if (orderBy == "desc")
+                {
+                    list = list.OrderByDescending(i => i.discountPreOrder ?? i.discountAvailable ?? i.pricePreOrder ?? i.priceAvailable);
+                } 
+                else
+                {
+                    list = list.OrderByDescending(i => i.createdDate);
+                }
 
                 var record = await list.CountAsync();
                 var data = await PaginatedList<ProductModel>.CreateAsync(list, pageindex, pagesize);
