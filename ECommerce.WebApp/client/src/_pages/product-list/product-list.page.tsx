@@ -11,7 +11,6 @@ const ProductListPage = () => {
   const productStore = useProductStore();
   const dispatch = useDispatch();
 
-
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const _pageIndex = searchParams.get('pageIndex');
