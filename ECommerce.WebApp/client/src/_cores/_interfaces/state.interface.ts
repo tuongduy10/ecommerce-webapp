@@ -32,6 +32,9 @@ export interface IHomeInitState {
 export interface IProductInitState { 
   productList: any[]
   param: {
+    orderBy?: "asc" | "desc" | "newest" | "discount" | "",
+
+    // pagination
     pageIndex: number,
     totalPage: number,
     currentRecord: number,

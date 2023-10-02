@@ -12,7 +12,7 @@ export class ProductHelper {
         isHighlight: item.isHighlight,
         shopName: item.shopName,
         brandName: item.brandName,
-        productImportDate: item.ProductImportDate,
+        importDate: item.importDate,
         price: item.pricePreOrder ?? item.priceAvailable,
         priceOnSell: item.discountPreOrder ?? item.discountAvailable,
         nameType:
