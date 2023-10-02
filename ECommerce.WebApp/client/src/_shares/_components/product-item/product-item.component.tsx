@@ -10,7 +10,7 @@ interface IProductItemProps {
 
 const ProductItem = (props: IProductItemProps) => {
   const [isFillHeart, setFillHeart] = useState(false);
-  const product = props.data
+  const product = props.data;
 
   const toggleFill = () => {
     setFillHeart(!isFillHeart);
@@ -53,11 +53,11 @@ const ProductItem = (props: IProductItemProps) => {
         <div className="product__info-detail text-center">
           <div className="product-brand align-items-center">{product.brandName}</div>
           <div className="product-name mb-0">{product.name}</div>
-
           <div className="product-name">
-            Tạm hết đến 10/10/2010
+            {product.nameType && (product.importDate 
+              ? `Tạm hết đến ${product.importDate}` 
+              : `(${product.nameType})`)}
           </div>
-          {product.nameType && <div className="product-name">{product.nameType && `(${product.nameType})`}</div>}
           <div className="product-subprice" style={{ visibility: !product.priceOnSell ? 'hidden' : 'visible' }}>
             {getFormatedPrice(product.priceOnSell)}
           </div>

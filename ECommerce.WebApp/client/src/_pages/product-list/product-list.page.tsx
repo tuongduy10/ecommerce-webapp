@@ -11,15 +11,27 @@ const ProductListPage = () => {
   const productStore = useProductStore();
   const dispatch = useDispatch();
 
+
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const _pageIndex = searchParams.get('pageIndex');
+    const _brandId = searchParams.get('brandId');
+    const _orderBy = searchParams.get('orderBy');
+
     const params = {
-      pageIndex: 1,
-      brandId: 66,
+      pageIndex: Number(_pageIndex),
+      brandId: Number(_brandId),
+      orderBy: _orderBy ?? '',
     }
+    getData(params);
+  }, [productStore.param.pageIndex, productStore.param.orderBy]);
+
+  const getData = (params: any) => {
     ProductService.getProductList(params).then((res: any) => {
       if (res.data) {
         const _data = res.data;
         const param = {
+          ...productStore.param,
           pageIndex: _data.currentPage,
           totalPage: _data.totalPage,
           currentRecord: _data.currentRecord,
@@ -29,7 +41,7 @@ const ProductListPage = () => {
         dispatch(setProductList(_data.items));
       }
     })
-  }, []);
+  }
 
   return (
     <div className="custom-container">
@@ -49,12 +61,16 @@ const ProductListPage = () => {
                 <ProlPagination />
               </div>
               <div className="product__grid-wrapper">
-                <p className="product__grid-title text-center">Tất cả sản phẩm</p>
-                <div className="product__grid-inner w-full flex flex-wrap">
-                  {productStore.productList.length > 0 && productStore.productList.map((product) => (
-                    <ProductItem key={product.id} grid={3} data={product} />
-                  ))}
-                </div>
+                {productStore.productList.length > 0 ? (<>
+                  <p className="product__grid-title text-center">Tất cả sản phẩm</p>
+                  <div className="product__grid-inner w-full flex flex-wrap">
+                    {productStore.productList.map((product) => (
+                      <ProductItem key={product.id} grid={3} data={product} />
+                    ))}
+                  </div>
+                </>) : (
+                  <p className="text-center w-full">Chưa có sản phẩm</p>
+                )}
               </div>
               <div className="filter__control-bottom">
                 <ProlPagination />

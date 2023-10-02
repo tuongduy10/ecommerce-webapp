@@ -1,4 +1,4 @@
-import { ProductHelper } from './../../_shares/_helpers/product-helper';
+import { ProductHelper } from "./../../_shares/_helpers/product-helper";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { SLICE_NAME } from "../_enums/state.enum";
 import { IProductInitState } from "../_interfaces/state.interface";
@@ -6,6 +6,7 @@ import { IProductInitState } from "../_interfaces/state.interface";
 const initialState: IProductInitState = {
   productList: [],
   param: {
+    orderBy: '',
     pageIndex: 0,
     totalPage: 0,
     currentRecord: 0,
@@ -23,10 +24,13 @@ const productSlice = createSlice({
     setParam: (state, action: PayloadAction<any>) => {
       state.param = action.payload;
     },
+    setPageIndex: (state, action: PayloadAction<number>) => {
+      state.param.pageIndex = action.payload;
+    },
   },
 });
 
-export const { setParam, setProductList } = productSlice.actions;
+export const { setParam, setProductList, setPageIndex } = productSlice.actions;
 
 const productReducer = productSlice.reducer;
 export default productReducer;

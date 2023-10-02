@@ -46,14 +46,14 @@ const Header = () => {
                     </div>
                     <ul className="header__top-action items-center">
                         <li>
-                            <div className="header-searchform header__top-link">
+                            <span className="header-searchform header__top-link">
                                 <span className="text">
                                     <input type="text" placeholder="Thương hiệu, Dịch vụ, Sản phẩm cần tìm" />
                                 </span>
                                 <span className="icon">
                                     <MuiIcon name={ICON_NAME.FEATHER.SEARCH} />
                                 </span>
-                            </div>
+                            </span>
                         </li>
                         <li className="wishlist-action">
                             <a href="/" className="header__top-link">
