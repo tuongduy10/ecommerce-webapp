@@ -90,7 +90,7 @@ namespace ECommerce.Application.Services.Inventory
                                 {
                                     id = lo.OptionId,
                                     name = lo.OptionName,
-                                    valueList = _optionValueRepo.Entity()
+                                    values = _optionValueRepo.Entity()
                                         .Where(optionvalue => optionvalue.OptionId == lo.OptionId)
                                         .Select(lop => new OptionValueModel
                                         {
@@ -113,6 +113,36 @@ namespace ECommerce.Application.Services.Inventory
             catch(Exception error)
             {
                 return new FailResponse<List<SubCategoryModel>>(error.Message);
+            }
+        }
+        public async Task<Response<List<OptionModel>>> getProductOption(int productId)
+        {
+            try
+            {
+                var result = await _DbContext.Options
+                    .Where(opt => _DbContext.ProductOptionValues
+                        .Any(pov => pov.ProductId == productId && pov.OptionValue.OptionId == opt.OptionId))
+                    .Select(opt => new OptionModel
+                    {
+                        id = opt.OptionId,
+                        name = opt.OptionName,
+                        values = _DbContext.ProductOptionValues
+                            .Where(pov => 
+                                pov.ProductId == productId && pov.OptionValue.OptionId == opt.OptionId)
+                            .Select(pov => new OptionValueModel
+                            {
+                                id = pov.OptionValue.OptionValueId,
+                                name = pov.OptionValue.OptionValueName,
+                            })
+                            .ToList()
+                    })
+                    .ToListAsync();
+
+                return new SuccessResponse<List<OptionModel>>(result);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<List<OptionModel>>(error.Message);
             }
         }
     }

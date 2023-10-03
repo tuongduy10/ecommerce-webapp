@@ -42,8 +42,8 @@ namespace ECommerce.WebApp.Controllers
             _appSetting = optionsMonitor.CurrentValue;
         }
 
-        [HttpPost("login")]
         [AllowAnonymous]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(SignInRequest request)
         {
             var result = await _userServiceV2.ValidateUser(request);
@@ -60,6 +60,7 @@ namespace ECommerce.WebApp.Controllers
                 Data = GenerateToken(result.Data)
             });
         }
+        [AllowAnonymous]
         [HttpPost("info")]
         public IActionResult UserInfo()
         {
@@ -77,6 +78,7 @@ namespace ECommerce.WebApp.Controllers
             };
             return Ok(new SuccessResponse<UserGetModel>("success", user));
         }
+
         private string GenerateToken(UserGetModel user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
@@ -109,16 +111,6 @@ namespace ECommerce.WebApp.Controllers
                     ValidateAudience = false,
                 }, out SecurityToken secToken);
             return jwtTokenHandler;
-        }
-        [HttpPost("sign-up")]
-        public async Task<IActionResult> SignUp()
-        {
-            return Ok();
-        }
-        [HttpPost("update-password")]
-        public async Task<IActionResult> UpdatePassword()
-        {
-            return Ok();
         }
     }
 }

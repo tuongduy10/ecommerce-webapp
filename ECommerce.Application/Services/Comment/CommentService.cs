@@ -165,118 +165,123 @@ namespace ECommerce.Application.Services.Comment
                 return new FailResponse<LikeAndDislike>("Lỗi \n\n" + e.Message);
             }
         }
-        public async Task<Response<List<RateGetModel>>> GetAllByProductId(int _productId, int _userId = 0)
+        public async Task<Response<List<RateGetModel>>> getRates(RateGetRequest request)
         {
             try
             {
+                var _id = request.id;
+                var _productId = request.productId;
+                var _userId = request.userId;
                 var rate = await _DbContext.Rates
-                .Where(rate => rate.ProductId == _productId && rate.ParentId == null)
-                .Select(rate => new RateGetModel()
-                {
-                    Id = rate.RateId,
-                    Value = (int)rate.RateValue,
-                    UserId = rate.User.UserId,
-                    UserName = rate.User.UserFullName,
-                    Comment = rate.Comment,
-                    CreateDate = (DateTime)rate.CreateDate,
-                    Images = _DbContext.RatingImages
-                        .Where(img => img.RateId == rate.RateId)
-                        .Select(i => new ImageModel()
-                        {
-                            id = i.RatingImageId,
-                            path = i.RatingImagePath
-                        })
-                        .ToList(),
-                    CanAction = rate.UserId == _userId,
-                    IsAdmin = _DbContext.UserRoles
-                            .Where(isa => isa.UserId == rate.User.UserId)
-                            .Select(isa => isa.Role.RoleName)
-                            .ToList()
-                            .Contains(RoleName.Admin),
-                    Liked = _DbContext.Interests
-                            .Where(itr => itr.RateId == rate.RateId && itr.Liked == true)
-                            .Select(itr => itr.UserId)
-                            .ToList()
-                            .Contains(_userId),
-                    LikeCount = rate.Interests.Where(lc => lc.Liked == true).Count(),
-                    Disliked = _DbContext.Interests
-                            .Where(itr => itr.RateId == rate.RateId && itr.Liked == false)
-                            .Select(itr => itr.UserId)
-                            .ToList()
-                            .Contains(_userId),
-                    DislikeCount = rate.Interests.Where(dc => dc.Liked == false).Count(),
-                    UsersLike = rate.Interests
-                            .Where(ul => ul.Liked == true)
-                            .Select(ul => ul.User.UserFullName)
-                            .ToList(),
-                    UsersDislike = rate.Interests
-                            .Where(ud => ud.Liked == false)
-                            .Select(ud => ud.User.UserFullName)
-                            .ToList(),
-                    Replies = _DbContext.Rates
-                    .Where(reply => reply.ParentId == rate.RateId)
-                    .Select(reply => new RateGetModel()
+                    .Where(rate => 
+                        (rate.ProductId == _productId && rate.ParentId == null) ||
+                        (rate.RateId == _id && _id > -1))
+                    .Select(rate => new RateGetModel()
                     {
-                        Id = reply.RateId,
-                        UserId = reply.User.UserId,
-                        UserName = reply.User.UserFullName,
-                        UserRepliedId = reply.UserReplied.UserId,
-                        UserRepliedName = reply.UserReplied.UserFullName,
-                        IsAdmin = _DbContext.UserRoles
-                            .Where(isa => isa.UserId == reply.User.UserId)
-                            .Select(isa => isa.Role.RoleName)
-                            .ToList()
-                            .Contains(RoleName.Admin),
-                        IsSeller = _DbContext.UserRoles
-                            .Where(isa => isa.UserId == reply.User.UserId)
-                            .Select(isa => isa.Role.RoleName)
-                            .ToList()
-                            .Contains(RoleName.Seller),
-                        IsShopOwner = _DbContext.Products
-                            .Where(iso => iso.ProductId == _productId)
-                            .Select(iso => iso.Shop.UserId)
-                            .FirstOrDefault() == reply.User.UserId,
-                        Comment = reply.Comment,
-                        Liked = _DbContext.Interests
-                            .Where(itr => itr.RateId == reply.RateId && itr.Liked == true)
-                            .Select(itr => itr.UserId)
-                            .ToList()
-                            .Contains(_userId),
-                        LikeCount = reply.Interests.Where(lc => lc.Liked == true).Count(),
-                        DislikeCount = reply.Interests.Where(dc => dc.Liked == false).Count(),
-                        Disliked = _DbContext.Interests
-                            .Where(itr => itr.RateId == reply.RateId && itr.Liked == false)
-                            .Select(itr => itr.UserId)
-                            .ToList()
-                            .Contains(_userId),
-                        CanAction = reply.UserId == _userId,
-                        CreateDate = (DateTime)reply.CreateDate,
+                        Id = rate.RateId,
+                        Value = (int)rate.RateValue,
+                        UserId = rate.User.UserId,
+                        UserName = rate.User.UserFullName,
+                        Comment = rate.Comment,
+                        CreateDate = (DateTime)rate.CreateDate,
                         Images = _DbContext.RatingImages
-                            .Where(img => img.RateId == reply.RateId)
+                            .Where(img => img.RateId == rate.RateId)
                             .Select(i => new ImageModel()
                             {
                                 id = i.RatingImageId,
                                 path = i.RatingImagePath
                             })
                             .ToList(),
-                        UsersLike = reply.Interests
-                            .Where(ul => ul.Liked == true)
-                            .Select(ul => ul.User.UserFullName)
-                            .ToList(),
-                        UsersDislike = reply.Interests
-                            .Where(ud => ud.Liked == false)
-                            .Select(ud => ud.User.UserFullName)
-                            .ToList(),
+                        CanAction = rate.UserId == _userId,
+                        IsAdmin = _DbContext.UserRoles
+                                .Where(isa => isa.UserId == rate.User.UserId)
+                                .Select(isa => isa.Role.RoleName)
+                                .ToList()
+                                .Contains(RoleName.Admin),
+                        Liked = _DbContext.Interests
+                                .Where(itr => itr.RateId == rate.RateId && itr.Liked == true)
+                                .Select(itr => itr.UserId)
+                                .ToList()
+                                .Contains(_userId),
+                        LikeCount = rate.Interests.Where(lc => lc.Liked == true).Count(),
+                        Disliked = _DbContext.Interests
+                                .Where(itr => itr.RateId == rate.RateId && itr.Liked == false)
+                                .Select(itr => itr.UserId)
+                                .ToList()
+                                .Contains(_userId),
+                        DislikeCount = rate.Interests.Where(dc => dc.Liked == false).Count(),
+                        UsersLike = rate.Interests
+                                .Where(ul => ul.Liked == true)
+                                .Select(ul => ul.User.UserFullName)
+                                .ToList(),
+                        UsersDislike = rate.Interests
+                                .Where(ud => ud.Liked == false)
+                                .Select(ud => ud.User.UserFullName)
+                                .ToList(),
+                        Replies = _DbContext.Rates
+                        .Where(reply => reply.ParentId == rate.RateId)
+                        .Select(reply => new RateGetModel()
+                        {
+                            Id = reply.RateId,
+                            UserId = reply.User.UserId,
+                            UserName = reply.User.UserFullName,
+                            UserRepliedId = reply.UserReplied.UserId,
+                            UserRepliedName = reply.UserReplied.UserFullName,
+                            IsAdmin = _DbContext.UserRoles
+                                .Where(isa => isa.UserId == reply.User.UserId)
+                                .Select(isa => isa.Role.RoleName)
+                                .ToList()
+                                .Contains(RoleName.Admin),
+                            IsSeller = _DbContext.UserRoles
+                                .Where(isa => isa.UserId == reply.User.UserId)
+                                .Select(isa => isa.Role.RoleName)
+                                .ToList()
+                                .Contains(RoleName.Seller),
+                            IsShopOwner = _DbContext.Products
+                                .Where(iso => iso.ProductId == _productId)
+                                .Select(iso => iso.Shop.UserId)
+                                .FirstOrDefault() == reply.User.UserId,
+                            Comment = reply.Comment,
+                            Liked = _DbContext.Interests
+                                .Where(itr => itr.RateId == reply.RateId && itr.Liked == true)
+                                .Select(itr => itr.UserId)
+                                .ToList()
+                                .Contains(_userId),
+                            LikeCount = reply.Interests.Where(lc => lc.Liked == true).Count(),
+                            DislikeCount = reply.Interests.Where(dc => dc.Liked == false).Count(),
+                            Disliked = _DbContext.Interests
+                                .Where(itr => itr.RateId == reply.RateId && itr.Liked == false)
+                                .Select(itr => itr.UserId)
+                                .ToList()
+                                .Contains(_userId),
+                            CanAction = reply.UserId == _userId,
+                            CreateDate = (DateTime)reply.CreateDate,
+                            Images = _DbContext.RatingImages
+                                .Where(img => img.RateId == reply.RateId)
+                                .Select(i => new ImageModel()
+                                {
+                                    id = i.RatingImageId,
+                                    path = i.RatingImagePath
+                                })
+                                .ToList(),
+                            UsersLike = reply.Interests
+                                .Where(ul => ul.Liked == true)
+                                .Select(ul => ul.User.UserFullName)
+                                .ToList(),
+                            UsersDislike = reply.Interests
+                                .Where(ud => ud.Liked == false)
+                                .Select(ud => ud.User.UserFullName)
+                                .ToList(),
+                        })
+                        .ToList()
                     })
-                    .ToList()
-                })
-                .ToListAsync();
+                    .ToListAsync();
 
-                return new SuccessResponse<List<RateGetModel>>("success", rate);
+                return new SuccessResponse<List<RateGetModel>>(rate);
             }
             catch (Exception e)
             {
-                return new FailResponse<List<RateGetModel>>("Lỗi \n\n" + e.ToString());
+                return new FailResponse<List<RateGetModel>>(e.Message);
             }
         }
         public async Task<Response<List<string>>> GetUsersFavor(UserFavorRequest request)
