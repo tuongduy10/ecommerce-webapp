@@ -1,11 +1,7 @@
 import { api } from "../_api/api";
-import { BRAND_API_URL, CATEGORY_API_URL } from "../_enums/api-url.enum";
+import { BRAND_API_URL, CATEGORY_API_URL, INVENTORY_API_URL } from "../_enums/api-url.enum";
 
 export default class InventoryService {
-    public static getProductList() {
-
-    }
-
     public static getBrands() { 
         return api.get(BRAND_API_URL.GET_ALL_AVAILABLE);
     }
@@ -16,5 +12,9 @@ export default class InventoryService {
 
     public static getCategories() {
         return api.get(CATEGORY_API_URL.GET_ALL);
+    }
+
+    public static getSubCategories(params: any) {
+        return api.post(INVENTORY_API_URL.GET_SUB_CATEGORIES, params);
     }
 }

@@ -19,3 +19,7 @@ export const CATEGORY_API_URL = {
 export const PRODUCT_API_URL = {
     PRODUCT_LIST: '/product/product-list',
 }
+
+export const INVENTORY_API_URL = {
+    GET_SUB_CATEGORIES: '/inventory/get-sub-categories',
+}

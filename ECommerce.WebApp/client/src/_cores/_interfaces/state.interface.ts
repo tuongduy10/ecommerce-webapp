@@ -1,4 +1,4 @@
-import { IBrand, ICategory } from "./inventory.interface";
+import { IBrand, ICategory, ISubCategory } from "./inventory.interface";
 
 export interface IAction {
   type: string;
@@ -40,5 +40,6 @@ export interface IProductInitState {
     totalPage: number,
     currentRecord: number,
     totalRecord: number
-  }
+  },
+  subCategories: ISubCategory[];
 }
