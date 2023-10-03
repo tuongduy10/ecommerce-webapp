@@ -82,22 +82,22 @@ namespace ECommerce.WebApp.Controllers.Client
             if (product == null)
                 return NotFound();
             //var rates = await _rateService.GetRatesByProductId(ProductId, _userId);
-            var rates = await _commentService.GetAllByProductId(ProductId, _userId);
+            //var rates = await _commentService.getRates(ProductId, _userId);
             var suggestion = await _productService.getProductSuggestion();
             var phone = await _configurationService.getPhoneNumber();
             var options = await _productService.getProductOption(ProductId);
             var discount = await _discountService.getDisount(product.ShopId, product.Brand.BrandId);
-            var sizeGuides = await _productService.SizeGuideList();
+            //var sizeGuides = await _productService.SizeGuideList();
 
             var model = new ProductDetailViewModel
             {
                 product = product,
-                rates = rates.Data,
+                //rates = rates.Data,
                 suggestion = ProductListFormated(suggestion),
                 phone = phone,
                 options = options,
                 discount = discount,
-                sizeGuides = sizeGuides
+                //sizeGuides = sizeGuides
             };
 
             ViewBag.isScrolledTo = isScrolledTo;

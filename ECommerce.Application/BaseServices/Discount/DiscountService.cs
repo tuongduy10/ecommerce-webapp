@@ -33,7 +33,8 @@ namespace ECommerce.Application.BaseServices.Discount
 
             // Global discount
             var forGlobalDiscount = await _DbContext.Discounts
-                .Where( i => i.StartDate <= now && 
+                .Where( i => 
+                    i.StartDate <= now && 
                     i.EndDate >= now && 
                     i.ForGlobal == true &&
                     i.Status == 1

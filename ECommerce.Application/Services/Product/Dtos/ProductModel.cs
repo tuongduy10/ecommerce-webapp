@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Services.Inventory.Dtos;
+﻿using ECommerce.Application.BaseServices.Shop.Dtos;
+using ECommerce.Application.Services.Inventory.Dtos;
 using ECommerce.Data.Models;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -23,18 +24,13 @@ namespace ECommerce.Application.Services.Product.Dtos
         public int subCategoryId { get; set; }
         public string? subCategoryName { get; set; }
         public string? categoryName { get; set; }
-        // shop
-        public int? shopId { get; set; }
-        public string shopName { get; set; }
-        // brand
-        public int? brandId { get; set; }
-        public string brandName { get; set; }
+        public ShopModel shop { get; set; }
+        public BrandModel brand { get; set; }
 
         public DateTime? createdDate { get; set; }
         public DateTime? importDate { get; set; }
         public List<string> imagePaths { get; set; }
-        public List<ProductPrice> price { get; set; }
-        public List<Type> type { get; set; }
+        public List<string> userImagePaths { get; set; }
         public string? description { get; set; }
         public string? size { get; set; }
         public string? link { get; set; }
@@ -56,14 +52,11 @@ namespace ECommerce.Application.Services.Product.Dtos
         // Relationship data
         public List<int>? currentOptions { get; set; }
         public List<OptionModel>? newOptions { get; set; }
-        public List<string>? attributes { get; set; }
-        public List<string>? systemFileName { get; set; }
-        public List<string>? userFileName { get; set; }
+        public List<AttributeModel>? attributes { get; set; }
+        public ReviewModel review { get; set; }
         public ProductModel()
         {
             id = -1;
-            shopId = -1;
-            brandId = -1;
             subCategoryId = -1;
         }
     }

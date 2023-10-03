@@ -8,7 +8,7 @@ namespace ECommerce.Application.Services.Inventory.Dtos
     {
         public int id { get; set; }
         public string name { get; set; }
-        public List<OptionValueModel> valueList { get; set; }
+        public List<OptionValueModel> values { get; set; }
     }
     public class OptionValueModel
     {

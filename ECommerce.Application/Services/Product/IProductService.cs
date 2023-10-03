@@ -10,8 +10,10 @@ namespace ECommerce.Application.Services.Product
 {
     public interface IProductService
     {
+        Task<Response<ProductModel>> getProductDetail(int id);
         Task<Response<PageResult<ProductModel>>> getProductList(ProductGetRequest request);
         Task<Response<List<ProductModel>>> getManagedProductList(ProductGetRequest request);
+        Task<Response<DiscountModel>> getDiscount(DiscountGetRequest request);
         Task<Response<bool>> save(ProductModel request); // add or update
         Task<Response<bool>> delete(List<int> ids);
     }
