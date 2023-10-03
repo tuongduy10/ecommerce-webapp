@@ -28,6 +28,10 @@ namespace ECommerce.Application.Services.Product
         private readonly IRepositoryBase<ProductOptionValue> _productOptionValueRepo;
         private readonly IRepositoryBase<Shop> _shopRepo;
         private readonly IRepositoryBase<ProductImage> _productImageRepo;
+        private readonly IRepositoryBase<ProductUserImage> _productUserImageRepo;
+        private readonly IRepositoryBase<ProductAttribute> _productAttributeRepo;
+        private readonly IRepositoryBase<Rate> _rateRepo;
+        private readonly IRepositoryBase<Discount> _discountRepo;
         public ProductService(ECommerceContext DbContext)
         {
             _DbContext = DbContext;
@@ -47,16 +51,123 @@ namespace ECommerce.Application.Services.Product
                 _productOptionValueRepo = new RepositoryBase<ProductOptionValue>(_DbContext);
             if (_productImageRepo == null)
                 _productImageRepo = new RepositoryBase<ProductImage>(_DbContext);
+            if (_productUserImageRepo == null)
+                _productUserImageRepo = new RepositoryBase<ProductUserImage>(_DbContext);
             if (_brandRepo == null)
                 _brandRepo = new RepositoryBase<Brand>(_DbContext);
             if (_shopRepo == null)
                 _shopRepo = new RepositoryBase<Shop>(_DbContext);
+            if (_productAttributeRepo == null)
+                _productAttributeRepo = new RepositoryBase<ProductAttribute>(_DbContext);
+            if (_rateRepo == null)
+                _rateRepo = new RepositoryBase<Rate>(_DbContext);
+            if (_discountRepo == null)
+                _discountRepo = new RepositoryBase<Discount>(_DbContext);
+        }
+        public async Task<Response<ProductModel>> getProductDetail(int id)
+        {
+            try
+            {
+                var attr = await _productAttributeRepo
+                    .Entity()
+                    .Where(i => i.ProductId == id)
+                    .Select(i => new AttributeModel
+                    {
+                        id = i.AttributeId,
+                        value = i.Value,
+                        name = i.Attribute.AttributeName,
+                    })
+                    .ToListAsync();
+
+                var rates = await _rateRepo
+                    .Entity()
+                    .Where(i => i.ProductId == id && i.RateValue != 0)
+                    .Select(i => new RateModel
+                    {
+                        id = i.RateId,
+                        value = i.RateValue,
+                        comment = i.Comment,
+                        htmlPosition = i.HtmlPosition,
+                        repliedId = i.RepliedId,
+                        parentId = i.ParentId,
+                        productId = i.ProductId,
+                        idsToDelete = i.IdsToDelete,
+
+                        userId = i.UserId,
+                        userRepliedId = i.UserRepliedId,
+                        createDate = i.CreateDate,
+                    })
+                    .ToListAsync();
+
+                var product = await _productRepo
+                    .Entity()
+                    .Where(i => i.ProductId == id)
+                    .Select(i => new ProductModel
+                    {
+                        id = i.ProductId,
+                        code = i.ProductCode,
+                        ppc = i.Ppc,
+                        name = i.ProductName,
+                        description = i.ProductDescription,
+                        size = i.SizeGuide,
+
+                        delivery = i.Delivery,
+                        repay = i.Repay,
+                        insurance = i.Insurance,
+                        isLegit = i.Legit,
+
+                        brand = new BrandModel
+                        {
+                            id = i.BrandId,
+                            name = i.Brand.BrandName,
+                            description = i.Brand.Description,
+                            descriptionTitle = i.Brand.DescriptionTitle,
+                            imagePath = i.Brand.BrandImagePath,
+                        },
+                        shop = new ShopModel
+                        {
+                            id = i.ShopId,
+                            name = i.Shop.ShopName,
+                        },
+                        attributes = attr,
+                        importDate = i.ProductImportDate,
+
+                        priceAvailable = i.PriceAvailable,
+                        pricePreOrder = i.PricePreOrder,
+                        discountAvailable = i.DiscountAvailable,
+                        discountPreOrder = i.DiscountPreOrder,
+
+                        imagePaths = _productImageRepo.Entity()
+                            .Where(img => img.ProductId == i.ProductId)
+                            .Select(i => i.ProductImagePath)
+                            .ToList(),
+                        userImagePaths = _productImageRepo.Entity()
+                            .Where(img => img.ProductId == i.ProductId)
+                            .Select(i => i.ProductImagePath)
+                            .ToList(),
+
+                        review = new ReviewModel
+                        {
+                            avgValue = (int)Math.Round((double)(rates.Sum(i => i.value) / rates.Count)),
+                            totalRating = rates.Count(),
+                            rates = rates
+                        }
+                    })
+                    .FirstOrDefaultAsync();
+
+                return new SuccessResponse<ProductModel>(product);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<ProductModel>(error.Message);
+            }
         }
         public async Task<Response<PageResult<ProductModel>>> getProductList(ProductGetRequest request)
         {
             try
             {
                 //Request parameters
+                int id = request.id ?? -1;
                 int brandId = request.brandId;
                 int subCategoryId = request.subCategoryId;
                 int pageindex = request.PageIndex;
@@ -117,8 +228,14 @@ namespace ECommerce.Application.Services.Product
                             .Where(img => img.ProductId == i.product.ProductId)
                             .Select(i => i.ProductImagePath)
                             .ToList(),
-                        brandName = i.brand.BrandName,
-                        shopName = i.shop.ShopName,
+                        brand = new BrandModel
+                        {
+                            id = i.product.BrandId,
+                            name = i.product.Brand.BrandName,
+                            description = i.product.Brand.Description,
+                            descriptionTitle = i.product.Brand.DescriptionTitle,
+                            imagePath = i.product.Brand.BrandImagePath,
+                        },
                     });
 
                 if (orderBy == "asc")
@@ -177,8 +294,11 @@ namespace ECommerce.Application.Services.Product
                         stock = (int)i.ProductStock,
                         subCategoryName = i.SubCategory.SubCategoryName,
                         categoryName = i.SubCategory.Category.CategoryName,
-                        brandId = i.BrandId,
-                        brandName = i.Brand.BrandName,
+                        brand = new BrandModel
+                        {
+                            id = i.Brand.BrandId,
+                            name = i.Brand.BrandName,
+                        },
                         imagePaths = i.ProductImages
                             .Select(i => i.ProductImagePath)
                             .ToList(),
@@ -194,8 +314,11 @@ namespace ECommerce.Application.Services.Product
                         profitPreOrder = i.ProfitPreOrder,
                         profitForSeller = i.ProfitForSeller,
 
-                        shopName = i.Shop.ShopName,
-                        shopId = i.ShopId,
+                        shop = new ShopModel
+                        {
+                            id = i.ShopId,
+                            name = i.Shop.ShopName,
+                        },
                         note = i.Note,
                         link = i.Link
                     })
@@ -215,9 +338,9 @@ namespace ECommerce.Application.Services.Product
             {
                 if (string.IsNullOrEmpty(request.name))
                     return new FailResponse<bool>("Vui lòng nhập tên sản phẩm");
-                if (request.shopId == 0)
+                if (request.shop.id == 0)
                     return new FailResponse<bool>("Vui lòng chọn cửa hàng");
-                if (request.brandId == 0)
+                if (request.brand.id == 0)
                     return new FailResponse<bool>("Vui lòng chọn thương hiệu");
                 if (request.subCategoryId == 0)
                     return new FailResponse<bool>("Vui lòng chọn loại sản phẩm");
@@ -260,8 +383,8 @@ namespace ECommerce.Application.Services.Product
                     Repay = !string.IsNullOrEmpty(request.repay) ? request.repay.Trim() : null,
                     Insurance = string.IsNullOrEmpty(request.insurance) ? "" : request.insurance.Trim(),
                     New = request.isNew,
-                    ShopId = (int)request.shopId,
-                    BrandId = (int)request.brandId,
+                    ShopId = (int)request.shop.id,
+                    BrandId = (int)request.brand.id,
                     ProductAddedDate = DateTime.Now, // default
                     SubCategoryId = request.subCategoryId,
                     Status = isAdmin ? (byte?)ProductStatusEnum.Available : (byte?)ProductStatusEnum.Pending,
@@ -321,12 +444,12 @@ namespace ECommerce.Application.Services.Product
 
                         // Get new values of list;
                         // Lấy các giá trị khác với db;
-                        var newOptionValues = option.valueList
+                        var newOptionValues = option.values
                             .Select(value => value.name.Trim())
                             .Except(existingOptionValues)
                             .ToList();
 
-                        var currentOptionValues = option.valueList
+                        var currentOptionValues = option.values
                             .Select(value => value.name.Trim())
                             .Intersect(existingOptionValues)
                             .ToList();
@@ -379,7 +502,36 @@ namespace ECommerce.Application.Services.Product
                 return new FailResponse<bool>(error.Message);
             }
         }
+        public async Task<Response<DiscountModel>> getDiscount(DiscountGetRequest request)
+        {
+            try
+            {
+                var now = DateTime.Now;
+                var result = await _discountRepo
+                    .Entity()
+                    .Where(i =>
+                        i.StartDate <= now &&
+                        i.EndDate >= now &&
+                        i.Status == 1)
+                    .Select(i => new DiscountModel
+                    {
+                        id = i.DiscountId,
+                        code = i.DiscountCode,
+                        value = i.DiscountValue,
+                        type = (bool)i.ForGlobal ? DiscountTypeEnum.global :
+                               (bool)i.ForShop ? DiscountTypeEnum.shop :
+                               (bool)i.ForBrand ? DiscountTypeEnum.brand : DiscountTypeEnum.global,
+                        isPercent = i.IsPercent,
+                    })
+                    .FirstOrDefaultAsync();
 
+                return new SuccessResponse<DiscountModel>(result);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<DiscountModel>(error.Message);
+            }
+        }
         private async Task addProductOptionValueByProductId(int productId, List<int> optValIds)
         {
             var productOptionValues = optValIds.Select(optValId => new ProductOptionValue

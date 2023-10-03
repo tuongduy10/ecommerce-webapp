@@ -1,3 +1,5 @@
+using ECommerce.Application.Services.Comment;
+using ECommerce.Application.Services.Comment.Request;
 using ECommerce.Application.Services.Product;
 using ECommerce.Application.Services.Product.Dtos;
 using Microsoft.AspNetCore.Authorization;
@@ -10,12 +12,16 @@ namespace ECommerce.WebApp.Controllers
     [Authorize]
     [ApiController]
     [Route("api/product")]
-    public class ProductAPI : ControllerBase
+    public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
-        public ProductAPI(IProductService productService)
+        private readonly ICommentService _commentService;
+        public ProductController(
+            IProductService productService,
+            ICommentService commentService)
         {
             _productService = productService;
+            _commentService = commentService;
         }
         [AllowAnonymous]
         [HttpPost("product-list")]
@@ -33,6 +39,30 @@ namespace ECommerce.WebApp.Controllers
             if (!res.isSucceed)
                 return BadRequest(res);
             return Ok(res);
+        }
+        [AllowAnonymous]
+        [HttpGet("product-detail")]
+        public async Task<IActionResult> getProductDetail(int id = -1)
+        {
+            var result = await _productService.getProductDetail(id);
+            if (!result.isSucceed)
+                return BadRequest(result.Message);
+            return Ok(result.Message);
+        }
+        [AllowAnonymous]
+        [HttpPost("product-review")]
+        public async Task<IActionResult> getProductReview(RateGetRequest request)
+        {
+            var result = await _commentService.getRates(request);
+            if (!result.isSucceed)
+                return BadRequest(result.Message);
+            return Ok(result);
+        }
+        [AllowAnonymous]
+        [HttpPost("rate-product")]
+        public async Task<IActionResult> rateProduct()
+        {
+            return Ok();
         }
         [AllowAnonymous]
         [HttpPost("save")]
