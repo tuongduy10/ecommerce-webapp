@@ -51,6 +51,7 @@ namespace ECommerce.Application.Services.Product.Dtos
         public decimal? profitForSeller { get; set; }
         // Relationship data
         public List<int>? currentOptions { get; set; }
+        public List<OptionModel>? options { get; set; }
         public List<OptionModel>? newOptions { get; set; }
         public List<AttributeModel>? attributes { get; set; }
         public ReviewModel review { get; set; }

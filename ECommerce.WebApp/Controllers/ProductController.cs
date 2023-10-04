@@ -47,7 +47,7 @@ namespace ECommerce.WebApp.Controllers
             var result = await _productService.getProductDetail(id);
             if (!result.isSucceed)
                 return BadRequest(result.Message);
-            return Ok(result.Message);
+            return Ok(result);
         }
         [AllowAnonymous]
         [HttpPost("product-review")]
