@@ -2,10 +2,11 @@ import { ProductHelper } from "./../../_shares/_helpers/product-helper";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { SLICE_NAME } from "../_enums/state.enum";
 import { IProductInitState } from "../_interfaces/state.interface";
-import { useSearchParams } from "react-router-dom";
 import { ISubCategory } from "../_interfaces/inventory.interface";
+import { IProduct } from "../_interfaces/product.interface";
 
-const initialState: IProductInitState = {
+const initialState: IProductInitState = { 
+  productDetail: undefined,
   productList: [],
   param: {
     brandId: 0,
@@ -22,6 +23,9 @@ const productSlice = createSlice({
   name: SLICE_NAME.PRODUCT,
   initialState: initialState,
   reducers: {
+    setProductDetail: (state, action: PayloadAction<IProduct>) => {
+      state.productDetail = action.payload;
+    },
     setProductList: (state, action: PayloadAction<any>) => {
       state.productList = ProductHelper.getProductListFormated(action.payload);
     },
@@ -37,8 +41,13 @@ const productSlice = createSlice({
   },
 });
 
-export const { setParam, setProductList, setPageIndex, setSubCategories } =
-  productSlice.actions;
+export const {
+  setParam,
+  setProductDetail,
+  setProductList,
+  setPageIndex,
+  setSubCategories,
+} = productSlice.actions;
 
 const productReducer = productSlice.reducer;
 export default productReducer;

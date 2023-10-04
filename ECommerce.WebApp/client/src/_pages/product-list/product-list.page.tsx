@@ -11,37 +11,37 @@ import InventoryService from "src/_cores/_services/inventory.service";
 const dummData = [
   {
     id: 1,
-    name: "sub category 1",
+    name: "Máy xay sinh tố",
     categoryId: 1,
     optionList: [
       {
-        id: 1,
-        name: "option 1",
+        id: 11,
+        name: "Màu sắc",
         values: [
           {
-            id: 11,
-            name: "option value 11",
+            id: 111,
+            name: "Trắng",
             totalRecord: 100 // total product record
           },
           {
-            id: 12,
-            name: "option value 12",
+            id: 112,
+            name: "Đen",
             totalRecord: 100 // total product record
           }
         ]
       },
       {
-        id: 1,
-        name: "option 1",
+        id: 12,
+        name: "Kích thước",
         values: [
           {
-            id: 11,
-            name: "option value 11",
+            id: 121,
+            name: "100mm",
             totalRecord: 100 // total product record
           },
           {
-            id: 12,
-            name: "option value 12",
+            id: 122,
+            name: "110mm",
             totalRecord: 100 // total product record
           }
         ]
@@ -50,37 +50,37 @@ const dummData = [
   },
   {
     id: 2,
-    name: "sub category 2",
+    name: "Máy pha cà phê",
     categoryId: 2,
     optionList: [
       {
-        id: 2,
-        name: "option",
+        id: 21,
+        name: "Màu sắc",
         values: [
           {
-            id: 21,
-            name: "option value 21",
+            id: 211,
+            name: "Đen",
             totalRecord: 100 // total product record
           },
           {
-            id: 22,
-            name: "option value 22",
+            id: 212,
+            name: "Trắng",
             totalRecord: 100 // total product record
           },
         ]
       },
       {
-        id: 1,
-        name: "option 1",
+        id: 22,
+        name: "Kích thước",
         values: [
           {
-            id: 11,
-            name: "option value 11",
+            id: 221,
+            name: "120mm",
             totalRecord: 100 // total product record
           },
           {
-            id: 12,
-            name: "option value 12",
+            id: 222,
+            name: "130mm",
             totalRecord: 100 // total product record
           }
         ]
@@ -92,7 +92,7 @@ const dummData = [
 const ProductListPage = () => {
   const searchParams = new URLSearchParams(window.location.search);
   const _pageIndex = Number(searchParams.get('pageIndex'));
-  const _brandId = Number(searchParams.get('brandId'));
+  const _brandId = Number(searchParams.get('brandId')) || -1;
   const _orderBy = searchParams.get('orderBy');
 
   const productStore = useProductStore();
@@ -112,20 +112,24 @@ const ProductListPage = () => {
   }, [_brandId])
 
   const getData = (params: any) => {
-    ProductService.getProductList(params).then((res: any) => {
-      if (res.data) {
-        const _data = res.data;
-        const param = {
-          ...productStore.param,
-          pageIndex: _data.currentPage,
-          totalPage: _data.totalPage,
-          currentRecord: _data.currentRecord,
-          totalRecord: _data.totalRecord,
+    if (_pageIndex > 0 && _brandId > -1) {
+      ProductService.getProductList(params).then((res: any) => {
+        if (res.data) {
+          const _data = res.data;
+          const param = {
+            ...productStore.param,
+            pageIndex: _data.currentPage,
+            totalPage: _data.totalPage,
+            currentRecord: _data.currentRecord,
+            totalRecord: _data.totalRecord,
+          }
+          dispatch(setParam(param));
+          dispatch(setProductList(_data.items));
         }
-        dispatch(setParam(param));
-        dispatch(setProductList(_data.items));
-      }
-    });
+      }).catch((error: any) => {
+        console.log(error);
+      });
+    }
   }
 
   const getSubCategories = (brandId: number) => {
@@ -144,7 +148,7 @@ const ProductListPage = () => {
       <div className="content__wrapper products__content-wrapper">
         <div className="content__inner w-full">
           <WebDirectional items={[
-            { name: 'Bear', path: '/brand/bear' }
+            { name: productStore.productList.length > 0 ? productStore.productList[0].brandName : '', path: `?pageIndex=${_pageIndex}&brandId=${_brandId}` }
           ]} />
           <div className="products__content flex justify-center">
             <div className="hidden md:block">
@@ -160,7 +164,7 @@ const ProductListPage = () => {
                 {productStore.productList.length > 0 ? (<>
                   <p className="product__grid-title text-center">Tất cả sản phẩm</p>
                   <div className="product__grid-inner w-full flex flex-wrap">
-                    {productStore.productList.map((product) => (
+                    {productStore.productList.map((product: any) => (
                       <ProductItem key={product.id} grid={3} data={product} />
                     ))}
                   </div>
