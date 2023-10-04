@@ -5,31 +5,34 @@ import MuiIcon from "src/_shares/_components/mui-icon/mui-icon.component";
 
 const ProlCategory = () => {
   const productStore = useProductStore();
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isFeatherIconChanged, setFeatherIconChanged] = useState(false);
+  const [expandedKey, setExpandedKey] = useState('');
 
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-    setFeatherIconChanged(!isFeatherIconChanged);
+
+  const toggleExpand = (_key: string) => {
+    if (_key === expandedKey) {
+      setExpandedKey('');
+    } else {
+      setExpandedKey(_key);
+    }
   };
   return (
     <div className="products__menu">
       <div className="product__filter">
         {productStore.subCategories.length > 0 && productStore.subCategories.map((sub: ISubCategory) => (
           <div key={`sub-${sub.id}`} className="filter__block">
-            <h3 className="filter__title" onClick={toggleExpand}>
+            <h3 className="filter__title" onClick={() => toggleExpand(`sub-${sub.id}`)}>
               {sub.name}
               <MuiIcon
                 name="CHEVRON_RIGHT"
-                className={`feather feather-chevron-right ${isFeatherIconChanged ? "svg-right" : ""
-                  }`}
+                className={`feather feather-chevron-right ${expandedKey === `sub-${sub.id}`
+                  ? "svg-right" : ""}`}
               />
             </h3>
             {sub.optionList && sub.optionList.length > 0 && (
               <ul
                 className="filter__list filter--scrollbar"
                 style={{
-                  maxHeight: isExpanded
+                  maxHeight: expandedKey === `sub-${sub.id}`
                     ? "calc(185px + 125 * ((100vw - 375px) / 1545))"
                     : "0px",
                 }}
@@ -45,12 +48,12 @@ const ProlCategory = () => {
                           <li key={`option-value-${_value.id}`} className="filter__sub-item">
                             <div className="checkbox flex items-center">
                               <input
-                                id="sub00"
+                                id={`option-value-${_value.id}`}
                                 className="checkboxFilter"
                                 type="checkbox"
                               />
                               <label
-                                htmlFor="sub00"
+                                htmlFor={`option-value-${_value.id}`}
                                 className="flex items-center mb-0"
                               >
                                 <div className="sub-item-cate">{_value.name}</div>

@@ -1,4 +1,5 @@
 import { IBrand, ICategory, ISubCategory } from "./inventory.interface";
+import { IProduct } from "./product.interface";
 
 export interface IAction {
   type: string;
@@ -30,6 +31,7 @@ export interface IHomeInitState {
 }
 
 export interface IProductInitState { 
+  productDetail: IProduct | undefined,
   productList: any[]
   param: {
     brandId: number,

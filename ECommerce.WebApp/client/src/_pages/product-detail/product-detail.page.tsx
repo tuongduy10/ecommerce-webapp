@@ -5,29 +5,50 @@ import ProductDetailInfo from "./_components/layout/prod-info";
 
 import ProductDetailRealImages from "./_components/slide/prod-real-images";
 import ProductDetailSlide from "./_components/slide/prod-slide";
+import { useEffect } from "react";
+import { useProductStore } from "src/_cores/_store/root-store";
+import { useDispatch } from "react-redux";
+import ProductService from "src/_cores/_services/product.service";
+import { setProductDetail } from "src/_cores/_reducers/product.reducer";
 
 const ProductDetailPage = () => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const _id = Number(searchParams.get('id')) || -1;
+
+  const productStore = useProductStore();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getProductDetail();
+  }, [_id]);
+
+  const getProductDetail = () => {
+    if (_id > -1) {
+      ProductService.getProductDetail(_id).then((res) => {
+        if (res.data) {
+          dispatch(setProductDetail(res.data));
+        }
+      }).catch((error) => {
+        console.log(error);
+      });
+    }
+  }
+
   return (
     <div className="custom-container">
       <div className="content__wrapper products__content-wrapper">
         <div className="content__inner w-full pb-0">
           <WebDirectional
             items={[
-              {
-                path: "/product-list",
-                name: "Tên nhãn hàng",
-              },
-              {
-                path: "/product-detail",
-                name: "Tên sản phẩm",
-              },
+              { name: 'Bear', path: `?pageIndex=${1}&brandId=${66}` },
+              { name: 'Máy xay ăn dặm', path: `?id=${_id}` },
             ]}
           />
 
           <div className="product__detail-content mt-4">
             <div className="md:flex gap-custom">
               <div className="product__detail-image md:w-5/12">
-                {<ProductDetailSlide />}
+                <ProductDetailSlide />
               </div>
               <div className="product__detail-info md:mt-0 md:w-7/12">
                 <ProductDetailInfo />

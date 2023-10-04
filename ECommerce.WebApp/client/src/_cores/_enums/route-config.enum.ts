@@ -4,6 +4,10 @@ export const ROUTE_NAME = {
     LOGIN: ROUTE_PREFIX + '/login',
     PRODUCT_LIST: ROUTE_PREFIX + '/product-list',
     PRODUCT_DETAIL: ROUTE_PREFIX + '/product-detail',
+    EXAMPLE: ROUTE_PREFIX + '/example',
+    USER_PROFILE: ROUTE_PREFIX + '/user-profile',
+    CART: ROUTE_PREFIX + '/cart',
+    BLOG: ROUTE_PREFIX + '/blog',
 }
 
 export const ADMIN_ROUTE_PREFIX = '/v2/admin';
