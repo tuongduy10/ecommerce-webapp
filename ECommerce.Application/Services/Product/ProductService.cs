@@ -1,6 +1,7 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Enums;
 using ECommerce.Application.Repositories;
+using ECommerce.Application.Services.Inventory;
 using ECommerce.Application.Services.Inventory.Dtos;
 using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Data.Context;
@@ -32,9 +33,11 @@ namespace ECommerce.Application.Services.Product
         private readonly IRepositoryBase<ProductAttribute> _productAttributeRepo;
         private readonly IRepositoryBase<Rate> _rateRepo;
         private readonly IRepositoryBase<Discount> _discountRepo;
-        public ProductService(ECommerceContext DbContext)
+        private readonly IInventoryService _inventoryService;
+        public ProductService(ECommerceContext DbContext, IInventoryService inventoryService)
         {
             _DbContext = DbContext;
+            _inventoryService = inventoryService;
             if (_productRepo == null)
                 _productRepo = new RepositoryBase<Data.Models.Product>(_DbContext);
             if (_brandCategoryRepo == null)
@@ -68,6 +71,8 @@ namespace ECommerce.Application.Services.Product
         {
             try
             {
+                var options = await _inventoryService.getProductOption(id);
+                
                 var attr = await _productAttributeRepo
                     .Entity()
                     .Where(i => i.ProductId == id)
@@ -130,6 +135,7 @@ namespace ECommerce.Application.Services.Product
                             name = i.Shop.ShopName,
                         },
                         attributes = attr,
+                        options = options.Data,
                         importDate = i.ProductImportDate,
 
                         priceAvailable = i.PriceAvailable,
