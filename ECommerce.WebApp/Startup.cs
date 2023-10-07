@@ -42,6 +42,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using ECommerce.WebApp.Configs.AppSettings;
+using ECommerce.Application.Services.Inventory;
 
 namespace ECommerce.WebApp
 {
@@ -121,6 +122,7 @@ namespace ECommerce.WebApp
             // Services
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IInventoryService, InventoryService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IChatService, ChatService>();
