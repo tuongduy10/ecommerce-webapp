@@ -45,10 +45,10 @@ namespace ECommerce.WebApp.Controllers
             _manageFiles = new ManageFiles(webHostEnvironment);
         }
         [AllowAnonymous]
-        [HttpGet("get-sub-categories")]
-        public async Task<IActionResult> getSubCategories(int brandId = 0)
+        [HttpGet("get-sub-categories/{id}")]
+        public async Task<IActionResult> getSubCategories(int id)
         {
-            var res = await _inventoryService.getSubCategories(brandId);
+            var res = await _inventoryService.getSubCategories(id);
             if (!res.isSucceed) 
                 return BadRequest(res);
             return Ok(res);
@@ -64,12 +64,21 @@ namespace ECommerce.WebApp.Controllers
             return Ok();
         }
         [AllowAnonymous]
-        [HttpGet("product-option")]
-        public async Task<IActionResult> getProductOption(int productId = -1)
+        [HttpGet("product-options/{id}")]
+        public async Task<IActionResult> getProductOptions(int id)
         {
-            var result = await _inventoryService.getProductOption(productId);
+            var result = await _inventoryService.getProductOptions(id);
             if (!result.isSucceed)
-                return BadRequest(result.Message);
+                return BadRequest(result);
+            return Ok(result);
+        }
+        [AllowAnonymous]
+        [HttpGet("product-attributes/{id}")]
+        public async Task<IActionResult> getProductAttributes(int id)
+        {
+            var result = await _inventoryService.getProductAttributes(id);
+            if (!result.isSucceed)
+                return BadRequest(result);
             return Ok(result);
         }
     }

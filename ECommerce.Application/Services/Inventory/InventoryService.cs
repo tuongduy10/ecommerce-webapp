@@ -24,6 +24,8 @@ namespace ECommerce.Application.Services.Inventory
         private readonly IRepositoryBase<SubCategory> _subCategoryRepo;
         private readonly IRepositoryBase<SubCategoryOption> _subCategoryOptionRepo;
         private readonly IRepositoryBase<ProductOptionValue> _productOptionValuesRepo;
+        private readonly IRepositoryBase<ProductAttribute> _productAttributeRepo;
+        private readonly IRepositoryBase<SizeGuide> _sizeGuideRepo;
         public InventoryService(ECommerceContext DbContext)
         {
             _DbContext = DbContext;
@@ -41,6 +43,10 @@ namespace ECommerce.Application.Services.Inventory
                 _subCategoryOptionRepo = new RepositoryBase<SubCategoryOption>(_DbContext);
             if (_productOptionValuesRepo == null)
                 _productOptionValuesRepo = new RepositoryBase<ProductOptionValue>(_DbContext);
+            if (_productAttributeRepo == null)
+                _productAttributeRepo = new RepositoryBase<ProductAttribute>(_DbContext);
+            if (_sizeGuideRepo == null)
+                _sizeGuideRepo = new RepositoryBase<SizeGuide>(_DbContext);
         }
         public async Task<Response<BrandModel>> getBrand(int brandId = 0) 
         {
@@ -74,8 +80,8 @@ namespace ECommerce.Application.Services.Inventory
         {
             try
             {
-                var list = await _subCategoryRepo.Query()
-                    .Where(subc => _brandCategoryRepo
+                var list = await _subCategoryRepo.Entity()
+                    .Where(subc => _brandCategoryRepo.Entity()
                         .Any(brand => subc.CategoryId == brand.CategoryId && brand.BrandId == brandId))
                     .Select(subc => new SubCategoryModel
                     {
@@ -84,26 +90,24 @@ namespace ECommerce.Application.Services.Inventory
                         categoryId = subc.CategoryId,
                         optionList = _subCategoryOptionRepo.Entity()
                             .Where(subcopt => subcopt.SubCategoryId == subc.SubCategoryId)
-                            .SelectMany(subcopt => _optionRepo.Entity()
-                                .Where(option => option.OptionId == subcopt.OptionId)
-                                .Select(lo => new OptionModel
-                                {
-                                    id = lo.OptionId,
-                                    name = lo.OptionName,
-                                    values = _optionValueRepo.Entity()
-                                        .Where(optionvalue => optionvalue.OptionId == lo.OptionId)
-                                        .Select(lop => new OptionValueModel
-                                        {
-                                            id = lop.OptionValueId,
-                                            name = lop.OptionValueName,
-                                            totalRecord = _productOptionValuesRepo.Entity()
-                                                .Where(ov => ov.OptionValueId == lop.OptionValueId &&
-                                                             ov.Product.SubCategoryId == subc.SubCategoryId)
-                                                .Select(ov => ov.ProductId)
-                                                .Count(),
-                                        })
-                                        .ToList(),
-                                }))
+                            .Select(lo => new OptionModel
+                            {
+                                id = lo.OptionId,
+                                name = lo.Option.OptionName,
+                                values = _optionValueRepo.Entity()
+                                    .Where(optionvalue => optionvalue.OptionId == lo.OptionId)
+                                    .Select(lop => new OptionValueModel
+                                    {
+                                        id = lop.OptionValueId,
+                                        name = lop.OptionValueName,
+                                        totalRecord = _productOptionValuesRepo.Entity()
+                                            .Where(ov => ov.OptionValueId == lop.OptionValueId &&
+                                                            ov.Product.SubCategoryId == subc.SubCategoryId)
+                                            .Select(ov => ov.ProductId)
+                                            .Count(),
+                                    })
+                                    .ToList()
+                            })
                             .ToList(),
                     })
                     .ToListAsync();
@@ -115,7 +119,7 @@ namespace ECommerce.Application.Services.Inventory
                 return new FailResponse<List<SubCategoryModel>>(error.Message);
             }
         }
-        public async Task<Response<List<OptionModel>>> getProductOption(int productId)
+        public async Task<Response<List<OptionModel>>> getProductOptions(int productId)
         {
             try
             {
@@ -143,6 +147,55 @@ namespace ECommerce.Application.Services.Inventory
             catch (Exception error)
             {
                 return new FailResponse<List<OptionModel>>(error.Message);
+            }
+        }
+        public async Task<Response<List<AttributeModel>>> getProductAttributes(int productId)
+        {
+            try
+            {
+                var attributes = await _productAttributeRepo.Entity()
+                    .Where(i => i.ProductId == productId)
+                    .Select(i => new AttributeModel
+                    {
+                        id = i.AttributeId,
+                        value = i.Value,
+                        name = i.Attribute != null
+                            ? i.Attribute.AttributeName
+                            : "",
+                    })
+                    .ToListAsync();
+                return new SuccessResponse<List<AttributeModel>>(attributes);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<List<AttributeModel>>(error.Message);
+            }
+        } 
+        public async Task<Response<List<SizeGuideModel>>> getProductSizeGuides()
+        {
+            try
+            {
+                var list = await _sizeGuideRepo.Entity()
+                    .Select(i => new SizeGuideModel
+                    {
+                        id = i.SizeGuideId,
+                        content = i.SizeContent,
+                        isBase = (bool)i.IsBaseSizeGuide,
+                        subCategories = i.SubCategories
+                            .Where(sc => sc.SizeGuideId == i.SizeGuideId)
+                            .Select(sc => new SubCategoryModel
+                            {
+                                id = sc.SubCategoryId,
+                                name = sc.SubCategoryName
+                            })
+                            .ToList()
+                    })
+                    .ToListAsync();
+                return new SuccessResponse<List<SizeGuideModel>>();
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<List<SizeGuideModel>>(error.Message);
             }
         }
     }
