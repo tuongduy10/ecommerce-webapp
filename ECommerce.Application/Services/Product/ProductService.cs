@@ -71,22 +71,8 @@ namespace ECommerce.Application.Services.Product
         {
             try
             {
-                var options = await _inventoryService.getProductOption(id);
-                
-                var attr = await _productAttributeRepo
-                    .Entity()
+                var rates = _rateRepo.Entity()
                     .Where(i => i.ProductId == id)
-                    .Select(i => new AttributeModel
-                    {
-                        id = i.AttributeId,
-                        value = i.Value,
-                        name = i.Attribute.AttributeName,
-                    })
-                    .ToListAsync();
-
-                var rates = await _rateRepo
-                    .Entity()
-                    .Where(i => i.ProductId == id && i.RateValue != 0)
                     .Select(i => new RateModel
                     {
                         id = i.RateId,
@@ -102,7 +88,7 @@ namespace ECommerce.Application.Services.Product
                         userRepliedId = i.UserRepliedId,
                         createDate = i.CreateDate,
                     })
-                    .ToListAsync();
+                    .ToList();
 
                 var product = await _productRepo
                     .Entity()
@@ -134,8 +120,33 @@ namespace ECommerce.Application.Services.Product
                             id = i.ShopId,
                             name = i.Shop.ShopName,
                         },
-                        attributes = attr,
-                        options = options.Data,
+                        attributes = _productAttributeRepo.Entity()
+                            .Where(i => i.ProductId == id)
+                            .Select(i => new AttributeModel
+                            {
+                                id = i.AttributeId,
+                                value = i.Value,
+                                name = i.Attribute.AttributeName,
+                            })
+                            .ToList(),
+                        options = _optionRepo.Entity()
+                            .Where(opt => _productOptionValueRepo.Entity()
+                                .Any(pov => pov.ProductId == id && pov.OptionValue.OptionId == opt.OptionId))
+                            .Select(opt => new OptionModel
+                            {
+                                id = opt.OptionId,
+                                name = opt.OptionName,
+                                values = _productOptionValueRepo.Entity()
+                                    .Where(pov =>
+                                        pov.ProductId == id && pov.OptionValue.OptionId == opt.OptionId)
+                                    .Select(pov => new OptionValueModel
+                                    {
+                                        id = pov.OptionValue.OptionValueId,
+                                        name = pov.OptionValue.OptionValueName,
+                                    })
+                                    .ToList()
+                            })
+                            .ToList(),
                         importDate = i.ProductImportDate,
 
                         priceAvailable = i.PriceAvailable,
@@ -154,8 +165,8 @@ namespace ECommerce.Application.Services.Product
 
                         review = new ReviewModel
                         {
-                            avgValue = (int)Math.Round((double)(rates.Sum(i => i.value) / rates.Count)),
-                            totalRating = rates.Count(),
+                            avgValue = rates.Count() > 0 ? (int)Math.Round((double)(rates.Sum(i => i.value) / rates.Count)) : 0,
+                            totalRating = rates.Count() > 0 ? rates.Count() : 0,
                             rates = rates
                         }
                     })

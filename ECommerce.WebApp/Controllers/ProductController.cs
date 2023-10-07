@@ -41,12 +41,12 @@ namespace ECommerce.WebApp.Controllers
             return Ok(res);
         }
         [AllowAnonymous]
-        [HttpGet("product-detail")]
-        public async Task<IActionResult> getProductDetail(int id = -1)
+        [HttpGet("product-detail/{id}")]
+        public async Task<IActionResult> getProductDetail(int id)
         {
             var result = await _productService.getProductDetail(id);
             if (!result.isSucceed)
-                return BadRequest(result.Message);
+                return BadRequest(result);
             return Ok(result);
         }
         [AllowAnonymous]
@@ -55,7 +55,7 @@ namespace ECommerce.WebApp.Controllers
         {
             var result = await _commentService.getRates(request);
             if (!result.isSucceed)
-                return BadRequest(result.Message);
+                return BadRequest(result);
             return Ok(result);
         }
         [AllowAnonymous]
