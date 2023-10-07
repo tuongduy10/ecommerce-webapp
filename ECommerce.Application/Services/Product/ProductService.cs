@@ -192,11 +192,11 @@ namespace ECommerce.Application.Services.Product
                 string orderBy = request.orderBy;
                 List<int> listOptionValueId = request.optionValueIds;
 
-                var proIdsByOption = await _productOptionValueRepo.Entity()
+                var proIdsByOption = _productOptionValueRepo.Entity()
                     .Where(i => listOptionValueId != null && listOptionValueId.Contains(i.OptionValueId))
                     .Select(i => i.ProductId)
                     .Distinct()
-                    .ToListAsync();
+                    .ToList();
 
                 var query = _productRepo.Entity()
                     .Join(_brandRepo.Entity(),
@@ -212,11 +212,7 @@ namespace ECommerce.Application.Services.Product
                         combined.product.Status == (int)ProductStatusEnum.Available)
                     .Select(combined => new { combined.product, combined.brand, combined.shop })
                     .Where(q =>
-                        (listOptionValueId != null && _productOptionValueRepo.Entity()
-                            .Where(i => listOptionValueId.Contains(i.OptionValueId))
-                            .Select(i => i.ProductId)
-                            .Distinct()
-                            .ToList().Contains(q.product.ProductId)) ||
+                        (proIdsByOption != null && proIdsByOption.Contains(q.product.ProductId)) ||
                         (brandId > -1 && q.product.BrandId == brandId) ||
                         (subCategoryId > -1 && q.product.SubCategoryId == subCategoryId) ||
                         (orderBy == "newest" ? q.product.New == true : q.product.New == false) ||
