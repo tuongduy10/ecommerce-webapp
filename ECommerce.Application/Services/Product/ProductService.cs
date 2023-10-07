@@ -89,9 +89,49 @@ namespace ECommerce.Application.Services.Product
                         createDate = i.CreateDate,
                     })
                     .ToList();
+                var options = _optionRepo.Entity()
+                    .Where(opt => _productOptionValueRepo.Entity()
+                        .Any(pov => pov.ProductId == id && pov.OptionValue.OptionId == opt.OptionId))
+                    .Select(opt => new OptionModel
+                    {
+                        id = opt.OptionId,
+                        name = opt.OptionName,
+                        values = _productOptionValueRepo.Entity()
+                            .Where(pov =>
+                                pov.ProductId == id && pov.OptionValue.OptionId == opt.OptionId)
+                            .Select(pov => new OptionValueModel
+                            {
+                                id = pov.OptionValue.OptionValueId,
+                                name = pov.OptionValue.OptionValueName,
+                            })
+                            .ToList()
+                    })
+                    .ToList();
+                var attributes = _productAttributeRepo.Entity()
+                    .Where(i => i.ProductId == id)
+                    .Select(i => new AttributeModel
+                    {
+                        id = i.AttributeId,
+                        value = i.Value,
+                        name = i.Attribute.AttributeName,
+                    })
+                    .ToList();
+                var imagePaths = _productImageRepo.Entity()
+                    .Where(img => img.ProductId == id)
+                    .Select(i => i.ProductImagePath)
+                    .ToList();
+                var userImagePaths = _productUserImageRepo.Entity()
+                    .Where(img => img.ProductId == id)
+                    .Select(i => i.ProductUserImagePath)
+                    .ToList();
+                var review = new ReviewModel
+                {
+                    avgValue = rates.Count() > 0 ? (int)Math.Round((double)(rates.Sum(i => i.value) / rates.Count)) : 0,
+                    totalRating = rates.Count() > 0 ? rates.Count() : 0,
+                    rates = rates
+                };
 
-                var product = await _productRepo
-                    .Entity()
+                var product = await _productRepo.Entity()
                     .Where(i => i.ProductId == id)
                     .Select(i => new ProductModel
                     {
@@ -120,33 +160,8 @@ namespace ECommerce.Application.Services.Product
                             id = i.ShopId,
                             name = i.Shop.ShopName,
                         },
-                        attributes = _productAttributeRepo.Entity()
-                            .Where(i => i.ProductId == id)
-                            .Select(i => new AttributeModel
-                            {
-                                id = i.AttributeId,
-                                value = i.Value,
-                                name = i.Attribute.AttributeName,
-                            })
-                            .ToList(),
-                        options = _optionRepo.Entity()
-                            .Where(opt => _productOptionValueRepo.Entity()
-                                .Any(pov => pov.ProductId == id && pov.OptionValue.OptionId == opt.OptionId))
-                            .Select(opt => new OptionModel
-                            {
-                                id = opt.OptionId,
-                                name = opt.OptionName,
-                                values = _productOptionValueRepo.Entity()
-                                    .Where(pov =>
-                                        pov.ProductId == id && pov.OptionValue.OptionId == opt.OptionId)
-                                    .Select(pov => new OptionValueModel
-                                    {
-                                        id = pov.OptionValue.OptionValueId,
-                                        name = pov.OptionValue.OptionValueName,
-                                    })
-                                    .ToList()
-                            })
-                            .ToList(),
+                        attributes = attributes,
+                        options = options,
                         importDate = i.ProductImportDate,
 
                         priceAvailable = i.PriceAvailable,
@@ -154,21 +169,10 @@ namespace ECommerce.Application.Services.Product
                         discountAvailable = i.DiscountAvailable,
                         discountPreOrder = i.DiscountPreOrder,
 
-                        imagePaths = _productImageRepo.Entity()
-                            .Where(img => img.ProductId == i.ProductId)
-                            .Select(i => i.ProductImagePath)
-                            .ToList(),
-                        userImagePaths = _productImageRepo.Entity()
-                            .Where(img => img.ProductId == i.ProductId)
-                            .Select(i => i.ProductImagePath)
-                            .ToList(),
+                        imagePaths = imagePaths,
+                        userImagePaths = userImagePaths,
 
-                        review = new ReviewModel
-                        {
-                            avgValue = rates.Count() > 0 ? (int)Math.Round((double)(rates.Sum(i => i.value) / rates.Count)) : 0,
-                            totalRating = rates.Count() > 0 ? rates.Count() : 0,
-                            rates = rates
-                        }
+                        review = review
                     })
                     .FirstOrDefaultAsync();
 
