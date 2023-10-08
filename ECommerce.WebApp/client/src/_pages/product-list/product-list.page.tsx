@@ -7,93 +7,15 @@ import { useProductStore } from "src/_cores/_store/root-store";
 import { useDispatch } from "react-redux";
 import { setParam, setProductList, setSubCategories } from "src/_cores/_reducers/product.reducer";
 import InventoryService from "src/_cores/_services/inventory.service";
-
-const dummData = [
-  {
-    id: 1,
-    name: "Máy xay sinh tố",
-    categoryId: 1,
-    optionList: [
-      {
-        id: 11,
-        name: "Màu sắc",
-        values: [
-          {
-            id: 111,
-            name: "Trắng",
-            totalRecord: 100 // total product record
-          },
-          {
-            id: 112,
-            name: "Đen",
-            totalRecord: 100 // total product record
-          }
-        ]
-      },
-      {
-        id: 12,
-        name: "Kích thước",
-        values: [
-          {
-            id: 121,
-            name: "100mm",
-            totalRecord: 100 // total product record
-          },
-          {
-            id: 122,
-            name: "110mm",
-            totalRecord: 100 // total product record
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 2,
-    name: "Máy pha cà phê",
-    categoryId: 2,
-    optionList: [
-      {
-        id: 21,
-        name: "Màu sắc",
-        values: [
-          {
-            id: 211,
-            name: "Đen",
-            totalRecord: 100 // total product record
-          },
-          {
-            id: 212,
-            name: "Trắng",
-            totalRecord: 100 // total product record
-          },
-        ]
-      },
-      {
-        id: 22,
-        name: "Kích thước",
-        values: [
-          {
-            id: 221,
-            name: "120mm",
-            totalRecord: 100 // total product record
-          },
-          {
-            id: 222,
-            name: "130mm",
-            totalRecord: 100 // total product record
-          }
-        ]
-      }
-    ]
-  }
-];
+import { IOption, IOptionValue, ISubCategory } from "src/_cores/_interfaces/inventory.interface";
 
 const ProductListPage = () => {
   const searchParams = new URLSearchParams(window.location.search);
   const _pageIndex = Number(searchParams.get('pageIndex'));
   const _brandId = Number(searchParams.get('brandId')) || -1;
   const _orderBy = searchParams.get('orderBy');
+  const _subCategoryId = Number(searchParams.get('subCategoryId')) || -1;
+  const _optionValueIds = searchParams.get('optionValueIds');
 
   const productStore = useProductStore();
   const dispatch = useDispatch();
@@ -103,10 +25,12 @@ const ProductListPage = () => {
       pageIndex: _pageIndex,
       brandId: _brandId,
       orderBy: _orderBy ?? '',
+      subCategoryId: _subCategoryId,
+      optionValueIds: _optionValueIds ? _optionValueIds.split(',').map(id => Number(id)) : [],
     }
     getData(params);
-  }, [_pageIndex, _orderBy]);
-  
+  }, [_pageIndex, _orderBy, _optionValueIds]);
+
   useEffect(() => {
     getSubCategories(_brandId);
   }, [_brandId])
@@ -135,11 +59,17 @@ const ProductListPage = () => {
   const getSubCategories = (brandId: number) => {
     InventoryService.getSubCategories(brandId).then((res: any) => {
       if (res.data) {
-        
+        const list = res.data.map((item: ISubCategory) => {
+          item.optionList?.forEach((option: IOption) => {
+            option.values = option.values?.filter((value: IOptionValue) => (value.totalRecord ?? 0) > 0);
+          });
+          item.optionList = item.optionList?.filter((option: IOption) => (option.values?.length ?? 0) > 0);
+          return item;
+        });
+        dispatch(setSubCategories(list));
       }
     }).catch(error => {
       console.log(error);
-      dispatch(setSubCategories(dummData))
     });
   }
 
