@@ -48,7 +48,7 @@ const ProductDetailInfo = () => {
                   />
                 ))}
               </div>
-              <u style={{ cursor: "pointer" }}>0 Đánh giá</u>
+              <u style={{ cursor: "pointer" }}>{productDetail.review.totalRating} Đánh giá</u>
             </button>
           </div>
           <div className="flex mb-4">

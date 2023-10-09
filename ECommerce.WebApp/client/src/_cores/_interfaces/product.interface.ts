@@ -1,3 +1,19 @@
+export interface IComment {
+  id: number;
+  value: number;
+  comment: string;
+  productId: number;
+  createDate: any;
+  repliedId: number | null;
+  parentId: number | null;
+  htmlPosition: string | null;
+  userId: number;
+  userRepliedId: number | null;
+  idsToDelete: string;
+  replies: any[];
+  [key: string]: any;
+}
+
 export interface IProduct {
   id: number;
   code: string;
@@ -46,19 +62,6 @@ export interface IProduct {
   review: {
     avgValue: number;
     totalRating: number;
-    rates: {
-      id: number;
-      value: number; // 1 - 5
-      comment: string;
-      htmlPosition: string;
-      repliedId: number;
-      parentId: number;
-      productId: number;
-      idsToDelete: string;
-
-      userId: number;
-      userRepliedId: number;
-      createDate: number;
-    }[];
+    rates: IComment[];
   };
 }

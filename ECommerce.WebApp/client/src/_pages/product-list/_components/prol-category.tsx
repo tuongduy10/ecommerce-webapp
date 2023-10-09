@@ -1,18 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { IOption, IOptionValue, ISubCategory } from "src/_cores/_interfaces/inventory.interface";
+import { setParam } from "src/_cores/_reducers/product.reducer";
 import { useProductStore } from "src/_cores/_store/root-store";
 import MuiIcon from "src/_shares/_components/mui-icon/mui-icon.component";
 
 const ProlCategory = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const updatedSearchParams = new URLSearchParams(searchParams.toString());
-
-  const [subCategoryId, setSubCategoryId] = useState<Number>(-1);
-  const [optionValueIds, setOptionValueIds] = useState<Number[]>([]);
-
+  
   const productStore = useProductStore();
+  const dispatch = useDispatch();
+
+  const [optionValueIds, setOptionValueIds] = useState<Number[]>([]);
   const [expandedKey, setExpandedKey] = useState('');
+
+  useEffect(() => {
+    const subCategoryId = searchParams.get('subCategoryId');
+    const optionValueIds = searchParams.get('optionValueIds');
+    
+    setExpandedKey(`sub-${subCategoryId}`);
+    setOptionValueIds(optionValueIds ? optionValueIds.split(',').map(id => Number(id)) : []);
+  }, []);
 
   const toggleExpand = (_id: number) => {
     const _key = `sub-${_id}`;
@@ -24,6 +34,13 @@ const ProlCategory = () => {
       setOptionValueIds([]);
       updatedSearchParams.set('subCategoryId', `${_id}`);
     }
+    updatedSearchParams.set('optionValueIds', '');
+    const param = {
+      ...productStore.param,
+      subCategoryId: _id,
+      optionValueIds: []
+    }
+    dispatch(setParam(param));
     setSearchParams(updatedSearchParams);
   };
 
@@ -31,14 +48,27 @@ const ProlCategory = () => {
     const currentIds = optionValueIds;
     if (!currentIds.includes(id)) {
       const ids = currentIds.concat(id);
+      const params = ids.join(',');
+      updatedSearchParams.set('optionValueIds', params);
+      setSearchParams(updatedSearchParams);
       setOptionValueIds(ids);
+      const param = {
+        ...productStore.param,
+        optionValueIds: ids,
+      }
+      dispatch(setParam(param));
     } else {
       const ids = currentIds.filter(_id => _id !== id);
+      const params = ids.join(',');
+      updatedSearchParams.set('optionValueIds', params);
+      setSearchParams(updatedSearchParams);
       setOptionValueIds(ids);
+      const param = {
+        ...productStore.param,
+        optionValueIds: ids,
+      }
+      dispatch(setParam(param));
     }
-    const value = optionValueIds.join(',');
-    updatedSearchParams.set('optionValueIds', value);
-    setSearchParams(updatedSearchParams);
   }
 
   return (

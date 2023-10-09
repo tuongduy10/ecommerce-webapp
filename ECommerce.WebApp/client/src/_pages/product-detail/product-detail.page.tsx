@@ -41,7 +41,7 @@ const ProductDetailPage = () => {
           <WebDirectional
             items={[
               { name: 'Bear', path: `?pageIndex=${1}&brandId=${66}` },
-              { name: 'Máy xay ăn dặm', path: `?id=${_id}` },
+              { name: productStore.productDetail?.name ?? '', path: `?id=${_id}` },
             ]}
           />
 

@@ -28,6 +28,8 @@ export interface IHomeInitState {
   highLightBrands: IBrand[];
   brands: IBrand[];
   categories: ICategory[];
+  selectedBrand: IBrand | null;
+  [key: string]: any;
 }
 
 export interface IProductInitState { 
@@ -36,6 +38,8 @@ export interface IProductInitState {
   param: {
     brandId: number,
     orderBy?: "asc" | "desc" | "newest" | "discount" | "",
+    subCategoryId: number,
+    optionValueIds: number[],
 
     // pagination
     pageIndex: number,
@@ -44,4 +48,5 @@ export interface IProductInitState {
     totalRecord: number
   },
   subCategories: ISubCategory[];
+  [key: string]: any;
 }
