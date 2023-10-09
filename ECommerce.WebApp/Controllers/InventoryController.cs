@@ -54,11 +54,10 @@ namespace ECommerce.WebApp.Controllers
             return Ok(res);
         }
         [AllowAnonymous]
-        [HttpGet("get-brand")]
-        public async Task<IActionResult> getBrand(int brandId = 0)
+        [HttpGet("get-brand/{id}")]
+        public async Task<IActionResult> getBrand(int id)
         {
-            var res = await _inventoryService.getBrand(brandId);
-
+            var res = await _inventoryService.getBrand(id);
             if (!res.isSucceed)
                 return BadRequest(res);
             return Ok();
