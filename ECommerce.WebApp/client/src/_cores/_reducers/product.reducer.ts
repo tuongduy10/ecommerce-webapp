@@ -9,8 +9,11 @@ const initialState: IProductInitState = {
   productDetail: undefined,
   productList: [],
   param: {
-    brandId: 0,
+    brandId: -1,
     orderBy: "",
+    subCategoryId: -1,
+    optionValueIds: [],
+
     pageIndex: 0,
     totalPage: 0,
     currentRecord: 0,

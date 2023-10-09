@@ -2,6 +2,8 @@
 import { useState } from "react";
 import MuiIcon from "../mui-icon/mui-icon.component";
 import { ENV } from "src/_configs/enviroment.config";
+import { ROUTE_NAME } from "src/_cores/_enums/route-config.enum";
+import { useNavigate } from "react-router-dom";
 
 interface IProductItemProps {
   grid: 3 | 4,
@@ -9,6 +11,7 @@ interface IProductItemProps {
 }
 
 const ProductItem = (props: IProductItemProps) => {
+  const navigate = useNavigate();
   const [isFillHeart, setFillHeart] = useState(false);
   const product = props.data;
 
@@ -18,6 +21,13 @@ const ProductItem = (props: IProductItemProps) => {
 
   const getFormatedPrice = (price: number) => {
     return price ? price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : '';
+  }
+
+  const goToDetail = () => {
+    navigate({
+      pathname: ROUTE_NAME.PRODUCT_DETAIL,
+      search: `?id=${product.id}`
+  });
   }
 
   return (
@@ -38,7 +48,7 @@ const ProductItem = (props: IProductItemProps) => {
           />
         </a>
       </div>
-      <div className="product-img cursor-pointer sm:mt-6">
+      <div className="product-img cursor-pointer sm:mt-6" onClick={goToDetail}>
         <img src={`${ENV.IMAGE_URL}/products/${product.image}`} alt="" />
       </div>
       <hr
@@ -63,7 +73,7 @@ const ProductItem = (props: IProductItemProps) => {
           </div>
           <div className="product-price">{getFormatedPrice(product.price)}</div>
           <div className="product-btn">
-            <a href="/">Xem nhanh</a>
+            <button onClick={goToDetail}>Xem nhanh</button>
           </div>
         </div>
       </div>

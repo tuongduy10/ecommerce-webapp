@@ -2,15 +2,45 @@
 import { useEffect, useState } from "react";
 import { MuiIcon } from "src/_shares/_components";
 import ImageCommentDialog from "src/_pages/product-detail/_components/dialog/prod-img-comment";
-import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
 import UserComment from "./user-comment";
 import DetailInfo from "./detail-info";
 import CustomIcon from "src/_shares/_components/mui-icon/_custom/mui-icon.custom";
+import { useProductStore } from "src/_cores/_store/root-store";
+import { IComment } from "src/_cores/_interfaces/product.interface";
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 const ProductDetailTab = () => {
+  const productStore = useProductStore();
+  const productDetail = productStore.productDetail;
   const [activeTab, setActiveTab] = useState(0);
   const [openDialog, setOpenDialog] = useState(false);
+
+  const [comments, setComments] = useState<IComment[]>([]);
+
+  const convertToNestedStructure = () => {
+    const baseRates = productDetail?.review?.rates?.map((item: IComment) => {
+      return { ...item, replies: [] }
+    }) || [];
+    const result: IComment[] = [];
+
+    // Create a map to efficiently find rates by ID
+    const rateMap = new Map<number, IComment>();
+    baseRates.forEach((rate: IComment) => {
+      rate['replies'] = [];
+      rateMap.set(rate.id, rate);
+    });
+
+    // Build the nested structure
+    baseRates.forEach((rate: any) => {
+      const repliedId = rate.repliedId;
+      if (repliedId !== null && rateMap.has(repliedId)) {
+        rateMap.get(repliedId)?.replies.push(rate);
+      } else {
+        result.push(rate);
+      }
+    });
+    setComments(result || []);
+  }
 
   const handleClickCloseDialog = () => {
     setOpenDialog(false);
@@ -24,6 +54,7 @@ const ProductDetailTab = () => {
       } else {
         tab.classList.remove("active");
       }
+      convertToNestedStructure();
     });
   }, [activeTab]);
 
@@ -37,9 +68,8 @@ const ProductDetailTab = () => {
         <ul className="flex justify-around">
           <li className="mx-2">
             <a
-              className={`control-tab detail-title ${
-                activeTab === 0 ? "active" : ""
-              }`}
+              className={`control-tab detail-title ${activeTab === 0 ? "active" : ""
+                }`}
               onClick={() => setActiveTab(0)}
             >
               Thông tin sản phẩm
@@ -47,9 +77,8 @@ const ProductDetailTab = () => {
           </li>
           <li className="mx-2">
             <a
-              className={`control-tab detail-title ${
-                activeTab === 1 ? "active" : ""
-              }`}
+              className={`control-tab detail-title ${activeTab === 1 ? "active" : ""
+                }`}
               onClick={() => setActiveTab(1)}
             >
               Đánh giá sản phẩm
@@ -88,16 +117,19 @@ const ProductDetailTab = () => {
                 </div>
                 <UserComment id="post" type="post" />
               </div>
-
               {/* COMMENT */}
               <div className="tab__content-block block">
                 <div className="user-comment mb-20">
-                  <UserComment id="comment-1" type='comment' />
-                  <div className="listreply mt-2">
-                    <UserComment id="reply-1" type='reply' />
-                    <UserComment id="reply-2" type='reply' />
-                    <UserComment id="reply-3" type='reply' />
-                  </div>
+                  {comments.map((comment: IComment) => <>
+                    <UserComment key={`comment-${comment.id}`} id={`comment-${comment.id}`} type='comment' />
+                    {comment.replies && comment.replies.length > 0 && (
+                      <div className="listreply my-2">
+                        {comment.replies.map((reply: IComment) => (
+                          <UserComment key={`reply-${reply.id}`} id={`reply-${reply.id}`} type='reply' />
+                        ))}
+                      </div>
+                    )}
+                  </>)}
                 </div>
               </div>
             </div>

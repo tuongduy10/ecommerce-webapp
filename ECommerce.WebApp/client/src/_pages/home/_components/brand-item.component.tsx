@@ -1,12 +1,18 @@
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ENV } from "src/_configs/enviroment.config";
 import { ROUTE_NAME } from "src/_cores/_enums/route-config.enum";
+import { setSelectedBrand } from "src/_cores/_reducers";
+import { useHomeStore } from "src/_cores/_store/root-store";
 
 const BrandItem = (props: any) => {
+    const homeStore = useHomeStore();
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const { data } = props;
     
     const goToProductList = () => {
+        dispatch(setSelectedBrand(data))
         navigate({
             pathname: ROUTE_NAME.PRODUCT_LIST,
             search: `?pageIndex=1&brandId=${data.brandId}&orderBy=`
