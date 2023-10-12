@@ -9,7 +9,8 @@ export const BLOG_API_URL = {
 
 export const BRAND_API_URL = {
     GET_ALL_AVAILABLE: '/brandAPI/getAllAvailable',
-    GET_ALL_AVAILABLE_IN_CATEGORY: '/brandAPI/getAllAvailableInCategory'
+    GET_ALL_AVAILABLE_IN_CATEGORY: '/brandAPI/getAllAvailableInCategory',
+    GET_BRAND: '/brand/get-brand'
 }
 
 export const CATEGORY_API_URL = {

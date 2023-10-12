@@ -6,6 +6,10 @@ export default class InventoryService {
         return api.get(BRAND_API_URL.GET_ALL_AVAILABLE);
     }
 
+    public static getBrand(id: number) { 
+        return api.get(BRAND_API_URL.GET_BRAND + `/${id}`);
+    }
+
     public static getBrandsInCategory(id: number)  {
         return api.get(BRAND_API_URL.GET_ALL_AVAILABLE_IN_CATEGORY + '/?id=' + id)
     }

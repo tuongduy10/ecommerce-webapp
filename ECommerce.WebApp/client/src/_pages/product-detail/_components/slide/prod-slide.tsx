@@ -2,6 +2,8 @@ import { useState } from "react";
 import SwiperCore, { Pagination, Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import GalleryDialog from "../dialog/prod-gallery";
+import { useProductStore } from "src/_cores/_store/root-store";
+import { ENV } from "src/_configs/enviroment.config";
 
 export const imagesSlide = [
   "https://hihichi.com/images/products/product_b0214a36-2678-428d-b589-fc451905e4a6.jpg",
@@ -14,13 +16,15 @@ export const imagesSlide = [
 ];
 
 const ProductDetailSlide = () => {
+  const productStore = useProductStore();
   const [activeSlide, setActiveSlide] = useState(0);
   const [swiperInstance, setSwiperInstance] = useState<SwiperCore | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
 
   const handleClickOpenDialog = (index: number) => {
-    setSelectedImage(imagesSlide[index]);
+    const url = ENV.IMAGE_URL + '/products/' + (productStore.productDetail?.imagePaths[index] ?? '')
+    setSelectedImage(url);
     setOpenDialog(true);
   };
 
@@ -60,11 +64,11 @@ const ProductDetailSlide = () => {
                 onSwiper={(swiper) => setSwiperInstance(swiper)}
                 onSlideChange={handleSwiperSlideChange}
               >
-                {imagesSlide.map((image, index) => (
+                {productStore.productDetail?.imagePaths?.map((image, index) => (
                   <SwiperSlide key={`main-img-${index}`}>
                     <img
                       className="cursor-grab"
-                      src={image}
+                      src={ENV.IMAGE_URL + '/products/' + image}
                       alt=""
                       onClick={() => {
                         handleClickOpenDialog(index);
@@ -83,7 +87,7 @@ const ProductDetailSlide = () => {
                 transform: "translate3d(0px, 0px, 0px)",
               }}
             >
-              {imagesSlide.map((image, index) => (
+              {productStore.productDetail?.imagePaths?.map((image, index) => (
                 <li
                   key={`child-img-${index}`}
                   className={`${activeSlide === index ? "active" : ""} mr-2`}
@@ -91,7 +95,7 @@ const ProductDetailSlide = () => {
                   style={{ borderRadius: "5px", cursor: "pointer" }}
                 >
                   <a>
-                    <img src={image} alt="Hình ảnh sản phẩm" />
+                    <img src={ENV.IMAGE_URL + '/products/' + image} alt="Hình ảnh sản phẩm" />
                   </a>
                 </li>
               ))}
