@@ -14,7 +14,8 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { Accordion, AccordionDetails, AccordionSummary, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import ListSubheader from '@mui/material/ListSubheader';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -23,7 +24,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import SessionService from 'src/_cores/_services/session.service';
 import { ADMIN_ROUTE_NAME } from 'src/_cores/_enums/route-config.enum';
 
@@ -31,7 +32,24 @@ const mainListItems = [
     { name: "dashboard", icon: <HomeRoundedIcon />, label: "Trang chủ", path: "/" },
     { name: "inventory", icon: <InventoryIcon />, label: "Kho", path: "" },
     { name: "order", icon: <ShoppingCartIcon />, label: "Đơn hàng", path: "" },
-    { name: "user", icon: <PeopleIcon />, label: "Người dùng", path: "" },
+    {
+        name: "user",
+        icon: <PeopleIcon />,
+        label: "Người dùng",
+        path: "",
+        childs: [
+            {
+                name: 'list',
+                label: 'Danh sách người dùng',
+                path: ADMIN_ROUTE_NAME.MANAGE_USER,
+            },
+            {
+                name: 'add',
+                label: 'Thêm người dùng',
+                path: ADMIN_ROUTE_NAME.MANAGE_USER,
+            }
+        ]
+    },
     { name: "statistical", icon: <BarChartIcon />, label: "Thống kê", path: "" },
 ];
 
@@ -95,11 +113,50 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const defaultTheme = createTheme();
 
 export default function Dashboard() {
+    const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [open, setOpen] = React.useState(true);
     const toggleDrawer = () => {
         setOpen(!open);
     };
+
+    const goToPage = (path: string) => {
+        if (path) {
+            navigate(path)
+        }
+    }
+
+    const renderListItem = (listItem: any) => {
+        return listItem.map((item: any) => (
+            item.childs && item.childs?.length > 0
+                ? (
+                    <Accordion key={item.name}>
+                        <AccordionSummary
+                            expandIcon={<KeyboardArrowDownIcon />}
+                        >
+                            <ListItemIcon>
+                                {item.icon}
+                            </ListItemIcon>
+                            <ListItemText primary={item.label} />
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {item.childs.map((child: any) => (
+                                <ListItemButton key={child.name} onClick={() => goToPage(child.path)}>
+                                    <ListItemText primary={child.label} />
+                                </ListItemButton>
+                            ))}
+                        </AccordionDetails>
+                    </Accordion>
+                ) : (
+                    <ListItemButton key={item.name} onClick={() => goToPage(item.path)}>
+                        <ListItemIcon>
+                            {item.icon}
+                        </ListItemIcon>
+                        <ListItemText primary={item.label} />
+                    </ListItemButton>
+                )
+        ))
+    }
 
     return (
         <ThemeProvider theme={defaultTheme}>
@@ -146,7 +203,7 @@ export default function Dashboard() {
                             onClose={() => setAnchorEl(null)}
                         >
                             <MenuItem onClick={() => setAnchorEl(null)}>Hồ sơ</MenuItem>
-                            <MenuItem onClick={() => { 
+                            <MenuItem onClick={() => {
                                 setAnchorEl(null);
                                 SessionService.deleteAccessToken();
                                 window.location.href = ADMIN_ROUTE_NAME.LOGIN;
@@ -166,28 +223,14 @@ export default function Dashboard() {
                     <Divider />
                     <List component="nav">
                         <React.Fragment>
-                            {mainListItems.map(item => (
-                                <ListItemButton key={item.name}>
-                                    <ListItemIcon>
-                                        {item.icon}
-                                    </ListItemIcon>
-                                    <ListItemText primary={item.label} />
-                                </ListItemButton>
-                            ))}
+                            {renderListItem(mainListItems)}
                         </React.Fragment>
                         <Divider sx={{ my: 1 }} />
                         <React.Fragment>
                             <ListSubheader component="div" inset>
                                 Báo cáo
                             </ListSubheader>
-                            {secondListItems.map(item => (
-                                <ListItemButton key={item.name}>
-                                    <ListItemIcon>
-                                        {item.icon}
-                                    </ListItemIcon>
-                                    <ListItemText primary={item.label} />
-                                </ListItemButton>
-                            ))}
+                            {renderListItem(secondListItems)}
                         </React.Fragment>
                     </List>
                 </Drawer>
@@ -204,6 +247,6 @@ export default function Dashboard() {
                     </Container>
                 </Box>
             </Box>
-        </ThemeProvider>
+        </ThemeProvider >
     );
 }
