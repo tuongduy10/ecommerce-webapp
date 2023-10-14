@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.Controllers.Admin
 {
-    [Authorize(AuthenticationSchemes = "AdminAuth")]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(AuthenticationSchemes = "AdminAuth")]
+    //[Authorize(Roles = "Admin")]
     public class ManageShopController : Controller
     {
         private IShopService _shopService;

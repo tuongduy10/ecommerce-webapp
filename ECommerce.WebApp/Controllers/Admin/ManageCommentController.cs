@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.Controllers.Admin
 {
-    [Authorize(AuthenticationSchemes = "AdminAuth")]
-    [Authorize(Policy = "Seller")]
+    //[Authorize(AuthenticationSchemes = "AdminAuth")]
+    //[Authorize(Policy = "Seller")]
     public class ManageCommentController : Controller
     {
         private string RATE_FILE_PATH = FilePathConstant.RATE_FILEPATH;

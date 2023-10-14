@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.Controllers.Admin
 {
-    [Authorize(AuthenticationSchemes = "AdminAuth")]
-    [Authorize(Policy = "Admin")]
+    //[Authorize(AuthenticationSchemes = "AdminAuth")]
+    //[Authorize(Policy = "Admin")]
     public class ManageCategoryController : Controller
     {
         private ICategoryService _categoryService;

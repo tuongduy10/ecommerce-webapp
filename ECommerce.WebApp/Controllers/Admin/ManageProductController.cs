@@ -21,8 +21,8 @@ using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.Controllers.Admin
 {
-    [Authorize(AuthenticationSchemes = "AdminAuth")]
-    [Authorize(Policy = "Seller")]
+    //[Authorize(AuthenticationSchemes = "AdminAuth")]
+    //[Authorize(Policy = "Seller")]
     public class ManageProductController : Controller
     {
         private IProductService _productService;
@@ -70,7 +70,7 @@ namespace ECommerce.WebApp.Controllers.Admin
         [HttpGet]
         public async Task<IActionResult> AddProduct()
         {
-            var userId = Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value);
+            var userId = 1;
             var brands = await _brandService.getAllBrandInShop(userId);
             var shops = await _shopService.getShopListBySystemUserAccount();
             var subs = await _subCategoryService.getAll();

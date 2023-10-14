@@ -15,8 +15,8 @@ using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.Controllers.Admin
 {
-    [Authorize(AuthenticationSchemes = "AdminAuth")]
-    [Authorize(Policy = "Admin")]
+    //[Authorize(AuthenticationSchemes = "AdminAuth")]
+    //[Authorize(Policy = "Admin")]
     public class ManageBrandController : Controller
     {
         private string FILE_PATH = FilePathConstant.BRAND_FILEPATH;
