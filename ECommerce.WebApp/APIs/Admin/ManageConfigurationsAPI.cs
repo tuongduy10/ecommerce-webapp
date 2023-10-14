@@ -15,8 +15,8 @@ namespace ECommerce.WebApp.APIs.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "AdminAuth")]
-    [Authorize(Policy = "Admin")]
+    //[Authorize(AuthenticationSchemes = "AdminAuth")]
+    //[Authorize(Policy = "Admin")]
     public class ManageConfigurationsAPI : ControllerBase
     {
         private IConfigurationService _configurationService;
