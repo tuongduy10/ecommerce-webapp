@@ -14,7 +14,8 @@ import AdminLayout from "src/_shares/_layouts/admin-layout/admin-layout.componen
 import {
   Login,
   Dashboard,
-  ProductList
+  ProductList,
+  UserList
 } from "src/_pages/admin/components";
 import { PrivateRoute } from "./private-route";
 import { ADMIN_ROUTE_NAME, ROUTE_NAME } from "../_enums/route-config.enum";
@@ -45,6 +46,20 @@ const Router = () => {
           element: 
             <PrivateRoute>
               <Dashboard />
+            </PrivateRoute>
+        },
+        { 
+          path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT, 
+          element: 
+            <PrivateRoute>
+              <ProductList />
+            </PrivateRoute>
+        },
+        { 
+          path: ADMIN_ROUTE_NAME.MANAGE_USER, 
+          element: 
+            <PrivateRoute>
+              <UserList />
             </PrivateRoute>
         },
         { 
