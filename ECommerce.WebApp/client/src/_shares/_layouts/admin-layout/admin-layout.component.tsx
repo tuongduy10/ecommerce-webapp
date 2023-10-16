@@ -23,40 +23,25 @@ import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import CategoryIcon from '@mui/icons-material/Category';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { Outlet, useNavigate } from 'react-router-dom';
 import SessionService from 'src/_cores/_services/session.service';
 import { ADMIN_ROUTE_NAME } from 'src/_cores/_enums/route-config.enum';
 
 const mainListItems = [
-    { name: "dashboard", icon: <HomeRoundedIcon />, label: "Trang chủ", path: "/" },
-    { name: "inventory", icon: <InventoryIcon />, label: "Kho", path: "" },
-    { name: "order", icon: <ShoppingCartIcon />, label: "Đơn hàng", path: "" },
-    {
-        name: "user",
-        icon: <PeopleIcon />,
-        label: "Người dùng",
-        path: "",
-        childs: [
-            {
-                name: 'list',
-                label: 'Danh sách người dùng',
-                path: ADMIN_ROUTE_NAME.MANAGE_USER,
-            },
-            {
-                name: 'add',
-                label: 'Thêm người dùng',
-                path: ADMIN_ROUTE_NAME.MANAGE_USER,
-            }
-        ]
-    },
-    { name: "statistical", icon: <BarChartIcon />, label: "Thống kê", path: "" },
+    { name: "dashboard", icon: <HomeRoundedIcon />, label: "Trang chủ", path: ADMIN_ROUTE_NAME.DASHBOARD },
+    { name: "product", icon: <InventoryIcon />, label: "Sản phẩm", path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT },
+    { name: "inventory", icon: <CategoryIcon />, label: "Kho", path: ADMIN_ROUTE_NAME.MANAGE_INVENTORY },
+    { name: "order", icon: <ShoppingCartIcon />, label: "Đơn hàng", path: ADMIN_ROUTE_NAME.MANAGE_ORDERS },
+    { name: "user", icon: <PeopleIcon />, label: "Người dùng", path: ADMIN_ROUTE_NAME.MANAGE_USERS },
+    { name: "statistical", icon: <BarChartIcon />, label: "Thống kê", path: ADMIN_ROUTE_NAME.MANAGE_STATISTICAL },
 ];
 
 const secondListItems = [
-    { name: "statistical", icon: <AssignmentIcon />, label: "Tháng hiện tại", path: "" },
-    { name: "statisticalLastQuarter", icon: <AssignmentIcon />, label: "Quý trước", path: "" },
-    { name: "statisticalYearEnd", icon: <AssignmentIcon />, label: "Tổng kết năm", path: "" },
+    { name: "statistical", icon: <AssignmentIcon />, label: "Tháng hiện tại", path: ADMIN_ROUTE_NAME.DASHBOARD },
+    { name: "statisticalLastQuarter", icon: <AssignmentIcon />, label: "Quý trước", path: ADMIN_ROUTE_NAME.DASHBOARD },
+    { name: "statisticalYearEnd", icon: <AssignmentIcon />, label: "Tổng kết năm", path: ADMIN_ROUTE_NAME.DASHBOARD },
 ];
 
 const drawerWidth: number = 240;
