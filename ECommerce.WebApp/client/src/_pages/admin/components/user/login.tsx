@@ -17,6 +17,7 @@ import { ADMIN_ROUTE_NAME } from 'src/_cores/_enums/route-config.enum';
 import DataUsageRoundedIcon from '@mui/icons-material/DataUsageRounded';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -24,6 +25,8 @@ const defaultTheme = createTheme();
 const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const token = SessionService.getAccessToken();
     if (token) {

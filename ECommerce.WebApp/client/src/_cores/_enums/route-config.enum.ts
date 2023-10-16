@@ -18,4 +18,8 @@ export const ADMIN_ROUTE_NAME = {
     MANAGE_USER: ADMIN_ROUTE_PREFIX + '/manage-user',
     MANAGE_USER_ADD: ADMIN_ROUTE_PREFIX + '/manage-user/add',
     MANAGE_USER_DETAIL: ADMIN_ROUTE_PREFIX + '/manage-user/detail',
+    MANAGE_INVENTORY: ADMIN_ROUTE_PREFIX + '/manage-inventory',
+    MANAGE_ORDERS: ADMIN_ROUTE_PREFIX + '/manage-orders',
+    MANAGE_USERS: ADMIN_ROUTE_PREFIX + '/manage-users',
+    MANAGE_STATISTICAL: ADMIN_ROUTE_PREFIX + '/manage-statistical',
 }
