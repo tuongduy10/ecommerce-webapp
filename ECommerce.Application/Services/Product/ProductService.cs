@@ -429,8 +429,8 @@ namespace ECommerce.Application.Services.Product
                                             ? (request.discountPreOrder - request.priceImport)
                                             : (request.pricePreOrder - request.priceImport),
                 };
-                await _DbContext.Products.AddAsync(product);
-                await _DbContext.SaveChangesAsync();
+                await _productRepo.AddAsync(product);
+                await _productRepo.SaveChangesAsync();
 
                 /*
                  * Relationship data
