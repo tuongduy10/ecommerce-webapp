@@ -349,7 +349,7 @@ namespace ECommerce.Application.Services.Product
                 return new FailResponse<List<ProductModel>>(error.Message);
             }
         }
-        public async Task<Response<bool>> save(ProductModel request) // add or update
+        public async Task<Response<bool>> save(ProductSaveRequest request) // add or update
         {
             try
             {
