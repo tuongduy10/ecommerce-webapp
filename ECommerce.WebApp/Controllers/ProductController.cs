@@ -1,10 +1,15 @@
+﻿using ECommerce.Application.Constants;
 using ECommerce.Application.Services.Comment;
 using ECommerce.Application.Services.Comment.Request;
 using ECommerce.Application.Services.Product;
 using ECommerce.Application.Services.Product.Dtos;
+using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.Controllers
@@ -16,12 +21,18 @@ namespace ECommerce.WebApp.Controllers
     {
         private readonly IProductService _productService;
         private readonly ICommentService _commentService;
+        private ManageFiles _manageFiles;
+        private string RATING_FILE_PATH = FilePathConstant.RATE_FILEPATH;
+        private string PRODUCT_FILE_PATH = FilePathConstant.PRODUCT_FILEPATH;
+        private string PRODUCT_FILEPREFIX = FilePathConstant.PRODUCT_FILEPREFIX;
         public ProductController(
             IProductService productService,
-            ICommentService commentService)
+            ICommentService commentService,
+            IWebHostEnvironment webHostEnvironment)
         {
             _productService = productService;
             _commentService = commentService;
+            _manageFiles = new ManageFiles(webHostEnvironment);
         }
         [AllowAnonymous]
         [HttpPost("product-list")]
@@ -68,12 +79,43 @@ namespace ECommerce.WebApp.Controllers
         [HttpPost("save")]
         public async Task<IActionResult> save(ProductSaveRequest request)
         {
-            return Ok();
+            // Image null check
+            if (request.systemImage == null)
+            {
+                return BadRequest("Vui lòng chọn ảnh");
+            }
+
+            // Get files name
+            if (request.systemImage != null)
+                request.systemFileName = _manageFiles.GetFilesName(request.systemImage, PRODUCT_FILEPREFIX);
+            if (request.userImage != null)
+                request.userFileName = _manageFiles.GetFilesName(request.userImage, PRODUCT_FILEPREFIX);
+            // Result 
+            var result = await _productService.save(request);
+            if (result.isSucceed)
+            {
+                // Add file with files, files'name, path
+                if (request.systemImage != null && request.systemFileName != null)
+                    _manageFiles.AddFiles(request.systemImage, request.systemFileName, PRODUCT_FILE_PATH);
+                if (request.userImage != null && request.userFileName != null)
+                    _manageFiles.AddFiles(request.userImage, request.userFileName, PRODUCT_FILE_PATH);
+
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
         [HttpPost("delete")]
-        public async Task<IActionResult> delete(List<int> ids)
+        public async Task<IActionResult> delete(ProductDeleteRequest request)
         {
-            return Ok();
+            var result = await _productService.delete(request);
+            if (result.isSucceed)
+            {
+                _manageFiles.DeleteFiles(result.Data.systemImages, PRODUCT_FILE_PATH);
+                _manageFiles.DeleteFiles(result.Data.userImages, PRODUCT_FILE_PATH);
+                _manageFiles.DeleteFiles(result.Data.ratingImages, RATING_FILE_PATH);
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
     }
 }

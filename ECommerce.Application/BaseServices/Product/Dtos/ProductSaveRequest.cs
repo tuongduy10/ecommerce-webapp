@@ -11,8 +11,10 @@ namespace ECommerce.Application.Services.Product.Dtos
 
         public List<int>? currentOptions { get; set; }
         public List<OptionModel>? newOptions { get; set; }
-        private List<IFormFile>? systemImage { get; set; }
-        private List<IFormFile>? userImage { get; set; }
+        public List<IFormFile>? systemImage { get; set; }
+        public List<string> systemFileName {get;set;}
+        public List<IFormFile>? userImage { get; set; }
+        public List<string> userFileName { get; set; }
         public ProductSaveRequest() : base()
         {
 

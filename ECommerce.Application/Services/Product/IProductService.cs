@@ -15,6 +15,6 @@ namespace ECommerce.Application.Services.Product
         Task<Response<List<ProductModel>>> getManagedProductList(ProductGetRequest request);
         Task<Response<DiscountModel>> getDiscount(DiscountGetRequest request);
         Task<Response<bool>> save(ProductSaveRequest request); // add or update
-        Task<Response<bool>> delete(List<int> ids);
+        Task<Response<ProductDeleteResponse>> delete(ProductDeleteRequest request);
     }
 }
