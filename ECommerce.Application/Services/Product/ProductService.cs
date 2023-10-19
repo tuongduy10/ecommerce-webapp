@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.Common;
+﻿using ECommerce.Application.Services.Product.Dtos;
+using ECommerce.Application.Common;
 using ECommerce.Application.Enums;
 using ECommerce.Application.Repositories;
 using ECommerce.Application.Services.Inventory;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ECommerce.Application.BaseServices.Rate;
 
 namespace ECommerce.Application.Services.Product
 {
@@ -34,10 +36,12 @@ namespace ECommerce.Application.Services.Product
         private readonly IRepositoryBase<Rate> _rateRepo;
         private readonly IRepositoryBase<Discount> _discountRepo;
         private readonly IInventoryService _inventoryService;
-        public ProductService(ECommerceContext DbContext, IInventoryService inventoryService)
+        private readonly IRateService _rateService;
+        public ProductService(ECommerceContext DbContext, IInventoryService inventoryService, IRateService rateService)
         {
             _DbContext = DbContext;
             _inventoryService = inventoryService;
+            _rateService = rateService;
             if (_productRepo == null)
                 _productRepo = new RepositoryBase<Data.Models.Product>(_DbContext);
             if (_brandCategoryRepo == null)
@@ -501,6 +505,49 @@ namespace ECommerce.Application.Services.Product
                     }
                 }
 
+                // Attribute
+                var attributes = request.attributes.Where(a => !string.IsNullOrEmpty(a.value));
+                if (attributes != null && attributes.Any())
+                {
+
+                    var attrAddReq = attributes
+                        .Select(attr => new ProductAttribute
+                        {
+                            ProductId = product.ProductId,
+                            AttributeId = attr.id,
+                            Value = attr.value.Trim()
+                        })
+                        .ToList();
+                    await _productAttributeRepo.AddRangeAsync(attrAddReq);
+                    await _productAttributeRepo.SaveChangesAsync();
+                }
+
+                // Images
+                if (request.systemFileName != null)
+                {
+                    var sysImgAddReq = request.systemFileName
+                        .Select(img => new ProductImage
+                        {
+                            ProductId = product.ProductId,
+                            ProductImagePath = img
+                        })
+                        .ToList();
+                    await _productImageRepo.AddRangeAsync(sysImgAddReq);
+                    await _productImageRepo.SaveChangesAsync();
+                }
+                if (request.userFileName != null)
+                {
+                    var userImgAddReq = request.systemFileName
+                        .Select(img => new ProductUserImage
+                        {
+                            ProductId = product.ProductId,
+                            ProductUserImagePath = img
+                        })
+                        .ToList();
+                    await _productUserImageRepo.AddRangeAsync(userImgAddReq);
+                    await _productUserImageRepo.SaveChangesAsync();
+                }
+
                 return new SuccessResponse<bool>();
             }
             catch (Exception error)
@@ -508,15 +555,50 @@ namespace ECommerce.Application.Services.Product
                 return new FailResponse<bool>(error.Message);
             }
         }
-        public async Task<Response<bool>> delete(List<int> ids)
+        public async Task<Response<ProductDeleteResponse>> delete(ProductDeleteRequest request)
         {
             try
             {
-                return new SuccessResponse<bool>();
+                var ids = request.ids;
+                // Check null product
+                var products = await _DbContext.Products.Where(i => ids.Contains(i.ProductId)).ToListAsync();
+                if (products == null || products.Count == 0) return new FailResponse<ProductDeleteResponse>("Sản phẩm không tồn tại");
+
+                // System's iamges
+                var sysImages = await _DbContext.ProductImages.Where(i => ids.Contains(i.ProductId)).ToListAsync();
+                if (sysImages.Count > 0) _DbContext.ProductImages.RemoveRange(sysImages);
+                // User's images
+                var userImages = await _DbContext.ProductUserImages.Where(i => ids.Contains((int)i.ProductId)).ToListAsync();
+                if (userImages.Count > 0) _DbContext.ProductUserImages.RemoveRange(userImages);
+                // Prices
+                var productPrices = await _DbContext.ProductPrices.Where(i => ids.Contains(i.ProductId)).ToListAsync();
+                if (productPrices.Count > 0) _DbContext.ProductPrices.RemoveRange(productPrices);
+                // Attributes
+                var attrs = await _DbContext.ProductAttributes.Where(i => ids.Contains(i.ProductId)).ToListAsync();
+                if (attrs.Count > 0) _DbContext.ProductAttributes.RemoveRange(attrs);
+                // Options
+                var opts = await _DbContext.ProductOptionValues.Where(i => ids.Contains(i.ProductId)).ToListAsync();
+                if (opts.Count > 0) _DbContext.ProductOptionValues.RemoveRange(opts);
+                // Product's comments
+                var ratingImages = new List<string>();
+                var rateRs = await _rateService.DeleteCommentsByProductIds(ids);
+                ratingImages = rateRs.isSucceed ? rateRs.Data : null;
+
+                var data = new ProductDeleteResponse
+                {
+                    systemImages = sysImages.Select(i => i.ProductImagePath).ToList(),
+                    userImages = userImages.Select(i => i.ProductUserImagePath).ToList(),
+                    ratingImages = ratingImages
+                };
+
+                // Remove product and save changes
+                _DbContext.Products.RemoveRange(products);
+                _DbContext.SaveChangesAsync().Wait();
+                return new SuccessResponse<ProductDeleteResponse>();
             }
             catch (Exception error)
             {
-                return new FailResponse<bool>(error.Message);
+                return new FailResponse<ProductDeleteResponse>(error.Message);
             }
         }
         public async Task<Response<DiscountModel>> getDiscount(DiscountGetRequest request)
