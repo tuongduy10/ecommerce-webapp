@@ -5,16 +5,13 @@ import ProductDetailInfo from "./_components/layout/prod-info";
 
 import ProductDetailRealImages from "./_components/slide/prod-real-images";
 import ProductDetailSlide from "./_components/slide/prod-slide";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useProductStore } from "src/_cores/_store/root-store";
 import { useDispatch } from "react-redux";
 import ProductService from "src/_cores/_services/product.service";
 import { setProductDetail } from "src/_cores/_reducers/product.reducer";
-import InventoryService from "src/_cores/_services/inventory.service";
-import { IBrand } from "src/_cores/_interfaces/inventory.interface";
 
 const ProductDetailPage = () => {
-  const [brand, setBrand] = useState<IBrand>();
   const searchParams = new URLSearchParams(window.location.search);
   const _id = Number(searchParams.get('id')) || -1;
 
@@ -30,20 +27,6 @@ const ProductDetailPage = () => {
       ProductService.getProductDetail(_id).then((res) => {
         if (res.data) {
           dispatch(setProductDetail(res.data));
-          getBrand();
-        }
-      }).catch((error) => {
-        console.log(error);
-      });
-    }
-  }
-
-  const getBrand = () => {
-    const brandId = productStore.productDetail?.brand.id ?? -1;
-    if (brandId > -1) {
-      InventoryService.getBrand(brandId).then((res) => {
-        if (res.data) {
-          setBrand(res.data);
         }
       }).catch((error) => {
         console.log(error);
@@ -57,7 +40,7 @@ const ProductDetailPage = () => {
         <div className="content__inner w-full pb-0">
           <WebDirectional
             items={[
-              { name: brand?.brandName ?? '', path: `?pageIndex=${1}&brandId=${brand?.brandId}` },
+              { name: productStore.productDetail?.brand?.name ?? '', path: `?pageIndex=${1}&brandId=${productStore.productDetail?.brand?.id}` },
               { name: productStore.productDetail?.name ?? '', path: `?id=${_id}` },
             ]}
           />
@@ -72,7 +55,9 @@ const ProductDetailPage = () => {
               </div>
             </div>
           </div>
-          <ProductDetailRealImages />
+          {productStore.productDetail?.userImagePaths && productStore.productDetail?.userImagePaths.length > 0 && (
+            <ProductDetailRealImages />
+          )}
           <ProductDetailTab />
           <ProductDetailFooter />
         </div>

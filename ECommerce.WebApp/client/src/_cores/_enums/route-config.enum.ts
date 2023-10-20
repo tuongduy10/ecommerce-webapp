@@ -15,6 +15,7 @@ export const ADMIN_ROUTE_NAME = {
     DASHBOARD: ADMIN_ROUTE_PREFIX + '/',
     LOGIN: ADMIN_ROUTE_PREFIX + '/login',
     MANAGE_PRODUCT: ADMIN_ROUTE_PREFIX + '/manage-product',
+    MANAGE_PRODUCT_ADD: ADMIN_ROUTE_PREFIX + '/manage-product/add',
     MANAGE_USER: ADMIN_ROUTE_PREFIX + '/manage-user',
     MANAGE_USER_ADD: ADMIN_ROUTE_PREFIX + '/manage-user/add',
     MANAGE_USER_DETAIL: ADMIN_ROUTE_PREFIX + '/manage-user/detail',

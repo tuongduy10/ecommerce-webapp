@@ -1090,7 +1090,6 @@ hr {
   text-transform: uppercase;
   font-weight: 700;
   border: 1px solid #333;
-  background-color: #fff;
   padding: calc(13px + (24 - 13) * ((100vw - 375px) / (1920 - 375)));
 }
 

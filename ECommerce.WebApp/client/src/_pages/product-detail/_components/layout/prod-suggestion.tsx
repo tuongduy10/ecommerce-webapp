@@ -3,7 +3,7 @@ import ProductItem from "src/_shares/_components/product-item/product-item.compo
 
 const ProductDetailFooter = () => {
   return (
-    <div className="products__list mx-auto w-full">
+    <div className="products__list mx-auto w-full hidden">
       <h1 className="detail-title mb-0">
         <strong>GỢI Ý CHO BẠN</strong>
       </h1>

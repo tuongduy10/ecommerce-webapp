@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { useProductStore } from "src/_cores/_store/root-store";
 import { MuiIcon } from "src/_shares/_components";
 import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
+import { ProductHelper } from "src/_shares/_helpers/product-helper";
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 const ProductDetailInfo = () => {
@@ -11,22 +12,39 @@ const ProductDetailInfo = () => {
   const productStore = useProductStore();
   const productDetail = productStore.productDetail;
 
-  const price = 500000;
-  const salePrice = 400000;
-  const formattedPrice = new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  }).format(price);
-  const formattedSalePrice = new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  }).format(salePrice);
   const [quanity, setQuanity] = useState(1);
   const [isShowCodeDis, setShowCodeDis] = useState(false);
 
   const handleShowCodeDis = () => {
     setShowCodeDis(!isShowCodeDis);
   };
+
+  const getFormatedPrice = (price: number) => {
+    return ProductHelper.getFormatedPrice(price);
+  }
+
+  const renderPrice = (type: string, price: number, discount?: number) => {
+    return (
+      <div className="option-price w-full flex mt-2 ">
+        <div className="option-title">
+          <input className="form-check-input" type="radio" />
+          <label className="form-check-label">
+            {type}
+          </label>
+        </div>
+        <label className="form-check-label flex items-center">
+          {discount ? (<>
+            <span className="price mr-2">{getFormatedPrice(discount)}</span>
+            <span className="saleprice">
+              <p className="line-through">{getFormatedPrice(price)}</p>
+            </span>
+          </>) : (
+            <span className="price mr-2">{getFormatedPrice(price)}</span>
+          )}
+        </label>
+      </div>
+    )
+  }
 
   return (
     <div className="product__detail-card">
@@ -174,64 +192,21 @@ const ProductDetailInfo = () => {
               </div>
             </div>
             <div className="product__detail-price">
-              {/*  <span className="sales-value">Giảm 5%</span>
-                   */}
+              {productDetail.discountPercent && (
+              <span className="sales-value">Giảm {productDetail.discountPercent}%</span>
+              )}
 
-              {/*  Available &  Price */}
+              {productDetail.priceAvailable && (
+                renderPrice('Đặt trước', productDetail.priceAvailable, productDetail.discountAvailable)
+              )}
 
-              <div className="option-price flex mt-2 w-full">
-                <div className="option-title">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="pro-type"
-                    id="inlineRadio1"
-                    value="1"
-                  />
-                  <label className="form-check-label" htmlFor="inlineRadio1">
-                    Có sẵn
-                  </label>
-                </div>
-                <label
-                  className="form-check-label flex items-center"
-                  htmlFor="inlineRadio1"
-                >
-                  <span className="price mr-2">{formattedPrice}</span>
-                  <span className="saleprice">
-                    <p className="line-through">{formattedSalePrice}</p>
-                  </span>
-                </label>
-              </div>
-
-              {/*  Order & Price */}
-
-              <div className="option-price w-full flex mt-2 ">
-                <div className="option-title">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="pro-type"
-                    id="inlineRadio2"
-                    value="2"
-                  />
-                  <label className="form-check-label" htmlFor="inlineRadio2">
-                    Đặt trước
-                  </label>
-                </div>
-                <label
-                  className="form-check-label flex items-center"
-                  htmlFor="inlineRadio2"
-                >
-                  <span className="price mr-2">{formattedPrice}</span>
-                  <span className="saleprice">
-                    <p className="line-through">{formattedSalePrice}</p>
-                  </span>
-                </label>
-              </div>
+              {productDetail.pricePreOrder && (
+                renderPrice('Đặt trước', productDetail.priceAvailable, productDetail.discountAvailable)
+              )}
 
               {/* Discount */}
 
-              {
+              {/*
                 <div className="mt-2">
                   <div
                     className="product__sale-code w-full justify-between flex items-center"
@@ -243,9 +218,9 @@ const ProductDetailInfo = () => {
                         Nhập mã <strong>12345</strong> giảm 10%
                       </div>
 
-                      {/*  <div className="text">
-                              Nhập mã <strong>12345</strong> giảm {formattedSalePrice}
-                            </div> */}
+                      <div className="text">
+                        Nhập mã <strong>12345</strong> giảm {getFormatedPrice(10000)}
+                      </div>
                     </div>
                     <MuiIcon
                       name="CHEVRON_DOWN"
@@ -263,13 +238,13 @@ const ProductDetailInfo = () => {
                         % trên tổng hóa đơn
                       </div>
 
-                      {/* <div className="text">
-                              Nhập{" "}
-                              <strong className="salecode">
-                                @Model.discount.DiscountCode
-                              </strong>{" "}
-                              để giảm {formattedSalePrice} trên tổng hóa đơn
-                            </div> */}
+                      <div className="text">
+                        Nhập{" "}
+                        <strong className="salecode">
+                          XINCHAO
+                        </strong>{" "}
+                        để giảm {getFormatedPrice(10000)} trên tổng hóa đơn
+                      </div>
                       <button
                         type="button"
                         className="getcode"
@@ -280,29 +255,13 @@ const ProductDetailInfo = () => {
                     </div>
                   </div>
                 </div>
-              }
-
-              {/*  Button */}
+                    */}
 
               <div className="product__detail-buttons flex justify-between w-full mt-4">
-                <button
-                  className="btn-addtocart btn-black"
-                  style={{
-                    width: "49%",
-                    backgroundColor: "#333",
-                    color: "#fff",
-                  }}
-                >
+                <button className="btn-addtocart btn-black w-[49%] bg-[#333] text-[#fff]">
                   Thêm vào giỏ
                 </button>
-                <button
-                  className="btn-buynow btn-black"
-                  style={{
-                    width: "49%",
-                    backgroundColor: "#333",
-                    color: "#fff",
-                  }}
-                >
+                <button className="btn-buynow btn-black w-[49%] bg-[#333] text-[#fff]">
                   Mua ngay
                 </button>
               </div>

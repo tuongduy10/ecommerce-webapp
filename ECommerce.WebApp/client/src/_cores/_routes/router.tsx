@@ -15,7 +15,8 @@ import {
   Login,
   Dashboard,
   ProductList,
-  UserList
+  UserList,
+  ProductDetail
 } from "src/_pages/admin/components";
 import { PrivateRoute } from "./private-route";
 import { ADMIN_ROUTE_NAME, ROUTE_NAME } from "../_enums/route-config.enum";
@@ -53,6 +54,13 @@ const Router = () => {
           element: 
             <PrivateRoute>
               <ProductList />
+            </PrivateRoute>
+        },
+        { 
+          path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT_ADD, 
+          element: 
+            <PrivateRoute>
+              <ProductDetail />
             </PrivateRoute>
         },
         { 

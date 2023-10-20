@@ -51,6 +51,7 @@ export interface IProduct {
   }[];
   importDate: Date;
   // price
+  discountPercent: number;
   priceAvailable: number;
   pricePreOrder: number;
   discountAvailable: number;
