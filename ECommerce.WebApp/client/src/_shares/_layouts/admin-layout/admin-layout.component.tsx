@@ -30,12 +30,75 @@ import SessionService from 'src/_cores/_services/session.service';
 import { ADMIN_ROUTE_NAME } from 'src/_cores/_enums/route-config.enum';
 
 const mainListItems = [
-    { name: "dashboard", icon: <HomeRoundedIcon />, label: "Trang chủ", path: ADMIN_ROUTE_NAME.DASHBOARD },
-    { name: "product", icon: <InventoryIcon />, label: "Sản phẩm", path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT },
-    { name: "inventory", icon: <CategoryIcon />, label: "Kho", path: ADMIN_ROUTE_NAME.MANAGE_INVENTORY },
-    { name: "order", icon: <ShoppingCartIcon />, label: "Đơn hàng", path: ADMIN_ROUTE_NAME.MANAGE_ORDERS },
-    { name: "user", icon: <PeopleIcon />, label: "Người dùng", path: ADMIN_ROUTE_NAME.MANAGE_USERS },
-    { name: "statistical", icon: <BarChartIcon />, label: "Thống kê", path: ADMIN_ROUTE_NAME.MANAGE_STATISTICAL },
+    { name: "dashboard", icon: <HomeRoundedIcon />, label: "Trang chủ", path: "/" },
+    { 
+        name: "product", 
+        icon: <InventoryIcon />, 
+        label: "Sản phẩm", 
+        path: "",
+        childs: [
+            {
+                name: 'list',
+                label: 'Danh sách sản phẩm',
+                path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT,
+            },
+            {
+                name: 'add',
+                label: 'Thêm sản phẩm',
+                path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT_ADD,
+            },
+        ]
+     },
+    { 
+        name: "inventory", 
+        icon: <InventoryIcon />, 
+        label: "Kho", 
+        path: "",
+        childs: [
+            {
+                name: 'brand',
+                label: 'Thương hiệu',
+                path: '',
+            },
+            {
+                name: 'category',
+                label: 'Danh mục',
+                path: '',
+            },
+        ]
+    },
+    { 
+        name: "order", 
+        icon: <ShoppingCartIcon />, 
+        label: "Đơn hàng", 
+        path: "",
+        childs: [
+            {
+                name: 'pending',
+                label: 'Chờ xác nhận',
+                path: '',
+            },
+        ]
+    },
+    {
+        name: "user",
+        icon: <PeopleIcon />,
+        label: "Người dùng",
+        path: "",
+        childs: [
+            {
+                name: 'list',
+                label: 'Danh sách người dùng',
+                path: ADMIN_ROUTE_NAME.MANAGE_USER,
+            },
+            {
+                name: 'add',
+                label: 'Thêm người dùng',
+                path: ADMIN_ROUTE_NAME.MANAGE_USER_ADD,
+            }
+        ]
+    },
+    { name: "statistical", icon: <BarChartIcon />, label: "Thống kê", path: "" },
 ];
 
 const secondListItems = [

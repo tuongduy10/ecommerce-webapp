@@ -28,4 +28,7 @@ export class ProductHelper {
 
     return formattedList;
   }
+  public static getFormatedPrice = (price: number) => {
+    return price ? price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : '';
+  }
 }

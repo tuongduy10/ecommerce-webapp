@@ -18,7 +18,7 @@ export default function DetailInfo(props: any) {
                 )}
             </ul>
             <div className="title">Mô tả ngắn</div>
-            <div className="description"></div>
+            <div className="description" dangerouslySetInnerHTML={{ __html: productDetail?.description || '' }}></div>
         </div>
     )
 }

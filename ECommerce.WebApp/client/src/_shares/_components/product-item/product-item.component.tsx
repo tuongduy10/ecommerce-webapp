@@ -4,6 +4,7 @@ import MuiIcon from "../mui-icon/mui-icon.component";
 import { ENV } from "src/_configs/enviroment.config";
 import { ROUTE_NAME } from "src/_cores/_enums/route-config.enum";
 import { useNavigate } from "react-router-dom";
+import { ProductHelper } from "src/_shares/_helpers/product-helper";
 
 interface IProductItemProps {
   grid: 3 | 4,
@@ -20,7 +21,7 @@ const ProductItem = (props: IProductItemProps) => {
   };
 
   const getFormatedPrice = (price: number) => {
-    return price ? price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : '';
+    return ProductHelper.getFormatedPrice(price);
   }
 
   const goToDetail = () => {
