@@ -121,11 +121,11 @@ const ProductDetailTab = () => {
               <div className="tab__content-block block">
                 <div className="user-comment mb-20">
                   {comments.map((comment: IComment) => <>
-                    <UserComment key={`comment-${comment.id}`} id={`comment-${comment.id}`} type='comment' />
+                    <UserComment key={`comment-${comment.id}`} id={`comment-${comment.id}`} type='comment' data={comment} />
                     {comment.replies && comment.replies.length > 0 && (
                       <div className="listreply my-2">
                         {comment.replies.map((reply: IComment) => (
-                          <UserComment key={`reply-${reply.id}`} id={`reply-${reply.id}`} type='reply' />
+                          <UserComment key={`reply-${reply.id}`} id={`reply-${reply.id}`} type='reply' data={reply} />
                         ))}
                       </div>
                     )}

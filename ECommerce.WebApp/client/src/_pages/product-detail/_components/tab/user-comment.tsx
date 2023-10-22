@@ -3,9 +3,10 @@ import { IUserComment } from "src/_pages/product-detail/_interfaces/comment.inte
 import { MuiIcon } from "src/_shares/_components";
 import UploadInput from "src/_shares/_components/input/upload";
 import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
+import { DateTimeHelper } from "src/_shares/_helpers/datetime-helper";
 
 const UserComment = (props: IUserComment) => {
-    const { id, type } = props;
+    const { id, type, data } = props;
     const [enableActions, setEnableActions] = useState<boolean>(false);
     const [enableEdit, setEnableEdit] = useState<boolean>(false);
     const [enableReply, setEnableReply] = useState<boolean>(false);
@@ -53,7 +54,7 @@ const UserComment = (props: IUserComment) => {
                         className="user__comment-time ml-2 mb-2"
                         style={{ whiteSpace: "nowrap" }}
                     >
-                        14:02, 08/06/2023
+                        {DateTimeHelper.getDateTimeFormated(data?.createDate)}
                     </span>
                 </div>
             )}
@@ -79,7 +80,7 @@ const UserComment = (props: IUserComment) => {
                     {/* COMMENT LV1 */}
                     <div className="comment my-2">
                         {type === 'reply' && <span style={{ color: "#288ad9" }}>@Brovu </span>}
-                        rep
+                        {data?.comment}
                     </div>
                     {/* IMAGES LV1 */}
                     <div className="image images-comment mb-2">

@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { ENV } from "src/_configs/enviroment.config";
 import { useProductStore } from "src/_cores/_store/root-store";
 import { MuiIcon } from "src/_shares/_components";
 import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
@@ -43,6 +44,28 @@ const ProductDetailInfo = () => {
           )}
         </label>
       </div>
+    )
+  }
+
+  const renderOptions = () => {
+    return (
+      productDetail && productDetail.options && productDetail.options.map((option) => (
+        <div key={`option-${option.id}`} className="option-size flex mb-2 items-center">
+          <div className="option-title">{option.name}</div>
+          <div className="options-wrapper">
+            <select className="options form-select w-full pro-options md:h-[30px]">
+              <option disabled>- Chọn -</option>
+              {option.values && option.values.map((value) => (
+                <option key={`option-value-${value.id}`} value="value">{value.name}</option>
+              ))}
+            </select>
+            <MuiIcon
+              name="CHEVRON_DOWN"
+              className="feather feather-chevron-down"
+            />
+          </div>
+        </div>
+      ))
     )
   }
 
@@ -97,7 +120,7 @@ const ProductDetailInfo = () => {
                 <img
                   className="w-100 h-auto"
                   alt="Hình ảnh thương hiệu"
-                  src="https://hihichi.com/images/brand/brand_d5d8fb28-c399-4259-8a60-3deb4511a810.png"
+                  src={ENV.IMAGE_URL + "/brand/" + productDetail.brand.imagePath}
                 />
               </div>
               <a
@@ -173,27 +196,11 @@ const ProductDetailInfo = () => {
                   step="1"
                 />
               </div>
-
-              <div className="option-size flex mb-2 items-center">
-                <div className="option-title">Option Name</div>
-                <div className="options-wrapper">
-                  <select className="options form-select w-full pro-options md:h-[30px]">
-                    <option disabled>
-                      - Chọn -
-                    </option>
-
-                    <option value="value">Value</option>
-                  </select>
-                  <MuiIcon
-                    name="CHEVRON_DOWN"
-                    className="feather feather-chevron-down"
-                  />
-                </div>
-              </div>
+              {renderOptions()}
             </div>
             <div className="product__detail-price">
               {productDetail.discountPercent && (
-              <span className="sales-value">Giảm {productDetail.discountPercent}%</span>
+                <span className="sales-value">Giảm {productDetail.discountPercent}%</span>
               )}
 
               {productDetail.priceAvailable && (
