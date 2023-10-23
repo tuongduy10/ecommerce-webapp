@@ -1,7 +1,18 @@
-import { Box, Button, Checkbox, Container, CssBaseline, FormControlLabel, FormLabel, Grid, Input, TextField, ThemeProvider, Typography, createTheme } from "@mui/material";
+import { Autocomplete, Box, Button, Checkbox, Container, CssBaseline, FormControlLabel, FormLabel, Grid, Input, TextField, ThemeProvider, Typography, createTheme } from "@mui/material";
 import { Editor } from '@tinymce/tinymce-react';
 import { useRef } from "react";
+import { GlobalConfig } from "src/_configs/global.config";
 import UploadInput from "src/_shares/_components/input/upload";
+
+const top100Films = [
+    { label: 'The Shawshank Redemption', year: 1994 },
+    { label: 'The Godfather', year: 1972 },
+    { label: 'The Godfather: Part II', year: 1974 },
+    { label: 'The Dark Knight', year: 2008 },
+    { label: '12 Angry Men', year: 1957 },
+    { label: "Schindler's List", year: 1993 },
+    { label: 'Pulp Fiction', year: 1994 },
+]
 
 const defaultTheme = createTheme();
 const ProductDetail = () => {
@@ -105,19 +116,42 @@ const ProductDetail = () => {
                                 />
                             </Grid>
                             <Grid item xs={12} sm={12}>
+                                <Autocomplete
+                                    size="small"
+                                    disablePortal
+                                    options={top100Films}
+                                    renderInput={(params) => <TextField {...params} label="Cửa hàng" />}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={12}>
+                                <Autocomplete
+                                    size="small"
+                                    disablePortal
+                                    options={top100Films}
+                                    renderInput={(params) => <TextField {...params} label="Thương hiệu" />}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={12}>
+                                <Autocomplete
+                                    size="small"
+                                    disablePortal
+                                    options={top100Films}
+                                    renderInput={(params) => <TextField {...params} label="Danh mục" />}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={12}>
                                 <FormLabel>Mô tả</FormLabel>
                                 <>
                                     <Editor
-                                        apiKey='4ctr9pi6o8mlflu8si6gdszgl62tn4zl73knhf3tkqalszsx'
+                                        apiKey={GlobalConfig.TINY_KEY}
                                         init={{
                                             height: 500,
-                                            plugins: ["image", "autolink", "lists", "media", "table"],
-                                            toolbar: 'addcomment showcomments code image pageembed permanentpen table tableofcontents',
+                                            plugins: GlobalConfig.TINY_PLUGINS,
+                                            toolbar: GlobalConfig.TINY_TOOLBAR,
                                         }}
                                     />
                                 </>
                             </Grid>
-
                             <Grid item xs={12} sm={12}>
                                 <FormLabel>Ảnh sản phẩm</FormLabel>
                                 <label htmlFor="imageSys-upload" className="input-tile mb-2">
