@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, Checkbox, Container, CssBaseline, FormControlLabel, FormLabel, Grid, Input, TextField, ThemeProvider, Typography, createTheme } from "@mui/material";
+import { Autocomplete, Box, Button, Checkbox, Chip, Container, CssBaseline, FormControl, FormControlLabel, FormLabel, Grid, Input, TextField, ThemeProvider, Typography, createTheme } from "@mui/material";
 import { Editor } from '@tinymce/tinymce-react';
 import { useRef } from "react";
 import { GlobalConfig } from "src/_configs/global.config";
@@ -31,116 +31,213 @@ const ProductDetail = () => {
         console.log(e);
     }
 
+    const handleDeleteChip = () => {
+
+    }
+
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="md">
-                <CssBaseline />
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                    }}
-                >
-                    <Typography component="h1" variant="h5">
-                        Thêm sản phẩm
-                    </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <Typography component="h1" variant="h5">
+                Thêm sản phẩm
+            </Typography>
+            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                <Grid container spacing={2}>
+                    <Grid item xs={7}>
+                        <CssBaseline />
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                            }}
+                        >
+                            <Typography variant="subtitle1" gutterBottom>
+                                Thông tin cơ bản
+                            </Typography>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        autoComplete="given-name"
+                                        name="code"
+                                        required
+                                        fullWidth
+                                        size="small"
+                                        id="code"
+                                        label="Mã sản phẩm"
+                                        autoFocus
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        size="small"
+                                        id="productName"
+                                        label="Tên sản phẩm"
+                                        name="productName"
+                                        autoComplete="family-name"
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        size="small"
+                                        id="email"
+                                        label="Email Address"
+                                        name="email"
+                                        autoComplete="email"
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FormControlLabel control={<Checkbox value="allowExtraEmails" color="primary" />} label="Mới" />
+                                    <FormControlLabel control={<Checkbox value="allowExtraEmails" color="primary" />} label="Nổi bật" />
+                                    <FormControlLabel control={<Checkbox value="allowExtraEmails" color="primary" />} label="Sản phẩm chính hãng" />
+                                </Grid>
+                                <Grid item xs={12} sm={4}>
+                                    <TextField
+                                        autoComplete="given-name"
+                                        name="repay"
+                                        fullWidth
+                                        size="small"
+                                        label="Đổi trả"
+                                        autoFocus
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={4}>
+                                    <TextField
+                                        autoComplete="given-name"
+                                        name="delivery"
+                                        fullWidth
+                                        size="small"
+                                        label="Giao hàng"
+                                        autoFocus
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={4}>
+                                    <TextField
+                                        autoComplete="given-name"
+                                        name="insurance"
+                                        fullWidth
+                                        size="small"
+                                        label="Bảo hành"
+                                        autoFocus
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={12}>
+                                    <Autocomplete
+                                        size="small"
+                                        disablePortal
+                                        options={top100Films}
+                                        renderInput={(params) => <TextField {...params} label="Cửa hàng" />}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={12}>
+                                    <Autocomplete
+                                        size="small"
+                                        disablePortal
+                                        options={top100Films}
+                                        renderInput={(params) => <TextField {...params} label="Thương hiệu" />}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={12}>
+                                    <Autocomplete
+                                        size="small"
+                                        disablePortal
+                                        options={top100Films}
+                                        renderInput={(params) => <TextField {...params} label="Danh mục" />}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Box>
+                    </Grid>
+                    <Grid item xs={5}>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                            }}
+                        >
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={12}>
+                                    <Typography variant="subtitle1" gutterBottom>
+                                        Thông tin chi tiết
+                                    </Typography>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                fullWidth
+                                                size="small"
+                                                label="Chất liệu"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                fullWidth
+                                                size="small"
+                                                label="Trọng lượng"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                fullWidth
+                                                size="small"
+                                                label="Dung tích"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                fullWidth
+                                                size="small"
+                                                label="Kích thước"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                fullWidth
+                                                size="small"
+                                                label="Công suất"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                fullWidth
+                                                size="small"
+                                                label="Điện áp"
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12} sm={12}>
+                                    <Typography variant="subtitle1" gutterBottom>
+                                        Thông tin tùy chọn
+                                    </Typography>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            required
+                                            fullWidth
+                                            size="small"
+                                            label="Màu sắc"
+                                        />
+                                        <Chip label="Vàng" variant="outlined" onDelete={handleDeleteChip} />
+                                        <Chip label="Hồng" variant="outlined" onDelete={handleDeleteChip} />
+                                        <Chip label="Trắng" variant="outlined" onDelete={handleDeleteChip} />
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Box>
+                    </Grid>
+                    <Grid item xs={12}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    autoComplete="given-name"
-                                    name="code"
-                                    required
-                                    fullWidth
-                                    size="small"
-                                    id="code"
-                                    label="Mã sản phẩm"
-                                    autoFocus
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    size="small"
-                                    id="productName"
-                                    label="Tên sản phẩm"
-                                    name="productName"
-                                    autoComplete="family-name"
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    size="small"
-                                    id="email"
-                                    label="Email Address"
-                                    name="email"
-                                    autoComplete="email"
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <FormControlLabel control={<Checkbox value="allowExtraEmails" color="primary" />} label="Mới" />
-                                <FormControlLabel control={<Checkbox value="allowExtraEmails" color="primary" />} label="Nổi bật" />
-                                <FormControlLabel control={<Checkbox value="allowExtraEmails" color="primary" />} label="Sản phẩm chính hãng" />
-                            </Grid>
-                            <Grid item xs={12} sm={4}>
-                                <TextField
-                                    autoComplete="given-name"
-                                    name="repay"
-                                    fullWidth
-                                    size="small"
-                                    label="Đổi trả"
-                                    autoFocus
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={4}>
-                                <TextField
-                                    autoComplete="given-name"
-                                    name="delivery"
-                                    fullWidth
-                                    size="small"
-                                    label="Giao hàng"
-                                    autoFocus
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={4}>
-                                <TextField
-                                    autoComplete="given-name"
-                                    name="insurance"
-                                    fullWidth
-                                    size="small"
-                                    label="Bảo hành"
-                                    autoFocus
-                                />
-                            </Grid>
                             <Grid item xs={12} sm={12}>
-                                <Autocomplete
-                                    size="small"
-                                    disablePortal
-                                    options={top100Films}
-                                    renderInput={(params) => <TextField {...params} label="Cửa hàng" />}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={12}>
-                                <Autocomplete
-                                    size="small"
-                                    disablePortal
-                                    options={top100Films}
-                                    renderInput={(params) => <TextField {...params} label="Thương hiệu" />}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={12}>
-                                <Autocomplete
-                                    size="small"
-                                    disablePortal
-                                    options={top100Films}
-                                    renderInput={(params) => <TextField {...params} label="Danh mục" />}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={12}>
-                                <FormLabel>Mô tả</FormLabel>
+                                <Typography variant="subtitle1" gutterBottom>
+                                    Mô tả
+                                </Typography>
                                 <>
                                     <Editor
                                         apiKey={GlobalConfig.TINY_KEY}
@@ -153,7 +250,30 @@ const ProductDetail = () => {
                                 </>
                             </Grid>
                             <Grid item xs={12} sm={12}>
-                                <FormLabel>Ảnh sản phẩm</FormLabel>
+                                <Typography variant="subtitle1" gutterBottom>
+                                    Hướng dẫn chọn size
+                                </Typography>
+                                <Autocomplete
+                                    size="small"
+                                    disablePortal
+                                    options={top100Films}
+                                    renderInput={(params) => <TextField {...params} label="Chọn size theo loại" />}
+                                />
+                                <>
+                                    <Editor
+                                        apiKey={GlobalConfig.TINY_KEY}
+                                        init={{
+                                            height: 500,
+                                            plugins: GlobalConfig.TINY_PLUGINS,
+                                            toolbar: GlobalConfig.TINY_TOOLBAR,
+                                        }}
+                                    />
+                                </>
+                            </Grid>
+                            <Grid item xs={12} sm={12}>
+                                <Typography variant="subtitle1" gutterBottom>
+                                    Ảnh sản phẩm
+                                </Typography>
                                 <label htmlFor="imageSys-upload" className="input-tile mb-2">
                                     <div className="flex">
                                         <span className="upload mr-2 text-[#4e73df] cursor-pointer">Chọn ảnh</span>
@@ -167,9 +287,10 @@ const ProductDetail = () => {
                                     onChangeFiles={onUpload}
                                 />
                             </Grid>
-
                             <Grid item xs={12} sm={12}>
-                                <FormLabel>Ảnh thực tế</FormLabel>
+                                <Typography variant="subtitle1" gutterBottom>
+                                    Ảnh thực tế
+                                </Typography>
                                 <label htmlFor="imageUser-upload" className="input-tile mb-2">
                                     <div className="flex">
                                         <span className="upload mr-2 text-[#4e73df] cursor-pointer">Chọn ảnh</span>
@@ -212,9 +333,9 @@ const ProductDetail = () => {
                         >
                             Cập nhật
                         </Button>
-                    </Box>
-                </Box>
-            </Container>
+                    </Grid>
+                </Grid>
+            </Box>
         </ThemeProvider>
     );
 }
