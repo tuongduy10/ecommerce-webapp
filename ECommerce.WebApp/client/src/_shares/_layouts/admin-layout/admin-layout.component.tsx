@@ -15,7 +15,7 @@ import Paper from '@mui/material/Paper';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Accordion, AccordionDetails, AccordionSummary, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Collapse, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import ListSubheader from '@mui/material/ListSubheader';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -28,13 +28,14 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import { Outlet, useNavigate } from 'react-router-dom';
 import SessionService from 'src/_cores/_services/session.service';
 import { ADMIN_ROUTE_NAME } from 'src/_cores/_enums/route-config.enum';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 
 const mainListItems = [
     { name: "dashboard", icon: <HomeRoundedIcon />, label: "Trang chủ", path: "/" },
-    { 
-        name: "product", 
-        icon: <InventoryIcon />, 
-        label: "Sản phẩm", 
+    {
+        name: "product",
+        icon: <InventoryIcon />,
+        label: "Sản phẩm",
         path: "",
         childs: [
             {
@@ -48,11 +49,11 @@ const mainListItems = [
                 path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT_ADD,
             },
         ]
-     },
-    { 
-        name: "inventory", 
-        icon: <InventoryIcon />, 
-        label: "Kho", 
+    },
+    {
+        name: "inventory",
+        icon: <InventoryIcon />,
+        label: "Kho",
         path: "",
         childs: [
             {
@@ -67,10 +68,10 @@ const mainListItems = [
             },
         ]
     },
-    { 
-        name: "order", 
-        icon: <ShoppingCartIcon />, 
-        label: "Đơn hàng", 
+    {
+        name: "order",
+        icon: <ShoppingCartIcon />,
+        label: "Đơn hàng",
         path: "",
         childs: [
             {
@@ -164,8 +165,13 @@ export default function Dashboard() {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [open, setOpen] = React.useState(true);
+    const [selectedItem, setSelectedItem] = React.useState('');
+
     const toggleDrawer = () => {
         setOpen(!open);
+        if (open) {
+            setSelectedItem('');
+        }
     };
 
     const goToPage = (path: string) => {
@@ -174,28 +180,36 @@ export default function Dashboard() {
         }
     }
 
+    const toggleItem = (name: string) => {
+        if (name === selectedItem) {
+            setSelectedItem('');
+        } else {
+            setSelectedItem(name);
+            setOpen(true);
+        }
+    }
+
     const renderListItem = (listItem: any) => {
         return listItem.map((item: any) => (
             item.childs && item.childs?.length > 0
-                ? (
-                    <Accordion key={item.name}>
-                        <AccordionSummary
-                            expandIcon={<KeyboardArrowDownIcon />}
-                        >
-                            <ListItemIcon>
-                                {item.icon}
-                            </ListItemIcon>
-                            <ListItemText primary={item.label} />
-                        </AccordionSummary>
-                        <AccordionDetails>
+                ? (<>
+                    <ListItemButton key={item.name} onClick={() => toggleItem(item.name)}>
+                        <ListItemIcon>
+                            {item.icon}
+                        </ListItemIcon>
+                        <ListItemText primary={item.label} />
+                        {selectedItem === item.name ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={selectedItem === item.name} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding>
                             {item.childs.map((child: any) => (
-                                <ListItemButton key={child.name} onClick={() => goToPage(child.path)}>
+                                <ListItemButton key={child.name} sx={{ pl: 4 }} onClick={() => goToPage(child.path)}>
                                     <ListItemText primary={child.label} />
                                 </ListItemButton>
                             ))}
-                        </AccordionDetails>
-                    </Accordion>
-                ) : (
+                        </List>
+                    </Collapse>
+                </>) : (
                     <ListItemButton key={item.name} onClick={() => goToPage(item.path)}>
                         <ListItemIcon>
                             {item.icon}

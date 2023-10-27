@@ -8,20 +8,20 @@ interface IUploadProps extends React.HTMLProps<HTMLInputElement> {
 }
 
 const UploadInput = (props: IUploadProps) => {
-    const { 
-        onChangeFiles, 
+    const {
+        onChangeFiles,
         filesLimit = 3, // default limit: 3
-        ...rest 
+        ...rest
     } = props;
-    
+
     const inputElement = useRef<any>(null);
     const [selectedFiles, setSelectedFiles] = useState<{ id: number; src: string }[]>([]);
-    
+
     const handleOnChange = (e: { target: { files: any } }) => {
         const files = e.target.files;
         if (files.length > filesLimit) {
             return;
-        } 
+        }
 
         const imageArray: any = [];
         const emitFiles: any = [];
@@ -71,36 +71,38 @@ const UploadInput = (props: IUploadProps) => {
             ref={inputElement}
             onChange={handleOnChange}
         />
-        <output className="images-uploaded flex mt-2">
-            {selectedFiles.map((image) => (
-                <div className="image__upload-item" key={image.id}>
-                    <div className="image-uploaded relative w-[100px] h-[100px] mr-[4px]">
-                        <img
-                            src={image.src}
-                            alt="Ảnh của bạn"
-                            className="h-full w-full object-contain"
-                        />
-                        <span
-                            className="absolute top-0 right-0 cursor-pointer remove__upload"
-                            style={{
-                                backgroundColor: "#B22B27",
-                                borderRadius: "50%",
-                            }}
-                        >
-                            <MuiIcon
-                                name={ICON_NAME.FEATHER.X}
-                                style={{
-                                    stroke: "#FFFBF1",
-                                    fontWeight: "900",
-                                }}
-                                className="feather feather-x"
-                                onClick={() => handleRemoveFile(image)}
+        {selectedFiles.length > 0 && (
+            <output className="images-uploaded flex mt-2">
+                {selectedFiles.map((image) => (
+                    <div className="image__upload-item" key={image.id}>
+                        <div className="image-uploaded relative w-[100px] h-[100px] mr-[4px]">
+                            <img
+                                src={image.src}
+                                alt="Ảnh của bạn"
+                                className="h-full w-full object-contain"
                             />
-                        </span>
+                            <span
+                                className="absolute top-0 right-0 cursor-pointer remove__upload"
+                                style={{
+                                    backgroundColor: "#B22B27",
+                                    borderRadius: "50%",
+                                }}
+                            >
+                                <MuiIcon
+                                    name={ICON_NAME.FEATHER.X}
+                                    style={{
+                                        stroke: "#FFFBF1",
+                                        fontWeight: "900",
+                                    }}
+                                    className="feather feather-x"
+                                    onClick={() => handleRemoveFile(image)}
+                                />
+                            </span>
+                        </div>
                     </div>
-                </div>
-            ))}
-        </output>
+                ))}
+            </output>
+        )}
     </>);
 }
 

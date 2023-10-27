@@ -1,8 +1,12 @@
-import { Autocomplete, Box, Button, Checkbox, Chip, Container, CssBaseline, FormControl, FormControlLabel, FormLabel, Grid, Input, TextField, ThemeProvider, Typography, createTheme } from "@mui/material";
+import { Autocomplete, Box, Button, Checkbox, Chip, CssBaseline, FormControlLabel, FormLabel, Grid, Input, Stack, TextField, ThemeProvider, Typography, createTheme } from "@mui/material";
 import { Editor } from '@tinymce/tinymce-react';
 import { useRef } from "react";
 import { GlobalConfig } from "src/_configs/global.config";
 import UploadInput from "src/_shares/_components/input/upload";
+import NumberInput from "src/_shares/_components/input/number-input";
+import { FormatHelper } from "src/_shares/_helpers/format-helper";
+import PriceInput from "src/_shares/_components/input/price-input";
+
 
 const top100Films = [
     { label: 'The Shawshank Redemption', year: 1994 },
@@ -12,19 +16,19 @@ const top100Films = [
     { label: '12 Angry Men', year: 1957 },
     { label: "Schindler's List", year: 1993 },
     { label: 'Pulp Fiction', year: 1994 },
-]
+];
 
 const defaultTheme = createTheme();
 const ProductDetail = () => {
-    const editorRef = useRef(null);
-
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        const form = new FormData(event.currentTarget);
+        const param = {
+            priceForSeller: FormatHelper.getNumber(form.get('priceForSeller')?.toString()),
+            files: form.getAll('imageSys-upload'),
+            isLegal: form.get('isLegal')?.toString() === 'on',
+        }
+        console.log(param);
     };
 
     const onUpload = (e: any) => {
@@ -54,7 +58,7 @@ const ProductDetail = () => {
                                 Thông tin cơ bản
                             </Typography>
                             <Grid container spacing={2}>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12} sm={5}>
                                     <TextField
                                         autoComplete="given-name"
                                         name="code"
@@ -66,7 +70,7 @@ const ProductDetail = () => {
                                         autoFocus
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12} sm={5}>
                                     <TextField
                                         required
                                         fullWidth
@@ -77,21 +81,25 @@ const ProductDetail = () => {
                                         autoComplete="family-name"
                                     />
                                 </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        size="small"
-                                        id="email"
-                                        label="Email Address"
-                                        name="email"
-                                        autoComplete="email"
-                                    />
+                                <Grid item xs={12} sm={2}>
+                                    <NumberInput label="Kho" name='stock' />
+                                </Grid>
+                                <Grid item xs={12} sm={12}>
+                                    <PriceInput label="Giá nhập hàng" name='priceForSeller' />
+                                </Grid>
+                                <Grid item xs={12} sm={12}>
+                                    <PriceInput label="Giá cho Seller" name='priceAvailable' />
+                                </Grid>
+                                <Grid item xs={12} sm={12}>
+                                    <PriceInput label="Giá có sẵn" name='priceForSeller' />
+                                </Grid>
+                                <Grid item xs={12} sm={12}>
+                                    <PriceInput label="Giá đặt trước" name='priceAvailable' />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <FormControlLabel control={<Checkbox value="allowExtraEmails" color="primary" />} label="Mới" />
-                                    <FormControlLabel control={<Checkbox value="allowExtraEmails" color="primary" />} label="Nổi bật" />
-                                    <FormControlLabel control={<Checkbox value="allowExtraEmails" color="primary" />} label="Sản phẩm chính hãng" />
+                                    <FormControlLabel control={<Checkbox name="isNew" color="primary" />} label="Mới" />
+                                    <FormControlLabel control={<Checkbox name="isHighlight" color="primary" />} label="Nổi bật" />
+                                    <FormControlLabel control={<Checkbox name="isLegal" color="primary" />} label="Sản phẩm chính hãng" />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
                                     <TextField
@@ -165,7 +173,6 @@ const ProductDetail = () => {
                                     <Grid container spacing={2}>
                                         <Grid item xs={12} sm={6}>
                                             <TextField
-                                                required
                                                 fullWidth
                                                 size="small"
                                                 label="Chất liệu"
@@ -173,7 +180,6 @@ const ProductDetail = () => {
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
                                             <TextField
-                                                required
                                                 fullWidth
                                                 size="small"
                                                 label="Trọng lượng"
@@ -181,7 +187,6 @@ const ProductDetail = () => {
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
                                             <TextField
-                                                required
                                                 fullWidth
                                                 size="small"
                                                 label="Dung tích"
@@ -189,7 +194,6 @@ const ProductDetail = () => {
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
                                             <TextField
-                                                required
                                                 fullWidth
                                                 size="small"
                                                 label="Kích thước"
@@ -197,7 +201,6 @@ const ProductDetail = () => {
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
                                             <TextField
-                                                required
                                                 fullWidth
                                                 size="small"
                                                 label="Công suất"
@@ -205,7 +208,6 @@ const ProductDetail = () => {
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
                                             <TextField
-                                                required
                                                 fullWidth
                                                 size="small"
                                                 label="Điện áp"
@@ -219,14 +221,17 @@ const ProductDetail = () => {
                                     </Typography>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
-                                            required
+                                            sx={{ marginBottom: 1 }}
                                             fullWidth
                                             size="small"
                                             label="Màu sắc"
                                         />
-                                        <Chip label="Vàng" variant="outlined" onDelete={handleDeleteChip} />
-                                        <Chip label="Hồng" variant="outlined" onDelete={handleDeleteChip} />
-                                        <Chip label="Trắng" variant="outlined" onDelete={handleDeleteChip} />
+                                        <Stack spacing={{ xs: 1, sm: 1 }} direction="row" useFlexGap flexWrap="wrap">
+                                            <Chip label="Vàng" variant="outlined" onDelete={handleDeleteChip} />
+                                            <Chip label="Hồng" variant="outlined" onDelete={handleDeleteChip} />
+                                            <Chip label="Trắng" variant="outlined" onDelete={handleDeleteChip} />
+                                            <Chip label="Đen" variant="outlined" onDelete={handleDeleteChip} />
+                                        </Stack>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -254,6 +259,7 @@ const ProductDetail = () => {
                                     Hướng dẫn chọn size
                                 </Typography>
                                 <Autocomplete
+                                    sx={{ marginBottom: 1 }}
                                     size="small"
                                     disablePortal
                                     options={top100Films}
@@ -274,14 +280,15 @@ const ProductDetail = () => {
                                 <Typography variant="subtitle1" gutterBottom>
                                     Ảnh sản phẩm
                                 </Typography>
-                                <label htmlFor="imageSys-upload" className="input-tile mb-2">
-                                    <div className="flex">
+                                <div className="flex">
+                                    <label htmlFor="imageSys-upload">
                                         <span className="upload mr-2 text-[#4e73df] cursor-pointer">Chọn ảnh</span>
                                         <FormLabel>(*Tối đa 10, nếu có)</FormLabel>
-                                    </div>
-                                </label>
+                                    </label>
+                                </div>
                                 <UploadInput
                                     id={`imageSys-upload`}
+                                    name="imageSys-upload"
                                     multiple
                                     hidden
                                     onChangeFiles={onUpload}
@@ -291,12 +298,12 @@ const ProductDetail = () => {
                                 <Typography variant="subtitle1" gutterBottom>
                                     Ảnh thực tế
                                 </Typography>
-                                <label htmlFor="imageUser-upload" className="input-tile mb-2">
-                                    <div className="flex">
+                                <div className="flex">
+                                    <label htmlFor="imageUser-upload">
                                         <span className="upload mr-2 text-[#4e73df] cursor-pointer">Chọn ảnh</span>
-                                        <FormLabel>(*Tối đa 10, nếu có)</FormLabel>
-                                    </div>
-                                </label>
+                                        <FormLabel>(Tối đa 10, nếu có)</FormLabel>
+                                    </label>
+                                </div>
                                 <UploadInput
                                     id={`imageUser-upload`}
                                     multiple
@@ -306,7 +313,6 @@ const ProductDetail = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    required
                                     fullWidth
                                     size="small"
                                     id="note"
@@ -316,7 +322,6 @@ const ProductDetail = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    required
                                     fullWidth
                                     size="small"
                                     id="link"
@@ -324,15 +329,15 @@ const ProductDetail = () => {
                                     name="link"
                                 />
                             </Grid>
+                            <Grid item xs={12} sm={12}>
+                                <Button sx={{ marginRight: 2 }} variant="outlined">
+                                    Quay lại
+                                </Button>
+                                <Button type="submit" variant="contained">
+                                    Cập nhật
+                                </Button>
+                            </Grid>
                         </Grid>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                        >
-                            Cập nhật
-                        </Button>
                     </Grid>
                 </Grid>
             </Box>
