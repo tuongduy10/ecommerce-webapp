@@ -1,9 +1,9 @@
-import { ProductHelper } from "./../../_shares/_helpers/product-helper";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { SLICE_NAME } from "../_enums/state.enum";
 import { IProductInitState } from "../_interfaces/state.interface";
 import { ISubCategory } from "../_interfaces/inventory.interface";
 import { IProduct } from "../_interfaces/product.interface";
+import { ProductHelper } from "src/_shares/_helpers/product-helper";
 
 const initialState: IProductInitState = { 
   productDetail: undefined,
