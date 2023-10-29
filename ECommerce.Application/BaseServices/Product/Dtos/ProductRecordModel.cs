@@ -12,6 +12,6 @@ namespace ECommerce.Application.BaseServices.Product.Dtos
         public int CurrentRecord { get; set; }
         public int TotalPage { get; set; }
         public int TotalRecord { get; set; }
-        public List<ProductModel> Items { get; set; }
+        //public List<ProductModel> Items { get; set; }
     }
 }
