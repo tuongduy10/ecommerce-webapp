@@ -14,7 +14,8 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { Accordion, AccordionDetails, AccordionSummary, Collapse, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import ListSubheader from '@mui/material/ListSubheader';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -22,23 +23,89 @@ import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import CategoryIcon from '@mui/icons-material/Category';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import SessionService from 'src/_cores/_services/session.service';
 import { ADMIN_ROUTE_NAME } from 'src/_cores/_enums/route-config.enum';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 
 const mainListItems = [
     { name: "dashboard", icon: <HomeRoundedIcon />, label: "Trang chủ", path: "/" },
-    { name: "inventory", icon: <InventoryIcon />, label: "Kho", path: "" },
-    { name: "order", icon: <ShoppingCartIcon />, label: "Đơn hàng", path: "" },
-    { name: "user", icon: <PeopleIcon />, label: "Người dùng", path: "" },
+    {
+        name: "product",
+        icon: <InventoryIcon />,
+        label: "Sản phẩm",
+        path: "",
+        childs: [
+            {
+                name: 'list',
+                label: 'Danh sách sản phẩm',
+                path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT,
+            },
+            {
+                name: 'add',
+                label: 'Thêm sản phẩm',
+                path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT_ADD,
+            },
+        ]
+    },
+    {
+        name: "inventory",
+        icon: <InventoryIcon />,
+        label: "Kho",
+        path: "",
+        childs: [
+            {
+                name: 'brand',
+                label: 'Thương hiệu',
+                path: '',
+            },
+            {
+                name: 'category',
+                label: 'Danh mục',
+                path: '',
+            },
+        ]
+    },
+    {
+        name: "order",
+        icon: <ShoppingCartIcon />,
+        label: "Đơn hàng",
+        path: "",
+        childs: [
+            {
+                name: 'pending',
+                label: 'Chờ xác nhận',
+                path: '',
+            },
+        ]
+    },
+    {
+        name: "user",
+        icon: <PeopleIcon />,
+        label: "Người dùng",
+        path: "",
+        childs: [
+            {
+                name: 'list',
+                label: 'Danh sách người dùng',
+                path: ADMIN_ROUTE_NAME.MANAGE_USER,
+            },
+            {
+                name: 'add',
+                label: 'Thêm người dùng',
+                path: ADMIN_ROUTE_NAME.MANAGE_USER_ADD,
+            }
+        ]
+    },
     { name: "statistical", icon: <BarChartIcon />, label: "Thống kê", path: "" },
 ];
 
 const secondListItems = [
-    { name: "statistical", icon: <AssignmentIcon />, label: "Tháng hiện tại", path: "" },
-    { name: "statisticalLastQuarter", icon: <AssignmentIcon />, label: "Quý trước", path: "" },
-    { name: "statisticalYearEnd", icon: <AssignmentIcon />, label: "Tổng kết năm", path: "" },
+    { name: "statistical", icon: <AssignmentIcon />, label: "Tháng hiện tại", path: ADMIN_ROUTE_NAME.DASHBOARD },
+    { name: "statisticalLastQuarter", icon: <AssignmentIcon />, label: "Quý trước", path: ADMIN_ROUTE_NAME.DASHBOARD },
+    { name: "statisticalYearEnd", icon: <AssignmentIcon />, label: "Tổng kết năm", path: ADMIN_ROUTE_NAME.DASHBOARD },
 ];
 
 const drawerWidth: number = 240;
@@ -95,11 +162,63 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const defaultTheme = createTheme();
 
 export default function Dashboard() {
+    const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [open, setOpen] = React.useState(true);
+    const [selectedItem, setSelectedItem] = React.useState('');
+
     const toggleDrawer = () => {
         setOpen(!open);
+        if (open) {
+            setSelectedItem('');
+        }
     };
+
+    const goToPage = (path: string) => {
+        if (path) {
+            navigate(path)
+        }
+    }
+
+    const toggleItem = (name: string) => {
+        if (name === selectedItem) {
+            setSelectedItem('');
+        } else {
+            setSelectedItem(name);
+            setOpen(true);
+        }
+    }
+
+    const renderListItem = (listItem: any) => {
+        return listItem.map((item: any) => (
+            item.childs && item.childs?.length > 0
+                ? (<>
+                    <ListItemButton key={item.name} onClick={() => toggleItem(item.name)}>
+                        <ListItemIcon>
+                            {item.icon}
+                        </ListItemIcon>
+                        <ListItemText primary={item.label} />
+                        {selectedItem === item.name ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={selectedItem === item.name} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding>
+                            {item.childs.map((child: any) => (
+                                <ListItemButton key={child.name} sx={{ pl: 4 }} onClick={() => goToPage(child.path)}>
+                                    <ListItemText primary={child.label} />
+                                </ListItemButton>
+                            ))}
+                        </List>
+                    </Collapse>
+                </>) : (
+                    <ListItemButton key={item.name} onClick={() => goToPage(item.path)}>
+                        <ListItemIcon>
+                            {item.icon}
+                        </ListItemIcon>
+                        <ListItemText primary={item.label} />
+                    </ListItemButton>
+                )
+        ))
+    }
 
     return (
         <ThemeProvider theme={defaultTheme}>
@@ -146,7 +265,7 @@ export default function Dashboard() {
                             onClose={() => setAnchorEl(null)}
                         >
                             <MenuItem onClick={() => setAnchorEl(null)}>Hồ sơ</MenuItem>
-                            <MenuItem onClick={() => { 
+                            <MenuItem onClick={() => {
                                 setAnchorEl(null);
                                 SessionService.deleteAccessToken();
                                 window.location.href = ADMIN_ROUTE_NAME.LOGIN;
@@ -166,28 +285,14 @@ export default function Dashboard() {
                     <Divider />
                     <List component="nav">
                         <React.Fragment>
-                            {mainListItems.map(item => (
-                                <ListItemButton key={item.name}>
-                                    <ListItemIcon>
-                                        {item.icon}
-                                    </ListItemIcon>
-                                    <ListItemText primary={item.label} />
-                                </ListItemButton>
-                            ))}
+                            {renderListItem(mainListItems)}
                         </React.Fragment>
                         <Divider sx={{ my: 1 }} />
                         <React.Fragment>
                             <ListSubheader component="div" inset>
                                 Báo cáo
                             </ListSubheader>
-                            {secondListItems.map(item => (
-                                <ListItemButton key={item.name}>
-                                    <ListItemIcon>
-                                        {item.icon}
-                                    </ListItemIcon>
-                                    <ListItemText primary={item.label} />
-                                </ListItemButton>
-                            ))}
+                            {renderListItem(secondListItems)}
                         </React.Fragment>
                     </List>
                 </Drawer>
@@ -204,6 +309,6 @@ export default function Dashboard() {
                     </Container>
                 </Box>
             </Box>
-        </ThemeProvider>
+        </ThemeProvider >
     );
 }

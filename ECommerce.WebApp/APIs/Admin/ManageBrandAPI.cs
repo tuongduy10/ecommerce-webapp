@@ -13,8 +13,8 @@ using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.APIs.Admin
 {
-    [Authorize(AuthenticationSchemes = "AdminAuth")]
-    [Authorize(Policy="Admin")]
+    //[Authorize(AuthenticationSchemes = "AdminAuth")]
+    //[Authorize(Policy="Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class ManageBrandAPI : ControllerBase

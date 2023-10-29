@@ -18,8 +18,8 @@ using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.Controllers.Admin
 {
-    [Authorize(AuthenticationSchemes = "AdminAuth")]
-    [Authorize(Policy = "Admin")]
+    //[Authorize(AuthenticationSchemes = "AdminAuth")]
+    //[Authorize(Policy = "Admin")]
     public class ManageUserController : Controller
     {
         private IUserBaseService _userService;

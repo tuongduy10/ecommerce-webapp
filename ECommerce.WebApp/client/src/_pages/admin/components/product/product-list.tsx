@@ -14,6 +14,23 @@ import Collapse from "@mui/material/Collapse";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
+const header: ITableHeader[] = [
+    { field: 'createdDate', fieldName: 'Ngày tạo', align: 'left' },
+    { field: 'ppc', fieldName: 'Mã tự động', align: 'left' },
+    { field: 'code', fieldName: 'Mã sản phẩm', align: 'left' },
+    { field: 'name', fieldName: 'Tên sản phẩm', align: 'left' },
+    { field: 'shopName', fieldName: 'Shop', align: 'left' },
+
+    { field: 'pricePreOrder', fieldName: 'Giá đặt trước', align: 'right' },
+    { field: 'priceAvailable', fieldName: 'Giá có sẵn', align: 'right' },
+    { field: 'subCategory', fieldName: 'Loại sản phẩm', align: 'left' },
+
+    { field: 'category', fieldName: 'Danh mục', align: 'center' },
+    { field: 'stock', fieldName: 'Kho', align: 'center' },
+    { field: 'status', fieldName: 'Trạng thái', align: 'center' },
+    { field: 'action', fieldName: '', align: 'center' }
+];
+
 function Row(props: any) {
     const { rowData, externalData } = props;
     const [open, setOpen] = useState(false);
@@ -33,10 +50,24 @@ function Row(props: any) {
                 <TableCell component="th" scope="row">
                     {rowData.name}
                 </TableCell>
-                <TableCell>{rowData.category}</TableCell>
-                <TableCell>{rowData.image}</TableCell>
-                <TableCell align="right">{rowData.price}</TableCell>
-                <TableCell align="right">{rowData.date}</TableCell>
+                <TableCell align="left">{rowData.category}</TableCell>
+                <TableCell align="left">{rowData.image}</TableCell>
+                <TableCell align="left">{rowData.price}</TableCell>
+                <TableCell align="left">{rowData.date}</TableCell>
+
+                <TableCell align="right">123</TableCell>
+                <TableCell align="right">456</TableCell>
+                <TableCell align="left">789</TableCell>
+
+
+                <TableCell align="center">zxc</TableCell>
+                <TableCell align="center">qwe</TableCell>
+                <TableCell align="center">asd</TableCell>
+                <TableCell align="center">
+                    <button>Hiện</button>
+                    <button>Ẩn</button>
+                    <button>Xóa</button>
+                </TableCell>
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -72,18 +103,11 @@ function Row(props: any) {
 }
 
 export default function ProductList() {
-    
+
     useEffect(() => {
         // your logic
     }, []);
 
-    const header: ITableHeader[] = [
-        { field: 'name', fieldName: 'Tên sản phẩm', align: 'left' },
-        { field: 'category', fieldName: 'Loại sản phẩm', align: 'left' },
-        { field: 'image', fieldName: 'Ảnh sản phẩm', align: 'left' },
-        { field: 'price', fieldName: 'Giá sản phẩm', align: 'right' },
-        { field: 'date', fieldName: 'Ngày', align: 'right' },
-    ];
     const data: ITableData[] = [
         { id: "1", name: 'Tên 1', category: 'Loại 1', image: 'Ảnh 1', price: '1.000 đ', date: '20/10/2010', },
         { id: "2", name: 'Tên 2', category: 'Loại 2', image: 'Ảnh 2', price: '1.000 đ', date: '20/10/2010', },

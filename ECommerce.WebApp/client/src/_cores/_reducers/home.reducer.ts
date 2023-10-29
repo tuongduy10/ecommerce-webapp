@@ -10,6 +10,7 @@ const initialState: IHomeInitState = {
   highLightBrands: [],
   brands: [],
   categories: [],
+  selectedBrand: null
 };
 
 const homeSlice = createSlice({
@@ -34,6 +35,9 @@ const homeSlice = createSlice({
     selectCategory: (state, action) => {
       state.categorySelected = action.payload;
     },
+    setSelectedBrand: (state, action: PayloadAction<IBrand>) => {
+      state.selectedBrand = action.payload;
+    },
   },
 });
 
@@ -43,6 +47,7 @@ export const {
   setCategories,
   selectAlphabet,
   selectCategory,
+  setSelectedBrand,
 } = homeSlice.actions;
 
 const homeReducer = homeSlice.reducer;

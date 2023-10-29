@@ -247,7 +247,6 @@
   border-bottom: 1px solid #ddd;
   font-family: "Playfair Display";
   cursor: pointer;
-  color: inherit;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -957,7 +956,7 @@
   margin-top: 0.78125vw;
 }
 
-.product-btn a {
+.product-btn button {
   transform: scale(1);
   opacity: 1;
   transition: all 0.5s ease;
@@ -998,7 +997,7 @@
     width: calc(50% - 4px);
   }
 
-  .product-btn a {
+  .product-btn button {
     font-size: 1.81452vw;
     padding: 1.46169vw 5.44355vw;
   }
@@ -1091,7 +1090,6 @@ hr {
   text-transform: uppercase;
   font-weight: 700;
   border: 1px solid #333;
-  background-color: #fff;
   padding: calc(13px + (24 - 13) * ((100vw - 375px) / (1920 - 375)));
 }
 

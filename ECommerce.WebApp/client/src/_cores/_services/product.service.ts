@@ -7,4 +7,8 @@ export default class ProductService {
         return api.post(PRODUCT_API_URL.PRODUCT_LIST, param);
     }
 
+    public static getProductDetail(_id: number) { 
+        return api.get(PRODUCT_API_URL.PRODUCT_DETAIL + "/" + _id );
+    }
+
 }

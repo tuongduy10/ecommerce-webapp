@@ -1,4 +1,5 @@
-import { IBrand, ICategory } from "./inventory.interface";
+import { IBrand, ICategory, ISubCategory } from "./inventory.interface";
+import { IProduct } from "./product.interface";
 
 export interface IAction {
   type: string;
@@ -27,4 +28,25 @@ export interface IHomeInitState {
   highLightBrands: IBrand[];
   brands: IBrand[];
   categories: ICategory[];
+  selectedBrand: IBrand | null;
+  [key: string]: any;
+}
+
+export interface IProductInitState { 
+  productDetail: IProduct | undefined,
+  productList: any[]
+  param: {
+    brandId: number,
+    orderBy?: "asc" | "desc" | "newest" | "discount" | "",
+    subCategoryId: number,
+    optionValueIds: number[],
+
+    // pagination
+    pageIndex: number,
+    totalPage: number,
+    currentRecord: number,
+    totalRecord: number
+  },
+  subCategories: ISubCategory[];
+  [key: string]: any;
 }

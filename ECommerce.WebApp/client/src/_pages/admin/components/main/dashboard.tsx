@@ -23,7 +23,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import ProductList from '../inventory/product-list';
+import ProductList from '../product/product-list';
 
 const mainListItems = [
     { name: "dashboard", icon: <HomeRoundedIcon />, label: "Trang chủ", path: "/" },

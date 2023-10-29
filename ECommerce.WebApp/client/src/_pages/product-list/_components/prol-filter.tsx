@@ -1,18 +1,27 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useSearchParams } from "react-router-dom";
+import { setParam } from "src/_cores/_reducers/product.reducer";
+import { useProductStore } from "src/_cores/_store/root-store";
 import MuiIcon from "src/_shares/_components/mui-icon/mui-icon.component";
 
 const ProductListFilter = () => {
   const items = [
     { text: 'Tất cả', value: '' },
-    { text: 'Mẫu mới nhất', value: 'orderby-newest' },
-    { text: 'Giá thấp - cao', value: 'orderby-ascending' },
-    { text: 'Giá cao - thấp', value: 'orderby-descending' },
-    { text: 'Đang giảm giá %', value: 'orderby-discount' },
+    { text: 'Mẫu mới nhất', value: 'newest' },
+    { text: 'Giá thấp - cao', value: 'asc' },
+    { text: 'Giá cao - thấp', value: 'desc' },
+    { text: 'Đang giảm giá %', value: 'discount' },
   ];
 
   const [selectedItem, setSelectedItem] = useState(items[0]);
   const [isOpenOrderList, setOpenOrderList] = useState(false);
   const [isOrderIconChanged, setOrderIconChanged] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const updatedSearchParams = new URLSearchParams(searchParams.toString());
+
+  const dispatch = useDispatch();
+  const productStore = useProductStore();
 
   const mouseEnter = () => {
     setOpenOrderList(true);
@@ -50,7 +59,16 @@ const ProductListFilter = () => {
       >
         <div className="order__item-dropdown_items">
           {items.map(item => (
-            <button key={item.value} className="order__item text-left d-none" onClick={() => { setSelectedItem(item); toggleOrderList() }}>
+            <button key={item.value} className="order__item text-left d-none" onClick={() => {
+              setSelectedItem(item); 
+              toggleOrderList();
+              updatedSearchParams.set('orderBy', item.value);
+              setSearchParams(updatedSearchParams);
+              dispatch(setParam({
+                ...productStore.param,
+                orderBy: item.value
+              }));
+            }}>
               {item.text}
               <MuiIcon
                 name="CHEVRON_RIGHT"

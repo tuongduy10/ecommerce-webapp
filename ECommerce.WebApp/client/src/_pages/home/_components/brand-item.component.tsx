@@ -1,18 +1,36 @@
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { ENV } from "src/_configs/enviroment.config";
+import { ROUTE_NAME } from "src/_cores/_enums/route-config.enum";
+import { setSelectedBrand } from "src/_cores/_reducers";
+import { useHomeStore } from "src/_cores/_store/root-store";
 
 const BrandItem = (props: any) => {
+    const homeStore = useHomeStore();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { data } = props;
+    
+    const goToProductList = () => {
+        dispatch(setSelectedBrand(data))
+        navigate({
+            pathname: ROUTE_NAME.PRODUCT_LIST,
+            search: `?pageIndex=1&brandId=${data.brandId}&orderBy=`
+        });
+    }
+
     return (
-        <div className="bran__list-item rounded" style={{ border: '.5px solid #ddd', padding: '12px' }}>
-            <a href="/">
-                <div className="border-default bran__list-img flex items-center justify-between py-2 px-4 mx-auto bg-white">
-                    <img src={ENV.IMAGE_URL + '/brand/' + data.brandImagePath} className="max-w-full max-h-full mx-auto" alt="name" />
-                </div>
-                <div className="card-body text-center p-2 items-center justify-center">
-                    <h5 className="bran__list-name card-title mb-0 leading-[1.2] font-medium text-[1.25rem]">{data.brandName}</h5>
-                    <h6 className="bran__list-type card-text leading-[1.2] font-medium text-[1rem]">{data.category}</h6>
-                </div>
-            </a>
+        <div
+            className="bran__list-item rounded cursor-pointer" style={{ border: '.5px solid #ddd', padding: '12px' }}
+            onClick={goToProductList}
+        >
+            <div className="border-default bran__list-img flex items-center justify-between py-2 px-4 mx-auto bg-white">
+                <img src={ENV.IMAGE_URL + '/brand/' + data.brandImagePath} className="max-w-full max-h-full mx-auto" alt="name" />
+            </div>
+            <div className="card-body text-center p-2 items-center justify-center">
+                <h5 className="bran__list-name card-title mb-0 leading-[1.2] font-medium text-[1.25rem]">{data.brandName}</h5>
+                <h6 className="bran__list-type card-text leading-[1.2] font-medium text-[1rem]">{data.category}</h6>
+            </div>
         </div>
     )
 }
