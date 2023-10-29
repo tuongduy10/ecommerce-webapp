@@ -81,8 +81,7 @@ namespace ECommerce.WebApp.Controllers.Client
             var product = await _productService.getProductDetail(ProductId);
             if (product == null)
                 return NotFound();
-            //var rates = await _rateService.GetRatesByProductId(ProductId, _userId);
-            var rates = await _commentService.GetAllByProductId(ProductId, _userId);
+            var rates = await _rateService.GetRatesByProductId(ProductId, _userId);
             var suggestion = await _productService.getProductSuggestion();
             var phone = await _configurationService.getPhoneNumber();
             var options = await _productService.getProductOption(ProductId);
@@ -92,7 +91,7 @@ namespace ECommerce.WebApp.Controllers.Client
             var model = new ProductDetailViewModel
             {
                 product = product,
-                rates = rates.Data,
+                rates = rates,
                 suggestion = ProductListFormated(suggestion),
                 phone = phone,
                 options = options,
@@ -167,8 +166,8 @@ namespace ECommerce.WebApp.Controllers.Client
                 pro.Price = item.PricePreOrder ?? item.PriceAvailable;
                 pro.PriceOnSell = item.DiscountPreOrder ?? item.DiscountAvailable;
                 pro.ProductTypeName = 
-                    (item.PricePreOrder != null || item.DiscountAvailable != null) ? "Hàng đặt trước" : 
-                    (item.PricePreOrder != null || item.DiscountAvailable != null) ? "Hàng có sẵn" : "" ;
+                    (item.PricePreOrder != null || item.DiscountPreOrder != null) ? "Hàng đặt trước" : 
+                    (item.PriceAvailable != null || item.DiscountAvailable != null) ? "Hàng có sẵn" : "" ;
 
                 _list.Add(pro);
             }

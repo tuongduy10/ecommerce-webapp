@@ -18,5 +18,6 @@ namespace ECommerce.Application.Services.User
         Task<Response<UserGetModel>> UpdateOnlineStatus(int _userId, bool _isOnline);
         Task<Response<UserGetModel>> UpdateOnlineHistory(int _userId);
         Task<Response<UserGetModel>> ValidateUser(SignInRequest request);
+        Task<Response<List<ShopModel>>> GetShops();
     }
 }

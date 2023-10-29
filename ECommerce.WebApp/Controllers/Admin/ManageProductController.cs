@@ -21,8 +21,6 @@ using System.Threading.Tasks;
 
 namespace ECommerce.WebApp.Controllers.Admin
 {
-    [Authorize(AuthenticationSchemes = "AdminAuth")]
-    [Authorize(Policy = "Seller")]
     public class ManageProductController : Controller
     {
         private IProductBaseService _productService;

@@ -15,6 +15,7 @@ using ECommerce.Application.Repositories;
 using ECommerce.Application.Repositories.OnlineHistory;
 using ECommerce.Application.Services.User.Dtos;
 using ECommerce.Application.Repositories.Notification;
+using ECommerce.Application.BaseServices.Shop.Dtos;
 
 namespace ECommerce.Application.Services.User
 {
@@ -25,6 +26,7 @@ namespace ECommerce.Application.Services.User
         private IOnlineHistoryRepository _onlineHistoryRepo;
         private INotificationRepository _notiRepo;
         private IRepositoryBase<MessageHistory> _messageRepo;
+        private IRepositoryBase<Shop> _shopRepo;
         
         public UserService(ECommerceContext DbContext)
         {
@@ -37,6 +39,8 @@ namespace ECommerce.Application.Services.User
                 _notiRepo = new NotificationRepository(_DbContext);
             if (_messageRepo == null)
                 _messageRepo = new RepositoryBase<MessageHistory>(_DbContext);
+            if (_shopRepo == null)
+                _shopRepo = new RepositoryBase<Shop>(_DbContext);
         }
         public int GetCurrentUserId()
         {
@@ -241,6 +245,40 @@ namespace ECommerce.Application.Services.User
             catch(Exception error)
             {
                 return new FailResponse<UserGetModel>("Đang xảy ra lỗi, vui lòng thử lại sau");
+            }
+        }
+        public async Task<Response<List<ShopModel>>> GetShops()
+        {
+            try
+            {
+                var list = await _shopRepo
+                    .Entity()
+                    .Where(i => i.Status != 4 && i.Status != 2)
+                    .Select(i => new ShopModel()
+                    {
+                        id = i.ShopId,
+                        name = i.ShopName,
+                        phoneNumber = i.ShopPhoneNumber,
+                        mail = i.ShopMail,
+                        address = i.ShopAddress,
+                        cityCode = i.ShopCityCode,
+                        districtCode = i.ShopDistrictCode,
+                        joinDate = (DateTime)i.ShopJoinDate,
+                        wardCode = i.ShopWardCode,
+                        status = (byte)i.Status,
+                        user = i.User != null ? new UserModel
+                        {
+                            id = i.User.UserId,
+                            fullName = i.User.UserFullName
+                        } : null,
+                    })
+                    .ToListAsync();
+                var result = list.OrderByDescending(i => i.id).ToList();
+                return new SuccessResponse<List<ShopModel>>(result);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<List<ShopModel>>(error.Message);
             }
         }
     }
