@@ -523,15 +523,9 @@ namespace ECommerce.Application.Services.Product
                 }
 
                 // Images
-<<<<<<< HEAD
                 if (request.systemFileNames != null)
                 {
                     var sysImgAddReq = request.systemFileNames
-=======
-                if (request.systemFileName != null)
-                {
-                    var sysImgAddReq = request.systemFileName
->>>>>>> b0d32af (Api add and delete)
                         .Select(img => new ProductImage
                         {
                             ProductId = product.ProductId,
@@ -541,15 +535,9 @@ namespace ECommerce.Application.Services.Product
                     await _productImageRepo.AddRangeAsync(sysImgAddReq);
                     await _productImageRepo.SaveChangesAsync();
                 }
-<<<<<<< HEAD
                 if (request.userFileNames != null)
                 {
                     var userImgAddReq = request.systemFileNames
-=======
-                if (request.userFileName != null)
-                {
-                    var userImgAddReq = request.systemFileName
->>>>>>> b0d32af (Api add and delete)
                         .Select(img => new ProductUserImage
                         {
                             ProductId = product.ProductId,

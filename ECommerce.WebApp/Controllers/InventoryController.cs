@@ -91,23 +91,5 @@ namespace ECommerce.WebApp.Controllers
                 return BadRequest(result);
             return Ok(result);
         }
-        [AllowAnonymous]
-        [HttpGet("product-options/{id}")]
-        public async Task<IActionResult> getProductOptions(int id)
-        {
-            var result = await _inventoryService.getProductOptions(id);
-            if (!result.isSucceed)
-                return BadRequest(result);
-            return Ok(result);
-        }
-        [AllowAnonymous]
-        [HttpGet("product-attributes/{id}")]
-        public async Task<IActionResult> getProductAttributes(int id)
-        {
-            var result = await _inventoryService.getProductAttributes(id);
-            if (!result.isSucceed)
-                return BadRequest(result);
-            return Ok(result);
-        }
     }
 }
