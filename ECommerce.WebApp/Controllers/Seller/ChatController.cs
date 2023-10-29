@@ -1,7 +1,7 @@
 ﻿using ECommerce.Application.Constants;
 using ECommerce.Application.Services.Chat;
 using ECommerce.Application.Services.Chat.Dtos;
-using ECommerce.Application.Services.User;
+using ECommerce.Application.BaseServices.User;
 using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;

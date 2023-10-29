@@ -1,9 +1,9 @@
 ﻿using ECommerce.Application.Common;
-using ECommerce.Application.Services.Shop;
-using ECommerce.Application.Services.Shop.Dtos;
+using ECommerce.Application.BaseServices.Shop;
+using ECommerce.Application.BaseServices.Shop.Dtos;
+using ECommerce.Application.BaseServices.User;
+using ECommerce.Application.BaseServices.User.Dtos;
 using ECommerce.Application.Services.User;
-using ECommerce.Application.Services.User.Dtos;
-using ECommerce.Application.Services.User_v2;
 using ECommerce.Data.Models;
 using ECommerce.WebApp.Hubs;
 using ECommerce.WebApp.Utils;
@@ -26,15 +26,15 @@ namespace ECommerce.WebApp.APIs
     public class AccountAPI : ControllerBase
     {
         private const string COOKIE_CLIENT_SCHEMA = "ClientAuth";
-        private IUserService _userService;
-        private IUserService_v2 _userServiceV2;
+        private IUserBaseService _userService;
+        private IUserService _userServiceV2;
         private IShopService _shopService;
         private IHubContext<CommonHub> _commonHub;
         private IHubContext<ClientHub> _clientHub;
         private HttpContextHelper _contextHelper;
         public AccountAPI(
-            IUserService userService, 
-            IUserService_v2 userServiceV2,
+            IUserBaseService userService, 
+            IUserService userServiceV2,
             IShopService shopService,
             IHubContext<CommonHub> commonHub,
             IHubContext<ClientHub> clientHub)

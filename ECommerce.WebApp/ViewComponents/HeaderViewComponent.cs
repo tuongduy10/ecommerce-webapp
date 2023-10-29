@@ -1,6 +1,6 @@
-﻿using ECommerce.Application.Services.Configurations;
+﻿using ECommerce.Application.BaseServices.Configurations;
 using ECommerce.Application.Services.Notification;
-using ECommerce.Application.Services.Rate;
+using ECommerce.Application.BaseServices.Rate;
 using ECommerce.WebApp.Models.Components;
 using Microsoft.AspNetCore.Mvc;
 using System;

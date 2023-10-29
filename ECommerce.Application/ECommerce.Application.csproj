@@ -5,51 +5,54 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Services\AvailablePrice\**" />
-    <Compile Remove="Services\Banner\**" />
-    <Compile Remove="Services\DiscountType\**" />
-    <Compile Remove="Services\Header\**" />
-    <Compile Remove="Services\Option\**" />
-    <Compile Remove="Services\ProductAttribute\**" />
-    <Compile Remove="Services\ProductOption\**" />
-    <Compile Remove="Services\ProductPrice\**" />
-    <Compile Remove="Services\ProductType\**" />
-    <Compile Remove="Services\RatingImage\**" />
-    <Compile Remove="Services\ShopBrand\**" />
-    <Compile Remove="Services\Social\**" />
-    <Compile Remove="Services\SubCategoryAttribute\**" />
-    <Compile Remove="Services\SubCategoryOption\**" />
-    <Compile Remove="Services\UserRole\**" />
-    <EmbeddedResource Remove="Services\AvailablePrice\**" />
-    <EmbeddedResource Remove="Services\Banner\**" />
-    <EmbeddedResource Remove="Services\DiscountType\**" />
-    <EmbeddedResource Remove="Services\Header\**" />
-    <EmbeddedResource Remove="Services\Option\**" />
-    <EmbeddedResource Remove="Services\ProductAttribute\**" />
-    <EmbeddedResource Remove="Services\ProductOption\**" />
-    <EmbeddedResource Remove="Services\ProductPrice\**" />
-    <EmbeddedResource Remove="Services\ProductType\**" />
-    <EmbeddedResource Remove="Services\RatingImage\**" />
-    <EmbeddedResource Remove="Services\ShopBrand\**" />
-    <EmbeddedResource Remove="Services\Social\**" />
-    <EmbeddedResource Remove="Services\SubCategoryAttribute\**" />
-    <EmbeddedResource Remove="Services\SubCategoryOption\**" />
-    <EmbeddedResource Remove="Services\UserRole\**" />
-    <None Remove="Services\AvailablePrice\**" />
-    <None Remove="Services\Banner\**" />
-    <None Remove="Services\DiscountType\**" />
-    <None Remove="Services\Header\**" />
-    <None Remove="Services\Option\**" />
-    <None Remove="Services\ProductAttribute\**" />
-    <None Remove="Services\ProductOption\**" />
-    <None Remove="Services\ProductPrice\**" />
-    <None Remove="Services\ProductType\**" />
-    <None Remove="Services\RatingImage\**" />
-    <None Remove="Services\ShopBrand\**" />
-    <None Remove="Services\Social\**" />
-    <None Remove="Services\SubCategoryAttribute\**" />
-    <None Remove="Services\SubCategoryOption\**" />
-    <None Remove="Services\UserRole\**" />
+    <Compile Remove="BaseServices\AvailablePrice\**" />
+    <Compile Remove="BaseServices\Banner\**" />
+    <Compile Remove="BaseServices\Brand_v2\**" />
+    <Compile Remove="BaseServices\DiscountType\**" />
+    <Compile Remove="BaseServices\Header\**" />
+    <Compile Remove="BaseServices\Option\**" />
+    <Compile Remove="BaseServices\ProductAttribute\**" />
+    <Compile Remove="BaseServices\ProductOption\**" />
+    <Compile Remove="BaseServices\ProductPrice\**" />
+    <Compile Remove="BaseServices\ProductType\**" />
+    <Compile Remove="BaseServices\RatingImage\**" />
+    <Compile Remove="BaseServices\ShopBrand\**" />
+    <Compile Remove="BaseServices\Social\**" />
+    <Compile Remove="BaseServices\SubCategoryAttribute\**" />
+    <Compile Remove="BaseServices\SubCategoryOption\**" />
+    <Compile Remove="BaseServices\UserRole\**" />
+    <EmbeddedResource Remove="BaseServices\AvailablePrice\**" />
+    <EmbeddedResource Remove="BaseServices\Banner\**" />
+    <EmbeddedResource Remove="BaseServices\Brand_v2\**" />
+    <EmbeddedResource Remove="BaseServices\DiscountType\**" />
+    <EmbeddedResource Remove="BaseServices\Header\**" />
+    <EmbeddedResource Remove="BaseServices\Option\**" />
+    <EmbeddedResource Remove="BaseServices\ProductAttribute\**" />
+    <EmbeddedResource Remove="BaseServices\ProductOption\**" />
+    <EmbeddedResource Remove="BaseServices\ProductPrice\**" />
+    <EmbeddedResource Remove="BaseServices\ProductType\**" />
+    <EmbeddedResource Remove="BaseServices\RatingImage\**" />
+    <EmbeddedResource Remove="BaseServices\ShopBrand\**" />
+    <EmbeddedResource Remove="BaseServices\Social\**" />
+    <EmbeddedResource Remove="BaseServices\SubCategoryAttribute\**" />
+    <EmbeddedResource Remove="BaseServices\SubCategoryOption\**" />
+    <EmbeddedResource Remove="BaseServices\UserRole\**" />
+    <None Remove="BaseServices\AvailablePrice\**" />
+    <None Remove="BaseServices\Banner\**" />
+    <None Remove="BaseServices\Brand_v2\**" />
+    <None Remove="BaseServices\DiscountType\**" />
+    <None Remove="BaseServices\Header\**" />
+    <None Remove="BaseServices\Option\**" />
+    <None Remove="BaseServices\ProductAttribute\**" />
+    <None Remove="BaseServices\ProductOption\**" />
+    <None Remove="BaseServices\ProductPrice\**" />
+    <None Remove="BaseServices\ProductType\**" />
+    <None Remove="BaseServices\RatingImage\**" />
+    <None Remove="BaseServices\ShopBrand\**" />
+    <None Remove="BaseServices\Social\**" />
+    <None Remove="BaseServices\SubCategoryAttribute\**" />
+    <None Remove="BaseServices\SubCategoryOption\**" />
+    <None Remove="BaseServices\UserRole\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,10 +62,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ECommerce.Data\ECommerce.Data.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\Brand_v2\" />
   </ItemGroup>
 
 </Project>

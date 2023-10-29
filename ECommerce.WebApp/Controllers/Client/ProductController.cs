@@ -1,14 +1,14 @@
 ﻿using ECommerce.Application.Repositories;
-using ECommerce.Application.Services.Brand;
+using ECommerce.Application.BaseServices.Brand;
 using ECommerce.Application.Services.Comment;
-using ECommerce.Application.Services.Configurations;
-using ECommerce.Application.Services.Discount;
-using ECommerce.Application.Services.FilterProduct;
-using ECommerce.Application.Services.Product;
-using ECommerce.Application.Services.Product.Dtos;
-using ECommerce.Application.Services.Product.Enum;
-using ECommerce.Application.Services.Rate;
-using ECommerce.Application.Services.SubCategory;
+using ECommerce.Application.BaseServices.Configurations;
+using ECommerce.Application.BaseServices.Discount;
+using ECommerce.Application.BaseServices.FilterProduct;
+using ECommerce.Application.BaseServices.Product;
+using ECommerce.Application.BaseServices.Product.Dtos;
+using ECommerce.Application.BaseServices.Product.Enum;
+using ECommerce.Application.BaseServices.Rate;
+using ECommerce.Application.BaseServices.SubCategory;
 using ECommerce.WebApp.Models.Products;
 using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Http;
@@ -23,7 +23,7 @@ namespace ECommerce.WebApp.Controllers.Client
     public class ProductController : Controller
     {
         private readonly IConfigurationService _configurationService;
-        private readonly IProductService _productService;
+        private readonly IProductBaseService _productService;
         private readonly ISubCategoryService _subCategoryService;
         private readonly IBrandService _brandService;
         private readonly IFilterProductService _filterService;
@@ -32,7 +32,7 @@ namespace ECommerce.WebApp.Controllers.Client
         private readonly ICommentService _commentService;
         public ProductController(
             IConfigurationService configurationService,
-            IProductService productService, 
+            IProductBaseService productService, 
             ISubCategoryService subCategoryService, 
             IBrandService brandService, 
             IFilterProductService filterService,
@@ -68,7 +68,7 @@ namespace ECommerce.WebApp.Controllers.Client
                 listProduct = listProduct,
                 listSubCategory = listSubCategory,
                 brand = brand,
-                listFilterModel = filter,
+                listFilterModel = filter, // not used
             };
 
             return View(model);

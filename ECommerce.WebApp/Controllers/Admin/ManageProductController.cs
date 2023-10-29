@@ -1,10 +1,10 @@
 ﻿using ECommerce.Application.Constants;
-using ECommerce.Application.Services.Brand;
+using ECommerce.Application.BaseServices.Brand;
 using ECommerce.Application.Services.Comment;
-using ECommerce.Application.Services.Product;
-using ECommerce.Application.Services.Product.Dtos;
-using ECommerce.Application.Services.Shop;
-using ECommerce.Application.Services.SubCategory;
+using ECommerce.Application.BaseServices.Product;
+using ECommerce.Application.BaseServices.Product.Dtos;
+using ECommerce.Application.BaseServices.Shop;
+using ECommerce.Application.BaseServices.SubCategory;
 using ECommerce.WebApp.Models.Products;
 using ECommerce.WebApp.Models.SaleProduct;
 using ECommerce.WebApp.Utils;
@@ -25,7 +25,7 @@ namespace ECommerce.WebApp.Controllers.Admin
     [Authorize(Policy = "Seller")]
     public class ManageProductController : Controller
     {
-        private IProductService _productService;
+        private IProductBaseService _productService;
         private IBrandService _brandService;
         private IShopService _shopService;
         private ISubCategoryService _subCategoryService;
@@ -34,7 +34,7 @@ namespace ECommerce.WebApp.Controllers.Admin
         private string FILE_PATH = FilePathConstant.PRODUCT_FILEPATH;
         private string FILE_PREFIX = FilePathConstant.PRODUCT_FILEPREFIX;
         public ManageProductController(
-            IProductService productService,
+            IProductBaseService productService,
             IBrandService brandService,
             IShopService shopService,
             IWebHostEnvironment webHostEnvironment,

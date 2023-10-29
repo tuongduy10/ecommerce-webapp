@@ -4,7 +4,7 @@ using ECommerce.Application.Repositories.Comment;
 using ECommerce.Application.Repositories.Notification;
 using ECommerce.Application.Repositories.Notification.Dtos;
 using ECommerce.Application.Repositories.User;
-using ECommerce.Application.Services.User.Enums;
+using ECommerce.Application.BaseServices.User.Enums;
 using ECommerce.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using System;

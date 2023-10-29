@@ -1,6 +1,6 @@
-﻿using ECommerce.Application.Services.Brand.Dtos;
-using ECommerce.Application.Services.Shop.Dtos;
-using ECommerce.Application.Services.SubCategory.Dtos;
+﻿using ECommerce.Application.BaseServices.Brand.Dtos;
+using ECommerce.Application.BaseServices.Shop.Dtos;
+using ECommerce.Application.BaseServices.SubCategory.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
