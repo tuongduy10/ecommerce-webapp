@@ -86,7 +86,7 @@ namespace ECommerce.WebApp.Controllers.Client
             var phone = await _configurationService.getPhoneNumber();
             var options = await _productService.getProductOption(ProductId);
             var discount = await _discountService.getDisount(product.ShopId, product.Brand.BrandId);
-            var sizeGuides = await _productService.SizeGuideList();
+            //var sizeGuides = await _productService.SizeGuideList();
 
             var model = new ProductDetailViewModel
             {
@@ -96,7 +96,7 @@ namespace ECommerce.WebApp.Controllers.Client
                 phone = phone,
                 options = options,
                 discount = discount,
-                sizeGuides = sizeGuides
+                //sizeGuides = sizeGuides
             };
 
             ViewBag.isScrolledTo = isScrolledTo;

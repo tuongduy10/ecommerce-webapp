@@ -91,5 +91,14 @@ namespace ECommerce.WebApp.Controllers
                 return BadRequest(result);
             return Ok(result);
         }
+        [AllowAnonymous]
+        [HttpGet("product-option")]
+        public async Task<IActionResult> getProductOption(int productId = -1)
+        {
+            var result = await _inventoryService.getProductOption(productId);
+            if (!result.isSucceed)
+                return BadRequest(result.Message);
+            return Ok(result);
+        }
     }
 }
