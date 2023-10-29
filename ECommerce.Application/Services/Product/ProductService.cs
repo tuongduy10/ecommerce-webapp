@@ -523,9 +523,9 @@ namespace ECommerce.Application.Services.Product
                 }
 
                 // Images
-                if (request.systemFileName != null)
+                if (request.systemFileNames != null)
                 {
-                    var sysImgAddReq = request.systemFileName
+                    var sysImgAddReq = request.systemFileNames
                         .Select(img => new ProductImage
                         {
                             ProductId = product.ProductId,
@@ -535,9 +535,9 @@ namespace ECommerce.Application.Services.Product
                     await _productImageRepo.AddRangeAsync(sysImgAddReq);
                     await _productImageRepo.SaveChangesAsync();
                 }
-                if (request.userFileName != null)
+                if (request.userFileNames != null)
                 {
-                    var userImgAddReq = request.systemFileName
+                    var userImgAddReq = request.systemFileNames
                         .Select(img => new ProductUserImage
                         {
                             ProductId = product.ProductId,

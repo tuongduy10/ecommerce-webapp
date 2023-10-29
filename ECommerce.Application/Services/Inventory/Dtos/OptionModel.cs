@@ -15,5 +15,6 @@ namespace ECommerce.Application.Services.Inventory.Dtos
         public int id { get; set; }
         public string name { get; set; }
         public int totalRecord { get; set; } // total products with this value
+        public bool isBase { get; set; }
     }
 }

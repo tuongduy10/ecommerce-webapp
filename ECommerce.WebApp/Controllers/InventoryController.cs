@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
+using ECommerce.Application.Services.User.Dtos;
+using ECommerce.Application.Services.Inventory.Dtos;
 
 namespace ECommerce.WebApp.Controllers
 {
@@ -45,11 +47,20 @@ namespace ECommerce.WebApp.Controllers
             _manageFiles = new ManageFiles(webHostEnvironment);
         }
         [AllowAnonymous]
-        [HttpGet("get-sub-categories/{id}")]
-        public async Task<IActionResult> getSubCategories(int id)
+        [HttpPost("sub-categories")]
+        public async Task<IActionResult> getSubCategories(InventoryRequest request)
         {
-            var res = await _inventoryService.getSubCategories(id);
+            var res = await _inventoryService.getSubCategories(request);
             if (!res.isSucceed) 
+                return BadRequest(res);
+            return Ok(res);
+        }
+        [AllowAnonymous]
+        [HttpPost("get-brands")]
+        public async Task<IActionResult> getBrands(BrandGetRequest request)
+        {
+            var res = await _inventoryService.getBrands(request);
+            if (!res.isSucceed)
                 return BadRequest(res);
             return Ok(res);
         }
@@ -60,22 +71,22 @@ namespace ECommerce.WebApp.Controllers
             var res = await _inventoryService.getBrand(id);
             if (!res.isSucceed)
                 return BadRequest(res);
-            return Ok();
+            return Ok(res);
         }
         [AllowAnonymous]
-        [HttpGet("product-options/{id}")]
-        public async Task<IActionResult> getProductOptions(int id)
+        [HttpPost("product-options")]
+        public async Task<IActionResult> getProductOptions(InventoryRequest request)
         {
-            var result = await _inventoryService.getProductOptions(id);
+            var result = await _inventoryService.getProductOptions(request);
             if (!result.isSucceed)
                 return BadRequest(result);
             return Ok(result);
         }
         [AllowAnonymous]
-        [HttpGet("product-attributes/{id}")]
-        public async Task<IActionResult> getProductAttributes(int id)
+        [HttpPost("product-attributes")]
+        public async Task<IActionResult> getProductAttributes(InventoryRequest request)
         {
-            var result = await _inventoryService.getProductAttributes(id);
+            var result = await _inventoryService.getProductAttributes(request);
             if (!result.isSucceed)
                 return BadRequest(result);
             return Ok(result);
