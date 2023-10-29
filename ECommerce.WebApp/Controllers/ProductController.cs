@@ -79,27 +79,10 @@ namespace ECommerce.WebApp.Controllers
         [HttpPost("save")]
         public async Task<IActionResult> save(ProductSaveRequest request)
         {
-            // Image null check
-            if (request.systemImage == null)
-            {
-                return BadRequest("Vui lòng chọn ảnh");
-            }
-
-            // Get files name
-            if (request.systemImage != null)
-                request.systemFileName = _manageFiles.GetFilesName(request.systemImage, PRODUCT_FILEPREFIX);
-            if (request.userImage != null)
-                request.userFileName = _manageFiles.GetFilesName(request.userImage, PRODUCT_FILEPREFIX);
             // Result 
             var result = await _productService.save(request);
             if (result.isSucceed)
             {
-                // Add file with files, files'name, path
-                if (request.systemImage != null && request.systemFileName != null)
-                    _manageFiles.AddFiles(request.systemImage, request.systemFileName, PRODUCT_FILE_PATH);
-                if (request.userImage != null && request.userFileName != null)
-                    _manageFiles.AddFiles(request.userImage, request.userFileName, PRODUCT_FILE_PATH);
-
                 return Ok(result);
             }
             return BadRequest(result);

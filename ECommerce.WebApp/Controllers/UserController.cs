@@ -24,21 +24,21 @@ namespace ECommerce.WebApp.Controllers
     [Route("api/user")]
     public class UserController : ControllerBase
     {
-        private readonly IUserBaseService _userService;
-        private readonly IUserService _userServiceV2;
+        private readonly IUserBaseService _userBaseService;
+        private readonly IUserService _userService;
         private readonly ILogger<UserController> _logger;
         private HttpContextHelper _contextHelper;
         private readonly AppSetting _appSetting;
         public UserController(
             ILogger<UserController> logger,
             IOptionsMonitor<AppSetting> optionsMonitor,
-            IUserBaseService userService,
-            IUserService userServiceV2)
+            IUserBaseService userBaseService,
+            IUserService userService)
         {
             _logger = logger;
             _contextHelper = new HttpContextHelper();
+            _userBaseService = userBaseService;
             _userService = userService;
-            _userServiceV2 = userServiceV2;
             _appSetting = optionsMonitor.CurrentValue;
         }
 
@@ -46,7 +46,7 @@ namespace ECommerce.WebApp.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(SignInRequest request)
         {
-            var result = await _userServiceV2.ValidateUser(request);
+            var result = await _userService.ValidateUser(request);
             if (!result.isSucceed)
             {
                 return BadRequest(result);
@@ -77,6 +77,16 @@ namespace ECommerce.WebApp.Controllers
                 UserPhone = userClaims.FirstOrDefault(claim => claim.Type == "phone").Value
             };
             return Ok(new SuccessResponse<UserGetModel>("success", user));
+        }
+        [HttpGet("shops")]
+        public async Task<IActionResult> GetShops()
+        {
+            var res = await _userService.GetShops();
+            if (!res.isSucceed)
+            {
+                return BadRequest(res);
+            }
+            return Ok(res);
         }
 
         private string GenerateToken(UserGetModel user)
