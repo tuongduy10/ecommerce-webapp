@@ -15,7 +15,7 @@ namespace ECommerce.WebApp.Models.Products
         public string phone { get; set; }
         public ProductDetailModel product { get; set; }
         public List<RateGetModel> rates { get; set; }
-        public List<ProductModel> suggestion { get; set; }
+        //public List<ProductModel> suggestion { get; set; }
         public List<Option> options { get; set; }
         public DiscountGetModel discount { get; set; }
         public List<ShopGetModel> shops { get; set; }

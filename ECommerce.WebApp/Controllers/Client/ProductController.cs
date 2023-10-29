@@ -49,61 +49,61 @@ namespace ECommerce.WebApp.Controllers.Client
             _discountService = discountService;
             _commentService = commentService;
         }
-        public async Task<IActionResult> ProductInBrand(ProductGetRequest request)
-        {
-            var products = await _productService.getProductPaginated(request);
-            var listSubCategory = await _subCategoryService.getSubCategoryInBrand(request.BrandId);
-            var brand = await _brandService.getBrandById(request.BrandId);
-            var filter = await _filterService.listFilterModel(request.BrandId);
+        //public async Task<IActionResult> ProductInBrand(ProductGetRequest request)
+        //{
+        //    var products = await _productService.getProductPaginated(request);
+        //    var listSubCategory = await _subCategoryService.getSubCategoryInBrand(request.BrandId);
+        //    var brand = await _brandService.getBrandById(request.BrandId);
+        //    var filter = await _filterService.listFilterModel(request.BrandId);
 
-            ProductRecordModel listProduct = new ProductRecordModel();
-            listProduct.CurrentPage = products.CurrentPage;
-            listProduct.CurrentRecord = products.CurrentRecord;
-            listProduct.TotalPage = products.TotalPage;
-            listProduct.TotalRecord = products.TotalRecord;
-            listProduct.Items = ProductListFormated(products.Items);
+        //    ProductRecordModel listProduct = new ProductRecordModel();
+        //    listProduct.CurrentPage = products.CurrentPage;
+        //    listProduct.CurrentRecord = products.CurrentRecord;
+        //    listProduct.TotalPage = products.TotalPage;
+        //    listProduct.TotalRecord = products.TotalRecord;
+        //    listProduct.Items = ProductListFormated(products.Items);
 
-            var model = new ProductInBrandViewModel()
-            {
-                listProduct = listProduct,
-                listSubCategory = listSubCategory,
-                brand = brand,
-                listFilterModel = filter, // not used
-            };
+        //    var model = new ProductInBrandViewModel()
+        //    {
+        //        listProduct = listProduct,
+        //        listSubCategory = listSubCategory,
+        //        brand = brand,
+        //        listFilterModel = filter, // not used
+        //    };
 
-            return View(model);
-        }
-        public async Task<IActionResult> ProductDetail(int ProductId, bool isScrolledTo = false, int commentId = 0)
-        {
-            var _userId = User.Claims.FirstOrDefault(i => i.Type == "UserId") != null ?
-                Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value) : 0;
+        //    return View(model);
+        //}
+        //public async Task<IActionResult> ProductDetail(int ProductId, bool isScrolledTo = false, int commentId = 0)
+        //{
+        //    var _userId = User.Claims.FirstOrDefault(i => i.Type == "UserId") != null ?
+        //        Int32.Parse(User.Claims.FirstOrDefault(i => i.Type == "UserId").Value) : 0;
 
-            var product = await _productService.getProductDetail(ProductId);
-            if (product == null)
-                return NotFound();
-            var rates = await _rateService.GetRatesByProductId(ProductId, _userId);
-            var suggestion = await _productService.getProductSuggestion();
-            var phone = await _configurationService.getPhoneNumber();
-            var options = await _productService.getProductOption(ProductId);
-            var discount = await _discountService.getDisount(product.ShopId, product.Brand.BrandId);
-            var sizeGuides = await _productService.SizeGuideList();
+        //    var product = await _productService.getProductDetail(ProductId);
+        //    if (product == null)
+        //        return NotFound();
+        //    var rates = await _rateService.GetRatesByProductId(ProductId, _userId);
+        //    var suggestion = await _productService.getProductSuggestion();
+        //    var phone = await _configurationService.getPhoneNumber();
+        //    var options = await _productService.getProductOption(ProductId);
+        //    var discount = await _discountService.getDisount(product.ShopId, product.Brand.BrandId);
+        //    var sizeGuides = await _productService.SizeGuideList();
 
-            var model = new ProductDetailViewModel
-            {
-                product = product,
-                rates = rates,
-                suggestion = ProductListFormated(suggestion),
-                phone = phone,
-                options = options,
-                discount = discount,
-                sizeGuides = sizeGuides
-            };
+        //    var model = new ProductDetailViewModel
+        //    {
+        //        product = product,
+        //        rates = rates,
+        //        suggestion = ProductListFormated(suggestion),
+        //        phone = phone,
+        //        options = options,
+        //        discount = discount,
+        //        sizeGuides = sizeGuides
+        //    };
 
-            ViewBag.isScrolledTo = isScrolledTo;
-            ViewBag.CommentId = commentId;
+        //    ViewBag.isScrolledTo = isScrolledTo;
+        //    ViewBag.CommentId = commentId;
 
-            return View(model);
-        }
+        //    return View(model);
+        //}
         public async Task<IActionResult> ProductAvaliable()
         {
             return View();
@@ -112,66 +112,66 @@ namespace ECommerce.WebApp.Controllers.Client
         {
             return View();
         }
-        public async Task<IActionResult> ProductHotSale()
-        {
-            var products = await _productService.getProductInPagePaginated(new ProductGetRequest() { GetBy = "Discount", PageIndex = 1 });
-            ProductRecordModel listProduct = new ProductRecordModel();
-            listProduct.CurrentPage = products.CurrentPage;
-            listProduct.CurrentRecord = products.CurrentRecord;
-            listProduct.TotalPage = products.TotalPage;
-            listProduct.TotalRecord = products.TotalRecord;
-            listProduct.Items = ProductListFormated(products.Items);
+        //public async Task<IActionResult> ProductHotSale()
+        //{
+        //    var products = await _productService.getProductInPagePaginated(new ProductGetRequest() { GetBy = "Discount", PageIndex = 1 });
+        //    ProductRecordModel listProduct = new ProductRecordModel();
+        //    listProduct.CurrentPage = products.CurrentPage;
+        //    listProduct.CurrentRecord = products.CurrentRecord;
+        //    listProduct.TotalPage = products.TotalPage;
+        //    listProduct.TotalRecord = products.TotalRecord;
+        //    listProduct.Items = ProductListFormated(products.Items);
 
-            var model = new ProductInBrandViewModel()
-            {
-                listProduct = listProduct,
-            };
+        //    var model = new ProductInBrandViewModel()
+        //    {
+        //        listProduct = listProduct,
+        //    };
 
-            return View(model);
-        }
-        public async Task<IActionResult> ProductNewest()
-        {
-            var products = await _productService.getProductInPagePaginated(new ProductGetRequest() { GetBy = "Newest", PageIndex = 1 });
-            ProductRecordModel listProduct = new ProductRecordModel();
-            listProduct.CurrentPage = products.CurrentPage;
-            listProduct.CurrentRecord = products.CurrentRecord;
-            listProduct.TotalPage = products.TotalPage;
-            listProduct.TotalRecord = products.TotalRecord;
-            listProduct.Items = ProductListFormated(products.Items);
+        //    return View(model);
+        //}
+        //public async Task<IActionResult> ProductNewest()
+        //{
+        //    var products = await _productService.getProductInPagePaginated(new ProductGetRequest() { GetBy = "Newest", PageIndex = 1 });
+        //    ProductRecordModel listProduct = new ProductRecordModel();
+        //    listProduct.CurrentPage = products.CurrentPage;
+        //    listProduct.CurrentRecord = products.CurrentRecord;
+        //    listProduct.TotalPage = products.TotalPage;
+        //    listProduct.TotalRecord = products.TotalRecord;
+        //    listProduct.Items = ProductListFormated(products.Items);
 
-            var model = new ProductInBrandViewModel()
-            {
-                listProduct = listProduct,
-            };
+        //    var model = new ProductInBrandViewModel()
+        //    {
+        //        listProduct = listProduct,
+        //    };
 
-            return View(model);
-        }
+        //    return View(model);
+        //}
         
-        private List<ProductModel> ProductListFormated(List<ProductInBrandModel> list)
-        {
-            var _list = new List<ProductModel>();
-            foreach (var item in list)
-            {
-                ProductModel pro = new ProductModel();
-                pro.ProductId = item.ProductId;
-                pro.ProductImages = item.ProductImages;
-                pro.DiscountPercent = item.DiscountPercent;
-                pro.New = item.New;
-                pro.Highlights = item.Highlights;
-                pro.ShopName = item.ShopName;
-                pro.ProductName = item.ProductName;
-                pro.BrandName = item.BrandName;
-                pro.ProductImportDate = item.ProductImportDate;
-                pro.Status = item.Status;
-                pro.Price = item.PricePreOrder ?? item.PriceAvailable;
-                pro.PriceOnSell = item.DiscountPreOrder ?? item.DiscountAvailable;
-                pro.ProductTypeName = 
-                    (item.PricePreOrder != null || item.DiscountPreOrder != null) ? "Hàng đặt trước" : 
-                    (item.PriceAvailable != null || item.DiscountAvailable != null) ? "Hàng có sẵn" : "" ;
+        //private List<ProductModel> ProductListFormated(List<ProductInBrandModel> list)
+        //{
+        //    var _list = new List<ProductModel>();
+        //    foreach (var item in list)
+        //    {
+        //        ProductModel pro = new ProductModel();
+        //        pro.ProductId = item.ProductId;
+        //        pro.ProductImages = item.ProductImages;
+        //        pro.DiscountPercent = item.DiscountPercent;
+        //        pro.New = item.New;
+        //        pro.Highlights = item.Highlights;
+        //        pro.ShopName = item.ShopName;
+        //        pro.ProductName = item.ProductName;
+        //        pro.BrandName = item.BrandName;
+        //        pro.ProductImportDate = item.ProductImportDate;
+        //        pro.Status = item.Status;
+        //        pro.Price = item.PricePreOrder ?? item.PriceAvailable;
+        //        pro.PriceOnSell = item.DiscountPreOrder ?? item.DiscountAvailable;
+        //        pro.ProductTypeName = 
+        //            (item.PricePreOrder != null || item.DiscountPreOrder != null) ? "Hàng đặt trước" : 
+        //            (item.PriceAvailable != null || item.DiscountAvailable != null) ? "Hàng có sẵn" : "" ;
 
-                _list.Add(pro);
-            }
-            return _list;
-        }
+        //        _list.Add(pro);
+        //    }
+        //    return _list;
+        //}
     }
 }
