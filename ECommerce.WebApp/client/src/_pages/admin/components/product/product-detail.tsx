@@ -2,7 +2,7 @@ import { Autocomplete, Box, Button, Checkbox, Chip, CssBaseline, FormControlLabe
 import { Editor } from '@tinymce/tinymce-react';
 import { useRef } from "react";
 import { GlobalConfig } from "src/_configs/global.config";
-import UploadInput from "src/_shares/_components/input/upload";
+import UploadInput from "src/_shares/_components/input/upload-input";
 import NumberInput from "src/_shares/_components/input/number-input";
 import { FormatHelper } from "src/_shares/_helpers/format-helper";
 import PriceInput from "src/_shares/_components/input/price-input";
@@ -292,6 +292,7 @@ const ProductDetail = () => {
                                     multiple
                                     hidden
                                     onChangeFiles={onUpload}
+                                    uploadType="products"
                                 />
                             </Grid>
                             <Grid item xs={12} sm={12}>
@@ -309,6 +310,7 @@ const ProductDetail = () => {
                                     multiple
                                     hidden
                                     onChangeFiles={onUpload}
+                                    uploadType="products"
                                 />
                             </Grid>
                             <Grid item xs={12}>

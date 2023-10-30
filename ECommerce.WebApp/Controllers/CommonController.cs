@@ -77,7 +77,7 @@ namespace ECommerce.WebApp.Controllers
             }
         }
         [AllowAnonymous]
-        [HttpDelete("remove-files")]
+        [HttpPost("remove-files")]
         public IActionResult removeFiles(RemoveUploadRequest request)
         {
             try

@@ -1,6 +1,8 @@
 
 export const COMMON_API_URL = {
-    GET_DATA: '/posts'
+    GET_DATA: '/posts',
+    UPLOAD_FILES: '/common/upload',
+    REMOVE_FILES: '/common/remove-files',
 }
 
 export const BLOG_API_URL = {
