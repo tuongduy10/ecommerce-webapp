@@ -15,7 +15,7 @@ export default class CommonService {
         return api.post(BLOG_API_URL.GET_BLOG, param);
     }
 
-    public static uploadFiles(params: { files: File[], uploadType: "products" | "brand" | "rates" }) {
+    public static uploadFiles(params: any) {
         return api.postForm(COMMON_API_URL.UPLOAD_FILES, params)
     }
 

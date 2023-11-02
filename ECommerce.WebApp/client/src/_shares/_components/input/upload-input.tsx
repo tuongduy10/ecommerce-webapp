@@ -26,20 +26,20 @@ const UploadInput = (props: IUploadProps) => {
         if (files.length > filesLimit) {
             return;
         }
-        const params = {
-            files: files,
-            uploadType: uploadType
-        }
-        console.log(files);
-        // CommonService.uploadFiles(params).then((res: any) => {
-        //     if (res.data) {
-        //         const fileNames = res.data;
-        //         setSelectedFileNames(fileNames);
-        //         onChangeFiles(fileNames);
-        //     }
-        // }).catch((error: any) => {
-        //     console.log(error);
-        // });
+        const formData = new FormData();
+        formData.append('uploadType', uploadType);
+        files.forEach((file: File) => {
+            formData.append('files', file);
+        });
+        CommonService.uploadFiles(formData).then((res: any) => {
+            if (res.data) {
+                const fileNames = res.data;
+                setSelectedFileNames(fileNames);
+                onChangeFiles(fileNames);
+            }
+        }).catch((error: any) => {
+            console.log(error);
+        });
     };
 
     const handleRemoveFile = (_fileName: string) => {
@@ -47,8 +47,8 @@ const UploadInput = (props: IUploadProps) => {
             fileNames: [_fileName],
             uploadType: uploadType,
         }
-        CommonService.removeFiles(params).then((res) => {
-            if (res.data) {
+        CommonService.removeFiles(params).then((res: any) => {
+            if (res.isSucceed) {
                 const updatedFileNames = selectedFileNames.filter((fileName) => fileName !== _fileName);
                 setSelectedFileNames(updatedFileNames);
             }
