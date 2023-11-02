@@ -60,7 +60,7 @@ const ProductDetail = () => {
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={5}>
                                     <TextField
-                                        autoComplete="given-name"
+                                        autoComplete='off'
                                         name="code"
                                         required
                                         fullWidth
@@ -78,23 +78,39 @@ const ProductDetail = () => {
                                         id="productName"
                                         label="Tên sản phẩm"
                                         name="productName"
-                                        autoComplete="family-name"
+                                        autoComplete='off'
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={2}>
-                                    <NumberInput label="Kho" name='stock' />
+                                    <Input type="number" placeholder="Kho" />
                                 </Grid>
                                 <Grid item xs={12} sm={12}>
-                                    <PriceInput label="Giá nhập hàng" name='priceForSeller' />
+                                    <PriceInput label="Giá nhập hàng" name='priceImport' />
                                 </Grid>
                                 <Grid item xs={12} sm={12}>
-                                    <PriceInput label="Giá cho Seller" name='priceAvailable' />
+                                    <PriceInput label="Giá cho Seller" name='priceForSeller' />
                                 </Grid>
                                 <Grid item xs={12} sm={12}>
-                                    <PriceInput label="Giá có sẵn" name='priceForSeller' />
+                                    <PriceInput label="Giá có sẵn" name='priceAvailable' />
                                 </Grid>
                                 <Grid item xs={12} sm={12}>
-                                    <PriceInput label="Giá đặt trước" name='priceAvailable' />
+                                    <PriceInput label="Giá đặt trước" name='pricePreOrder' />
+                                </Grid>
+                                <Grid item xs={12} sm={4}>
+                                    <FormControlLabel
+                                        control={<>
+                                            <Checkbox name="isDicountPercent" color="primary" />
+                                            <Input type="number" name="discountPercent" placeholder="% Giảm" />
+                                        </>}
+                                        label=""
+                                        sx={{ marginRight: 0 }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={4}>
+                                    <PriceInput label="Giá giảm đặt trước" name='discountPreOrder' />
+                                </Grid>
+                                <Grid item xs={12} sm={4}>
+                                    <PriceInput label="Giá giảm có sẵn" name='discountAvailable' />
                                 </Grid>
                                 <Grid item xs={12}>
                                     <FormControlLabel control={<Checkbox name="isNew" color="primary" />} label="Mới" />
@@ -103,32 +119,32 @@ const ProductDetail = () => {
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
                                     <TextField
-                                        autoComplete="given-name"
                                         name="repay"
                                         fullWidth
                                         size="small"
                                         label="Đổi trả"
                                         autoFocus
+                                        autoComplete='off'
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
                                     <TextField
-                                        autoComplete="given-name"
                                         name="delivery"
                                         fullWidth
                                         size="small"
                                         label="Giao hàng"
                                         autoFocus
+                                        autoComplete='off'
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
                                     <TextField
-                                        autoComplete="given-name"
                                         name="insurance"
                                         fullWidth
                                         size="small"
                                         label="Bảo hành"
                                         autoFocus
+                                        autoComplete='off'
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={12}>
@@ -176,6 +192,7 @@ const ProductDetail = () => {
                                                 fullWidth
                                                 size="small"
                                                 label="Chất liệu"
+                                                autoComplete='off'
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
@@ -183,6 +200,7 @@ const ProductDetail = () => {
                                                 fullWidth
                                                 size="small"
                                                 label="Trọng lượng"
+                                                autoComplete='off'
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
@@ -190,6 +208,7 @@ const ProductDetail = () => {
                                                 fullWidth
                                                 size="small"
                                                 label="Dung tích"
+                                                autoComplete='off'
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
@@ -197,6 +216,7 @@ const ProductDetail = () => {
                                                 fullWidth
                                                 size="small"
                                                 label="Kích thước"
+                                                autoComplete='off'
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
@@ -204,6 +224,7 @@ const ProductDetail = () => {
                                                 fullWidth
                                                 size="small"
                                                 label="Công suất"
+                                                autoComplete='off'
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
@@ -211,6 +232,7 @@ const ProductDetail = () => {
                                                 fullWidth
                                                 size="small"
                                                 label="Điện áp"
+                                                autoComplete='off'
                                             />
                                         </Grid>
                                     </Grid>
@@ -225,6 +247,7 @@ const ProductDetail = () => {
                                             fullWidth
                                             size="small"
                                             label="Màu sắc"
+                                            autoComplete='off'
                                         />
                                         <Stack spacing={{ xs: 1, sm: 1 }} direction="row" useFlexGap flexWrap="wrap">
                                             <Chip label="Vàng" variant="outlined" onDelete={handleDeleteChip} />
@@ -320,6 +343,7 @@ const ProductDetail = () => {
                                     id="note"
                                     label="Ghi chú"
                                     name="note"
+                                    autoComplete='off'
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -329,6 +353,7 @@ const ProductDetail = () => {
                                     id="link"
                                     label="Link"
                                     name="link"
+                                    autoComplete='off'
                                 />
                             </Grid>
                             <Grid item xs={12} sm={12}>
