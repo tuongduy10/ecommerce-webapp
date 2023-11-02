@@ -81,7 +81,6 @@ const ProductDetail = () => {
                                         required
                                         fullWidth
                                         size="small"
-                                        id="code"
                                         label="Mã sản phẩm"
                                         autoFocus
                                     />
@@ -91,14 +90,13 @@ const ProductDetail = () => {
                                         required
                                         fullWidth
                                         size="small"
-                                        id="productName"
                                         label="Tên sản phẩm"
                                         name="productName"
                                         autoComplete='off'
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={2}>
-                                    <Input type="number" placeholder="Kho" />
+                                    <TextField type="number" name="stock" label="Kho" size="small" fullWidth />
                                 </Grid>
                                 <Grid item xs={12} sm={12}>
                                     <PriceInput label="Giá nhập hàng" name='priceImport' />
@@ -112,20 +110,20 @@ const ProductDetail = () => {
                                 <Grid item xs={12} sm={12}>
                                     <PriceInput label="Giá đặt trước" name='pricePreOrder' />
                                 </Grid>
-                                <Grid item xs={12} sm={4}>
+                                <Grid item xs={12} sm={2}>
                                     <FormControlLabel
                                         control={<>
                                             <Checkbox name="isDicountPercent" color="primary" />
-                                            <Input type="number" name="discountPercent" placeholder="% Giảm" />
+                                            <TextField type="number" name="discountPercent" label="% Giảm" size="small" fullWidth />
                                         </>}
                                         label=""
                                         sx={{ marginRight: 0 }}
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={4}>
+                                <Grid item xs={12} sm={5}>
                                     <PriceInput label="Giá giảm đặt trước" name='discountPreOrder' />
                                 </Grid>
-                                <Grid item xs={12} sm={4}>
+                                <Grid item xs={12} sm={5}>
                                     <PriceInput label="Giá giảm có sẵn" name='discountAvailable' />
                                 </Grid>
                                 <Grid item xs={12}>
