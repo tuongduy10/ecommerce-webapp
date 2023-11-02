@@ -9,13 +9,13 @@ import PriceInput from "src/_shares/_components/input/price-input";
 
 
 const top100Films = [
-    { label: 'The Shawshank Redemption', year: 1994 },
-    { label: 'The Godfather', year: 1972 },
-    { label: 'The Godfather: Part II', year: 1974 },
-    { label: 'The Dark Knight', year: 2008 },
-    { label: '12 Angry Men', year: 1957 },
-    { label: "Schindler's List", year: 1993 },
-    { label: 'Pulp Fiction', year: 1994 },
+    { label: 'The Shawshank Redemption', value: 1994 },
+    { label: 'The Godfather', value: 1972 },
+    { label: 'The Godfather: Part II', value: 1974 },
+    { label: 'The Dark Knight', value: 2008 },
+    { label: '12 Angry Men', value: 1957 },
+    { label: "Schindler's List", value: 1993 },
+    { label: 'Pulp Fiction', value: 1994 },
 ];
 
 const defaultTheme = createTheme();
@@ -24,9 +24,25 @@ const ProductDetail = () => {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
         const param = {
+            code: form.get('code'),
+            productName: form.get('productName'),
+            priceImport: FormatHelper.getNumber(form.get('priceImport')?.toString()),
             priceForSeller: FormatHelper.getNumber(form.get('priceForSeller')?.toString()),
+            priceForAvailable: FormatHelper.getNumber(form.get('priceForAvailable')?.toString()),
+            pricePreOrder: FormatHelper.getNumber(form.get('pricePreOrder')?.toString()),
+            discountPreOrder: FormatHelper.getNumber(form.get('discountPreOrder')?.toString()),
+            discountAvailable: FormatHelper.getNumber(form.get('discountAvailable')?.toString()),
+            discountPercent: form.get('discountPercent'),
             files: form.getAll('imageSys-upload'),
+            isNew: form.get('isNew')?.toString() === 'on',
+            isHighlight: form.get('isHighlight')?.toString() === 'on',
             isLegal: form.get('isLegal')?.toString() === 'on',
+            repay: form.get('repay'),
+            delivery: form.get('delivery'),
+            insurance: form.get('insurance'),
+            link: form.get('link'),
+            note: form.get('note'),
+            shop: form.get('shop'),
         }
         console.log(param);
     };
@@ -152,7 +168,7 @@ const ProductDetail = () => {
                                         size="small"
                                         disablePortal
                                         options={top100Films}
-                                        renderInput={(params) => <TextField {...params} label="Cửa hàng" />}
+                                        renderInput={(params) => <TextField {...params} name="shop" label="Cửa hàng" />}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={12}>
@@ -266,16 +282,14 @@ const ProductDetail = () => {
                                 <Typography variant="subtitle1" gutterBottom>
                                     Mô tả
                                 </Typography>
-                                <>
-                                    <Editor
-                                        apiKey={GlobalConfig.TINY_KEY}
-                                        init={{
-                                            height: 500,
-                                            plugins: GlobalConfig.TINY_PLUGINS,
-                                            toolbar: GlobalConfig.TINY_TOOLBAR,
-                                        }}
-                                    />
-                                </>
+                                <Editor
+                                    apiKey={GlobalConfig.TINY_KEY}
+                                    init={{
+                                        height: 500,
+                                        plugins: GlobalConfig.TINY_PLUGINS,
+                                        toolbar: GlobalConfig.TINY_TOOLBAR,
+                                    }}
+                                />
                             </Grid>
                             <Grid item xs={12} sm={12}>
                                 <Typography variant="subtitle1" gutterBottom>
@@ -288,16 +302,14 @@ const ProductDetail = () => {
                                     options={top100Films}
                                     renderInput={(params) => <TextField {...params} label="Chọn size theo loại" />}
                                 />
-                                <>
-                                    <Editor
-                                        apiKey={GlobalConfig.TINY_KEY}
-                                        init={{
-                                            height: 500,
-                                            plugins: GlobalConfig.TINY_PLUGINS,
-                                            toolbar: GlobalConfig.TINY_TOOLBAR,
-                                        }}
-                                    />
-                                </>
+                                <Editor
+                                    apiKey={GlobalConfig.TINY_KEY}
+                                    init={{
+                                        height: 500,
+                                        plugins: GlobalConfig.TINY_PLUGINS,
+                                        toolbar: GlobalConfig.TINY_TOOLBAR,
+                                    }}
+                                />
                             </Grid>
                             <Grid item xs={12} sm={12}>
                                 <Typography variant="subtitle1" gutterBottom>
