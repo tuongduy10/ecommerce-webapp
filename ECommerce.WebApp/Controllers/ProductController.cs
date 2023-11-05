@@ -35,6 +35,12 @@ namespace ECommerce.WebApp.Controllers
             _manageFiles = new ManageFiles(webHostEnvironment);
         }
         [AllowAnonymous]
+        [HttpPost("product-managed-list")]
+        public async Task<IActionResult> getProductManagedList(ProductGetRequest request)
+        {
+            return Ok();
+        }
+        [AllowAnonymous]
         [HttpPost("product-list")]
         public async Task<IActionResult> getProductList(ProductGetRequest request)
         {

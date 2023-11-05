@@ -23,28 +23,10 @@ namespace ECommerce.WebApp.Controllers
     [Route("api/inventory")]
     public class InventoryController : ControllerBase
     {
-        private IProductBaseService _productBaseService;
-        private IBrandService _brandService;
-        private IShopService _shopService;
-        private ICommentService _commentService;
         private IInventoryService _inventoryService;
-        private ManageFiles _manageFiles;
-        private string FILE_PATH = FilePathConstant.PRODUCT_FILEPATH;
-        private string FILE_PREFIX = FilePathConstant.PRODUCT_FILEPREFIX;
-        public InventoryController(
-            IProductBaseService productBaseService,
-            IBrandService brandService,
-            IShopService shopService,
-            IWebHostEnvironment webHostEnvironment,
-            IInventoryService inventoryService,
-            ICommentService commentService
-        ) {
-            _productBaseService = productBaseService;
-            _brandService = brandService;
-            _shopService = shopService;
+        public InventoryController(IInventoryService inventoryService) 
+        {
             _inventoryService = inventoryService;
-            _commentService = commentService;
-            _manageFiles = new ManageFiles(webHostEnvironment);
         }
         [AllowAnonymous]
         [HttpPost("sub-categories")]
