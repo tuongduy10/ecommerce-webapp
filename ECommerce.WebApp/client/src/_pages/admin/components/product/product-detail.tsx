@@ -1,6 +1,6 @@
 import { Autocomplete, Box, Button, Checkbox, Chip, CssBaseline, FormControlLabel, FormLabel, Grid, Input, Stack, TextField, ThemeProvider, Typography, createTheme } from "@mui/material";
 import { Editor } from '@tinymce/tinymce-react';
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GlobalConfig } from "src/_configs/global.config";
 import UploadInput from "src/_shares/_components/input/upload-input";
 import NumberInput from "src/_shares/_components/input/number-input";
@@ -19,7 +19,29 @@ const top100Films = [
 ];
 
 const defaultTheme = createTheme();
+type DataFilter = {
+    shops: any[],
+    brands: any[],
+    subCategories: any[],
+    attributes: any[],
+    options: any[],
+}
+
 const ProductDetail = () => {
+    const [dataFilter, setDataFilter] = useState<DataFilter>();
+
+    useEffect(() => {
+        getShops();
+    }, []);
+
+    const getShops = () => {
+        
+    }
+
+    const getDetail = () => {
+
+    }
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
@@ -182,7 +204,7 @@ const ProductDetail = () => {
                                         size="small"
                                         disablePortal
                                         options={top100Films}
-                                        renderInput={(params) => <TextField {...params} label="Danh mục" />}
+                                        renderInput={(params) => <TextField {...params} label="Loại sản phẩm" />}
                                     />
                                 </Grid>
                             </Grid>

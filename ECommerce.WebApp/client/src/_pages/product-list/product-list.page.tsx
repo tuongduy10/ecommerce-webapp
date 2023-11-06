@@ -33,7 +33,7 @@ const ProductListPage = () => {
   }, [_pageIndex, _orderBy, _subCategoryId, _optionValueIds]);
 
   useEffect(() => {
-    getSubCategories(_brandId);
+    getSubCategories({ brandId: _brandId });
   }, [_brandId])
 
   const getData = (params: any) => {
@@ -57,8 +57,8 @@ const ProductListPage = () => {
     }
   }
 
-  const getSubCategories = (brandId: number) => {
-    InventoryService.getSubCategories(brandId).then((res: any) => {
+  const getSubCategories = (params: { brandId: number }) => {
+    InventoryService.getSubCategories(params).then((res: any) => {
       if (res.data) {
         const list = res.data.map((item: ISubCategory) => {
           item.optionList?.forEach((option: IOption) => {

@@ -70,9 +70,9 @@ const ProductItem = (props: IProductItemProps) => {
               : `(${product.nameType})`)}
           </div>
           <div className="product-subprice" style={{ visibility: !product.priceOnSell ? 'hidden' : 'visible' }}>
-            {getFormatedPrice(product.priceOnSell)}
+            {getFormatedPrice(product.price)}
           </div>
-          <div className="product-price">{getFormatedPrice(product.price)}</div>
+          <div className="product-price">{getFormatedPrice(product.priceOnSell || product.price)}</div>
           <div className="product-btn">
             <button onClick={goToDetail}>Xem nhanh</button>
           </div>

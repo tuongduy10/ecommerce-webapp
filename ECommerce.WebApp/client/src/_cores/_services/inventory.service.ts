@@ -18,7 +18,7 @@ export default class InventoryService {
         return api.get(CATEGORY_API_URL.GET_ALL);
     }
 
-    public static getSubCategories(id: number) {
-        return api.get(INVENTORY_API_URL.GET_SUB_CATEGORIES + `/${id}`);
+    public static getSubCategories(params: { brandId: number }) {
+        return api.post(INVENTORY_API_URL.SUB_CATEGORIES, params);
     }
 }

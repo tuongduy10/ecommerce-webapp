@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { ENV } from "src/_configs/enviroment.config";
 import { useProductStore } from "src/_cores/_store/root-store";
 import { MuiIcon } from "src/_shares/_components";
+import FullScreenDialog from "src/_shares/_components/dialog/fullscreen-dialog";
 import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
 import { ProductHelper } from "src/_shares/_helpers/product-helper";
 
@@ -15,6 +16,7 @@ const ProductDetailInfo = () => {
 
   const [quanity, setQuanity] = useState(1);
   const [isShowCodeDis, setShowCodeDis] = useState(false);
+  const [openBrandDes, setOpenBrandDes] = useState(false);
 
   const handleShowCodeDis = () => {
     setShowCodeDis(!isShowCodeDis);
@@ -83,8 +85,7 @@ const ProductDetailInfo = () => {
                 {[...Array(5)].map((_, index) => (
                   <MuiIcon
                     key={index}
-                    name={ICON_NAME.FEATHER.STAR}
-                    className="checked"
+                    name={index < productDetail.review.avgValue ? ICON_NAME.FEATHER.STAR_FILLED : ICON_NAME.FEATHER.STAR}
                     sx={{ fontSize: '1.5rem important;' }}
                   />
                 ))}
@@ -130,9 +131,11 @@ const ProductDetailInfo = () => {
                   cursor: "pointer",
                   fontSize: `calc(16px + (20 - 14) * ((100vw - 375px) / (1920 - 375)))`,
                 }}
+                onClick={() => setOpenBrandDes(true)}
               >
                 {productDetail.brand?.descriptionTitle ?? ''}
               </a>
+              <FullScreenDialog content={productDetail.brand?.description} isOpen={openBrandDes} onClose={() => setOpenBrandDes(false)} />
               {/* <span
                       style={{
                         fontSize:

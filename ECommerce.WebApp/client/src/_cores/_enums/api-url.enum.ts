@@ -25,5 +25,5 @@ export const PRODUCT_API_URL = {
 }
 
 export const INVENTORY_API_URL = {
-    GET_SUB_CATEGORIES: '/inventory/get-sub-categories',
+    SUB_CATEGORIES: '/inventory/sub-categories',
 }

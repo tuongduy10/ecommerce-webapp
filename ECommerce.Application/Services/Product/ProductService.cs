@@ -93,6 +93,9 @@ namespace ECommerce.Application.Services.Product
                         createDate = i.CreateDate,
                     })
                     .ToList();
+                var ratesHasValue = rates
+                    .Where(i => i.value > 0)
+                    .ToList();
                 var options = _optionRepo.Entity()
                     .Where(opt => _productOptionValueRepo.Entity()
                         .Any(pov => pov.ProductId == id && pov.OptionValue.OptionId == opt.OptionId))
@@ -130,8 +133,8 @@ namespace ECommerce.Application.Services.Product
                     .ToList();
                 var review = new ReviewModel
                 {
-                    avgValue = rates.Count() > 0 ? (int)Math.Round((double)(rates.Sum(i => i.value) / rates.Count)) : 0,
-                    totalRating = rates.Count() > 0 ? rates.Count() : 0,
+                    avgValue = ratesHasValue.Count() > 0 ? (int)Math.Round((double)(ratesHasValue.Sum(i => i.value) / ratesHasValue.Count)) : 0,
+                    totalRating = ratesHasValue.Count() > 0 ? ratesHasValue.Count() : 0,
                     rates = rates
                 };
 

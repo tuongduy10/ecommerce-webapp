@@ -43,6 +43,7 @@ import { ReactComponent as ThumbsUpIcon } from "src/_shares/_assets/_icons/thumb
 import { ReactComponent as ThumbsDownIcon } from "src/_shares/_assets/_icons/thumbs-down.svg";
 import { ReactComponent as PhoneIcon } from "src/_shares/_assets/_icons/phone.svg";
 import { ReactComponent as StarIcon } from "src/_shares/_assets/_icons/star.svg";
+import { ReactComponent as StarFilledIcon } from "src/_shares/_assets/_icons/star-filled.svg";
 
 const MuiIcon = (props: any) => {
   const { name } = props;
@@ -138,6 +139,8 @@ const MuiIcon = (props: any) => {
       return <PhoneIcon {...props} />;
     case ICON_NAME.FEATHER.STAR:
       return <StarIcon {...props} />;
+    case ICON_NAME.FEATHER.STAR_FILLED:
+      return <StarFilledIcon {...props} />;
 
     default:
       return <></>;
