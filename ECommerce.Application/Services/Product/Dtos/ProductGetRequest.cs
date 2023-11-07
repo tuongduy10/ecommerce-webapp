@@ -8,7 +8,7 @@ namespace ECommerce.Application.Services.Product.Dtos
     public class ProductGetRequest : PageRequest
     {
         public int? id { get; set; }
-        public int brandId { get; set; }
+        public int brandId { get; set; }    
         public int subCategoryId { get; set; }
         public string orderBy { get; set; } // newest | discount
         public List<int> optionValueIds { get; set; }

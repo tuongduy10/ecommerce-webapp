@@ -78,6 +78,7 @@ namespace ECommerce.WebApp.Controllers
             };
             return Ok(new SuccessResponse<UserGetModel>("success", user));
         }
+        [AllowAnonymous]
         [HttpGet("shops")]
         public async Task<IActionResult> GetShops()
         {

@@ -1,5 +1,5 @@
 export const GlobalConfig = {
-    MAX_PAGE_SIZE: 50,
+    MAX_PAGE_SIZE: 50, // items per page
     MIN_PAGE_SIZE: 5,
     ITEMS_PER_PAGE: 10,
     TINY_KEY: '4ctr9pi6o8mlflu8si6gdszgl62tn4zl73knhf3tkqalszsx',

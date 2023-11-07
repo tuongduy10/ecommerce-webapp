@@ -18,7 +18,7 @@ const BrandList = () => {
     const getBrands = (categoryId: number) => {
         const req = categoryId
             ? InventoryService.getBrandsInCategory(categoryId)
-            : InventoryService.getBrands();
+            : InventoryService.getBrands({});
         req.then(res => {
             if (res?.data) {
                 dispatch(setBrands(res.data));

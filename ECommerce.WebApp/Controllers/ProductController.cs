@@ -38,21 +38,16 @@ namespace ECommerce.WebApp.Controllers
         [HttpPost("product-managed-list")]
         public async Task<IActionResult> getProductManagedList(ProductGetRequest request)
         {
-            return Ok();
+            var res = await _productService.getProductManagedList(request);
+            if (!res.isSucceed)
+                return BadRequest(res);
+            return Ok(res);
         }
         [AllowAnonymous]
         [HttpPost("product-list")]
         public async Task<IActionResult> getProductList(ProductGetRequest request)
         {
             var res = await _productService.getProductList(request);
-            if (!res.isSucceed)
-                return BadRequest(res);
-            return Ok(res);
-        }
-        [HttpPost("managed-products")]
-        public async Task<IActionResult> getManagedProductList(ProductGetRequest request)
-        {
-            var res = await _productService.getManagedProductList(request);
             if (!res.isSucceed)
                 return BadRequest(res);
             return Ok(res);

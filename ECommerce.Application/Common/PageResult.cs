@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Common
 {
-    public class PageResult<T>
+    public class PageResult<T> where T : class
     {
         public List<T> Items { get; set; }
         public int CurrentRecord { get; set; }

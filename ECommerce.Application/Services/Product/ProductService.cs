@@ -293,19 +293,18 @@ namespace ECommerce.Application.Services.Product
                 return new FailResponse<PageResult<ProductModel>>(error.Message);
             }
         }
-        public async Task<Response<List<ProductModel>>> getManagedProductList(ProductGetRequest request)
+        public async Task<Response<PageResult<ProductModel>>> getProductManagedList(ProductGetRequest request)
         {
             try
             {
                 int id = (int)request.id;
-                int subCategoryId = request.subCategoryId;
+                int pageIndex = request.PageIndex;
+                int pageSize = request.PageSize;
 
-                var query = from products in _DbContext.Products
+                var query = from products in _productRepo.Entity()
                             select products;
-                if (subCategoryId != 0)
-                    query = query.Where(i => i.SubCategoryId == subCategoryId);
-                
-                var result = await query
+
+                var list = query
                     .Where(q => id > -1 ? q.ProductId == id : q.ProductId > -1)
                     .Select(i => new ProductModel()
                     {
@@ -338,22 +337,28 @@ namespace ECommerce.Application.Services.Product
                         profitPreOrder = i.ProfitPreOrder,
                         profitForSeller = i.ProfitForSeller,
 
-                        shop = new ShopModel
-                        {
-                            id = i.ShopId,
-                            name = i.Shop.ShopName,
-                        },
+                        shop = new ShopModel(i.ShopId, i.Shop.ShopName),
                         note = i.Note,
                         link = i.Link
                     })
-                    .OrderByDescending(i => i.id)
-                    .ToListAsync();
+                    .OrderByDescending(i => i.id);
 
-                return new SuccessResponse<List<ProductModel>>(result);
+                var record = await list.CountAsync();
+                var data = await PaginatedList<ProductModel>.CreateAsync(list, pageIndex, pageSize);
+                var result = new PageResult<ProductModel>()
+                {
+                    Items = data,
+                    CurrentRecord = (pageIndex * pageSize) <= record ? (pageIndex * pageSize) : record,
+                    TotalRecord = record,
+                    CurrentPage = pageIndex,
+                    TotalPage = (int)Math.Ceiling(record / (double)pageSize)
+                };
+
+                return new SuccessResponse<PageResult<ProductModel>>(result);
             }
             catch (Exception error)
             {
-                return new FailResponse<List<ProductModel>>(error.Message);
+                return new FailResponse<PageResult<ProductModel>>(error.Message);
             }
         }
         public async Task<Response<bool>> save(ProductSaveRequest request) // add or update

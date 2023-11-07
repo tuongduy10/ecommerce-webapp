@@ -21,6 +21,7 @@ export const CATEGORY_API_URL = {
 
 export const PRODUCT_API_URL = {
     PRODUCT_LIST: '/product/product-list',
+    PRODUCT_MANAGED_LIST: '/product/product-managed-list',
     PRODUCT_DETAIL: '/product/product-detail',
 }
 
