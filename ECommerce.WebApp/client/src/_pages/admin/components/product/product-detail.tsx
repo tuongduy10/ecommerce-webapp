@@ -1,45 +1,140 @@
-import { Autocomplete, Box, Button, Checkbox, Chip, CssBaseline, FormControlLabel, FormLabel, Grid, Input, Stack, TextField, ThemeProvider, Typography, createTheme } from "@mui/material";
+import { Autocomplete, Box, Button, Checkbox, Chip, CssBaseline, FormControlLabel, FormLabel, Grid, Stack, TextField, ThemeProvider, Typography, createTheme } from "@mui/material";
 import { Editor } from '@tinymce/tinymce-react';
-import { useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { GlobalConfig } from "src/_configs/global.config";
 import UploadInput from "src/_shares/_components/input/upload-input";
-import NumberInput from "src/_shares/_components/input/number-input";
 import { FormatHelper } from "src/_shares/_helpers/format-helper";
 import PriceInput from "src/_shares/_components/input/price-input";
+import { IShop } from "src/_cores/_interfaces/user.interface";
+import { IAttribute, IBrand, IOption, ISubCategory } from "src/_cores/_interfaces/inventory.interface";
+import UserService from "src/_cores/_services/user.service";
+import InventoryService from "src/_cores/_services/inventory.service";
 
-
-const top100Films = [
-    { label: 'The Shawshank Redemption', value: 1994 },
-    { label: 'The Godfather', value: 1972 },
-    { label: 'The Godfather: Part II', value: 1974 },
-    { label: 'The Dark Knight', value: 2008 },
-    { label: '12 Angry Men', value: 1957 },
-    { label: "Schindler's List", value: 1993 },
-    { label: 'Pulp Fiction', value: 1994 },
-];
+const _tempAttributes = [
+    {
+        "id": 14,
+        "name": "Chất liệu",
+        "value": null
+    },
+    {
+        "id": 33,
+        "name": "Trọng lượng",
+        "value": null
+    },
+    {
+        "id": 40,
+        "name": "Hãng",
+        "value": null
+    },
+    {
+        "id": 42,
+        "name": "Dung tích",
+        "value": null
+    },
+    {
+        "id": 43,
+        "name": "Công suất",
+        "value": null
+    },
+    {
+        "id": 44,
+        "name": "Điện áp",
+        "value": null
+    },
+    {
+        "id": 45,
+        "name": "Kích thước",
+        "value": null
+    },
+    {
+        "id": 46,
+        "name": "Phiên bản",
+        "value": null
+    },
+    {
+        "id": 47,
+        "name": "Hướng dẫn sử dụng",
+        "value": null
+    },
+    {
+        "id": 48,
+        "name": "Màn hình hiển thị",
+        "value": null
+    },
+    {
+        "id": 49,
+        "name": "Đi kèm",
+        "value": null
+    },
+    {
+        "id": 50,
+        "name": "Chân cắm điện",
+        "value": null
+    }
+]
 
 const defaultTheme = createTheme();
-type DataFilter = {
-    shops: any[],
-    brands: any[],
-    subCategories: any[],
-    attributes: any[],
-    options: any[],
+type DataDetail = {
+    shops: IShop[],
+    brands: IBrand[],
+    subCategories: ISubCategory[],
+    attributes: IAttribute[],
+    options: IOption[],
+}
+type NewOptionValue = {
+    id: number;
+    values: string[]
 }
 
 const ProductDetail = () => {
-    const [dataFilter, setDataFilter] = useState<DataFilter>();
+    const [dataDetail, setDataDetail] = useState<DataDetail>({
+        shops: [],
+        brands: [],
+        subCategories: [],
+        attributes: [],
+        options: []
+    });
+    const [selectedBrandId, setSelectedBrandId] = useState<number>(-1);
+    const [selectedShopId, setSelectedShopId] = useState<number>(-1);
+    const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<number>(-1);
+    const descriptionRef = useRef<any>(null);
+    const sizeGuideRef = useRef<any>(null);
+    const [newOptionValues, setNewOptionValues] = useState<NewOptionValue[]>([]);
+    const [systemFileNames, setSystemFileNames] = useState<string[]>([]);
+    const [userFileNames, setUserFileNames] = useState<string[]>([]);
 
     useEffect(() => {
         getShops();
     }, []);
 
     const getShops = () => {
-        
+        UserService.getShops().then(res => {
+            if (res?.data) {
+                setDataDetail({ ...dataDetail, shops: res.data });
+            }
+        }).catch(error => {
+            alert(error);
+        });
     }
 
-    const getDetail = () => {
+    const getBrands = (shopId: number) => {
+        InventoryService.getBrands({ shopId: shopId }).then(res => {
+            if (res?.data) {
+                setDataDetail({ ...dataDetail, brands: res.data });
+            }
+        }).catch(error => {
+            alert(error);
+        });
+    }
 
+    const getSubCategories = (brandId: number) => {
+        InventoryService.getSubCategories({ brandId: brandId }).then(res => {
+            if (res?.data) {
+                setDataDetail({ ...dataDetail, subCategories: res.data });
+            }
+        }).catch(error => {
+            alert(error);
+        });
     }
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -55,7 +150,6 @@ const ProductDetail = () => {
             discountPreOrder: FormatHelper.getNumber(form.get('discountPreOrder')?.toString()),
             discountAvailable: FormatHelper.getNumber(form.get('discountAvailable')?.toString()),
             discountPercent: form.get('discountPercent'),
-            files: form.getAll('imageSys-upload'),
             isNew: form.get('isNew')?.toString() === 'on',
             isHighlight: form.get('isHighlight')?.toString() === 'on',
             isLegal: form.get('isLegal')?.toString() === 'on',
@@ -64,17 +158,112 @@ const ProductDetail = () => {
             insurance: form.get('insurance'),
             link: form.get('link'),
             note: form.get('note'),
-            shop: form.get('shop'),
+            shopId: selectedShopId,
+            brandId: selectedBrandId,
+            subCategoryId: selectedSubCategoryId,
+            attributes: dataDetail.attributes,
+            description: descriptionRef.current.getContent(),
+            // options
+            currentOptions: dataDetail.options.length > 0 ? dataDetail.options.map(option => option.id) : [],
+            newOptions: newOptionValues,
+            systemFileNames: systemFileNames,
+            userFileNames: userFileNames
         }
         console.log(param);
     };
 
-    const onUpload = (e: any) => {
-        console.log(e);
+    const onChangeShop = (value: IShop) => {
+        setSelectedShopId(value?.id || -1);
+        if (!value) {
+            setSelectedShopId(-1);
+            setDataDetail({
+                ...dataDetail,
+                brands: [],
+                subCategories: [],
+                attributes: [],
+                options: [],
+            });
+            return;
+        }
+        getBrands(value.id)
     }
 
-    const handleDeleteChip = () => {
+    const onChangeBrand = (value: IBrand) => {
+        setSelectedBrandId(value?.id || -1);
+        if (!value) {
+            setSelectedSubCategoryId(-1);
+            setDataDetail({
+                ...dataDetail,
+                subCategories: [],
+                attributes: [],
+                options: [],
+            });
+            return;
+        }
+        getSubCategories(value.id)
+    }
 
+    const onChangeSubCategory = (value: ISubCategory) => {
+        setSelectedSubCategoryId(value?.id || -1);
+        if (!value) {
+            setDataDetail({
+                ...dataDetail,
+                options: [],
+                attributes: []
+            });
+            return;
+        }
+        if (value.optionList) {
+            const _optionList = value.optionList;
+            _optionList.forEach((option) => {
+                option.values = option.values?.filter(value => value.isBase)
+            });
+            setDataDetail({
+                ...dataDetail,
+                options: _optionList,
+                attributes: _tempAttributes
+            });
+        }
+    }
+
+    const onBlurOption = (idx: number, value: string) => {
+        if (!newOptionValues[idx]) {
+            newOptionValues[idx] = {
+                id: dataDetail.options[idx].id,
+                values: []
+            }
+        }
+        if (value && !newOptionValues[idx].values.includes(value)) {
+            newOptionValues[idx].values.push(value);
+        }
+        setNewOptionValues([...newOptionValues]);
+    }
+
+    const onBlurAttribute = (idx: number, value: string) => {
+        if (dataDetail.attributes[idx]) {
+            dataDetail.attributes[idx].value = value ?? '';
+            setDataDetail({
+                ...dataDetail,
+                attributes: [...dataDetail.attributes]
+            });
+        }
+    }
+
+    const deleteCurrentOptionValue = (idx: number, childIdx: number) => {
+        if (dataDetail.options[idx]) {
+            dataDetail.options[idx].values.splice(childIdx, 1);
+        }
+        setDataDetail({
+            ...dataDetail,
+            options: [...dataDetail.options]
+        })
+    }
+
+    const deleteNewOptionValue = (idx: number, childIdx: number) => {
+        if (newOptionValues[idx]) {
+            newOptionValues[idx].values.splice(childIdx, 1);
+        }
+        setNewOptionValues([...newOptionValues]);
     }
 
     return (
@@ -184,28 +373,43 @@ const ProductDetail = () => {
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={12}>
-                                    <Autocomplete
-                                        size="small"
-                                        disablePortal
-                                        options={top100Films}
-                                        renderInput={(params) => <TextField {...params} name="shop" label="Cửa hàng" />}
-                                    />
+                                    {dataDetail.shops.length > 0 && (
+                                        <Autocomplete
+                                            size="small"
+                                            disablePortal
+                                            options={dataDetail.shops}
+                                            onChange={(event, value) => value && onChangeShop(value)}
+                                            getOptionLabel={(option) => `${option.name}`}
+                                            renderOption={(props, option) => <li {...props}>{option.name}</li>}
+                                            renderInput={(params) => <TextField {...params} name="shop" label="Cửa hàng" />}
+                                        />
+                                    )}
                                 </Grid>
                                 <Grid item xs={12} sm={12}>
-                                    <Autocomplete
-                                        size="small"
-                                        disablePortal
-                                        options={top100Films}
-                                        renderInput={(params) => <TextField {...params} label="Thương hiệu" />}
-                                    />
+                                    {dataDetail.brands.length > 0 && (
+                                        <Autocomplete
+                                            size="small"
+                                            disablePortal
+                                            options={dataDetail.brands}
+                                            onChange={(event, value) => value && onChangeBrand(value)}
+                                            getOptionLabel={(option) => `${option.name}`}
+                                            renderOption={(props, option) => <li {...props}>{option.name}</li>}
+                                            renderInput={(params) => <TextField {...params} label="Thương hiệu" />}
+                                        />
+                                    )}
                                 </Grid>
                                 <Grid item xs={12} sm={12}>
-                                    <Autocomplete
-                                        size="small"
-                                        disablePortal
-                                        options={top100Films}
-                                        renderInput={(params) => <TextField {...params} label="Loại sản phẩm" />}
-                                    />
+                                    {dataDetail.subCategories.length > 0 && (
+                                        <Autocomplete
+                                            size="small"
+                                            disablePortal
+                                            options={dataDetail.subCategories}
+                                            onChange={(event, value) => value && onChangeSubCategory(value)}
+                                            getOptionLabel={(option) => `${option.name}`}
+                                            renderOption={(props, option) => <li {...props}>{option.name}</li>}
+                                            renderInput={(params) => <TextField {...params} label="Loại sản phẩm" />}
+                                        />
+                                    )}
                                 </Grid>
                             </Grid>
                         </Box>
@@ -218,81 +422,69 @@ const ProductDetail = () => {
                             }}
                         >
                             <Grid container spacing={2}>
-                                <Grid item xs={12} sm={12}>
-                                    <Typography variant="subtitle1" gutterBottom>
-                                        Thông tin chi tiết
-                                    </Typography>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                fullWidth
-                                                size="small"
-                                                label="Chất liệu"
-                                                autoComplete='off'
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                fullWidth
-                                                size="small"
-                                                label="Trọng lượng"
-                                                autoComplete='off'
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                fullWidth
-                                                size="small"
-                                                label="Dung tích"
-                                                autoComplete='off'
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                fullWidth
-                                                size="small"
-                                                label="Kích thước"
-                                                autoComplete='off'
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                fullWidth
-                                                size="small"
-                                                label="Công suất"
-                                                autoComplete='off'
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                fullWidth
-                                                size="small"
-                                                label="Điện áp"
-                                                autoComplete='off'
-                                            />
+                                {dataDetail.attributes.length > 0 && (
+                                    <Grid item xs={12} sm={12}>
+                                        <Typography variant="subtitle1" gutterBottom>
+                                            Thông tin chi tiết
+                                        </Typography>
+                                        <Grid container spacing={2}>
+                                            {dataDetail.attributes.map((attribute, idx) => (
+                                                <Grid key={`attribute-${attribute.id}`} item xs={12} sm={6}>
+                                                    <TextField
+                                                        fullWidth
+                                                        size="small"
+                                                        label={attribute.name}
+                                                        autoComplete='off'
+                                                        onBlur={(event) => onBlurAttribute(idx, event.target.value)}
+                                                    />
+                                                </Grid>
+                                            ))}
                                         </Grid>
                                     </Grid>
-                                </Grid>
-                                <Grid item xs={12} sm={12}>
-                                    <Typography variant="subtitle1" gutterBottom>
-                                        Thông tin tùy chọn
-                                    </Typography>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            sx={{ marginBottom: 1 }}
-                                            fullWidth
-                                            size="small"
-                                            label="Màu sắc"
-                                            autoComplete='off'
-                                        />
-                                        <Stack spacing={{ xs: 1, sm: 1 }} direction="row" useFlexGap flexWrap="wrap">
-                                            <Chip label="Vàng" variant="outlined" onDelete={handleDeleteChip} />
-                                            <Chip label="Hồng" variant="outlined" onDelete={handleDeleteChip} />
-                                            <Chip label="Trắng" variant="outlined" onDelete={handleDeleteChip} />
-                                            <Chip label="Đen" variant="outlined" onDelete={handleDeleteChip} />
-                                        </Stack>
+                                )}
+                                {dataDetail.options.length > 0 && (
+                                    <Grid item xs={12} sm={12}>
+                                        <Typography variant="subtitle1" gutterBottom>
+                                            Thông tin tùy chọn
+                                        </Typography>
+                                        <Grid item xs={12} sm={6}>
+                                            {dataDetail.options.map((option, idx) => (
+                                                <Fragment key={`option-${option.id}`}>
+                                                    <TextField
+                                                        sx={{ marginBottom: 1 }}
+                                                        fullWidth
+                                                        size="small"
+                                                        label={option.name}
+                                                        autoComplete='off'
+                                                        onBlur={(event) => onBlurOption(idx, event.target.value)}
+                                                    />
+                                                    <Stack spacing={{ xs: 1, sm: 1 }} direction="row" useFlexGap flexWrap="wrap">
+                                                        {option.values && option.values?.length > 0 && (
+                                                            option.values.map((value, childIdx) => (
+                                                                <Chip
+                                                                    key={`option-value-${value.id}`}
+                                                                    label={value.name}
+                                                                    variant="outlined"
+                                                                    onDelete={() => deleteCurrentOptionValue(idx, childIdx)}
+                                                                />
+                                                            ))
+                                                        )}
+                                                        {newOptionValues[idx] && newOptionValues[idx].values.length > 0 && (
+                                                            newOptionValues[idx].values.map((value, childIdx) => (
+                                                                <Chip
+                                                                    key={`new-option-value-${childIdx}`}
+                                                                    label={value}
+                                                                    variant="outlined"
+                                                                    onDelete={() => deleteNewOptionValue(idx, childIdx)}
+                                                                />
+                                                            ))
+                                                        )}
+                                                    </Stack>
+                                                </Fragment>
+                                            ))}
+                                        </Grid>
                                     </Grid>
-                                </Grid>
+                                )}
                             </Grid>
                         </Box>
                     </Grid>
@@ -303,6 +495,7 @@ const ProductDetail = () => {
                                     Mô tả
                                 </Typography>
                                 <Editor
+                                    onInit={(evt, editor) => descriptionRef.current = editor}
                                     apiKey={GlobalConfig.TINY_KEY}
                                     init={{
                                         height: 500,
@@ -319,10 +512,11 @@ const ProductDetail = () => {
                                     sx={{ marginBottom: 1 }}
                                     size="small"
                                     disablePortal
-                                    options={top100Films}
+                                    options={[]}
                                     renderInput={(params) => <TextField {...params} label="Chọn size theo loại" />}
                                 />
                                 <Editor
+                                    onInit={(evt, editor) => sizeGuideRef.current = editor}
                                     apiKey={GlobalConfig.TINY_KEY}
                                     init={{
                                         height: 500,
@@ -346,7 +540,7 @@ const ProductDetail = () => {
                                     name="imageSys-upload"
                                     multiple
                                     hidden
-                                    onChangeFiles={onUpload}
+                                    onChangeFiles={(event) => setSystemFileNames(event)}
                                     uploadType="products"
                                 />
                             </Grid>
@@ -364,7 +558,7 @@ const ProductDetail = () => {
                                     id={`imageUser-upload`}
                                     multiple
                                     hidden
-                                    onChangeFiles={onUpload}
+                                    onChangeFiles={(event) => setUserFileNames(event)}
                                     uploadType="products"
                                 />
                             </Grid>

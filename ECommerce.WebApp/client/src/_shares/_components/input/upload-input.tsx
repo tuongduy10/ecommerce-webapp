@@ -28,9 +28,9 @@ const UploadInput = (props: IUploadProps) => {
         }
         const formData = new FormData();
         formData.append('uploadType', uploadType);
-        files.forEach((file: File) => {
-            formData.append('files', file);
-        });
+        for (const file of files) {
+            formData.append('files', file)
+        }
         CommonService.uploadFiles(formData).then((res: any) => {
             if (res.data) {
                 const fileNames = res.data;

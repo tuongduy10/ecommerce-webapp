@@ -39,13 +39,14 @@ const header: ITableHeader[] = [
 
 type TableRowProps = {
     rowData: IProduct,
-    externalData?: any,
 }
 
 function Row(props: TableRowProps) {
-    const { rowData, externalData } = props;
+    const { rowData } = props;
     const [open, setOpen] = useState(false);
+
     const getFormatedPrice = (price: number) => ProductHelper.getFormatedPrice(price);
+    const getProductStatus = (status: number) => ProductHelper.getProductStatus(status);
 
     return (
         <Fragment>
@@ -66,13 +67,11 @@ function Row(props: TableRowProps) {
                 <TableCell align="left">{rowData.code}</TableCell>
                 <TableCell align="left">{rowData.name}</TableCell>
                 <TableCell align="left">{rowData.shop?.name}</TableCell>
-
                 <TableCell align="left">{rowData.subCategoryName}</TableCell>
                 <TableCell align="center">{rowData.categoryName}</TableCell>
-
                 <TableCell align="center">{rowData.stock}</TableCell>
-                <TableCell align="center" sx={{ color: ProductHelper.getProductStatus(rowData.status).color }}>
-                    {ProductHelper.getProductStatus(rowData.status).label}
+                <TableCell align="center" sx={{ color: getProductStatus(rowData.status).color }}>
+                    {getProductStatus(rowData.status).label}
                 </TableCell>
                 <TableCell align="center">
                     <button>Hiện</button>
@@ -81,39 +80,37 @@ function Row(props: TableRowProps) {
                 </TableCell>
             </TableRow>
             <TableRow>
-                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                    <Collapse in={open} timeout="auto" unmountOnExit>
-                        <Box sx={{ margin: 1 }}>
-                            <Typography variant="h6" gutterBottom component="div">
-                                Giá
-                            </Typography>
-                            <Table size="small" aria-label="purchases">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Giá đặt trước</TableCell>
-                                        <TableCell>Giá có sẵn</TableCell>
-                                        <TableCell>Giá nhập</TableCell>
-                                        <TableCell>Giá cho Seller</TableCell>
-                                        <TableCell>Lợi nhuận đặt trước</TableCell>
-                                        <TableCell>Lợi nhuận có sẵn</TableCell>
-                                        <TableCell>Lợi nhuận cho Seller</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell>{getFormatedPrice(rowData.priceAvailable)}</TableCell>
-                                        <TableCell>{getFormatedPrice(rowData.pricePreOrder)}</TableCell>
-                                        <TableCell>{getFormatedPrice(rowData.priceImport)}</TableCell>
-                                        <TableCell>{getFormatedPrice(rowData.priceForSeller)}</TableCell>
-                                        <TableCell>{getFormatedPrice(rowData.priceForSeller)}</TableCell>
-                                        <TableCell>{getFormatedPrice(rowData.priceForSeller)}</TableCell>
-                                        <TableCell>{getFormatedPrice(rowData.priceForSeller)}</TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-                        </Box>
-                    </Collapse>
-                </TableCell>
+                <Collapse in={open} timeout="auto" unmountOnExit>
+                    <Box sx={{ margin: 1 }}>
+                        <Typography variant="h6" gutterBottom component="div">
+                            Giá
+                        </Typography>
+                        <Table size="small" aria-label="purchases">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Giá đặt trước</TableCell>
+                                    <TableCell>Giá có sẵn</TableCell>
+                                    <TableCell>Giá nhập</TableCell>
+                                    <TableCell>Giá cho Seller</TableCell>
+                                    <TableCell>Lợi nhuận đặt trước</TableCell>
+                                    <TableCell>Lợi nhuận có sẵn</TableCell>
+                                    <TableCell>Lợi nhuận cho Seller</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>{getFormatedPrice(rowData.priceAvailable)}</TableCell>
+                                    <TableCell>{getFormatedPrice(rowData.pricePreOrder)}</TableCell>
+                                    <TableCell>{getFormatedPrice(rowData.priceImport)}</TableCell>
+                                    <TableCell>{getFormatedPrice(rowData.priceForSeller)}</TableCell>
+                                    <TableCell>{getFormatedPrice(rowData.priceForSeller)}</TableCell>
+                                    <TableCell>{getFormatedPrice(rowData.priceForSeller)}</TableCell>
+                                    <TableCell>{getFormatedPrice(rowData.priceForSeller)}</TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </Box>
+                </Collapse>
             </TableRow>
         </Fragment>
     );
@@ -142,6 +139,12 @@ export default function ProductList() {
     }
 
     const getDataFilter = () => {
+        getBrands();
+        getCategories();
+        getShops();
+    }
+
+    const getBrands = () => {
         InventoryService.getBrands({}).then(res => {
             if (res?.data) {
                 setBrands(res.data);
@@ -149,7 +152,9 @@ export default function ProductList() {
         }).catch(error => {
             alert(error);
         });
+    }
 
+    const getCategories = () => {
         InventoryService.getCategories().then(res => {
             if (res?.data) {
                 setCategories(res.data);
@@ -157,7 +162,9 @@ export default function ProductList() {
         }).catch(error => {
             alert(error);
         });
+    }
 
+    const getShops = () => {
         UserService.getShops().then(res => {
             if (res?.data) {
                 setShops(res.data);
@@ -246,7 +253,7 @@ export default function ProductList() {
                         <Autocomplete
                             size="small"
                             disablePortal
-                            options={brands.length > 0 ? brands.map((brand: IBrand) => ({ ...brand, label: brand.brandName, id: brand.brandId })) : []}
+                            options={brands.length > 0 ? brands.map((brand: IBrand) => ({ ...brand, label: brand.name })) : []}
                             renderInput={(params) => <TextField {...params} name="subCategory" label="Loại sản phẩm" />}
                             onChange={(event, value) => onChangeSearch(event, value, 'subCategory')}
                         />
@@ -280,7 +287,6 @@ export default function ProductList() {
                             <Row
                                 key={`row-${item.id}`}
                                 rowData={item}
-                            // externalData={item?.externalData}
                             />
                         ))}
                     </TableBody>

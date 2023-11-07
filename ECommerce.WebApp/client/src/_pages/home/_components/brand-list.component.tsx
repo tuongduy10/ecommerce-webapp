@@ -32,7 +32,7 @@ const BrandList = () => {
         const _list: any = [];
         if (homeStore.brands.length > 0) {
             homeStore.brands.forEach((item: IBrand) => {
-                _list.push(item.brandName.substring(0, 1).toUpperCase());
+                _list.push(item.name.substring(0, 1).toUpperCase());
             });
             return _list.filter((value: any, index: number, array: any) => array.indexOf(value) === index);
         }
@@ -49,8 +49,8 @@ const BrandList = () => {
                             <div className="flex flex-wrap">
                                  {homeStore.brands && homeStore.brands.length > 0 ?
                                     homeStore.brands.map((brand, idx) => {
-                                        if (alp === brand.brandName.substring(0, 1).toUpperCase() && idx < 10) {
-                                            return <BrandItem key={`home-brand-${brand.brandId}`} data={brand} />
+                                        if (alp === brand.name.substring(0, 1).toUpperCase() && idx < 10) {
+                                            return <BrandItem key={`home-brand-${brand.id}`} data={brand} />
                                         }
                                         return null;
                                     }) : null}

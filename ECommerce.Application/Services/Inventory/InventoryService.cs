@@ -165,6 +165,13 @@ namespace ECommerce.Application.Services.Inventory
                                     .ToList()
                             })
                             .ToList(),
+                        attributes = subc.SubCategoryAttributes
+                            .Select(sa => new AttributeModel
+                            {
+                                id = sa.AttributeId,
+                                name = sa.Attribute.AttributeName
+                            })
+                            .ToList(),
                         sizeGuide = subc.SizeGuide != null 
                             ? new SizeGuideModel
                             {

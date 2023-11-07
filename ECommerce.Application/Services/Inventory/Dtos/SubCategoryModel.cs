@@ -11,5 +11,6 @@ namespace ECommerce.Application.Services.Inventory.Dtos
         public int categoryId { get; set; }
         public SizeGuideModel sizeGuide { get; set; }
         public List<OptionModel> optionList { get; set; }
+        public List<AttributeModel> attributes { get; set; }
     }
 }

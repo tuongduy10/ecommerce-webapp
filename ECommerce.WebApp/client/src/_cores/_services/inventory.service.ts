@@ -3,7 +3,7 @@ import { BRAND_API_URL, CATEGORY_API_URL, INVENTORY_API_URL } from "../_enums/ap
 
 export default class InventoryService {
     public static getBrands(params: any) { 
-        return api.get(BRAND_API_URL.GET_ALL_AVAILABLE, params);
+        return api.post(BRAND_API_URL.GET_BRANDS, params);
     }
 
     public static getBrand(id: number) { 
