@@ -32,6 +32,7 @@ namespace ECommerce.Application.Services.Product.Dtos
         public List<string> imagePaths { get; set; }
         public List<string> userImagePaths { get; set; }
         public string? description { get; set; }
+        public string? sizeGuide { get; set; }
         public string? size { get; set; }
         public string? link { get; set; }
         public string? note { get; set; }

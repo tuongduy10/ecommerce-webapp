@@ -410,7 +410,7 @@ namespace ECommerce.Application.BaseServices.Rate
                 throw new Exception(e.Message);
             }
         }
-        public async Task<ApiResponse> PostComment(PostCommentRequest request)
+        public async Task<ApiResponse> PostComment(PostCommentBaseRequest request)
         {
             try
             {

@@ -80,6 +80,7 @@ type DataDetail = {
     subCategories: ISubCategory[],
     attributes: IAttribute[],
     options: IOption[],
+    [key: string]: any
 }
 type NewOptionValue = {
     id: number;
@@ -87,6 +88,14 @@ type NewOptionValue = {
 }
 
 const ProductDetail = () => {
+    const descriptionRef = useRef<any>(null);
+    const sizeGuideRef = useRef<any>(null);
+    const [selectedBrandId, setSelectedBrandId] = useState<number>(-1);
+    const [selectedShopId, setSelectedShopId] = useState<number>(-1);
+    const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<number>(-1);
+    const [newOptionValues, setNewOptionValues] = useState<NewOptionValue[]>([]);
+    const [systemFileNames, setSystemFileNames] = useState<string[]>([]);
+    const [userFileNames, setUserFileNames] = useState<string[]>([]);
     const [dataDetail, setDataDetail] = useState<DataDetail>({
         shops: [],
         brands: [],
@@ -94,14 +103,6 @@ const ProductDetail = () => {
         attributes: [],
         options: []
     });
-    const [selectedBrandId, setSelectedBrandId] = useState<number>(-1);
-    const [selectedShopId, setSelectedShopId] = useState<number>(-1);
-    const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<number>(-1);
-    const descriptionRef = useRef<any>(null);
-    const sizeGuideRef = useRef<any>(null);
-    const [newOptionValues, setNewOptionValues] = useState<NewOptionValue[]>([]);
-    const [systemFileNames, setSystemFileNames] = useState<string[]>([]);
-    const [userFileNames, setUserFileNames] = useState<string[]>([]);
 
     useEffect(() => {
         getShops();
@@ -136,41 +137,6 @@ const ProductDetail = () => {
             alert(error);
         });
     }
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const form = new FormData(event.currentTarget);
-        const param = {
-            code: form.get('code'),
-            productName: form.get('productName'),
-            priceImport: FormatHelper.getNumber(form.get('priceImport')?.toString()),
-            priceForSeller: FormatHelper.getNumber(form.get('priceForSeller')?.toString()),
-            priceForAvailable: FormatHelper.getNumber(form.get('priceForAvailable')?.toString()),
-            pricePreOrder: FormatHelper.getNumber(form.get('pricePreOrder')?.toString()),
-            discountPreOrder: FormatHelper.getNumber(form.get('discountPreOrder')?.toString()),
-            discountAvailable: FormatHelper.getNumber(form.get('discountAvailable')?.toString()),
-            discountPercent: form.get('discountPercent'),
-            isNew: form.get('isNew')?.toString() === 'on',
-            isHighlight: form.get('isHighlight')?.toString() === 'on',
-            isLegal: form.get('isLegal')?.toString() === 'on',
-            repay: form.get('repay'),
-            delivery: form.get('delivery'),
-            insurance: form.get('insurance'),
-            link: form.get('link'),
-            note: form.get('note'),
-            shopId: selectedShopId,
-            brandId: selectedBrandId,
-            subCategoryId: selectedSubCategoryId,
-            attributes: dataDetail.attributes,
-            description: descriptionRef.current.getContent(),
-            // options
-            currentOptions: dataDetail.options.length > 0 ? dataDetail.options.map(option => option.id) : [],
-            newOptions: newOptionValues,
-            systemFileNames: systemFileNames,
-            userFileNames: userFileNames
-        }
-        console.log(param);
-    };
 
     const onChangeShop = (value: IShop) => {
         setSelectedShopId(value?.id || -1);
@@ -213,17 +179,15 @@ const ProductDetail = () => {
             });
             return;
         }
-        if (value.optionList) {
-            const _optionList = value.optionList;
-            _optionList.forEach((option) => {
-                option.values = option.values?.filter(value => value.isBase)
-            });
-            setDataDetail({
-                ...dataDetail,
-                options: _optionList,
-                attributes: _tempAttributes
-            });
-        }
+        const _optionList = value.optionList ?? [];
+        _optionList.forEach((option) => {
+            option.values = option.values?.filter(value => value.isBase)
+        });
+        setDataDetail({
+            ...dataDetail,
+            options: _optionList,
+            attributes: value.attributes || []
+        });
     }
 
     const onBlurOption = (idx: number, value: string) => {
@@ -249,6 +213,10 @@ const ProductDetail = () => {
         }
     }
 
+    const onChangeFieldValue = (field: string, value: any) => {
+        setDataDetail({ ...dataDetail, [field]: value });
+    }
+
     const deleteCurrentOptionValue = (idx: number, childIdx: number) => {
         if (dataDetail.options[idx]) {
             dataDetail.options[idx].values.splice(childIdx, 1);
@@ -265,6 +233,49 @@ const ProductDetail = () => {
         }
         setNewOptionValues([...newOptionValues]);
     }
+
+    const onChangeDiscountChecked = (event: any) => {
+        setDataDetail({ ...dataDetail, isDiscount: event.target.checked })
+    }
+
+    const getNumber = (value: any) => FormatHelper.getNumber(value);
+
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const form = new FormData(event.currentTarget);
+        const param = {
+            code: form.get('code'),
+            productName: form.get('productName'),
+            stock: getNumber(form.get('stock')),
+            priceImport: getNumber(form.get('priceImport')?.toString()),
+            priceForSeller: getNumber(form.get('priceForSeller')?.toString()),
+            priceForAvailable: getNumber(form.get('priceForAvailable')?.toString()),
+            pricePreOrder: getNumber(form.get('pricePreOrder')?.toString()),
+            discountPreOrder: !dataDetail['isDiscount'] ? getNumber(form.get('discountPreOrder')?.toString()) : null,
+            discountAvailable: !dataDetail['isDiscount'] ? getNumber(form.get('discountAvailable')?.toString()) : null,
+            discountPercent: dataDetail['isDiscount'] ? form.get('discountPercent') : null,
+            isNew: form.get('isNew')?.toString() === 'on',
+            isHighlight: form.get('isHighlight')?.toString() === 'on',
+            isLegal: form.get('isLegal')?.toString() === 'on',
+            repay: form.get('repay'),
+            delivery: form.get('delivery'),
+            insurance: form.get('insurance'),
+            link: form.get('link'),
+            note: form.get('note'),
+            shopId: selectedShopId,
+            brandId: selectedBrandId,
+            subCategoryId: selectedSubCategoryId,
+            attributes: dataDetail.attributes,
+            description: descriptionRef.current.getContent(),
+            sizeGuide: sizeGuideRef.current.getContent(),
+            // options
+            currentOptions: dataDetail.options.length > 0 ? dataDetail.options.map(option => option.id) : [],
+            newOptions: newOptionValues,
+            systemFileNames: systemFileNames,
+            userFileNames: userFileNames
+        }
+        console.log(param);
+    };
 
     return (
         <ThemeProvider theme={defaultTheme}>
@@ -287,6 +298,8 @@ const ProductDetail = () => {
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={5}>
                                     <TextField
+                                        value={dataDetail['code']}
+                                        onChange={(event) => onChangeFieldValue('code', event?.target.value)}
                                         autoComplete='off'
                                         name="code"
                                         required
@@ -298,6 +311,8 @@ const ProductDetail = () => {
                                 </Grid>
                                 <Grid item xs={12} sm={5}>
                                     <TextField
+                                        value={dataDetail['productName']}
+                                        onChange={(event) => onChangeFieldValue('productName', event?.target.value)}
                                         required
                                         fullWidth
                                         size="small"
@@ -307,35 +322,89 @@ const ProductDetail = () => {
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={2}>
-                                    <TextField type="number" name="stock" label="Kho" size="small" fullWidth />
+                                    <TextField
+                                        value={dataDetail['stock']}
+                                        onChange={(event) => onChangeFieldValue('stock', event?.target.value)}
+                                        type="number"
+                                        name="stock"
+                                        label="Kho"
+                                        size="small"
+                                        fullWidth
+                                    />
                                 </Grid>
                                 <Grid item xs={12} sm={12}>
-                                    <PriceInput label="Giá nhập hàng" name='priceImport' />
+                                    <PriceInput
+                                        value={dataDetail['priceImport']}
+                                        onChange={(event) => onChangeFieldValue('priceImport', event?.target.value)}
+                                        label="Giá nhập hàng"
+                                        name='priceImport'
+                                    />
                                 </Grid>
                                 <Grid item xs={12} sm={12}>
-                                    <PriceInput label="Giá cho Seller" name='priceForSeller' />
+                                    <PriceInput
+                                        value={dataDetail['priceForSeller']}
+                                        onChange={(event) => onChangeFieldValue('priceForSeller', event?.target.value)}
+                                        label="Giá cho Seller"
+                                        name='priceForSeller'
+                                    />
                                 </Grid>
                                 <Grid item xs={12} sm={12}>
-                                    <PriceInput label="Giá có sẵn" name='priceAvailable' />
+                                    <PriceInput
+                                        value={dataDetail['priceAvailable']}
+                                        onChange={(event) => onChangeFieldValue('priceAvailable', event?.target.value)}
+                                        label="Giá có sẵn"
+                                        name='priceAvailable'
+                                    />
                                 </Grid>
                                 <Grid item xs={12} sm={12}>
-                                    <PriceInput label="Giá đặt trước" name='pricePreOrder' />
+                                    <PriceInput
+                                        value={dataDetail['pricePreOrder']}
+                                        onChange={(event) => onChangeFieldValue('pricePreOrder', event?.target.value)}
+                                        label="Giá đặt trước"
+                                        name='pricePreOrder'
+                                    />
                                 </Grid>
                                 <Grid item xs={12} sm={2}>
                                     <FormControlLabel
                                         control={<>
-                                            <Checkbox name="isDicountPercent" color="primary" />
-                                            <TextField type="number" name="discountPercent" label="% Giảm" size="small" fullWidth />
+                                            <Checkbox
+                                                onChange={onChangeDiscountChecked}
+                                                checked={dataDetail['isDiscount'] ?? false}
+                                                name="isDicountPercent"
+                                                color="primary"
+                                            />
+                                            <TextField
+                                                value={dataDetail['discountPercent']}
+                                                disabled={!dataDetail['isDiscount'] ?? false}
+                                                onChange={(event) => onChangeFieldValue('discountPercent', event?.target.value)}
+                                                type="number"
+                                                name="discountPercent"
+                                                label="% Giảm"
+                                                size="small"
+                                                fullWidth
+                                            />
                                         </>}
                                         label=""
                                         sx={{ marginRight: 0 }}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={5}>
-                                    <PriceInput label="Giá giảm đặt trước" name='discountPreOrder' />
+                                    <PriceInput
+                                        value={dataDetail['discountPreOrder']}
+                                        disabled={dataDetail['isDiscount'] ?? false}
+                                        onChange={(event) => onChangeFieldValue('discountPreOrder', event?.target.value)}
+                                        label="Giá giảm đặt trước"
+                                        name='discountPreOrder'
+                                    />
                                 </Grid>
                                 <Grid item xs={12} sm={5}>
-                                    <PriceInput label="Giá giảm có sẵn" name='discountAvailable' />
+                                    <PriceInput
+                                        value={dataDetail['discountAvailable']}
+                                        disabled={dataDetail['isDiscount'] ?? false}
+                                        onChange={(event) => onChangeFieldValue('discountAvailable', event?.target.value)}
+                                        label="Giá giảm có sẵn"
+                                        name='discountAvailable'
+                                    />
                                 </Grid>
                                 <Grid item xs={12}>
                                     <FormControlLabel control={<Checkbox name="isNew" color="primary" />} label="Mới" />
@@ -344,6 +413,8 @@ const ProductDetail = () => {
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
                                     <TextField
+                                        value={dataDetail['repay']}
+                                        onChange={(event) => onChangeFieldValue('repay', event?.target.value)}
                                         name="repay"
                                         fullWidth
                                         size="small"
@@ -354,6 +425,8 @@ const ProductDetail = () => {
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
                                     <TextField
+                                        value={dataDetail['delivery']}
+                                        onChange={(event) => onChangeFieldValue('delivery', event?.target.value)}
                                         name="delivery"
                                         fullWidth
                                         size="small"
@@ -364,6 +437,8 @@ const ProductDetail = () => {
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
                                     <TextField
+                                        value={dataDetail['insurance']}
+                                        onChange={(event) => onChangeFieldValue('insurance', event?.target.value)}
                                         name="insurance"
                                         fullWidth
                                         size="small"
@@ -431,11 +506,12 @@ const ProductDetail = () => {
                                             {dataDetail.attributes.map((attribute, idx) => (
                                                 <Grid key={`attribute-${attribute.id}`} item xs={12} sm={6}>
                                                     <TextField
+                                                        value={dataDetail['attributes'][idx].value}
+                                                        onBlur={(event) => onBlurAttribute(idx, event.target.value)}
                                                         fullWidth
                                                         size="small"
                                                         label={attribute.name}
                                                         autoComplete='off'
-                                                        onBlur={(event) => onBlurAttribute(idx, event.target.value)}
                                                     />
                                                 </Grid>
                                             ))}

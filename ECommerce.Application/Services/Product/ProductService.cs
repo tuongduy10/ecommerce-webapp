@@ -147,6 +147,7 @@ namespace ECommerce.Application.Services.Product
                         ppc = i.Ppc,
                         name = i.ProductName,
                         description = i.ProductDescription,
+                        sizeGuide = i.SizeGuide,
                         size = i.SizeGuide,
 
                         delivery = i.Delivery,
@@ -639,6 +640,7 @@ namespace ECommerce.Application.Services.Product
                 return new FailResponse<DiscountModel>(error.Message);
             }
         }
+        // private functions
         private async Task addProductOptionValueByProductId(int productId, List<int> optValIds)
         {
             var productOptionValues = optValIds.Select(optValId => new ProductOptionValue

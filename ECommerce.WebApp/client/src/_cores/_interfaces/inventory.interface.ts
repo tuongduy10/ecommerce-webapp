@@ -34,6 +34,7 @@ export interface ISubCategory {
   name: string;
   categoryId?: number;
   optionList?: IOption[];
+  attributes?: IAttribute[];
 }
 
 export interface IAttribute {

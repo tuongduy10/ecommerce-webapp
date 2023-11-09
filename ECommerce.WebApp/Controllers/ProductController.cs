@@ -71,8 +71,17 @@ namespace ECommerce.WebApp.Controllers
             return Ok(result);
         }
         [AllowAnonymous]
-        [HttpPost("rate-product")]
-        public async Task<IActionResult> rateProduct()
+        [HttpPost("post-comment")]
+        public async Task<IActionResult> postComment(PostCommentRequest request)
+        {
+            var result = await _commentService.postComment(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
+        [AllowAnonymous]
+        [HttpPost("react-comment")]
+        public async Task<IActionResult> reactComment()
         {
             return Ok();
         }

@@ -16,6 +16,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ECommerce.Application.Repositories.Product;
+using PostCommentRequest = ECommerce.Application.Services.Comment.Request.PostCommentRequest;
 
 namespace ECommerce.Application.Services.Comment
 {
@@ -27,6 +29,7 @@ namespace ECommerce.Application.Services.Comment
         private IRepositoryBase<RatingImage> _commentImageRepo;
         private IUserRepository _userRepo;
         private IInterestRepository _interestRepo;
+        private IProductRepository _productRepo;
         public CommentService(ECommerceContext DbContext)
         {
             _DbContext = DbContext;
@@ -40,6 +43,8 @@ namespace ECommerce.Application.Services.Comment
                 _userRepo = new UserRepository(_DbContext);
             if (_interestRepo == null)
                 _interestRepo = new InterestRepository(_DbContext);
+            if (_productRepo == null)
+                _productRepo = new ProductRepository(_DbContext);
         }
         // Repositories
         public ICommentRepository Comment { get => _commentRepo; }
@@ -47,7 +52,59 @@ namespace ECommerce.Application.Services.Comment
         public IRepositoryBase<RatingImage> CommentImage { get => _commentImageRepo; }
         public IUserRepository User { get => _userRepo; }
         public IInterestRepository Interest { get => _interestRepo; }
-        // Service methods       
+        // Service methods
+        public async Task<Response<bool>> postComment(PostCommentRequest request)
+        {
+            try
+            {
+                // Check if user haven't any order with this product
+                // get all order with productId and userId
+                //var productInOrders = await _DbContext.OrderDetails
+                //    .Where(i => i.ProductId == request.productId && i.Order.UserId == request.userId)
+                //    .Select(i => i.OrderId)
+                //    .ToListAsync();
+                //var hasProduct = productInOrders.Count > 0;
+                //if (!hasProduct) return new ApiFailResponse("Bạn cần mua sản phẩm này để đánh giá");
+
+                // Check if user's shop is selling this product
+                var isOwner = await _productRepo
+                    .AnyAsyncWhere(i => i.ProductId == request.productId && i.Shop.UserId == request.userId);
+                if (isOwner) 
+                    return new FailResponse<bool>("Bạn không thể đánh giá sản phẩm của mình");
+
+                // Add comment content
+                var comment = new Rate()
+                {
+                    Comment = request.comment,
+                    RateValue = request.value,
+                    ProductId = request.productId,
+                    UserId = request.userId,
+                    CreateDate = DateTime.Now,
+                };
+                await _commentRepo.AddAsync(comment);
+                await _commentRepo.SaveChangesAsync();
+
+                // Add image
+                if (request.fileNames != null)
+                {
+                    var commentImages = request.fileNames
+                        .Select(file => new RatingImage
+                        {
+                            RateId = comment.RateId,
+                            RatingImagePath = file
+                        })
+                        .ToList();
+                    await _commentImageRepo.AddRangeAsync(commentImages);
+                    await _commentImageRepo.SaveChangesAsync();
+                }
+
+                return new SuccessResponse<bool>();
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<bool>(error.Message);
+            }
+        }
         public async Task<Response<List<string>>> ReplyCommentAsync(ReplyCommentRequest request)
         {
             if (string.IsNullOrEmpty(request.comment)) 

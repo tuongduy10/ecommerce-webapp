@@ -25,6 +25,7 @@ namespace ECommerce.Application.Services.Comment
         IUserRepository User { get; }
         IInterestRepository Interest { get; }
         // Service methods
+        Task<Response<bool>> postComment(PostCommentRequest request);
         Task<Response<LikeAndDislike>> LikeComment(LikeAndDislikeCount request);
         Task<Response<List<string>>> ReplyCommentAsync(ReplyCommentRequest request);
         Task<Response<List<string>>> UpdateComment(UpdateCommentRequest request);

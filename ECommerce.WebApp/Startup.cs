@@ -151,11 +151,11 @@ namespace ECommerce.WebApp
                 app.UseHsts();
             }
 
-            // app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
+            app.UseMiddleware<CustomAuthMiddleware>();
             app.UseAuthentication();
             app.UseRouting();
 
@@ -165,15 +165,6 @@ namespace ECommerce.WebApp
 
             app.UseMiddleware<NoCacheMiddleware>();
             app.UseCors(myCorsPolicy); ;
-
-            // same like app.UseMiddleware<NoCacheMiddleware>();
-            app.Use(async (context, next) =>
-            {
-                context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
-                context.Response.Headers["Pragma"] = "no-cache";
-                context.Response.Headers["Expires"] = "0";
-                await next();
-            });
 
             app.UseEndpoints(routes =>
             {
