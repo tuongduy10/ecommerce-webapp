@@ -11,7 +11,7 @@ namespace ECommerce.WebApp.Configs.Middlewares
     {
         public static IApplicationBuilder UseCustomAuthorizationMiddleware(this IApplicationBuilder builder)
         {
-            return builder.UseMiddleware<CustomAuthorizationMiddleware>();
+            return builder.UseMiddleware<CustomAuthMiddleware>();
         }
     }
 }

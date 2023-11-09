@@ -8,6 +8,8 @@ namespace ECommerce.Application.Services.Product.Dtos
     public class ProductGetRequest : PageRequest
     {
         public int? id { get; set; }
+        public string key { get; set; }
+        public int? shopId { get; set; }
         public int brandId { get; set; }    
         public int subCategoryId { get; set; }
         public string orderBy { get; set; } // newest | discount
@@ -16,9 +18,11 @@ namespace ECommerce.Application.Services.Product.Dtos
 
         public ProductGetRequest()
         {
+            key = "";
             id = -1;
             brandId = -1;
             subCategoryId = -1;
+            shopId = -1;
         }
     }
 }

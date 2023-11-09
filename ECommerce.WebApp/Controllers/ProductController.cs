@@ -1,4 +1,6 @@
-﻿using ECommerce.Application.Constants;
+﻿using ECommerce.Application.BaseServices.Rate.Dtos;
+using ECommerce.Application.Common;
+using ECommerce.Application.Constants;
 using ECommerce.Application.Services.Comment;
 using ECommerce.Application.Services.Comment.Request;
 using ECommerce.Application.Services.Product;
@@ -81,9 +83,30 @@ namespace ECommerce.WebApp.Controllers
         }
         [AllowAnonymous]
         [HttpPost("react-comment")]
-        public async Task<IActionResult> reactComment()
+        public async Task<IActionResult> reactComment(LikeAndDislikeCount request)
         {
-            return Ok();
+            var result = await _commentService.LikeComment(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
+        [AllowAnonymous]
+        [HttpPost("users-favor")]
+        public async Task<IActionResult> getUsersFavor(UserFavorRequest request)
+        {
+            var result = await _commentService.GetUsersFavor(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
+        [AllowAnonymous]
+        [HttpPost("update-status")]
+        public async Task<IActionResult> updateStatus(UpdateStatusRequest request)
+        {
+            var result = await _productService.updateStatus(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
         }
         [AllowAnonymous]
         [HttpPost("save")]
@@ -106,9 +129,9 @@ namespace ECommerce.WebApp.Controllers
                 _manageFiles.DeleteFiles(result.Data.systemImages, PRODUCT_FILE_PATH);
                 _manageFiles.DeleteFiles(result.Data.userImages, PRODUCT_FILE_PATH);
                 _manageFiles.DeleteFiles(result.Data.ratingImages, RATING_FILE_PATH);
-                return Ok(result);
+                return Ok(new SuccessResponse<bool>());
             }
-            return BadRequest(result);
+            return BadRequest(new FailResponse<bool>(result.Message));
         }
     }
 }

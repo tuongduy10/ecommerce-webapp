@@ -9,11 +9,11 @@ import TableRow from "@mui/material/TableRow";
 import { Fragment, useState, useEffect, FormEvent } from "react";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { ITableData, ITableHeader } from "src/_shares/_components/data-table/data-table";
+import { ITableHeader } from "src/_shares/_components/data-table/data-table";
 import Collapse from "@mui/material/Collapse";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Autocomplete, Button, Grid, TablePagination, TextField } from "@mui/material";
+import { Autocomplete, Button, ButtonGroup, Grid, TablePagination, TextField } from "@mui/material";
 import ProductService from "src/_cores/_services/product.service";
 import InventoryService from "src/_cores/_services/inventory.service";
 import { IBrand, ICategory } from "src/_cores/_interfaces/inventory.interface";
@@ -23,6 +23,7 @@ import { IProduct } from "src/_cores/_interfaces/product.interface";
 import { DateTimeHelper } from "src/_shares/_helpers/datetime-helper";
 import { ProductHelper } from "src/_shares/_helpers/product-helper";
 import { GlobalConfig } from "src/_configs/global.config";
+import { ENV } from "src/_configs/enviroment.config";
 
 const tempData = [
     {
@@ -124,7 +125,21 @@ function Row(props: TableRowProps) {
                 </TableCell>
                 <TableCell align="left">{rowData.ppc}</TableCell>
                 <TableCell align="left">{rowData.code}</TableCell>
-                <TableCell align="left">{rowData.name}</TableCell>
+                <TableCell align="left">
+                    <Box className="flex">
+                        <Box className="mr-2 items-center justify-between h-[100px] w-[100px]">
+                            <img
+                                src={`${ENV.IMAGE_URL}/products/${rowData.imagePaths[0]}`}
+                                alt={rowData.name}
+                                loading="lazy"
+                            />
+                        </Box>
+                        <Box>
+                            <Box>{rowData.name}</Box>
+                            <Box>{rowData.brand?.name ?? ''}</Box>
+                        </Box>
+                    </Box>
+                </TableCell>
                 <TableCell align="left">{rowData.shop?.name}</TableCell>
                 <TableCell align="left">{rowData.subCategoryName}</TableCell>
                 <TableCell align="center">{rowData.categoryName}</TableCell>
@@ -133,17 +148,19 @@ function Row(props: TableRowProps) {
                     {getProductStatus(rowData.status).label}
                 </TableCell>
                 <TableCell align="center">
-                    <Button>Hiện</Button>
-                    <Button>Ẩn</Button>
-                    <Button>Xóa</Button>
+                    <ButtonGroup size="small" aria-label="small button group">
+                        <Button variant="outlined" color="success">Hiện</Button>
+                        <Button>Ẩn</Button>
+                        <Button variant="outlined" color="error">Xóa</Button>
+                    </ButtonGroup>
                 </TableCell>
             </TableRow>
             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box sx={{ margin: 1 }}>
                             <Typography variant="h6" gutterBottom component="div">
-                                Giá
+                                Giá và lợi nhuận
                             </Typography>
                             <Table size="small" aria-label="purchases">
                                 <TableHead>

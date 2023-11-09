@@ -298,7 +298,11 @@ namespace ECommerce.Application.Services.Product
         {
             try
             {
-                int id = (int)request.id;
+                var id = request.id;
+                var key = request.key;
+                var brandId = request.brandId;
+                var shopId = request.shopId;
+                var subCategoryId = request.subCategoryId;
                 int pageIndex = request.PageIndex;
                 int pageSize = request.PageSize;
 
@@ -306,7 +310,13 @@ namespace ECommerce.Application.Services.Product
                             select products;
 
                 var list = query
-                    .Where(q => id > -1 ? q.ProductId == id : q.ProductId > -1)
+                    .Where(q => 
+                        (id > -1 && q.ProductId == id) ||
+                        (shopId > -1 && q.ShopId == shopId) ||
+                        (subCategoryId > -1 && q.SubCategoryId == subCategoryId) ||
+                        (brandId > -1 && q.BrandId == brandId) || 
+                        (!String.IsNullOrEmpty(key) && 
+                            (q.Ppc == key || q.ProductCode == key || q.ProductName == key)))
                     .Select(i => new ProductModel()
                     {
                         id = i.ProductId,
@@ -638,6 +648,31 @@ namespace ECommerce.Application.Services.Product
             catch (Exception error)
             {
                 return new FailResponse<DiscountModel>(error.Message);
+            }
+        }
+        public async Task<Response<bool>> updateStatus(UpdateStatusRequest request)
+        {
+            try
+            {
+                List<int> ids = request.ids;
+                int status = request.status;
+
+                if (ids.Count == 0) 
+                    return new FailResponse<bool>("Vui lòng chọn sản phẩm cần cập nhật");
+                var productsToUpdate = await _productRepo.ToListAsyncWhere(i => ids.Contains(i.ProductId));
+                if (productsToUpdate.Count() > 0)
+                {
+                    foreach (var product in productsToUpdate)
+                    {
+                        product.Status = (byte?)ProductStatusEnum.Available;
+                    }
+                    await _productRepo.SaveChangesAsync();
+                }
+                return new SuccessResponse<bool>("Cập nhật thành công");
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<bool>("Cập nhật thất bại " + error);
             }
         }
         // private functions
