@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Autoplay, Pagination, Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { PaginationOptions } from "swiper/types/modules/pagination";
@@ -16,6 +17,7 @@ const pagination: PaginationOptions = {
 };
 
 const Banner = () => {
+  const location = useLocation();
   const [hideBanner, setHideBanner] = useState(false);
 
   useEffect(() => {
@@ -24,10 +26,10 @@ const Banner = () => {
       '/v2/cart',
       '/v2/login',
     ];
-    if (hiddenPath.includes(window.location.pathname)) {
+    if (hiddenPath.includes(location.pathname)) {
       setHideBanner(true);
     }
-  }, []);
+  }, [location.pathname]);
 
   return (
     <div className={`${hideBanner ? 'hidden' : ''}`}>

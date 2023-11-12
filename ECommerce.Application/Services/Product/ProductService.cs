@@ -299,7 +299,7 @@ namespace ECommerce.Application.Services.Product
             try
             {
                 var id = request.id;
-                var key = request.key;
+                var keyword = request.keyword;
                 var brandId = request.brandId;
                 var shopId = request.shopId;
                 var subCategoryId = request.subCategoryId;
@@ -310,13 +310,13 @@ namespace ECommerce.Application.Services.Product
                             select products;
 
                 var list = query
-                    .Where(q => 
-                        (id > -1 && q.ProductId == id) ||
-                        (shopId > -1 && q.ShopId == shopId) ||
-                        (subCategoryId > -1 && q.SubCategoryId == subCategoryId) ||
-                        (brandId > -1 && q.BrandId == brandId) || 
-                        (!String.IsNullOrEmpty(key) && 
-                            (q.Ppc == key || q.ProductCode == key || q.ProductName == key)))
+                    .Where(q =>
+                        (id == -1 || q.ProductId == id) &&
+                        (shopId == -1 || q.ShopId == shopId) &&
+                        (subCategoryId == -1 || q.SubCategoryId == subCategoryId) &&
+                        (brandId == -1 || q.BrandId == brandId) &&
+                        (string.IsNullOrEmpty(keyword) ||
+                            q.Ppc.Contains(keyword) || q.ProductName.Contains(keyword) || q.ProductCode.Contains(keyword)))
                     .Select(i => new ProductModel()
                     {
                         id = i.ProductId,
@@ -326,6 +326,7 @@ namespace ECommerce.Application.Services.Product
                         createdDate = i.ProductAddedDate,
                         status = i.Status,
                         stock = (int)i.ProductStock,
+                        subCategoryId = i.SubCategoryId,
                         subCategoryName = i.SubCategory.SubCategoryName,
                         categoryName = i.SubCategory.Category.CategoryName,
                         brand = new BrandModel
@@ -664,7 +665,7 @@ namespace ECommerce.Application.Services.Product
                 {
                     foreach (var product in productsToUpdate)
                     {
-                        product.Status = (byte?)ProductStatusEnum.Available;
+                        product.Status = (byte?)status;
                     }
                     await _productRepo.SaveChangesAsync();
                 }

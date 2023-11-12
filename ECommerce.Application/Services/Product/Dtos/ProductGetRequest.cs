@@ -8,7 +8,7 @@ namespace ECommerce.Application.Services.Product.Dtos
     public class ProductGetRequest : PageRequest
     {
         public int? id { get; set; }
-        public string key { get; set; }
+        public string keyword { get; set; }
         public int? shopId { get; set; }
         public int brandId { get; set; }    
         public int subCategoryId { get; set; }
@@ -18,7 +18,7 @@ namespace ECommerce.Application.Services.Product.Dtos
 
         public ProductGetRequest()
         {
-            key = "";
+            keyword = "";
             id = -1;
             brandId = -1;
             subCategoryId = -1;

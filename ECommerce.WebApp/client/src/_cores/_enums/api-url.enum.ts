@@ -24,6 +24,9 @@ export const PRODUCT_API_URL = {
     PRODUCT_LIST: '/product/product-list',
     PRODUCT_MANAGED_LIST: '/product/product-managed-list',
     PRODUCT_DETAIL: '/product/product-detail',
+    UPDATE_STATUS: '/product/update-status',
+    DELETE: '/product/delete',
+    SAVE: '/product/save'
 }
 
 export const INVENTORY_API_URL = {

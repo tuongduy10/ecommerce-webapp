@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ECommerce.Application.BaseServices.User;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ECommerce.Application.Common;
 
 namespace ECommerce.WebApp.Middlewares
 {
@@ -23,18 +24,18 @@ namespace ECommerce.WebApp.Middlewares
         }
         public async Task InvokeAsync(HttpContext context)
         {
+            await _next(context);
+
             if (context.Response.StatusCode == 401)
             {
-                _logger.LogWarning("Unauthorized request detected.");
-
-                // Customize the response here, e.g., return a JSON error message
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = 401;
-                await context.Response.WriteAsync("{\"error\": \"Unauthorized\"}");
-                return;
-            }
 
-            await _next(context);
+                // Customize the response format
+                var response = new FailResponse<bool>();
+
+                await context.Response.WriteAsync("{\"status\": \"fail\", \"message\": \"Unauthorized\", \"data\": null }");
+            }
         }
     }
 }
