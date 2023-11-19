@@ -13,7 +13,7 @@ import { ITableHeader } from "src/_shares/_components/data-table/data-table";
 import Collapse from "@mui/material/Collapse";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Autocomplete, Button, ButtonGroup, Grid, TablePagination, TextField } from "@mui/material";
+import { Autocomplete, Button, ButtonGroup, Grid, Pagination, TablePagination, TextField } from "@mui/material";
 import ProductService from "src/_cores/_services/product.service";
 import InventoryService from "src/_cores/_services/inventory.service";
 import { IBrand, ICategory, ISubCategory } from "src/_cores/_interfaces/inventory.interface";
@@ -171,6 +171,7 @@ export default function ProductList() {
     const [products, setProducts] = useState<any[]>([]);
     const [brands, setBrands] = useState<IBrand[]>([]);
     const [subCategories, setSubCategories] = useState<ISubCategory[]>([]);
+    const [categories, setCategories] = useState<ICategory[]>([]);
     const [shops, setShops] = useState<IShop[]>([]);
 
     useEffect(() => {
@@ -182,7 +183,7 @@ export default function ProductList() {
         const _params = {
             ...params,
             pageIndex: 1,
-            pageSize: GlobalConfig.MAX_PAGE_SIZE
+            pageSize: GlobalConfig.MAX_PAGE_SIZE,
         }
         setParams(_params);
         search(_params);
@@ -191,6 +192,7 @@ export default function ProductList() {
     const getDataFilter = () => {
         getBrands();
         getSubCategories();
+        getCategories();
         getShops();
     }
 
@@ -208,7 +210,16 @@ export default function ProductList() {
         InventoryService.getSubCategories().then(res => {
             if (res?.data) {
                 setSubCategories(res.data);
-                console.log(subCategories)
+            }
+        }).catch(error => {
+            alert(error);
+        });
+    }
+
+    const getCategories = () => {
+        InventoryService.getCategories().then(res => {
+            if (res?.data) {
+                setCategories(res?.data);
             }
         }).catch(error => {
             alert(error);
@@ -226,7 +237,8 @@ export default function ProductList() {
     }
 
     const pageChange = (event: any, pageIndex: number) => {
-
+        setParams({ ...params, pageIndex: pageIndex });
+        search(params);
     }
 
     const onSearch = (event: FormEvent<HTMLFormElement>) => {
@@ -240,10 +252,15 @@ export default function ProductList() {
         search(params);
     }
 
-    const search = (params: any) => {
-        ProductService.getProductManagedList(params).then((res: any) => {
+    const search = (_params: any) => {
+        ProductService.getProductManagedList(_params).then((res: any) => {
             if (res?.data) {
-                setProducts(res?.data.items || []);
+                setProducts(res.data.items || []);
+                setParams({
+                    ...params,
+                    pageIndex: res.data.currentPage,
+                    totalPage: res.data.totalPage,
+                });
             }
         }).catch((error: any) => {
             console.log(error);
@@ -319,6 +336,15 @@ export default function ProductList() {
                             onChange={(event, value) => search({ ...params, subCategoryId: value?.id ?? -1 })}
                         />
                     </Grid>
+                    <Grid item xs={12} sm={4}>
+                        <Autocomplete
+                            size="small"
+                            disablePortal
+                            options={categories.length > 0 ? categories.map((category: ICategory) => ({ ...category, label: category.categoryName })) : []}
+                            renderInput={(params) => <TextField {...params} name="category" label="Danh mục" />}
+                            onChange={(event, value) => search({ ...params, categoryId: value?.categoryId ?? -1 })}
+                        />
+                    </Grid>
                     <Grid item xs={12} sm={12}>
                         <Button type="submit" variant="contained">Tìm kiếm</Button>
                     </Grid>
@@ -346,12 +372,12 @@ export default function ProductList() {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <TablePagination
-                count={20}
-                rowsPerPage={params?.pageSize ?? 30}
+            <Pagination
+                variant="outlined" 
+                shape="rounded"
                 page={params?.pageIndex ?? 1}
-                onPageChange={pageChange}
-                labelRowsPerPage={'Sản phẩm trên trang'}
+                count={params?.totalPage ?? 1}
+                onChange={pageChange}
             />
         </Fragment>
     );

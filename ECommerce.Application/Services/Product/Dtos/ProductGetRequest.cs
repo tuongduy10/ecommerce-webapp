@@ -12,6 +12,7 @@ namespace ECommerce.Application.Services.Product.Dtos
         public int? shopId { get; set; }
         public int brandId { get; set; }    
         public int subCategoryId { get; set; }
+        public int categoryId { get; set; }
         public string orderBy { get; set; } // newest | discount
         public List<int> optionValueIds { get; set; }
         public string getBy { get; set; }
@@ -22,6 +23,7 @@ namespace ECommerce.Application.Services.Product.Dtos
             id = -1;
             brandId = -1;
             subCategoryId = -1;
+            categoryId = -1;
             shopId = -1;
         }
     }

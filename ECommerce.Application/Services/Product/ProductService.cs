@@ -4,7 +4,6 @@ using ECommerce.Application.Enums;
 using ECommerce.Application.Repositories;
 using ECommerce.Application.Services.Inventory;
 using ECommerce.Application.Services.Inventory.Dtos;
-using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Data.Context;
 using ECommerce.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ECommerce.Application.BaseServices.Rate;
+using System.Text.RegularExpressions;
 
 namespace ECommerce.Application.Services.Product
 {
@@ -299,24 +299,28 @@ namespace ECommerce.Application.Services.Product
             try
             {
                 var id = request.id;
-                var keyword = request.keyword;
+                var keyword = request.keyword.ToLower();
                 var brandId = request.brandId;
                 var shopId = request.shopId;
                 var subCategoryId = request.subCategoryId;
+                var categoryId = request.categoryId;
                 int pageIndex = request.PageIndex;
                 int pageSize = request.PageSize;
 
-                var query = from products in _productRepo.Entity()
-                            select products;
-
-                var list = query
-                    .Where(q =>
-                        (id == -1 || q.ProductId == id) &&
-                        (shopId == -1 || q.ShopId == shopId) &&
-                        (subCategoryId == -1 || q.SubCategoryId == subCategoryId) &&
-                        (brandId == -1 || q.BrandId == brandId) &&
-                        (string.IsNullOrEmpty(keyword) ||
-                            q.Ppc.Contains(keyword) || q.ProductName.Contains(keyword) || q.ProductCode.Contains(keyword)))
+                var list = _productRepo
+                    .Entity()
+                    .Where(product =>
+                        (id == -1 || product.ProductId == id) &&
+                        (shopId == -1 || product.ShopId == shopId) &&
+                        (brandId == -1 || product.BrandId == brandId) && 
+                        (subCategoryId == -1 || product.SubCategoryId == subCategoryId) &&
+                        (categoryId == -1 || 
+                            (product.SubCategory != null &&
+                             product.SubCategory.Category != null && 
+                             product.SubCategory.Category.CategoryId == categoryId)) &&
+                        (EF.Functions.Like(product.ProductCode, $"%{keyword}%") ||
+                            EF.Functions.Like(product.Ppc, $"%{keyword}%") ||
+                            EF.Functions.Like(product.ProductName, $"%{keyword}%")))
                     .Select(i => new ProductModel()
                     {
                         id = i.ProductId,
@@ -356,7 +360,7 @@ namespace ECommerce.Application.Services.Product
                     .OrderByDescending(i => i.id);
 
                 var record = await list.CountAsync();
-                var data = await PaginatedList<ProductModel>.CreateAsync(list, pageIndex, pageSize);
+                var data = await PaginatedList<ProductModel>.CreateAsync(list, pageIndex, pageSize); // execute the query here
                 var result = new PageResult<ProductModel>()
                 {
                     Items = data,
@@ -708,6 +712,13 @@ namespace ECommerce.Application.Services.Product
             var ppc = guid.Substring(0, 8 - len) + (newestId + 1).ToString();
 
             return ppc;
+        }
+        private string RemoveDiacritics(string text)
+        {
+            string decomposed = text.Normalize(NormalizationForm.FormD);
+            Regex regex = new Regex("\\p{Mn}", RegexOptions.Compiled);
+
+            return regex.Replace(decomposed, string.Empty).Normalize(NormalizationForm.FormC);
         }
     }
 }
