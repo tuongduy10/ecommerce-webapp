@@ -13,7 +13,7 @@ import { ITableHeader } from "src/_shares/_components/data-table/data-table";
 import Collapse from "@mui/material/Collapse";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Autocomplete, Button, ButtonGroup, Grid, Pagination, TablePagination, TextField } from "@mui/material";
+import { Autocomplete, Button, Checkbox, Grid, Link, Menu, MenuItem, Pagination, TextField } from "@mui/material";
 import ProductService from "src/_cores/_services/product.service";
 import InventoryService from "src/_cores/_services/inventory.service";
 import { IBrand, ICategory, ISubCategory } from "src/_cores/_interfaces/inventory.interface";
@@ -25,6 +25,8 @@ import { ProductHelper } from "src/_shares/_helpers/product-helper";
 import { GlobalConfig } from "src/_configs/global.config";
 import { ENV } from "src/_configs/enviroment.config";
 import { PRODUCT_STATUS } from "src/_cores/_enums/product.enum";
+import { ADMIN_ROUTE_NAME } from "src/_cores/_enums/route-config.enum";
+import { Link as RouterLink } from "react-router-dom";
 
 const header: ITableHeader[] = [
     { field: 'createdDate', fieldName: 'Ngày tạo', align: 'left' },
@@ -41,13 +43,17 @@ const header: ITableHeader[] = [
 
 type TableRowProps = {
     rowData: IProduct,
+    isSelected: boolean,
     onUpdateStatus: (id: number, status: number) => void,
     onDelete: (id: number) => void,
+    onSelected: (id: number) => void,
 }
 
 function Row(props: TableRowProps) {
-    const { rowData, onUpdateStatus, onDelete } = props;
+    const { rowData, isSelected, onUpdateStatus, onDelete, onSelected } = props;
+    const [delAnchorEl, setDelAnchorEl] = useState<null | HTMLElement>(null);
     const [open, setOpen] = useState(false);
+    const openDel = Boolean(delAnchorEl);
 
     const getFormatedPrice = (price: number) => ProductHelper.getFormatedPrice(price);
     const getProductStatus = (status: number) => ProductHelper.getProductStatus(status);
@@ -58,12 +64,25 @@ function Row(props: TableRowProps) {
 
     const deleteProduct = (id: number) => {
         onDelete(id);
+        handleCloseDel();
     }
+
+    const handleClickDel = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setDelAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseDel = () => {
+        setDelAnchorEl(null);
+    };
 
     return (
         <Fragment>
             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
                 <TableCell>
+                    <Checkbox
+                        checked={isSelected}
+                        onChange={() => onSelected(rowData.id)}
+                    />
                     <IconButton
                         aria-label="expand row"
                         size="small"
@@ -75,7 +94,11 @@ function Row(props: TableRowProps) {
                 <TableCell component="th" scope="row">
                     {DateTimeHelper.getDateTimeFormated(rowData.createdDate)}
                 </TableCell>
-                <TableCell align="left">{rowData.ppc}</TableCell>
+                <TableCell align="left">
+                    <Link component={RouterLink} to={ADMIN_ROUTE_NAME.MANAGE_PRODUCT_DETAIL + '?id=' + rowData.id}>
+                        {rowData.ppc}
+                    </Link>
+                </TableCell>
                 <TableCell align="left">{rowData.code}</TableCell>
                 <TableCell align="left">
                     <Box className="flex">
@@ -100,27 +123,39 @@ function Row(props: TableRowProps) {
                     {getProductStatus(rowData.status).label}
                 </TableCell>
                 <TableCell align="center">
-                    <ButtonGroup size="small" aria-label="small button group">
-                        <Button
-                            onClick={() => updateStatus(rowData.id, PRODUCT_STATUS.AVAILABLE)}
-                            variant="outlined"
-                            color="success"
-                        >
-                            Hiện
-                        </Button>
-                        <Button
-                            onClick={() => updateStatus(rowData.id, PRODUCT_STATUS.DISABLED)}
-                        >
-                            Ẩn
-                        </Button>
-                        <Button
-                            onClick={() => deleteProduct(rowData.id)}
-                            variant="outlined"
-                            color="error"
-                        >
-                            Xóa
-                        </Button>
-                    </ButtonGroup>
+                    <Button
+                        onClick={() => updateStatus(rowData.id, PRODUCT_STATUS.AVAILABLE)}
+                        variant="outlined"
+                        color="success"
+                    >
+                        Hiện
+                    </Button>
+                    <Button
+                        onClick={() => updateStatus(rowData.id, PRODUCT_STATUS.DISABLED)}
+                    >
+                        Ẩn
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        color="error"
+                        aria-controls={openDel ? 'basic-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={openDel ? 'true' : undefined}
+                        onClick={handleClickDel}
+                    >
+                        Xóa
+                    </Button>
+                    <Menu
+                        anchorEl={delAnchorEl}
+                        open={openDel}
+                        onClose={handleCloseDel}
+                        MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                        }}
+                    >
+                        <MenuItem onClick={() => deleteProduct(rowData.id)}>Xác nhận xóa</MenuItem>
+                        <MenuItem onClick={handleCloseDel}>Hủy</MenuItem>
+                    </Menu>
                 </TableCell>
             </TableRow>
             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -167,27 +202,33 @@ function Row(props: TableRowProps) {
 }
 
 export default function ProductList() {
-    const [params, setParams] = useState<{ [key: string]: any }>();
+    const [params, setParams] = useState<any>({
+        keyword: "",
+        shopId: -1,
+        brandId: -1,
+        subCategoryId: -1,
+        categoryId: -1,
+        pageIndex: 1,
+        pageSize: GlobalConfig.MAX_PAGE_SIZE,
+        totalPage: 1,
+    });
     const [products, setProducts] = useState<any[]>([]);
     const [brands, setBrands] = useState<IBrand[]>([]);
     const [subCategories, setSubCategories] = useState<ISubCategory[]>([]);
     const [categories, setCategories] = useState<ICategory[]>([]);
     const [shops, setShops] = useState<IShop[]>([]);
 
+    const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+    const [delAnchorEl, setDelAnchorEl] = useState<null | HTMLElement>(null);
+    const openDel = Boolean(delAnchorEl);
+
     useEffect(() => {
-        initData();
+        search(params);
         getDataFilter();
     }, []);
 
-    const initData = () => {
-        const _params = {
-            ...params,
-            pageIndex: 1,
-            pageSize: GlobalConfig.MAX_PAGE_SIZE,
-        }
-        setParams(_params);
-        search(_params);
-    }
+    const isIndeterminate = (): boolean => selectedProducts.length > 0 && selectedProducts.length < products.length;
+    const isSelectedAll = (): boolean => selectedProducts.length > 0 && selectedProducts.length === products.length;
 
     const getDataFilter = () => {
         getBrands();
@@ -237,18 +278,16 @@ export default function ProductList() {
     }
 
     const pageChange = (event: any, pageIndex: number) => {
-        setParams({ ...params, pageIndex: pageIndex });
+        params.pageIndex = pageIndex;
+        setParams(params);
         search(params);
     }
 
     const onSearch = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
-        const _params = {
-            ...params,
-            keyword: form.get('keyword'),
-        }
-        setParams(_params);
+        params.keyword = form.get('keyword');
+        setParams(params);
         search(params);
     }
 
@@ -256,20 +295,19 @@ export default function ProductList() {
         ProductService.getProductManagedList(_params).then((res: any) => {
             if (res?.data) {
                 setProducts(res.data.items || []);
-                setParams({
-                    ...params,
-                    pageIndex: res.data.currentPage,
-                    totalPage: res.data.totalPage,
-                });
+                params.pageIndex = res.data.currentPage;
+                params.totalPage = res.data.totalPage;
+                setParams(params);
             }
         }).catch((error: any) => {
             console.log(error);
         });
+        setSelectedProducts([]);
     }
 
     const updateStatus = (id: number, status: number) => {
         const _params = {
-            ids: [id],
+            ids: selectedProducts.length > 0 ? selectedProducts : [id],
             status: status,
         }
         ProductService.updateStatus(_params).then((res: any) => {
@@ -281,17 +319,65 @@ export default function ProductList() {
         });
     }
 
-    const deleteProduct = (id: number) => {
+    const deleteProduct = (id?: number) => {
         const _params = {
-            ids: [id]
+            ids: selectedProducts.length > 0 ? selectedProducts : [id ?? -1]
         }
-        // ProductService.deleteProduct(_params).then((res: any) => {
-        //     if (res.isSucceed) {
-        //         search(params);
-        //     }
-        // }).catch((error: any) => {
-        //     console.log(error);
-        // });
+        ProductService.deleteProduct(_params).then((res: any) => {
+            if (res.isSucceed) {
+                search(params);
+            }
+        }).catch((error: any) => {
+            console.log(error);
+        });
+    }
+
+    const selectAllProducts = () => {
+        if (isIndeterminate() || isSelectedAll()) {
+            setSelectedProducts([]);
+            return;
+        }
+        const ids = [...products].map(_ => _.id);
+        setSelectedProducts(ids);
+    }
+
+    const selectProduct = (id: number) => {
+        if (!selectedProducts.includes(id)) {
+            const addNewSelected = selectedProducts.concat(id);
+            setSelectedProducts(addNewSelected);
+        } else {
+            const removeSelected = selectedProducts.filter(_ => _ !== id);
+            setSelectedProducts(removeSelected);
+        }
+    }
+
+    const handleClickDel = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setDelAnchorEl(event.currentTarget);
+        deleteProduct();
+    };
+
+    const onChangeShop = (value: any) => {
+        params.shopId = value?.id ?? -1
+        setParams(params);
+        search(params);
+    }
+
+    const onChangeBrand = (value: any) => {
+        params.brandId = value?.id ?? -1;
+        setParams(params);
+        search(params);
+    }
+
+    const onChangeSubCategory = (value: any) => {
+        params.subCategoryId = value?.id ?? -1
+        setParams(params);
+        search(params);
+    }
+
+    const onChangeCategory = (value: any) => {
+        params.categoryId = value?.categoryId ?? -1;
+        setParams(params);
+        search(params);
     }
 
     return (
@@ -315,7 +401,7 @@ export default function ProductList() {
                             disablePortal
                             options={shops.length > 0 ? shops.map((shop: IShop) => ({ ...shop, label: shop.name })) : []}
                             renderInput={(params) => <TextField {...params} name="shop" label="Cửa hàng" />}
-                            onChange={(event, value) => search({ ...params, shopId: value?.id ?? -1 })}
+                            onChange={(event, value) => onChangeShop(value)}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
@@ -324,7 +410,7 @@ export default function ProductList() {
                             disablePortal
                             options={brands.length > 0 ? brands.map((brand: IBrand) => ({ ...brand, label: brand.name })) : []}
                             renderInput={(params) => <TextField {...params} name="brand" label="Hãng" />}
-                            onChange={(event, value) => search({ ...params, brandId: value?.id ?? -1 })}
+                            onChange={(event, value) => onChangeBrand(value)}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
@@ -333,7 +419,7 @@ export default function ProductList() {
                             disablePortal
                             options={subCategories.length > 0 ? subCategories.map((subCategory: ISubCategory) => ({ ...subCategory, label: subCategory.name })) : []}
                             renderInput={(params) => <TextField {...params} name="subCategory" label="Loại sản phẩm" />}
-                            onChange={(event, value) => search({ ...params, subCategoryId: value?.id ?? -1 })}
+                            onChange={(event, value) => onChangeSubCategory(value)}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
@@ -342,11 +428,50 @@ export default function ProductList() {
                             disablePortal
                             options={categories.length > 0 ? categories.map((category: ICategory) => ({ ...category, label: category.categoryName })) : []}
                             renderInput={(params) => <TextField {...params} name="category" label="Danh mục" />}
-                            onChange={(event, value) => search({ ...params, categoryId: value?.categoryId ?? -1 })}
+                            onChange={(event, value) => onChangeCategory(value)}
                         />
                     </Grid>
                     <Grid item xs={12} sm={12}>
-                        <Button type="submit" variant="contained">Tìm kiếm</Button>
+                        <Button type="submit" variant="contained" sx={{ marginRight: 2 }}>Tìm kiếm</Button>
+                        <Button
+                            variant="outlined"
+                            color="success"
+                            disabled={selectedProducts.length === 0}
+                            sx={{ marginRight: 2 }}
+                            onClick={() => updateStatus(-1, PRODUCT_STATUS.AVAILABLE)}
+                        >
+                            Hiện
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            sx={{ marginRight: 2 }}
+                            disabled={selectedProducts.length === 0}
+                            onClick={() => updateStatus(-1, PRODUCT_STATUS.DISABLED)}
+                        >
+                            Ẩn
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            color="error"
+                            aria-controls={openDel ? 'basic-menu' : undefined}
+                            aria-expanded={openDel ? 'true' : undefined}
+                            aria-haspopup="true"
+                            onClick={handleClickDel}
+                            disabled={selectedProducts.length === 0}
+                        >
+                            Xóa
+                        </Button>
+                        <Menu
+                            anchorEl={delAnchorEl}
+                            open={openDel}
+                            onClose={() => setDelAnchorEl(null)}
+                            MenuListProps={{
+                                'aria-labelledby': 'basic-button',
+                            }}
+                        >
+                            <MenuItem onClick={() => deleteProduct()}>Xác nhận xóa</MenuItem>
+                            <MenuItem onClick={() => setDelAnchorEl(null)}>Hủy</MenuItem>
+                        </Menu>
                     </Grid>
                 </Grid>
             </Box>
@@ -354,7 +479,13 @@ export default function ProductList() {
                 <Table aria-label="collapsible table">
                     <TableHead>
                         <TableRow>
-                            <TableCell />
+                            <TableCell>
+                                <Checkbox
+                                    indeterminate={isIndeterminate()}
+                                    checked={isSelectedAll()}
+                                    onChange={selectAllProducts}
+                                />
+                            </TableCell>
                             {header.map((field) => (
                                 <TableCell key={field.field} align={!field.align ? 'left' : field.align}>{field.fieldName}</TableCell>
                             ))}
@@ -365,15 +496,17 @@ export default function ProductList() {
                             <Row
                                 key={`row-${item.id}`}
                                 rowData={item}
+                                isSelected={selectedProducts.includes(item.id)}
                                 onUpdateStatus={(id, status) => updateStatus(id, status)}
                                 onDelete={(id) => deleteProduct(id)}
+                                onSelected={(id) => selectProduct(id)}
                             />
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
             <Pagination
-                variant="outlined" 
+                variant="outlined"
                 shape="rounded"
                 page={params?.pageIndex ?? 1}
                 count={params?.totalPage ?? 1}

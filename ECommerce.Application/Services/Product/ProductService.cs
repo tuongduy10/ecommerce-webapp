@@ -383,11 +383,11 @@ namespace ECommerce.Application.Services.Product
             {
                 if (string.IsNullOrEmpty(request.name))
                     return new FailResponse<bool>("Vui lòng nhập tên sản phẩm");
-                if (request.shop.id == 0)
+                if (request.shopId == -1)
                     return new FailResponse<bool>("Vui lòng chọn cửa hàng");
-                if (request.brand.id == 0)
+                if (request.brandId == -1)
                     return new FailResponse<bool>("Vui lòng chọn thương hiệu");
-                if (request.subCategoryId == 0)
+                if (request.subCategoryId == -1)
                     return new FailResponse<bool>("Vui lòng chọn loại sản phẩm");
                 // price
                 if (request.priceAvailable == null && request.discountAvailable == null && request.pricePreOrder == null && request.discountPreOrder == null)
@@ -428,10 +428,10 @@ namespace ECommerce.Application.Services.Product
                     Repay = !string.IsNullOrEmpty(request.repay) ? request.repay.Trim() : null,
                     Insurance = string.IsNullOrEmpty(request.insurance) ? "" : request.insurance.Trim(),
                     New = request.isNew,
-                    ShopId = (int)request.shop.id,
-                    BrandId = (int)request.brand.id,
-                    ProductAddedDate = DateTime.Now, // default
+                    ShopId = request.shopId,
+                    BrandId = request.brandId,
                     SubCategoryId = request.subCategoryId,
+                    ProductAddedDate = DateTime.Now, // default
                     Status = isAdmin ? (byte?)ProductStatusEnum.Available : (byte?)ProductStatusEnum.Pending,
 
                     //Price
@@ -463,20 +463,8 @@ namespace ECommerce.Application.Services.Product
                 /*
                  * Relationship data
                  */
-                // Options
-                List<int> optionValueIds = request.currentOptions;
-                if (optionValueIds.Count > 0)
-                {
-                    var productOptionValues = optionValueIds.Select(id => new ProductOptionValue
-                    {
-                        ProductId = product.ProductId,
-                        OptionValueId = id
-                    }).ToList();
-                    await _productOptionValueRepo.AddRangeAsync(productOptionValues);
-                    await _productOptionValueRepo.SaveChangesAsync();
-                }
                 // New option value
-                List<OptionModel> newOptions = request.newOptions;
+                List<NewOptionModel> newOptions = request.newOptions;
                 if (newOptions.Count > 0)
                 {
                     foreach (var option in newOptions)
@@ -487,18 +475,26 @@ namespace ECommerce.Application.Services.Product
                             .Select(i => i.OptionValueName)
                             .ToListAsync();
 
-                        // Get new values of list;
-                        // Lấy các giá trị khác với db;
-                        var newOptionValues = option.values
-                            .Select(value => value.name.Trim())
-                            .Except(existingOptionValues)
-                            .ToList();
-
+                        // Lấy các giá trị trùng với db;
                         var currentOptionValues = option.values
-                            .Select(value => value.name.Trim())
+                            .Select(value => value.Trim())
                             .Intersect(existingOptionValues)
                             .ToList();
+                        if (currentOptionValues.Any())
+                        {
+                            var currentOptionValueIds = await _optionValueRepo.Entity()
+                                .Where(i => i.OptionId == optionId && currentOptionValues.Contains(i.OptionValueName))
+                                .Select(i => i.OptionValueId)
+                                .ToListAsync();
 
+                            await addProductOptionValueByProductId(product.ProductId, currentOptionValueIds);
+                        }
+
+                        // Lấy các giá trị khác với db;
+                        var newOptionValues = option.values
+                            .Select(value => value.Trim())
+                            .Except(existingOptionValues)
+                            .ToList();
                         if (newOptionValues.Any())
                         {
                             var newOptionValueEntities = newOptionValues
@@ -509,22 +505,11 @@ namespace ECommerce.Application.Services.Product
                                     IsBaseValue = false
                                 })
                                 .ToList();
-
                             await _optionValueRepo.AddRangeAsync(newOptionValueEntities);
                             await _optionValueRepo.SaveChangesAsync();
 
                             var newOptionValueIds = newOptionValueEntities.Select(e => e.OptionValueId).ToList();
                             await addProductOptionValueByProductId(product.ProductId, newOptionValueIds);
-                        }
-
-                        if (currentOptionValues.Any())
-                        {
-                            var currentOptionValueIds = await _optionValueRepo.Entity()
-                                .Where(i => i.OptionId == optionId && currentOptionValues.Contains(i.OptionValueName))
-                                .Select(i => i.OptionValueId)
-                                .ToListAsync();
-
-                            await addProductOptionValueByProductId(product.ProductId, currentOptionValueIds);
                         }
                     }
                 }
@@ -616,9 +601,9 @@ namespace ECommerce.Application.Services.Product
                 };
 
                 // Remove product and save changes
-                _DbContext.Products.RemoveRange(products);
-                _DbContext.SaveChangesAsync().Wait();
-                return new SuccessResponse<ProductDeleteResponse>();
+                _productRepo.Entity().RemoveRange(products);
+                _productRepo.SaveChangesAsync().Wait();
+                return new SuccessResponse<ProductDeleteResponse>(data);
             }
             catch (Exception error)
             {

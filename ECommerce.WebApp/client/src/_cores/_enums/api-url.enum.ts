@@ -26,7 +26,7 @@ export const PRODUCT_API_URL = {
     PRODUCT_DETAIL: '/product/product-detail',
     UPDATE_STATUS: '/product/update-status',
     DELETE: '/product/delete',
-    SAVE: '/product/save'
+    SAVE: '/product/save',
 }
 
 export const INVENTORY_API_URL = {

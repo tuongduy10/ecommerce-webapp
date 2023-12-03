@@ -26,7 +26,7 @@ const BrandItem = (props: { data: IBrand }) => {
             onClick={goToProductList}
         >
             <div className="border-default bran__list-img flex items-center justify-between py-2 px-4 mx-auto bg-white">
-                <img src={ENV.IMAGE_URL + '/brand/' + data.brandImagePath} className="max-w-full max-h-full mx-auto" alt="name" />
+                <img src={ENV.IMAGE_URL + '/brand/' + data.imagePath} className="max-w-full max-h-full mx-auto" alt="name" />
             </div>
             <div className="card-body text-center p-2 items-center justify-center">
                 <h5 className="bran__list-name card-title mb-0 leading-[1.2] font-medium text-[1.25rem]">{data.name}</h5>

@@ -19,6 +19,10 @@ export default class ProductService {
   }
 
   public static deleteProduct(params?: { ids: number[] }) {
-    return api.post(PRODUCT_API_URL.UPDATE_STATUS, params);
+    return api.post(PRODUCT_API_URL.DELETE, params);
+  }
+
+  public static save(params: any) {
+    return api.post(PRODUCT_API_URL.SAVE, params);
   }
 }

@@ -24,7 +24,9 @@ namespace ECommerce.Application.Services.Product.Dtos
         public int subCategoryId { get; set; }
         public string? subCategoryName { get; set; }
         public string? categoryName { get; set; }
+        public int shopId { get; set; }
         public ShopModel shop { get; set; }
+        public int brandId { get; set; }
         public BrandModel brand { get; set; }
 
         public DateTime? createdDate { get; set; }
@@ -58,6 +60,8 @@ namespace ECommerce.Application.Services.Product.Dtos
         {
             id = -1;
             subCategoryId = -1;
+            shopId = -1;
+            brandId = -1;
         }
     }
 }

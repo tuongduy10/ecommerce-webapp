@@ -30,7 +30,7 @@ const HomeBrandList = () => {
               {homeStore.highLightBrands.map(item => (
                 <SwiperSlide key={`slc-${item.id}`}>
                   <a href="/" className="bran__logo p-4" style={{ cursor: 'pointer' }}>
-                    <img src={ENV.IMAGE_URL + "/brand/" + item.brandImagePath} alt="" />
+                    <img src={ENV.IMAGE_URL + "/brand/" + item.imagePath} alt="" />
                   </a>
                 </SwiperSlide>
               ))}

@@ -1,7 +1,7 @@
 export interface IBrand {
   id: number;
   name: string;
-  brandImagePath: string;
+  imagePath: string;
   status: boolean;
   createdDate: "2023-02-19T00:00:00";
   highlights: boolean;

@@ -82,6 +82,7 @@ namespace ECommerce.WebApp.Controllers
                 return BadRequest(error.Message);
             }
         }
+        [AllowAnonymous]
         [HttpGet("shops")]
         public async Task<IActionResult> GetShops()
         {
