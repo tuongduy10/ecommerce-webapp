@@ -26,9 +26,11 @@ namespace ECommerce.WebApp.Controllers
         private string RATING_FILE_PREFIX = FilePathConstant.RATE_FILEPREFIX;
         private string PRODUCT_FILE_PATH = FilePathConstant.PRODUCT_FILEPATH;
         private string PRODUCT_FILE_PREFIX = FilePathConstant.PRODUCT_FILEPREFIX;
-        public CommonController(IWebHostEnvironment webHostEnvironment)
+        private IProductService _productService;
+        public CommonController(IWebHostEnvironment webHostEnvironment, IProductService productService)
         {
             _manageFiles = new ManageFiles(webHostEnvironment);
+            _productService = productService;
         }
         [AllowAnonymous]
         [HttpPost("upload")]
@@ -78,7 +80,7 @@ namespace ECommerce.WebApp.Controllers
         }
         [AllowAnonymous]
         [HttpPost("remove-files")]
-        public IActionResult removeFiles(RemoveUploadRequest request)
+        public async Task<IActionResult> removeFiles(RemoveUploadRequest request)
         {
             try
             {
@@ -88,7 +90,9 @@ namespace ECommerce.WebApp.Controllers
                     case UploadTypeConstant.PRODUCT:
                     {
                         path = PRODUCT_FILE_PATH;
-                        break;
+                        await _productService.removeUserImages(request.fileNames);
+                        await _productService.removeSystemImages(request.fileNames);
+                            break;
                     }
                     case UploadTypeConstant.BRAND:
                     {
@@ -104,6 +108,46 @@ namespace ECommerce.WebApp.Controllers
                 if (!String.IsNullOrEmpty(path) && request.fileNames.Count > 0)
                 {
                     _manageFiles.DeleteFiles(request.fileNames, path);
+                    return Ok(new SuccessResponse<string>());
+                }
+                return BadRequest(new FailResponse<string>("Xóa không thành công"));
+            }
+            catch (Exception error)
+            {
+                return BadRequest(new FailResponse<string>(error.Message));
+            }
+        }
+        [AllowAnonymous]
+        [HttpPost("remove-product-files")]
+        public async Task<IActionResult> removeProductFiles(List<int?> ids)
+        {
+            try
+            {
+                string path = PRODUCT_FILE_PATH;
+                var result = await _productService.removeSystemImages(ids);
+                if (!String.IsNullOrEmpty(path) && result.Data.Count > 0)
+                {
+                    _manageFiles.DeleteFiles(result.Data, path);
+                    return Ok(new SuccessResponse<string>());
+                }
+                return BadRequest(new FailResponse<string>("Xóa không thành công"));
+            }
+            catch (Exception error)
+            {
+                return BadRequest(new FailResponse<string>(error.Message));
+            }
+        }
+        [AllowAnonymous]
+        [HttpPost("remove-user-product-files")]
+        public async Task<IActionResult> removeUserProductFiles(List<int?> ids)
+        {
+            try
+            {
+                string path = PRODUCT_FILE_PATH;
+                var result = await _productService.removeUserImages(ids);
+                if (!String.IsNullOrEmpty(path) && result.Data.Count > 0)
+                {
+                    _manageFiles.DeleteFiles(result.Data, path);
                     return Ok(new SuccessResponse<string>());
                 }
                 return BadRequest(new FailResponse<string>("Xóa không thành công"));

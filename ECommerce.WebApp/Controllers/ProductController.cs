@@ -120,6 +120,7 @@ namespace ECommerce.WebApp.Controllers
             }
             return BadRequest(result);
         }
+        [AllowAnonymous]
         [HttpPost("delete")]
         public async Task<IActionResult> delete(ProductDeleteRequest request)
         {

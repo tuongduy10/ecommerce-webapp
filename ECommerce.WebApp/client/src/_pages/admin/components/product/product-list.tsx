@@ -26,6 +26,7 @@ import { GlobalConfig } from "src/_configs/global.config";
 import { ENV } from "src/_configs/enviroment.config";
 import { PRODUCT_STATUS } from "src/_cores/_enums/product.enum";
 import { ADMIN_ROUTE_NAME } from "src/_cores/_enums/route-config.enum";
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { Link as RouterLink } from "react-router-dom";
 
 const header: ITableHeader[] = [
@@ -451,6 +452,7 @@ export default function ProductList() {
                             Ẩn
                         </Button>
                         <Button
+                            sx={{ marginRight: 2 }}
                             variant="outlined"
                             color="error"
                             aria-controls={openDel ? 'basic-menu' : undefined}

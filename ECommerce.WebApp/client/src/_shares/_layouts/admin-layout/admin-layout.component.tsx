@@ -93,9 +93,9 @@ const mainListItems = [
                 path: ADMIN_ROUTE_NAME.MANAGE_USER,
             },
             {
-                name: 'add',
+                name: 'detail',
                 label: 'Thêm người dùng',
-                path: ADMIN_ROUTE_NAME.MANAGE_USER_ADD,
+                path: ADMIN_ROUTE_NAME.MANAGE_USER_DETAIL,
             }
         ]
     },

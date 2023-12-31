@@ -106,7 +106,8 @@ namespace ECommerce.Application.Services.Inventory
                         description = i.Description,
                         descriptionTitle = i.DescriptionTitle,
                         isHighlights = i.Highlights,
-                        isNew = i.New
+                        isNew = i.New,
+                        categoryNames = i.BrandCategories.Select(_ => _.Category.CategoryName).ToList()
                     })
                     .ToListAsync();
 
@@ -161,6 +162,7 @@ namespace ECommerce.Application.Services.Inventory
                                                 ov.Product.SubCategoryId == subc.SubCategoryId)
                                             .Select(ov => ov.ProductId)
                                             .Count(),
+                                        isBase = (bool)lop.IsBaseValue
                                     })
                                     .ToList()
                             })

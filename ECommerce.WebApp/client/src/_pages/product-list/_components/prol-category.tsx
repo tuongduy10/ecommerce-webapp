@@ -13,7 +13,7 @@ const ProlCategory = () => {
   const productStore = useProductStore();
   const dispatch = useDispatch();
 
-  const [optionValueIds, setOptionValueIds] = useState<Number[]>([]);
+  const [optionValueIds, setOptionValueIds] = useState<number[]>([]);
   const [expandedKey, setExpandedKey] = useState('');
 
   useEffect(() => {
@@ -44,9 +44,9 @@ const ProlCategory = () => {
     setSearchParams(updatedSearchParams);
   };
 
-  const generateOptionValueIds = (id: number) => {
+  const generateOptionValueIds = (id?: number) => {
     const currentIds = optionValueIds;
-    if (!currentIds.includes(id)) {
+    if (id && !currentIds.includes(id)) {
       const ids = currentIds.concat(id);
       const params = ids.join(',');
       updatedSearchParams.set('optionValueIds', params);
@@ -102,7 +102,7 @@ const ProlCategory = () => {
                       <li key={`option-value-${_value.id}`} className="filter__sub-item">
                         <div className="checkbox flex items-center">
                           <input
-                            checked={optionValueIds.includes(_value.id)}
+                            checked={optionValueIds.includes(_value.id ?? -1)}
                             id={`option-value-${_value.id}`}
                             className="checkboxFilter"
                             type="checkbox"

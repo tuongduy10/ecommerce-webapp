@@ -12,6 +12,7 @@ namespace ECommerce.WebApp.Dtos.Common
     {
         public List<string> fileNames { get; set; }
         public string uploadType { get; set; }
+        public List<int?> ids { get; set; }
     }
     public class UploadTypeConstant
     {

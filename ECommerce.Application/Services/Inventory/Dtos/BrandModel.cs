@@ -15,5 +15,6 @@ namespace ECommerce.Application.Services.Inventory.Dtos
         public bool? isNew { get; set; }
         public string? description { get; set; }
         public string? descriptionTitle { get; set; }
+        public List<string> categoryNames { get; set; }
     }
 }

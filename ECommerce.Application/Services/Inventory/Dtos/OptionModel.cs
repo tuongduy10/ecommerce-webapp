@@ -17,10 +17,4 @@ namespace ECommerce.Application.Services.Inventory.Dtos
         public int totalRecord { get; set; } // total products with this value
         public bool isBase { get; set; }
     }
-    public class NewOptionModel
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-        public List<string> values { get; set; }
-    }
 }

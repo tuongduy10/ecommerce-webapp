@@ -17,5 +17,9 @@ namespace ECommerce.Application.Services.Product
         Task<Response<bool>> updateStatus(UpdateStatusRequest request);
         Task<Response<bool>> save(ProductSaveRequest request); // add or update
         Task<Response<ProductDeleteResponse>> delete(ProductDeleteRequest request);
+        Task<Response<List<string>>> removeUserImages(List<int?> ids);
+        Task<Response<List<string>>> removeUserImages(List<string> fileNames);
+        Task<Response<List<string>>> removeSystemImages(List<int?> ids);
+        Task<Response<List<string>>> removeSystemImages(List<string> fileNames);
     }
 }

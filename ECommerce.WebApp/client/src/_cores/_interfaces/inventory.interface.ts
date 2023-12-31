@@ -11,6 +11,7 @@ export interface IBrand {
   category: string;
   categoryIds: number[];
   shops: any;
+  categoryNames: string[]
 }
 
 export interface ICategory {
@@ -19,9 +20,9 @@ export interface ICategory {
 }
 
 export interface IOptionValue {
-  id: number;
+  id?: number;
   name: string;
-  isBase: boolean
+  isBase?: boolean
   totalRecord?: number; // total product records
 }
 export interface IOption {

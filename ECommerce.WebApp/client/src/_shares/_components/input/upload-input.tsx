@@ -1,12 +1,14 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MuiIcon from "../mui-icon/mui-icon.component";
 import { ICON_NAME } from "../mui-icon/_enums/mui-icon.enum";
 import CommonService from "src/_cores/_services/common.service";
 import { ENV } from "src/_configs/enviroment.config";
+import { Menu, MenuItem } from "@mui/material";
 
 interface IUploadProps extends React.HTMLProps<HTMLInputElement> {
     onChangeFiles: (e: any) => void,
     filesLimit?: number,
+    selectedFiles?: string[],
     uploadType: "products" | "brand" | "rates"
 }
 
@@ -15,11 +17,20 @@ const UploadInput = (props: IUploadProps) => {
         onChangeFiles,
         filesLimit = 3, // default limit: 3
         uploadType,
+        selectedFiles,
         ...rest
     } = props;
 
     const inputElement = useRef<any>(null);
     const [selectedFileNames, setSelectedFileNames] = useState<string[]>([]);
+    const [delAnchorEl, setDelAnchorEl] = useState<null | HTMLElement>(null);
+    const openDel = Boolean(delAnchorEl);
+
+    useEffect(() => {
+        if (selectedFiles && selectedFiles.length > 0) {
+            setSelectedFileNames(selectedFiles);
+        }
+    }, [selectedFiles]);
 
     const handleOnChange = (e: { target: { files: any } }) => {
         const files = e.target.files;
@@ -32,8 +43,8 @@ const UploadInput = (props: IUploadProps) => {
             formData.append('files', file)
         }
         CommonService.uploadFiles(formData).then((res: any) => {
-            if (res.data) {
-                const fileNames = res.data;
+            if (res.data) { // files name sent from server
+                const fileNames = selectedFileNames.concat(res.data);
                 setSelectedFileNames(fileNames);
                 onChangeFiles(fileNames);
             }
@@ -51,6 +62,7 @@ const UploadInput = (props: IUploadProps) => {
             if (res.isSucceed) {
                 const updatedFileNames = selectedFileNames.filter((fileName) => fileName !== _fileName);
                 setSelectedFileNames(updatedFileNames);
+                onChangeFiles(updatedFileNames);
             }
         })
     };
@@ -86,8 +98,22 @@ const UploadInput = (props: IUploadProps) => {
                                         fontWeight: "900",
                                     }}
                                     className="feather feather-x"
-                                    onClick={() => handleRemoveFile(fileName)}
+                                    onClick={(event: React.MouseEvent<HTMLButtonElement>) => setDelAnchorEl(event.currentTarget)}
+                                    aria-controls={openDel ? 'basic-menu' : undefined}
+                                    aria-haspopup="true"
+                                    aria-expanded={openDel ? 'true' : undefined}
                                 />
+                                <Menu
+                                    anchorEl={delAnchorEl}
+                                    open={openDel}
+                                    onClose={() => setDelAnchorEl(null)}
+                                    MenuListProps={{
+                                        'aria-labelledby': 'basic-button',
+                                    }}
+                                >
+                                    <MenuItem onClick={() => { handleRemoveFile(fileName); setDelAnchorEl(null); }}>Xác nhận xóa</MenuItem>
+                                    <MenuItem onClick={() => setDelAnchorEl(null)}>Hủy</MenuItem>
+                                </Menu>
                             </span>
                         </div>
                     </div>

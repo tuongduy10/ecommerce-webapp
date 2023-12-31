@@ -29,8 +29,8 @@ const BrandItem = (props: { data: IBrand }) => {
                 <img src={ENV.IMAGE_URL + '/brand/' + data.imagePath} className="max-w-full max-h-full mx-auto" alt="name" />
             </div>
             <div className="card-body text-center p-2 items-center justify-center">
-                <h5 className="bran__list-name card-title mb-0 leading-[1.2] font-medium text-[1.25rem]">{data.name}</h5>
-                <h6 className="bran__list-type card-text leading-[1.2] font-medium text-[1rem]">{data.category}</h6>
+                <h5 className="bran__list-name card-title mb-0 leading-[1.2] font-medium">{data.name}</h5>
+                <h6 className="bran__list-type card-text leading-[1.2] font-medium">{data.categoryNames?.length > 0 ? data.categoryNames.join(', ') : ''}</h6>
             </div>
         </div>
     )

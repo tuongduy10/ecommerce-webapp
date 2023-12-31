@@ -18,11 +18,12 @@ namespace ECommerce.Application.Services.Product.Dtos
         public int? stock { get; set; }
         public byte? status { get; set; }
         public bool? isNew { get; set; } // Mới
-        public bool? isHighlights { get; set; } // Hot
+        public bool? isHighlight { get; set; } // Hot
         public bool? isLegit { get; set; } // Hot
         // sub category
         public int subCategoryId { get; set; }
         public string? subCategoryName { get; set; }
+        public SubCategoryModel subCategory { get; set; }
         public string? categoryName { get; set; }
         public int shopId { get; set; }
         public ShopModel shop { get; set; }
@@ -46,6 +47,7 @@ namespace ECommerce.Application.Services.Product.Dtos
         public decimal? discountAvailable { get; set; }
         public decimal? pricePreOrder { get; set; }
         public decimal? discountPreOrder { get; set; }
+        public bool? isDiscountPercent { get; set; }
         public decimal? priceImport { get; set; }
         public decimal? priceForSeller { get; set; }
         // Profit from price
