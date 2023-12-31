@@ -13,97 +13,139 @@ import { ITableData, ITableHeader } from "src/_shares/_components/data-table/dat
 import Collapse from "@mui/material/Collapse";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import UserService from "src/_cores/_services/user.service";
+import { IUserGetParam } from "../../interfaces/user-interface";
+import { UserHelper } from "src/_shares/_helpers/user-helper";
+import { DateTimeHelper } from "src/_shares/_helpers/datetime-helper";
+import { Button, Menu, MenuItem } from "@mui/material";
 
 function Row(props: any) {
     const { rowData } = props;
     const [open, setOpen] = useState(false);
+    const [delAnchorEl, setDelAnchorEl] = useState<null | HTMLElement>(null);
+    const openDel = Boolean(delAnchorEl);
+
+    const handleClickDel = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setDelAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseDel = () => {
+        setDelAnchorEl(null);
+    };
+
+    const getUserStatus = (status: boolean) => UserHelper.getUserStatus(status);
+
+    const updateStatus = (id: number, status: boolean) => {
+
+    }
+
+    const deleteUser = (id: number) => {
+
+    }
+
+    const userAddress = (user: any): string => {
+        let address = user.userAddress ?? "";
+        if (user.userWardName) {
+            address += `, ${user.userWardName}`;
+        }
+        if (user.userDistrictName) {
+            address += `, ${user.userDistrictName}`;
+        }
+        if (user.userCityName) {
+            address += `, ${user.userCityName}`;
+        }
+        return address;
+    }
 
     return (
-        <Fragment>
-            <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-                <TableCell>
-                    <IconButton
-                        aria-label="expand row"
-                        size="small"
-                        onClick={() => setOpen(!open)}
-                    >
-                        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                    </IconButton>
-                </TableCell>
-                <TableCell component="th" scope="row">
-                    {rowData.name}
-                </TableCell>
-                <TableCell>{rowData.category}</TableCell>
-                <TableCell>{rowData.image}</TableCell>
-                <TableCell align="right">{rowData.price}</TableCell>
-                <TableCell align="right">{rowData.date}</TableCell>
-            </TableRow>
-            <TableRow>
-                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                    <Collapse in={open} timeout="auto" unmountOnExit>
-                        <Box sx={{ margin: 1 }}>
-                            <Typography variant="h6" gutterBottom component="div">
-                                History
-                            </Typography>
-                            <Table size="small" aria-label="purchases">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Date</TableCell>
-                                        <TableCell>Customer</TableCell>
-                                        <TableCell align="right">Amount</TableCell>
-                                        <TableCell align="right">Total price ($)</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell component="th" scope="row">10/11/2000</TableCell>
-                                        <TableCell>1</TableCell>
-                                        <TableCell align="right">12</TableCell>
-                                        <TableCell align="right">100</TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-                        </Box>
-                    </Collapse>
-                </TableCell>
-            </TableRow>
-        </Fragment>
+        <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+            <TableCell>
+                {DateTimeHelper.getDateTimeFormated(rowData.userJoinDate)}
+            </TableCell>
+            <TableCell>{rowData.userFullName}</TableCell>
+            <TableCell>{userAddress(rowData)}</TableCell>
+            <TableCell>{rowData.userMail}</TableCell>
+            <TableCell>{rowData.userPhone}</TableCell>
+            <TableCell align="center" sx={{ color: getUserStatus(rowData.status).color }}>
+                {getUserStatus(rowData.status).label}
+            </TableCell>
+            <TableCell align="center">
+                <Button
+                    onClick={() => updateStatus(rowData.id, true)}
+                    variant="outlined"
+                    color="success"
+                >
+                    Hiện
+                </Button>
+                <Button
+                    onClick={() => updateStatus(rowData.id, false)}
+                >
+                    Ẩn
+                </Button>
+                <Button
+                    variant="outlined"
+                    color="error"
+                    aria-controls={openDel ? 'basic-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={openDel ? 'true' : undefined}
+                    onClick={handleClickDel}
+                >
+                    Xóa
+                </Button>
+                <Menu
+                    anchorEl={delAnchorEl}
+                    open={openDel}
+                    onClose={handleCloseDel}
+                    MenuListProps={{
+                        'aria-labelledby': 'basic-button',
+                    }}
+                >
+                    <MenuItem onClick={() => deleteUser(rowData.id)}>Xác nhận xóa</MenuItem>
+                    <MenuItem onClick={handleCloseDel}>Hủy</MenuItem>
+                </Menu>
+            </TableCell>
+        </TableRow>
     );
 }
 
 export default function UserList() {
-    
+    const [users, setUsers] = useState([]);
+
     useEffect(() => {
-        // your logic
+        const param: IUserGetParam = {
+            keyword: "",
+            userId: -1,
+            pageIndex: 1,
+            pageSize: 50,
+        }
+        getData(param);
     }, []);
+
+    const getData = (param: IUserGetParam) => {
+        UserService.getUserList(param).then((res: any) => {
+            if (res.isSucceed) {
+                setUsers(res.data.items);
+            }
+        }).catch(error => {
+            console.log(error);
+        })
+    }
 
     const header: ITableHeader[] = [
         { field: 'joinDate', fieldName: 'Ngày tham gia', align: 'left' },
         { field: 'name', fieldName: 'Tên', align: 'left' },
         { field: 'address', fieldName: 'Địa chỉ', align: 'left' },
-        { field: 'email', fieldName: 'Email', align: 'right' },
-        { field: 'phone', fieldName: 'Số điện thoại', align: 'right' },
-        { field: 'status', fieldName: 'Trạng thái', align: 'right' },
+        { field: 'email', fieldName: 'Email', align: 'left' },
+        { field: 'phone', fieldName: 'Số điện thoại', align: 'left' },
+        { field: 'status', fieldName: 'Trạng thái', align: 'center' },
+        { field: '', fieldName: '', align: 'center' },
     ];
-    const data: ITableData[] = [
-        { id: "1", name: 'Tên 1', category: 'Loại 1', image: 'Ảnh 1', price: '1.000 đ', date: '20/10/2010', },
-        { id: "2", name: 'Tên 2', category: 'Loại 2', image: 'Ảnh 2', price: '1.000 đ', date: '20/10/2010', },
-        { id: "3", name: 'Tên 3', category: 'Loại 3', image: 'Ảnh 3', price: '1.000 đ', date: '20/10/2010', },
-        { id: "4", name: 'Tên 4', category: 'Loại 4', image: 'Ảnh 4', price: '1.000 đ', date: '20/10/2010', },
-        { id: "5", name: 'Tên 5', category: 'Loại 5', image: 'Ảnh 5', price: '1.000 đ', date: '20/10/2010', },
-        { id: "6", name: 'Tên 6', category: 'Loại 6', image: 'Ảnh 6', price: '1.000 đ', date: '20/10/2010', },
-        { id: "7", name: 'Tên 6', category: 'Loại 6', image: 'Ảnh 6', price: '1.000 đ', date: '20/10/2010', },
-        { id: "8", name: 'Tên 6', category: 'Loại 6', image: 'Ảnh 6', price: '1.000 đ', date: '20/10/2010', },
-        { id: "9", name: 'Tên 6', category: 'Loại 6', image: 'Ảnh 6', price: '1.000 đ', date: '20/10/2010', },
-        { id: "10", name: 'Tên 6', category: 'Loại 6', image: 'Ảnh 6', price: '1.000 đ', date: '20/10/2010', },
-        { id: "11", name: 'Tên 6', category: 'Loại 6', image: 'Ảnh 6', price: '1.000 đ', date: '20/10/2010', },
-    ]
+
     return (
         <TableContainer component={Paper}>
             <Table aria-label="collapsible table">
                 <TableHead>
                     <TableRow>
-                        <TableCell />
                         {header.map((field) => (
                             <TableCell key={field.field} align={!field.align ? 'left' : field.align}>{field.fieldName}</TableCell>
                         ))}
@@ -111,9 +153,9 @@ export default function UserList() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data.length > 0 && data.map((item, idx) => (
+                    {users.length > 0 && users.map((item: any, idx) => (
                         <Row
-                            key={`row-${item.id}`}
+                            key={`row-${item.userId}`}
                             rowData={item}
                         />
                     ))}

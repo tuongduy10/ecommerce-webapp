@@ -16,6 +16,7 @@ using ECommerce.Application.Repositories.OnlineHistory;
 using ECommerce.Application.Services.User.Dtos;
 using ECommerce.Application.Repositories.Notification;
 using ECommerce.Application.BaseServices.Shop.Dtos;
+using ECommerce.Application.Services.Product.Dtos;
 
 namespace ECommerce.Application.Services.User
 {
@@ -47,6 +48,32 @@ namespace ECommerce.Application.Services.User
             return 0;
         }
         public IUserRepository User { get => _userRepo; }
+        public async Task<Response<PageResult<UserGetModel>>> getUserPagingList(UserGetRequest request)
+        {
+            try
+            {
+                var query = _userRepo
+                    .Query()
+                    .Where(x => request.userId == -1 || x.UserId == request.userId)
+                    .Select(i => (UserGetModel)i);
+
+                var record = await query.CountAsync();
+                var data = await PaginatedList<UserGetModel>.CreateAsync(query, request.PageIndex, request.PageSize);
+                var result = new PageResult<UserGetModel>()
+                {
+                    Items = data,
+                    CurrentRecord = (request.PageIndex * request.PageSize) <= record ? (request.PageIndex * request.PageSize) : record,
+                    TotalRecord = record,
+                    CurrentPage = request.PageIndex,
+                    TotalPage = (int)Math.Ceiling(record / (double)request.PageSize)
+                };
+                return new SuccessResponse<PageResult<UserGetModel>>(result);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<PageResult<UserGetModel>>(error.Message);
+            }
+        }
         public async Task<Response<List<UserGetModel>>> GetUsers(UserGetRequest request = null)
         {
             try

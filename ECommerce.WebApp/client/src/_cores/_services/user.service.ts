@@ -1,3 +1,4 @@
+import { IUserGetParam } from "src/_pages/admin/interfaces/user-interface";
 import { api } from "../_api/api";
 import SessionService from "./session.service";
 
@@ -12,6 +13,10 @@ export default class UserService {
 
   public static addUser(param: any) {
     return api.post("/add-user", param);
+  }
+
+  public static getUserList(param: IUserGetParam) {
+    return api.post("/user/user-list", param);
   }
 
   public static getUsers() {

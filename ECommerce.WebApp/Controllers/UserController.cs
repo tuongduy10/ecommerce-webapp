@@ -39,7 +39,15 @@ namespace ECommerce.WebApp.Controllers
             _userService = userService;
             _appSetting = optionsMonitor.CurrentValue;
         }
-
+        [AllowAnonymous]
+        [HttpPost("user-list")]
+        public async Task<IActionResult> getUserPagingList(UserGetRequest request)
+        {
+            var result = await _userService.getUserPagingList(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(SignInRequest request)

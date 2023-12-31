@@ -13,6 +13,7 @@ namespace ECommerce.Application.Services.User
     public interface IUserService
     {
         int GetCurrentUserId();
+        Task<Response<PageResult<UserGetModel>>> getUserPagingList(UserGetRequest request);
         Task<Response<List<UserGetModel>>> GetUsers(UserGetRequest request = null);
         Task<Response<UserGetModel>> GetUser(int userId);
         Task<ApiResponse> SetOnline(int userId = 0, bool isOnline = true);
