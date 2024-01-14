@@ -17,7 +17,7 @@ namespace ECommerce.Application.Repositories
         bool Any(Expression<Func<T, bool>> expression);
         Task<bool> AnyAsyncWhere(Expression<Func<T, bool>> expression);
         // Single obj
-        Task<T> FindAsyncWhere(Expression<Func<T, bool>> expression);
+        Task<T> GetAsyncWhere(Expression<Func<T, bool>> expression);
         Task<T> FindLastAsyncWhere(Expression<Func<T, bool>> expression);
         // List
         Task<IEnumerable<T>> ToListAsync();

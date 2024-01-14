@@ -1,5 +1,6 @@
 import { api } from "../_api/api";
 import { BLOG_API_URL, COMMON_API_URL } from "../_enums/api-url.enum";
+import { ICity, IDistrict, IWard } from "../_interfaces/common.interface";
 
 export default class CommonService { 
 
@@ -23,4 +24,21 @@ export default class CommonService {
         return api.post(COMMON_API_URL.REMOVE_FILES, params);
     }
 
+    public static getCities() {
+        return api.get<ICity[]>(COMMON_API_URL.PROVINCES);
+    }
+
+    public static getDistrictsByCityCode(code: string) {
+        const params = {
+            provinceCode: code
+        }
+        return api.post<IDistrict[]>(COMMON_API_URL.DISTRICTS, params);
+    }
+
+    public static getWardsByDistrictCode(code: string) {
+        const params = {
+            districtCode: code
+        }
+        return api.post<IWard[]>(COMMON_API_URL.WARDS, params);
+    }
 }

@@ -22,6 +22,7 @@ namespace ECommerce.WebApp.Controllers
 {
     [Authorize]
     [ApiController]
+    [AllowAnonymous]
     [Route("api/user")]
     public class UserController : ControllerBase
     {
@@ -39,7 +40,6 @@ namespace ECommerce.WebApp.Controllers
             _userService = userService;
             _appSetting = optionsMonitor.CurrentValue;
         }
-        [AllowAnonymous]
         [HttpPost("user-list")]
         public async Task<IActionResult> getUserPagingList(UserGetRequest request)
         {
@@ -48,7 +48,6 @@ namespace ECommerce.WebApp.Controllers
                 return BadRequest(result);
             return Ok(result);
         }
-        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(SignInRequest request)
         {
@@ -66,7 +65,6 @@ namespace ECommerce.WebApp.Controllers
                 Data = GenerateToken(result.Data)
             });
         }
-        [AllowAnonymous]
         [HttpPost("info")]
         public IActionResult UserInfo()
         {
@@ -90,7 +88,6 @@ namespace ECommerce.WebApp.Controllers
                 return BadRequest(error.Message);
             }
         }
-        [AllowAnonymous]
         [HttpGet("shops")]
         public async Task<IActionResult> GetShops()
         {
@@ -99,7 +96,15 @@ namespace ECommerce.WebApp.Controllers
                 return BadRequest(res);
             return Ok(res);
         }
+        [HttpPost("save-seller")]
 
+        public async Task<IActionResult> SaveSeller(UserShopModel request)
+        {
+            var result = await _userService.SaveSeller(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
         private string GenerateToken(UserModel user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();

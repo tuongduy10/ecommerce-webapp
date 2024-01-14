@@ -41,7 +41,7 @@ namespace ECommerce.Application.Services.Chat
             {
                 if (String.IsNullOrEmpty(request.Message))
                     return new FailResponse<MessageModel>("Nội dung không được để trống");
-                var fromUserInfo = await _userRepo.FindAsyncWhere(user => user.UserPhone == request.FromPhoneNumber);
+                var fromUserInfo = await _userRepo.GetAsyncWhere(user => user.UserPhone == request.FromPhoneNumber);
 
                 var newMessageHistory = new MessageHistory();
                 newMessageHistory.Message = request.Message.Trim();
@@ -94,14 +94,14 @@ namespace ECommerce.Application.Services.Chat
                         request.FromPhoneNumber = "0" + request.FromPhoneNumber;
                     }
                 }
-                var userInfo = await _userRepo.FindAsyncWhere(i => i.UserPhone == request.FromPhoneNumber);
+                var userInfo = await _userRepo.GetAsyncWhere(i => i.UserPhone == request.FromPhoneNumber);
                 if (userInfo != null)
                 {
                     request.FromName = userInfo.UserFullName;
                 } 
                 else
                 {
-                    var userMsg = await _msgRepo.FindAsyncWhere(i => i.FromPhoneNumber == request.FromPhoneNumber);
+                    var userMsg = await _msgRepo.GetAsyncWhere(i => i.FromPhoneNumber == request.FromPhoneNumber);
                     if (userMsg != null)
                     {
                         request.FromName = userMsg.FromName;

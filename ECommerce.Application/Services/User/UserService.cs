@@ -17,6 +17,8 @@ using ECommerce.Application.Services.User.Dtos;
 using ECommerce.Application.Repositories.Notification;
 using ECommerce.Application.BaseServices.Shop.Dtos;
 using ECommerce.Application.Services.Product.Dtos;
+using ECommerce.Data.Models.Common;
+using ECommerce.Application.Enums;
 
 namespace ECommerce.Application.Services.User
 {
@@ -28,7 +30,10 @@ namespace ECommerce.Application.Services.User
         private INotificationRepository _notiRepo;
         private IRepositoryBase<MessageHistory> _messageRepo;
         private IRepositoryBase<Shop> _shopRepo;
-        
+        private readonly IRepositoryBase<UserRole> _userRoleRepo;
+        private readonly IRepositoryBase<Province> _provinceRepo;
+        private readonly IRepositoryBase<District> _districtRepo;
+        private readonly IRepositoryBase<Ward> _wardRepo;
         public UserService(ECommerceContext DbContext)
         {
             _DbContext = DbContext;
@@ -42,6 +47,14 @@ namespace ECommerce.Application.Services.User
                 _messageRepo = new RepositoryBase<MessageHistory>(_DbContext);
             if (_shopRepo == null)
                 _shopRepo = new RepositoryBase<Shop>(_DbContext);
+            if (_provinceRepo == null)
+                _provinceRepo = new RepositoryBase<Province>(_DbContext);
+            if (_districtRepo == null)
+                _districtRepo = new RepositoryBase<District>(_DbContext);
+            if (_wardRepo == null)
+                _wardRepo = new RepositoryBase<Ward>(_DbContext);
+            if (_userRoleRepo == null)
+                _userRoleRepo = new RepositoryBase<UserRole>(_DbContext);
         }
         public int GetCurrentUserId()
         {
@@ -120,7 +133,7 @@ namespace ECommerce.Application.Services.User
             try
             {
                 if (userId == 0) return new FailResponse<UserGetModel>("");
-                var user = await _userRepo.FindAsyncWhere(i => i.UserId == userId);
+                var user = await _userRepo.GetAsyncWhere(i => i.UserId == userId);
 
                 if (user == null) return new FailResponse<UserGetModel>("Không tìm thấy người dùng");
                 var result = new UserGetModel()
@@ -143,7 +156,7 @@ namespace ECommerce.Application.Services.User
             {
                 if(_userId != 0)
                 {
-                    var user = await _userRepo.FindAsyncWhere(item => item.UserId == _userId);
+                    var user = await _userRepo.GetAsyncWhere(item => item.UserId == _userId);
                     if (user != null)
                     {
                         user.IsOnline = _isOnline;
@@ -166,7 +179,7 @@ namespace ECommerce.Application.Services.User
             {
                 if (_userId == 0) return new FailResponse<UserGetModel>("");
 
-                var user = await _userRepo.FindAsyncWhere(item => item.UserId == _userId);
+                var user = await _userRepo.GetAsyncWhere(item => item.UserId == _userId);
                 if(user == null) return new FailResponse<UserGetModel>("Không tìm thấy người dùng");
 
                 user.IsOnline = _isOnline;
@@ -193,10 +206,10 @@ namespace ECommerce.Application.Services.User
             {
                 if (_userId == 0) return new FailResponse<UserGetModel>("");
 
-                var user = await _userRepo.FindAsyncWhere(item => item.UserId == _userId);
+                var user = await _userRepo.GetAsyncWhere(item => item.UserId == _userId);
                 if (user == null) return new FailResponse<UserGetModel>("Không tìm thấy người dùng");
 
-                var history = await _onlineHistoryRepo.FindAsyncWhere(i => i.UserId == _userId && i.Duration == 0);
+                var history = await _onlineHistoryRepo.GetAsyncWhere(i => i.UserId == _userId && i.Duration == 0);
                 if (history == null)
                 {
                     // create new logic here
@@ -306,6 +319,111 @@ namespace ECommerce.Application.Services.User
             catch (Exception error)
             {
                 return new FailResponse<List<ShopModel>>(error.Message);
+            }
+        }
+        public async Task<Response<UserShopModel>> SaveSeller(UserShopModel request)
+        {
+            try
+            {
+                string phonenumber = null;
+                // Phone validate
+                if (!string.IsNullOrEmpty(request.phone))
+                {
+                    phonenumber = request.phone.Trim();
+                    if (phonenumber.Contains("+84"))
+                    {
+                        phonenumber = phonenumber.Replace("+84", "");
+                        if (!phonenumber.StartsWith("0"))
+                            phonenumber = "0" + phonenumber;
+                    }
+                }
+
+                if (string.IsNullOrEmpty(request.fullName))
+                    return new FailResponse<UserShopModel>("Vui lòng nhập họ tên");
+                if (string.IsNullOrEmpty(request.password) || string.IsNullOrEmpty(request.rePassword))
+                    return new FailResponse<UserShopModel>("Vui lòng nhập mật khẩu");
+                if (request.password != request.rePassword)
+                    return new FailResponse<UserShopModel>("Mật khẩu không trùng");
+
+                var hasSeller = await _userRepo.AnyAsyncWhere(_ => 
+                    _.UserPhone == phonenumber ||
+                    _.UserMail == request.email.Trim());
+                if (hasSeller)
+                    return new FailResponse<UserShopModel>("Số điện thoại hoặc Email đã tồn tại");
+
+                var seller = await _userRepo.GetAsyncWhere(_ => _.UserId == request.id);
+                if (seller == null)
+                    seller = new Data.Models.User();
+
+                seller.UserMail = request.email.Trim();
+                seller.UserCityCode = request.cityCode;
+                seller.UserCityName = (await _provinceRepo.GetAsyncWhere(_ => _.Code == request.cityCode))?.Name;
+                seller.UserDistrictCode = request.districtCode;
+                seller.UserDistrictName = (await _districtRepo.GetAsyncWhere(_ => _.Code == request.districtCode))?.Name;
+                seller.UserWardCode = request.wardCode;
+                seller.UserWardName = (await _wardRepo.GetAsyncWhere(_ => _.Code == request.wardCode))?.Name;
+                seller.UserFullName = request.fullName.Trim();
+                seller.UserPhone = phonenumber;
+                seller.Password = request.password.Trim();
+
+                if (request.id == -1) // Add
+                    _userRepo.AddAsync(seller).Wait();
+                if (request.id > -1) // Update
+                    _userRepo.Update(seller);
+                _userRepo.SaveChangesAsync().Wait();
+
+                /** Role
+                 * Remove all user roles then
+                 * add new role from user id in request
+                 **/
+                var userRoles = await _userRoleRepo.ToListAsyncWhere(_ => _.UserId == seller.UserId);
+                if (userRoles.Count() > 0)
+                {
+                    _userRoleRepo.RemoveRange(userRoles);
+                    _userRoleRepo.SaveChangesAsync().Wait();
+                }
+                var newRole = new UserRole
+                {
+                    RoleId = (int)RoleEnum.Seller,
+                    UserId = seller.UserId,
+                };
+                await _userRoleRepo.AddAsync(newRole);
+                await _userRoleRepo.SaveChangesAsync();
+
+                /**
+                 * Shop
+                 * Set null all shops has user id then 
+                 * update new user id from request
+                 **/
+                var shopsByUser = await _shopRepo.ToListAsyncWhere(_ => _.UserId == seller.UserId);
+                if (shopsByUser.Count() > 0)
+                {
+                    foreach (var shop in shopsByUser)
+                    {
+                        shop.UserId = null;
+                    }
+                    _shopRepo.UpdateRange(shopsByUser);
+                    _shopRepo.SaveChangesAsync().Wait();
+                }
+                if (request.shopIds.Count > 0)
+                {
+                    var shops = await _shopRepo.ToListAsyncWhere(_ => request.shopIds.Contains(_.ShopId));
+                    if (shops.Count() > 0)
+                    {
+                        foreach (var shop in shops)
+                        {
+                            shop.UserId = seller.UserId;
+                        }
+                        _shopRepo.UpdateRange(shops);
+                        _shopRepo.SaveChangesAsync().Wait();
+                    }
+                }
+
+                return new SuccessResponse<UserShopModel>();
+            }
+            catch (Exception exc)
+            {
+                return new FailResponse<UserShopModel>(exc.Message);
             }
         }
     }

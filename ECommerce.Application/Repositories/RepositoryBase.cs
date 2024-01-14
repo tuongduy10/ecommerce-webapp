@@ -37,7 +37,7 @@ namespace ECommerce.Application.Repositories
             return await _DbContext.Set<T>().AnyAsync(expression);
         }
         // Single Obj
-        public virtual async Task<T> FindAsyncWhere(Expression<Func<T, bool>> expression)
+        public virtual async Task<T> GetAsyncWhere(Expression<Func<T, bool>> expression)
         {
             return await _DbContext.Set<T>().Where(expression).FirstOrDefaultAsync();
         }
@@ -86,7 +86,7 @@ namespace ECommerce.Application.Repositories
         // Remove
         public virtual async Task RemoveAsyncWhere(Expression<Func<T, bool>> expression)
         {
-            var entity = await FindAsyncWhere(expression);
+            var entity = await GetAsyncWhere(expression);
             if(entity != null)
                 Remove(entity);
         }

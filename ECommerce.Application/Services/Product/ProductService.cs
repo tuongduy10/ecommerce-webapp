@@ -441,7 +441,7 @@ namespace ECommerce.Application.Services.Product
                 /*
                  * None relationship data
                  */
-                var product = await _productRepo.FindAsyncWhere(_ => _.ProductId == request.id);
+                var product = await _productRepo.GetAsyncWhere(_ => _.ProductId == request.id);
                 if (product == null)
                     product = new Data.Models.Product();
                 product.ProductCode = request.code.Trim();

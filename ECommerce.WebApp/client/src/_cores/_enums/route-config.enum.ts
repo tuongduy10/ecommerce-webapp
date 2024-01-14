@@ -10,7 +10,7 @@ export const ROUTE_NAME = {
     BLOG: ROUTE_PREFIX + '/blog',
 }
 
-export const ADMIN_ROUTE_PREFIX = '/v2/admin';
+export const ADMIN_ROUTE_PREFIX = ROUTE_PREFIX + '/admin';
 export const ADMIN_ROUTE_NAME = {
     DASHBOARD: ADMIN_ROUTE_PREFIX + '/',
     LOGIN: ADMIN_ROUTE_PREFIX + '/login',

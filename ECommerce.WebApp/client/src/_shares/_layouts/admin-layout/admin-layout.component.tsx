@@ -94,7 +94,7 @@ const mainListItems = [
             },
             {
                 name: 'detail',
-                label: 'Thêm người dùng',
+                label: 'Tạo tài khoản bán hàng',
                 path: ADMIN_ROUTE_NAME.MANAGE_USER_DETAIL,
             }
         ]

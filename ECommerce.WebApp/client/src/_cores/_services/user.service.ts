@@ -34,4 +34,12 @@ export default class UserService {
   public static getShops() {
     return api.get(`/user/shops`);
   }
+
+  public static save(param: any) { 
+    return api.post(`/user/save`, param);
+  }
+
+  public static saveSeller(param: any) {
+    return api.post(`/user/save-seller`, param);
+  }
 }

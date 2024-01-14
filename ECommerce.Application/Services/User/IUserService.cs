@@ -21,5 +21,6 @@ namespace ECommerce.Application.Services.User
         Task<Response<UserGetModel>> UpdateOnlineHistory(int _userId);
         Task<Response<UserModel>> ValidateUser(SignInRequest request);
         Task<Response<List<ShopModel>>> GetShops();
+        Task<Response<UserShopModel>> SaveSeller(UserShopModel request);
     }
 }
