@@ -4,7 +4,7 @@ import CommonService from "src/_cores/_services/common.service";
 import { Child } from "./_components";
 import { WebDirectional } from "src/_shares/_components";
 import { useExampleStore } from "src/_cores/_store/root-store";
-import { addData, setData } from "src/_cores/_reducers";
+import { addData, setData } from "src/_cores/_reducers/example.reducer";
 
 const ExamplePage = () => {
     const exampleStore = useExampleStore();

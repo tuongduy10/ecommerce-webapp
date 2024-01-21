@@ -22,7 +22,6 @@ namespace ECommerce.WebApp.Controllers
 {
     [Authorize]
     [ApiController]
-    [AllowAnonymous]
     [Route("api/user")]
     public class UserController : ControllerBase
     {
@@ -49,6 +48,7 @@ namespace ECommerce.WebApp.Controllers
             return Ok(result);
         }
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(SignInRequest request)
         {
             var result = await _userService.ValidateUser(request);
@@ -66,7 +66,7 @@ namespace ECommerce.WebApp.Controllers
             });
         }
         [HttpPost("info")]
-        public IActionResult UserInfo()
+        public async Task<IActionResult> UserInfo()
         {
             try
             {
@@ -75,13 +75,11 @@ namespace ECommerce.WebApp.Controllers
                     return Unauthorized();
 
                 var userClaims = this.DecodeToken(token).Claims;
-                var user = new UserModel()
-                {
-                    id = Int32.Parse(userClaims.FirstOrDefault(claim => claim.Type == "id").Value),
-                    fullName = userClaims.FirstOrDefault(claim => claim.Type == "fullName").Value,
-                    phone = userClaims.FirstOrDefault(claim => claim.Type == "phone").Value
-                };
-                return Ok(new SuccessResponse<UserModel>("success", user));
+                int id = Int32.Parse(userClaims.FirstOrDefault(claim => claim.Type == "id").Value);
+                var result = await _userService.GetUser(id);
+                if (!result.isSucceed)
+                    return BadRequest(result);
+                return Ok((UserModel)result.Data);
             }
             catch (Exception error)
             {
@@ -97,10 +95,17 @@ namespace ECommerce.WebApp.Controllers
             return Ok(res);
         }
         [HttpPost("save-seller")]
-
         public async Task<IActionResult> SaveSeller(UserShopModel request)
         {
             var result = await _userService.SaveSeller(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
+        [HttpGet("get-user/{id}")]
+        public async Task<IActionResult> GetUser(int id)
+        {
+            var result = await _userService.GetUser(id);
             if (!result.isSucceed)
                 return BadRequest(result);
             return Ok(result);

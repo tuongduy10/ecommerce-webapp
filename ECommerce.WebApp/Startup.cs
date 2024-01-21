@@ -181,12 +181,6 @@ namespace ECommerce.WebApp
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "admin",
-                    pattern: "{controller=Admin}/{action=Index}/{id?}");
-            });
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "client";

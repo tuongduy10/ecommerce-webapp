@@ -6,21 +6,20 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Fragment, useState, useEffect } from "react";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { ITableData, ITableHeader } from "src/_shares/_components/data-table/data-table";
-import Collapse from "@mui/material/Collapse";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import { useState, useEffect } from "react";
 import UserService from "src/_cores/_services/user.service";
 import { IUserGetParam } from "../../interfaces/user-interface";
 import { UserHelper } from "src/_shares/_helpers/user-helper";
 import { DateTimeHelper } from "src/_shares/_helpers/datetime-helper";
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Button, Menu, MenuItem } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { ADMIN_ROUTE_NAME } from "src/_cores/_enums/route-config.enum";
+import { ITableHeader } from "src/_shares/_components/data-table/data-table";
 
 function Row(props: any) {
     const { rowData } = props;
+    const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [delAnchorEl, setDelAnchorEl] = useState<null | HTMLElement>(null);
     const openDel = Boolean(delAnchorEl);
@@ -43,6 +42,13 @@ function Row(props: any) {
 
     }
 
+    const viewDetail = (id: number) => {
+        navigate({
+            pathname: ADMIN_ROUTE_NAME.MANAGE_USER_DETAIL,
+            search: `?id=${id}`
+        });
+    }
+
     const userAddress = (user: any): string => {
         let address = user.userAddress ?? "";
         if (user.userWardName) {
@@ -59,6 +65,11 @@ function Row(props: any) {
 
     return (
         <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+            <TableCell>
+                <IconButton onClick={() => viewDetail(rowData.userId)}>
+                    <InfoOutlinedIcon />
+                </IconButton>
+            </TableCell>
             <TableCell>
                 {DateTimeHelper.getDateTimeFormated(rowData.userJoinDate)}
             </TableCell>
@@ -146,6 +157,7 @@ export default function UserList() {
             <Table aria-label="collapsible table">
                 <TableHead>
                     <TableRow>
+                        <TableCell />
                         {header.map((field) => (
                             <TableCell key={field.field} align={!field.align ? 'left' : field.align}>{field.fieldName}</TableCell>
                         ))}

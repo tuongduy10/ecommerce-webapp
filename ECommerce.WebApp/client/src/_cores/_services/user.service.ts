@@ -24,7 +24,7 @@ export default class UserService {
   }
 
   public static getUser(id: any) {
-    return api.get<any>(`/get-user/${id}`);
+    return api.get<any>(`/user/get-user/${id}`);
   }
 
   public static getUserInfo() {

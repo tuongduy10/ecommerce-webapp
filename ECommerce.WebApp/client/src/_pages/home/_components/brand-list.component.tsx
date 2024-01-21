@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { IBrand } from "src/_cores/_interfaces/inventory.interface";
 import React from "react";
 import { useHomeStore } from "src/_cores/_store/root-store";
-import { setBrands } from "src/_cores/_reducers";
+import { setBrands } from "src/_cores/_reducers/home.reducer";
 
 const BrandList = () => {
     const homeStore = useHomeStore();

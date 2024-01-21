@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ECommerce.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,7 +10,7 @@ namespace ECommerce.Application.BaseServices.User.Dtos
         public int UserId { get; set; }
         public string UserMail { get; set; }
         public string UserFullName { get; set; }
-        public DateTime UserJoinDate { get; set; }
+        public DateTime UserJoinDate { get; set; } = new DateTime();
         public string UserAddress { get; set; }
         public string UserWardCode { get; set; }
         public string UserDistrictCode { get; set; }
@@ -24,6 +25,7 @@ namespace ECommerce.Application.BaseServices.User.Dtos
         public bool IsOnline { get; set; }
         public DateTime LastOnline { get; set; }
         public string LastOnlineLabel { get; set; }
+        public List<Data.Models.Shop> Shops { get; set; }
         public static explicit operator UserGetModel(Data.Models.User data)
         {
             return new UserGetModel()
@@ -43,6 +45,10 @@ namespace ECommerce.Application.BaseServices.User.Dtos
                 IsOnline = (bool)data.IsOnline,
                 isSystemAccount = (bool)data.IsSystemAccount,
                 Status = (bool)data.Status,
+                Shops = data.Shops.Select(_ => new Data.Models.Shop
+                {
+                    ShopId = _.ShopId,
+                }).ToList()
             };
         }
     }

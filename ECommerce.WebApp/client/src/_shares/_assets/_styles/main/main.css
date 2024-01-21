@@ -718,6 +718,16 @@
   width: 65%;
 }
 
+.form-basic {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.form-basic input,
+.form-basic select {
+  padding:  0.5rem 1rem;
+}
+
 .form-input {
   position: relative;
   border-bottom: 1px solid #ddd;
@@ -2249,7 +2259,7 @@ hr {
 }
 
 .tab-content .form-group {
-  margin-bottom: 0;
+  /* margin-bottom: 0; */
 }
 
 .select-form {

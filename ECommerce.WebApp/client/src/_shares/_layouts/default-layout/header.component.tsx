@@ -1,28 +1,30 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { HEADER_MENU } from "src/_configs/web.config";
 import { ROUTE_NAME } from "src/_cores/_enums/route-config.enum";
+import SessionService from "src/_cores/_services/session.service";
 import UserService from "src/_cores/_services/user.service";
 import HeaderNavMobile from "src/_shares/_components/header-nav/nav-mobile.component";
 import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
 import MuiIcon from "src/_shares/_components/mui-icon/mui-icon.component";
-//import SearchForm from "src/_shares/_components/search-form/search-form.component";
-
-const leftHeader = [
-    { path: '', field: 'findOrder', text: 'Tra cứu đơn hàng', icon: ICON_NAME.FEATHER.HELP_CIRCLE },
-    { path: 'tel:0906035526', field: '', text: '0906035526', icon: ICON_NAME.FEATHER.SMARTPHONE },
-    { path: ROUTE_NAME.LOGIN, field: 'profile', text: 'Tài khoản của tôi', icon: ICON_NAME.FEATHER.USER },
-]
 
 const Header = () => {
+    const [fullName, setUserName] = useState<string>("");
+    const token = SessionService.getAccessToken();
 
     useEffect(() => {
-        UserService.getUserInfo().then(res => {
-            console.log(res.data)
+        UserService.getUserInfo().then((res: any) => {
+            setUserName(res.fullName);
         }).catch(error => {
             console.log(error)
         });
     }, []);
+
+    const leftHeader = [
+        { path: '', field: 'findOrder', text: 'Tra cứu đơn hàng', icon: ICON_NAME.FEATHER.HELP_CIRCLE },
+        { path: 'tel:0906035526', field: '', text: '0906035526', icon: ICON_NAME.FEATHER.SMARTPHONE },
+        { path: token ? ROUTE_NAME.USER_PROFILE : ROUTE_NAME.LOGIN, field: 'profile', text: fullName ? `Hi, ${fullName}` : 'Tài khoản của tôi', icon: ICON_NAME.FEATHER.USER },
+    ];
 
     return (
         <header className="header sticky top-0 z-[2]">

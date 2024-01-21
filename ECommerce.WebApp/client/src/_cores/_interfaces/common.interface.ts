@@ -14,6 +14,6 @@ export interface IDistrict {
 export interface IWard {
     code: string; // 1
     name: string; // "Thành phố Hà Nội"
-    codename: string; // "thanh_pho_ha_noi"
+    codeName: string; // "thanh_pho_ha_noi"
     districtCode: string;
 }

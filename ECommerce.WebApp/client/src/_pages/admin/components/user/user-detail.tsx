@@ -15,21 +15,44 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const defaultTheme = createTheme();
 
 export default function UserDetail() {
+    const searchParams = new URLSearchParams(window.location.search);
+    const userId = Number(searchParams.get('id')) || -1;
+
     const [dataDetail, setDataDetail] = useState<{ [key: string]: any }>({});
     const [shops, setShops] = useState<IShop[]>([]);
     const [cities, setCitites] = useState<ICity[]>([]);
     const [districts, setDistricts] = useState<IDistrict[]>([]);
     const [wards, setWards] = useState<IWard[]>([]);
+
     const navigate = useNavigate();
 
     useEffect(() => {
         getCities();
         getShops();
-    }, []);
+        if (userId > -1) {
+            getDetail(userId);
+        }
+    }, [userId]);
 
     const backToList = () => {
         navigate({
             pathname: ADMIN_ROUTE_NAME.MANAGE_USER
+        });
+    }
+
+    const getDetail = (id: number) => {
+        UserService.getUser(id).then((res: any) => {
+            if (res.isSucceed) {
+                const _dataDetail = res.data;
+                setDataDetail({
+                    ..._dataDetail,
+                    shopIds: _dataDetail.shops.map((_: any) => _.shopId)
+                });
+                getDistricts(_dataDetail.userCityCode);
+                getWards(_dataDetail.userDistrictCode);
+            }
+        }).catch(error => {
+            console.log(error);
         });
     }
 
@@ -49,36 +72,44 @@ export default function UserDetail() {
         });
     }
 
-    const onChangeCity = (event: any, province: ICity | null) => {
+    const onChangeCity = (province: ICity | null) => {
         const provinceCode = province?.code ?? null;
         let _dataDetail = dataDetail;
-        _dataDetail['userCityCode'] = provinceCode;
+        _dataDetail['cityCode'] = provinceCode;
         setDataDetail(_dataDetail);
         if (!provinceCode) {
-            _dataDetail['userDistrictCode'] = "";
+            _dataDetail['districtCode'] = "";
             setDataDetail(_dataDetail);
             setDistricts([]);
         } else {
-            CommonService.getDistrictsByCityCode(provinceCode).then(res => {
-                setDistricts(res.data);
-            }).catch(error => {
-                console.log(error);
-            });
+            getDistricts(provinceCode);
         }
+    }
+
+    const getDistricts = (code: string) => {
+        CommonService.getDistrictsByCityCode(code).then(res => {
+            setDistricts(res.data);
+        }).catch(error => {
+            console.log(error);
+        });
     }
 
     const onChangeDistrict = (district: IDistrict | null) => {
         const districtCode = district?.code ?? "";
         let _dataDetail = dataDetail;
-        _dataDetail['userDistrictCode'] = districtCode;
+        _dataDetail['districtCode'] = districtCode;
         setDataDetail({ ...dataDetail, userDistrictCode: districtCode });
         if (!districtCode) {
-            _dataDetail["userWardCode"] = ""
+            _dataDetail["wardCode"] = ""
             setDataDetail(_dataDetail);
             setWards([]);
             return;
         }
-        CommonService.getWardsByDistrictCode(districtCode).then(res => {
+        getWards(districtCode);
+    }
+
+    const getWards = (code: string) => {
+        CommonService.getWardsByDistrictCode(code).then(res => {
             setWards(res.data);
         }).catch(error => {
             console.log(error);
@@ -87,7 +118,7 @@ export default function UserDetail() {
 
     const onChangeWard = (ward: IWard | null) => {
         const wardCode = ward?.code ?? "";
-        setDataDetail({ ...dataDetail, userWardCode: wardCode });
+        setDataDetail({ ...dataDetail, wardCode: wardCode });
     }
 
     const onChangeFieldValue = (field: string, value: any) => {
@@ -105,14 +136,14 @@ export default function UserDetail() {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
         const _param = {
-            id: dataDetail['id'] ?? -1,
-            fullName: form.get('fullName'),
-            email: form.get('email'),
-            cityCode: dataDetail['cityCode'] ?? "",
-            districtCode: dataDetail['districtCode'] ?? "",
-            wardCode: dataDetail['wardCode'] ?? "",
-            address: form.get('address'),
-            phone: form.get('phone'),
+            id: dataDetail['userId'] ?? -1,
+            fullName: form.get('userFullName'),
+            email: form.get('userMail'),
+            cityCode: dataDetail['userCityCode'] ?? "",
+            districtCode: dataDetail['userDistrictCode'] ?? "",
+            wardCode: dataDetail['userWardCode'] ?? "",
+            address: form.get('userAddress'),
+            phone: form.get('userPhone'),
             password: form.get('password'),
             rePassword: form.get('rePassword'),
             shopIds: dataDetail.shopIds ?? [],
@@ -145,11 +176,11 @@ export default function UserDetail() {
                             <Grid container spacing={2} sx={{ mb: 3 }}>
                                 <Grid item xs={12} sm={8}>
                                     <TextField
-                                        value={dataDetail['fullName']}
-                                        onChange={(event) => onChangeFieldValue('fullName', event?.target.value)}
+                                        value={dataDetail['userFullName']}
+                                        onChange={(event) => onChangeFieldValue('userFullName', event?.target.value)}
                                         InputLabelProps={{ shrink: true }}
                                         autoComplete='off'
-                                        name="fullName"
+                                        name="userFullName"
                                         required
                                         fullWidth
                                         size="small"
@@ -159,11 +190,11 @@ export default function UserDetail() {
                                 </Grid>
                                 <Grid item xs={12} sm={8}>
                                     <TextField
-                                        value={dataDetail['email']}
-                                        onChange={(event) => onChangeFieldValue('email', event?.target.value)}
+                                        value={dataDetail['userMail']}
+                                        onChange={(event) => onChangeFieldValue('userMail', event?.target.value)}
                                         InputLabelProps={{ shrink: true }}
                                         autoComplete='off'
-                                        name="email"
+                                        name="userMail"
                                         required
                                         fullWidth
                                         size="small"
@@ -176,8 +207,8 @@ export default function UserDetail() {
                                         size="small"
                                         disablePortal
                                         options={cities}
-                                        value={dataDetail['cityCode'] ? cities.find(_ => _.code === dataDetail['cityCode']) : null}
-                                        onChange={(event, city) => onChangeCity(event, city)}
+                                        value={dataDetail['userCityCode'] ? cities.find(_ => _.code === dataDetail['userCityCode']) : null}
+                                        onChange={(event, city) => onChangeCity(city)}
                                         getOptionLabel={(city) => `${city.name}`}
                                         renderOption={(props, city) => <li {...props}>{city.name}</li>}
                                         renderInput={(params) => <TextField {...params} name="city" label="Thành phố" autoComplete="chrome-off" />}
@@ -188,7 +219,7 @@ export default function UserDetail() {
                                         size="small"
                                         disablePortal
                                         options={districts}
-                                        value={dataDetail['districtCode'] ? districts.find(_ => _.code === dataDetail['districtCode']) : null}
+                                        value={dataDetail['userDistrictCode'] ? districts.find(_ => _.code === dataDetail['userDistrictCode']) : null}
                                         onChange={(event, district) => onChangeDistrict(district)}
                                         getOptionLabel={(district) => `${district.name}`}
                                         renderOption={(props, district) => <li {...props}>{district.name}</li>}
@@ -200,7 +231,7 @@ export default function UserDetail() {
                                         size="small"
                                         disablePortal
                                         options={wards}
-                                        value={dataDetail['wardCode'] ? wards.find(_ => _.code === dataDetail['wardCode']) : null}
+                                        value={dataDetail['userWardCode'] ? wards.find(_ => _.code === dataDetail['userWardCode']) : null}
                                         onChange={(event, ward) => onChangeWard(ward)}
                                         getOptionLabel={(ward) => `${ward.name}`}
                                         renderOption={(props, ward) => <li {...props}>{ward.name}</li>}
@@ -209,11 +240,11 @@ export default function UserDetail() {
                                 </Grid>
                                 <Grid item xs={12} sm={8}>
                                     <TextField
-                                        value={dataDetail['address']}
-                                        onChange={(event) => onChangeFieldValue('address', event?.target.value)}
+                                        value={dataDetail['userAddress']}
+                                        onChange={(event) => onChangeFieldValue('userAddress', event?.target.value)}
                                         InputLabelProps={{ shrink: true }}
                                         autoComplete='off'
-                                        name="address"
+                                        name="userAddress"
                                         required
                                         fullWidth
                                         size="small"
@@ -229,11 +260,11 @@ export default function UserDetail() {
                             <Grid container spacing={2} sx={{ mb: 3 }}>
                                 <Grid item xs={12} sm={8}>
                                     <TextField
-                                        value={dataDetail['phone']}
-                                        onChange={(event) => onChangeFieldValue('phone', event?.target.value)}
+                                        value={dataDetail['userPhone']}
+                                        onChange={(event) => onChangeFieldValue('userPhone', event?.target.value)}
                                         InputLabelProps={{ shrink: true }}
                                         autoComplete='off'
-                                        name="phone"
+                                        name="userPhone"
                                         required
                                         fullWidth
                                         size="small"
@@ -248,10 +279,10 @@ export default function UserDetail() {
                                         InputLabelProps={{ shrink: true }}
                                         autoComplete='off'
                                         name="password"
-                                        required
+                                        required={!dataDetail['userId']}
                                         fullWidth
                                         size="small"
-                                        label="Mật khẩu"
+                                        label={`Mật khẩu ${dataDetail['userId'] ? "mới" : ""}`}
                                         autoFocus
                                     />
                                 </Grid>
@@ -262,10 +293,10 @@ export default function UserDetail() {
                                         InputLabelProps={{ shrink: true }}
                                         autoComplete='off'
                                         name="rePassword"
-                                        required
+                                        required={!dataDetail['userId']}
                                         fullWidth
                                         size="small"
-                                        label="Nhập lại mật khẩu"
+                                        label={`Nhập lại mật khẩu ${dataDetail['userId'] ? "mới" : ""}`}
                                         autoFocus
                                     />
                                 </Grid>
@@ -281,6 +312,8 @@ export default function UserDetail() {
                                         options={shops}
                                         disableCloseOnSelect
                                         getOptionLabel={(shop) => `${shop.id} - ${shop.name}`}
+                                        getOptionDisabled={(option) => option.user !== null && option.user.id !== dataDetail['userId']}
+                                        value={shops.length > 0 && dataDetail['shopIds'] ? shops.filter((shop) => dataDetail['shopIds'].includes(shop.id)) : []}
                                         renderOption={(props, shop, { selected }) => (
                                             <li {...props}>
                                                 <Checkbox

@@ -132,17 +132,11 @@ namespace ECommerce.Application.Services.User
         {
             try
             {
-                if (userId == 0) return new FailResponse<UserGetModel>("");
-                var user = await _userRepo.GetAsyncWhere(i => i.UserId == userId);
+                var user = await _userRepo.GetAsyncWhere(i => i.UserId == userId, "Shops");
+                if (user == null) 
+                    return new FailResponse<UserGetModel>("Không tìm thấy người dùng");
 
-                if (user == null) return new FailResponse<UserGetModel>("Không tìm thấy người dùng");
-                var result = new UserGetModel()
-                {
-                    UserId = user.UserId,
-                    IsOnline = user.IsOnline != null ? (bool)user.IsOnline : false,
-                    LastOnlineLabel = user.LastOnline != null ? ((DateTime)user.LastOnline).ToString(ConfigConstant.DATE_FORMAT) : "",
-                };
-
+                var result = (UserGetModel)user;
                 return new SuccessResponse<UserGetModel>("", result);
             }
             catch (Exception error)
@@ -340,7 +334,7 @@ namespace ECommerce.Application.Services.User
 
                 if (string.IsNullOrEmpty(request.fullName))
                     return new FailResponse<UserShopModel>("Vui lòng nhập họ tên");
-                if (string.IsNullOrEmpty(request.password) || string.IsNullOrEmpty(request.rePassword))
+                if ((string.IsNullOrEmpty(request.password) || string.IsNullOrEmpty(request.rePassword)) && request.id == -1)
                     return new FailResponse<UserShopModel>("Vui lòng nhập mật khẩu");
                 if (request.password != request.rePassword)
                     return new FailResponse<UserShopModel>("Mật khẩu không trùng");
@@ -348,7 +342,7 @@ namespace ECommerce.Application.Services.User
                 var hasSeller = await _userRepo.AnyAsyncWhere(_ => 
                     _.UserPhone == phonenumber ||
                     _.UserMail == request.email.Trim());
-                if (hasSeller)
+                if (hasSeller && request.id == -1)
                     return new FailResponse<UserShopModel>("Số điện thoại hoặc Email đã tồn tại");
 
                 var seller = await _userRepo.GetAsyncWhere(_ => _.UserId == request.id);
@@ -363,8 +357,12 @@ namespace ECommerce.Application.Services.User
                 seller.UserWardCode = request.wardCode;
                 seller.UserWardName = (await _wardRepo.GetAsyncWhere(_ => _.Code == request.wardCode))?.Name;
                 seller.UserFullName = request.fullName.Trim();
+                seller.UserAddress = request.address.Trim();
                 seller.UserPhone = phonenumber;
                 seller.Password = request.password.Trim();
+                seller.IsOnline = false;
+                seller.LastOnline = DateTime.Now;
+                seller.IsSystemAccount = true;
 
                 if (request.id == -1) // Add
                     _userRepo.AddAsync(seller).Wait();
