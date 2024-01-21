@@ -43,6 +43,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using ECommerce.WebApp.Configs.AppSettings;
 using ECommerce.Application.Services.Inventory;
+using ECommerce.Application.Services.Common;
 
 namespace ECommerce.WebApp
 {
@@ -89,7 +90,7 @@ namespace ECommerce.WebApp
                 options.AddPolicy(myCorsPolicy,
                     builder =>
                     {
-                        builder.WithOrigins("https://localhost:44330", "http://localhost:3000", "https://hihichi.com")
+                        builder.WithOrigins("https://localhost:44330", "http://localhost:3000", "https://hihichi.com", "http://192.168.1.10:3000")
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                     });
@@ -120,6 +121,7 @@ namespace ECommerce.WebApp
             services.AddTransient<IShopService, ShopService>();
 
             // Services
+            services.AddScoped<ICommonService, CommonService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IInventoryService, InventoryService>();
@@ -151,11 +153,11 @@ namespace ECommerce.WebApp
                 app.UseHsts();
             }
 
-            // app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
+            app.UseMiddleware<CustomAuthMiddleware>();
             app.UseAuthentication();
             app.UseRouting();
 
@@ -165,15 +167,6 @@ namespace ECommerce.WebApp
 
             app.UseMiddleware<NoCacheMiddleware>();
             app.UseCors(myCorsPolicy); ;
-
-            // same like app.UseMiddleware<NoCacheMiddleware>();
-            app.Use(async (context, next) =>
-            {
-                context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
-                context.Response.Headers["Pragma"] = "no-cache";
-                context.Response.Headers["Expires"] = "0";
-                await next();
-            });
 
             app.UseEndpoints(routes =>
             {

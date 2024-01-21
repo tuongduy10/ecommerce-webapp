@@ -35,7 +35,7 @@ namespace ECommerce.WebApp.Controllers.Client
             _commentService = comment;
             _manageFiles = new ManageFiles(webHostEnvironment);
         }
-        public async Task<IActionResult> PostComment(PostCommentRequest request)
+        public async Task<IActionResult> PostComment(PostCommentBaseRequest request)
         {
             if (request.files != null)
                 request.fileNames = _manageFiles.GetFilesName(request.files, FILE_PREFIX);

@@ -435,6 +435,7 @@ namespace ECommerce.Data.Context
 
                 entity.Property(e => e.ProductName)
                     .IsRequired()
+                    .HasColumnType("nvarchar")
                     .HasMaxLength(100);
 
                 entity.Property(e => e.SizeGuide).HasColumnType("ntext");

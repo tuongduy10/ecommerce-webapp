@@ -40,6 +40,7 @@ export const ICON_NAME = {
     LIKE: "LIKE",
     DISLIKE: "DISLIKE",
     STAR: "STAR",
+    STAR_FILLED: "STAR_FILLED",
     PHONE: "PHONE",
     EDIT: "EDIT",
     MENU: "MENU",

@@ -10,5 +10,9 @@ namespace ECommerce.Application.Common
     {
         public int PageIndex { get; set; }
         public int PageSize = 30;
+        public PageRequest()
+        {
+            PageIndex = 1;
+        }
     }
 }

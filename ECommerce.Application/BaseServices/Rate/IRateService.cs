@@ -15,7 +15,7 @@ namespace ECommerce.Application.BaseServices.Rate
         Task<List<RateGetModel>> GetAllToDay();
         Task<List<RateGetModel>> GetRatesByProductId(int id, int userId = 0);
         Task<List<RateGetModel>> GetAllByUserId(int id);
-        Task<ApiResponse> PostComment(PostCommentRequest request);
+        Task<ApiResponse> PostComment(PostCommentBaseRequest request);
         Task<ApiResponse> ReplyComment(ReplyCommentRequest request);
         Task<Response<LikeAndDislike>> LikeComment(LikeAndDislikeCount request);
         Task<Response<List<string>>> UpdateComment(UpdateCommentRequest request);

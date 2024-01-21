@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { TextField, TextFieldProps } from "@mui/material";
 import { forwardRef, useState } from "react";
 import { NumericFormat, NumericFormatProps } from "react-number-format";
 
@@ -25,7 +25,7 @@ const NumericFormatCustom = forwardRef<NumericFormatProps, CustomProps>(
     },
 );
 
-type NumberInputProps = {
+type NumberInputProps = TextFieldProps & {
     onChange?: (event: any) => void;
     label: string;
     value?: number;
@@ -51,6 +51,7 @@ export default function PriceInput(props: NumberInputProps) {
 
     return (
         <TextField
+            {...props}
             label={label}
             value={value}
             size={size ?? 'small'}

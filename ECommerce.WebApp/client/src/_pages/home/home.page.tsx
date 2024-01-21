@@ -46,7 +46,7 @@ const HomePage = () => {
   }
 
   const getBrands = () => {
-    InventoryService.getBrands().then(res => {
+    InventoryService.getBrands({}).then(res => {
       if (res?.data) {
         const highLightList = res.data.filter((brand: IBrand) => brand.highlights);
         dispatch(setHighLightBrands(highLightList));

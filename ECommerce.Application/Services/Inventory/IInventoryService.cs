@@ -16,5 +16,6 @@ namespace ECommerce.Application.Services.Inventory
         Task<Response<List<SubCategoryModel>>> getSubCategories(InventoryRequest request);
         Task<Response<List<OptionModel>>> getProductOptions(InventoryRequest request);
         Task<Response<List<AttributeModel>>> getProductAttributes(InventoryRequest request);
+        Task<Response<List<SizeGuideModel>>> getProductSizeGuides();
     }
 }

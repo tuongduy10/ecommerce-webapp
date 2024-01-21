@@ -32,6 +32,10 @@ namespace ECommerce.Application.Repositories
         {
             return _DbContext.Set<T>().Any(expression);
         }
+        public virtual async Task<bool> AnyAsyncWhere(Expression<Func<T, bool>> expression)
+        {
+            return await _DbContext.Set<T>().AnyAsync(expression);
+        }
         // Single Obj
         public virtual async Task<T> FindAsyncWhere(Expression<Func<T, bool>> expression)
         {

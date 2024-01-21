@@ -34,7 +34,7 @@ namespace ECommerce.WebApp.APIs
         }
 
         [HttpPost("PostComment")]
-        public async Task<IActionResult> PostComment([FromForm] PostCommentRequest request)
+        public async Task<IActionResult> PostComment([FromForm] PostCommentBaseRequest request)
         {
             var listName = new List<string>();
             if (request.files != null)

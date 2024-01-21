@@ -64,6 +64,13 @@ const Router = () => {
             </PrivateRoute>
         },
         { 
+          path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT_DETAIL, 
+          element: 
+            <PrivateRoute>
+              <ProductDetail />
+            </PrivateRoute>
+        },
+        { 
           path: ADMIN_ROUTE_NAME.MANAGE_USER, 
           element: 
             <PrivateRoute>

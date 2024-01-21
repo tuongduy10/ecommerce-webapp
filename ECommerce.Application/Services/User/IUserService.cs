@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace ECommerce.Application.Services.User
 {
@@ -17,7 +18,7 @@ namespace ECommerce.Application.Services.User
         Task<ApiResponse> SetOnline(int userId = 0, bool isOnline = true);
         Task<Response<UserGetModel>> UpdateOnlineStatus(int _userId, bool _isOnline);
         Task<Response<UserGetModel>> UpdateOnlineHistory(int _userId);
-        Task<Response<UserGetModel>> ValidateUser(SignInRequest request);
+        Task<Response<UserModel>> ValidateUser(SignInRequest request);
         Task<Response<List<ShopModel>>> GetShops();
     }
 }

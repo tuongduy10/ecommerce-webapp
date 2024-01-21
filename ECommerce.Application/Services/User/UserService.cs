@@ -201,12 +201,12 @@ namespace ECommerce.Application.Services.User
                 return new FailResponse<UserGetModel>(error.ToString());
             }
         }
-        public async Task<Response<UserGetModel>> ValidateUser(SignInRequest request)
+        public async Task<Response<UserModel>> ValidateUser(SignInRequest request)
         {
             try
             {
                 if (string.IsNullOrEmpty(request.UserPhone) || string.IsNullOrEmpty(request.Password)) 
-                    return new FailResponse<UserGetModel>("Thông tin không được để trống");
+                    return new FailResponse<UserModel>("Thông tin không được để trống");
 
                 var phonenumber = request.UserPhone;
                 if (phonenumber.Contains("+84"))
@@ -223,9 +223,9 @@ namespace ECommerce.Application.Services.User
                     .FirstOrDefaultAsync();
 
                 if (result == null) 
-                    return new FailResponse<UserGetModel>("Mật khẩu hoặc tài khoản không đúng");
+                    return new FailResponse<UserModel>("Mật khẩu hoặc tài khoản không đúng");
                 if (result.Status == false) 
-                    return new FailResponse<UserGetModel>("Tài khoản đã bị khóa");
+                    return new FailResponse<UserModel>("Tài khoản đã bị khóa");
 
                 var roles = (
                     from role in _DbContext.Roles
@@ -234,17 +234,17 @@ namespace ECommerce.Application.Services.User
                     select role.RoleName
                 ).Distinct().ToList();
 
-                UserGetModel user = new UserGetModel();
-                user.UserId = result.UserId;
-                user.UserFullName = result.UserFullName;
-                user.UserRoles = roles;
-                user.UserPhone = result.UserPhone;
+                var user = new UserModel();
+                user.id = result.UserId;
+                user.fullName = result.UserFullName;
+                user.roles = roles;
+                user.phone = result.UserPhone;
 
-                return new SuccessResponse<UserGetModel>("Đăng nhập thành công", user);
+                return new SuccessResponse<UserModel>("Đăng nhập thành công", user);
             }
             catch(Exception error)
             {
-                return new FailResponse<UserGetModel>("Đang xảy ra lỗi, vui lòng thử lại sau");
+                return new FailResponse<UserModel>("Đang xảy ra lỗi, vui lòng thử lại sau");
             }
         }
         public async Task<Response<List<ShopModel>>> GetShops()

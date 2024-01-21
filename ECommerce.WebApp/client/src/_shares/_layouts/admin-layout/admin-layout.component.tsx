@@ -93,9 +93,9 @@ const mainListItems = [
                 path: ADMIN_ROUTE_NAME.MANAGE_USER,
             },
             {
-                name: 'add',
+                name: 'detail',
                 label: 'Thêm người dùng',
-                path: ADMIN_ROUTE_NAME.MANAGE_USER_ADD,
+                path: ADMIN_ROUTE_NAME.MANAGE_USER_DETAIL,
             }
         ]
     },
@@ -161,7 +161,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export default function Dashboard() {
+export default function AdminLayout() {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [open, setOpen] = React.useState(true);
@@ -192,8 +192,8 @@ export default function Dashboard() {
     const renderListItem = (listItem: any) => {
         return listItem.map((item: any) => (
             item.childs && item.childs?.length > 0
-                ? (<>
-                    <ListItemButton key={item.name} onClick={() => toggleItem(item.name)}>
+                ? (<React.Fragment key={item.name}>
+                    <ListItemButton onClick={() => toggleItem(item.name)}>
                         <ListItemIcon>
                             {item.icon}
                         </ListItemIcon>
@@ -209,7 +209,7 @@ export default function Dashboard() {
                             ))}
                         </List>
                     </Collapse>
-                </>) : (
+                </React.Fragment>) : (
                     <ListItemButton key={item.name} onClick={() => goToPage(item.path)}>
                         <ListItemIcon>
                             {item.icon}

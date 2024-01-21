@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { IUserComment } from "src/_pages/product-detail/_interfaces/comment.interface";
 import { MuiIcon } from "src/_shares/_components";
-import UploadInput from "src/_shares/_components/input/upload";
+import UploadInput from "src/_shares/_components/input/upload-input";
 import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
 import { DateTimeHelper } from "src/_shares/_helpers/datetime-helper";
 
@@ -230,6 +230,7 @@ const UserComment = (props: IUserComment) => {
                             multiple 
                             hidden
                             onChangeFiles={onUpload} 
+                            uploadType="rates"
                         />
                     </div>
                 </div>

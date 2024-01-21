@@ -33,7 +33,7 @@ const ProductListPage = () => {
   }, [_pageIndex, _orderBy, _subCategoryId, _optionValueIds]);
 
   useEffect(() => {
-    getSubCategories(_brandId);
+    getSubCategories({ brandId: _brandId });
   }, [_brandId])
 
   const getData = (params: any) => {
@@ -57,8 +57,8 @@ const ProductListPage = () => {
     }
   }
 
-  const getSubCategories = (brandId: number) => {
-    InventoryService.getSubCategories(brandId).then((res: any) => {
+  const getSubCategories = (params: { brandId: number }) => {
+    InventoryService.getSubCategories(params).then((res: any) => {
       if (res.data) {
         const list = res.data.map((item: ISubCategory) => {
           item.optionList?.forEach((option: IOption) => {
@@ -79,7 +79,7 @@ const ProductListPage = () => {
       <div className="content__wrapper products__content-wrapper">
         <div className="content__inner w-full">
           <WebDirectional items={[
-            { name: homeStore.selectedBrand?.brandName ?? '', path: `?pageIndex=${_pageIndex}&brandId=${homeStore.selectedBrand?.brandId}` }
+            { name: homeStore.selectedBrand?.name ?? '', path: `?pageIndex=${_pageIndex}&brandId=${homeStore.selectedBrand?.id}` }
           ]} />
           <div className="products__content flex justify-center">
             <div className="hidden md:block">

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.BaseServices.Rate.Dtos
 {
-    public class PostCommentRequest
+    public class PostCommentBaseRequest
     {
         public int productId { get; set; }
         public int userId { get; set; }

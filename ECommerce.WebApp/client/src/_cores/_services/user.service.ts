@@ -25,4 +25,8 @@ export default class UserService {
   public static getUserInfo() {
     return api.post<any>(`/user/info`);
   }
+
+  public static getShops() {
+    return api.get(`/user/shops`);
+  }
 }

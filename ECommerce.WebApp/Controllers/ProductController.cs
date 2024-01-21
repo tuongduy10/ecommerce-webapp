@@ -1,4 +1,6 @@
-﻿using ECommerce.Application.Constants;
+﻿using ECommerce.Application.BaseServices.Rate.Dtos;
+using ECommerce.Application.Common;
+using ECommerce.Application.Constants;
 using ECommerce.Application.Services.Comment;
 using ECommerce.Application.Services.Comment.Request;
 using ECommerce.Application.Services.Product;
@@ -35,18 +37,19 @@ namespace ECommerce.WebApp.Controllers
             _manageFiles = new ManageFiles(webHostEnvironment);
         }
         [AllowAnonymous]
-        [HttpPost("product-list")]
-        public async Task<IActionResult> getProductList(ProductGetRequest request)
+        [HttpPost("product-managed-list")]
+        public async Task<IActionResult> getProductManagedList(ProductGetRequest request)
         {
-            var res = await _productService.getProductList(request);
+            var res = await _productService.getProductManagedList(request);
             if (!res.isSucceed)
                 return BadRequest(res);
             return Ok(res);
         }
-        [HttpPost("managed-products")]
-        public async Task<IActionResult> getManagedProductList(ProductGetRequest request)
+        [AllowAnonymous]
+        [HttpPost("product-list")]
+        public async Task<IActionResult> getProductList(ProductGetRequest request)
         {
-            var res = await _productService.getManagedProductList(request);
+            var res = await _productService.getProductList(request);
             if (!res.isSucceed)
                 return BadRequest(res);
             return Ok(res);
@@ -70,10 +73,40 @@ namespace ECommerce.WebApp.Controllers
             return Ok(result);
         }
         [AllowAnonymous]
-        [HttpPost("rate-product")]
-        public async Task<IActionResult> rateProduct()
+        [HttpPost("post-comment")]
+        public async Task<IActionResult> postComment(PostCommentRequest request)
         {
-            return Ok();
+            var result = await _commentService.postComment(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
+        [AllowAnonymous]
+        [HttpPost("react-comment")]
+        public async Task<IActionResult> reactComment(LikeAndDislikeCount request)
+        {
+            var result = await _commentService.LikeComment(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
+        [AllowAnonymous]
+        [HttpPost("users-favor")]
+        public async Task<IActionResult> getUsersFavor(UserFavorRequest request)
+        {
+            var result = await _commentService.GetUsersFavor(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
+        [AllowAnonymous]
+        [HttpPost("update-status")]
+        public async Task<IActionResult> updateStatus(UpdateStatusRequest request)
+        {
+            var result = await _productService.updateStatus(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
         }
         [AllowAnonymous]
         [HttpPost("save")]
@@ -87,6 +120,7 @@ namespace ECommerce.WebApp.Controllers
             }
             return BadRequest(result);
         }
+        [AllowAnonymous]
         [HttpPost("delete")]
         public async Task<IActionResult> delete(ProductDeleteRequest request)
         {
@@ -96,9 +130,9 @@ namespace ECommerce.WebApp.Controllers
                 _manageFiles.DeleteFiles(result.Data.systemImages, PRODUCT_FILE_PATH);
                 _manageFiles.DeleteFiles(result.Data.userImages, PRODUCT_FILE_PATH);
                 _manageFiles.DeleteFiles(result.Data.ratingImages, RATING_FILE_PATH);
-                return Ok(result);
+                return Ok(new SuccessResponse<bool>());
             }
-            return BadRequest(result);
+            return BadRequest(new FailResponse<bool>(result.Message));
         }
     }
 }

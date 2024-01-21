@@ -25,6 +25,9 @@ export interface IProduct {
   repay: string;
   insurance: string;
   isLegit: boolean;
+  stock: number;
+  categoryName: string;
+  subCategoryName: string;
   brand: {
     id: number;
     name: string;
@@ -49,6 +52,7 @@ export interface IProduct {
     value: string;
     name: string;
   }[];
+  createdDate: string,
   importDate: Date;
   // price
   discountPercent: number;
@@ -56,6 +60,11 @@ export interface IProduct {
   pricePreOrder: number;
   discountAvailable: number;
   discountPreOrder: number;
+  priceImport: number;
+  priceForSeller: number;
+  profitAvailable: number;
+  profitPreOrder: number;
+  profitForSeller: number;
   // images
   imagePaths: string[];
   userImagePaths: string[];
@@ -65,4 +74,5 @@ export interface IProduct {
     totalRating: number;
     rates: IComment[];
   };
+  status: number;
 }

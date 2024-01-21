@@ -18,13 +18,16 @@ namespace ECommerce.Application.Services.Product.Dtos
         public int? stock { get; set; }
         public byte? status { get; set; }
         public bool? isNew { get; set; } // Mới
-        public bool? isHighlights { get; set; } // Hot
+        public bool? isHighlight { get; set; } // Hot
         public bool? isLegit { get; set; } // Hot
         // sub category
         public int subCategoryId { get; set; }
         public string? subCategoryName { get; set; }
+        public SubCategoryModel subCategory { get; set; }
         public string? categoryName { get; set; }
+        public int shopId { get; set; }
         public ShopModel shop { get; set; }
+        public int brandId { get; set; }
         public BrandModel brand { get; set; }
 
         public DateTime? createdDate { get; set; }
@@ -32,6 +35,7 @@ namespace ECommerce.Application.Services.Product.Dtos
         public List<string> imagePaths { get; set; }
         public List<string> userImagePaths { get; set; }
         public string? description { get; set; }
+        public string? sizeGuide { get; set; }
         public string? size { get; set; }
         public string? link { get; set; }
         public string? note { get; set; }
@@ -43,6 +47,7 @@ namespace ECommerce.Application.Services.Product.Dtos
         public decimal? discountAvailable { get; set; }
         public decimal? pricePreOrder { get; set; }
         public decimal? discountPreOrder { get; set; }
+        public bool? isDiscountPercent { get; set; }
         public decimal? priceImport { get; set; }
         public decimal? priceForSeller { get; set; }
         // Profit from price
@@ -57,6 +62,8 @@ namespace ECommerce.Application.Services.Product.Dtos
         {
             id = -1;
             subCategoryId = -1;
+            shopId = -1;
+            brandId = -1;
         }
     }
 }

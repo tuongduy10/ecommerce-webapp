@@ -1,7 +1,7 @@
 export interface IBrand {
-  brandId: number;
-  brandName: string;
-  brandImagePath: string;
+  id: number;
+  name: string;
+  imagePath: string;
   status: boolean;
   createdDate: "2023-02-19T00:00:00";
   highlights: boolean;
@@ -11,6 +11,7 @@ export interface IBrand {
   category: string;
   categoryIds: number[];
   shops: any;
+  categoryNames: string[]
 }
 
 export interface ICategory {
@@ -19,18 +20,26 @@ export interface ICategory {
 }
 
 export interface IOptionValue {
-  id: number;
+  id?: number;
   name: string;
+  isBase?: boolean
   totalRecord?: number; // total product records
 }
 export interface IOption {
   id: number;
   name: string;
-  values?: IOptionValue[];
+  values: IOptionValue[];
 }
 export interface ISubCategory {
   id: number;
   name: string;
   categoryId?: number;
   optionList?: IOption[];
+  attributes?: IAttribute[];
+}
+
+export interface IAttribute {
+  id: number;
+  name: string;
+  value: string | null;
 }
