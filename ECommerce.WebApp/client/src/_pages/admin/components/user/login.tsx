@@ -30,7 +30,7 @@ const Login = () => {
   useEffect(() => {
     const token = SessionService.getAccessToken();
     if (token) {
-      navigate(ADMIN_ROUTE_NAME.DASHBOARD)
+      // navigate(ADMIN_ROUTE_NAME.DASHBOARD)
     }
   }, []);
 

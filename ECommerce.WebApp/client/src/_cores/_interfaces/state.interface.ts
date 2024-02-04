@@ -10,6 +10,10 @@ export interface ICommonInitState {
   loading: boolean;
 }
 
+export interface IUserInitState {
+  userApp: any
+}
+
 export interface IAuthInitState { 
   loading?: boolean,
   accessToken: string;

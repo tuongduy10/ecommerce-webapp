@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ECommerce.Application.BaseServices.User.Dtos;
+using ECommerce.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -20,5 +22,21 @@ namespace ECommerce.Application.Services.User.Dtos
         public bool isSystemAccount { get; set; }
         public bool isOnline { get; set; }
         public DateTime lastOnline { get; set; }
+        public List<Shop> shops { get; set; }
+        public static explicit operator UserModel(UserGetModel data)
+        {
+            return new UserModel
+            {
+                id = data.UserId,
+                fullName = data.UserFullName,
+                cityCode = data.UserCityCode,
+                districtCode = data.UserDistrictCode,
+                wardCode = data.UserWardCode,
+                phone = data.UserPhone,
+                address = data.UserAddress,
+                mail = data.UserMail,
+                shops = data.Shops
+            };
+        }
     }
 }

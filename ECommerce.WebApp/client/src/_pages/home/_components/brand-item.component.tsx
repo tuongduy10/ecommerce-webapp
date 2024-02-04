@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ENV } from "src/_configs/enviroment.config";
 import { ROUTE_NAME } from "src/_cores/_enums/route-config.enum";
 import { IBrand } from "src/_cores/_interfaces/inventory.interface";
-import { setSelectedBrand } from "src/_cores/_reducers";
+import { setSelectedBrand } from "src/_cores/_reducers/home.reducer";
 import { useHomeStore } from "src/_cores/_store/root-store";
 
 const BrandItem = (props: { data: IBrand }) => {

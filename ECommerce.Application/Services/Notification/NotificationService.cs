@@ -68,7 +68,7 @@ namespace ECommerce.Application.Services.Notification
         {
             try
             {
-                var notification = await _notificationRepo.FindAsyncWhere(item => item.Id == id);
+                var notification = await _notificationRepo.GetAsyncWhere(item => item.Id == id);
                 notification.IsRead = true;
                 _notificationRepo.Update(notification);
 

@@ -277,6 +277,11 @@
                     font-size: 10px;
                     line-height: 1;
                 }
+        .cart-action:hover .minicart-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
 @media only screen and (max-width: 1400px) {
     .minicart-content{
         width: 452px;

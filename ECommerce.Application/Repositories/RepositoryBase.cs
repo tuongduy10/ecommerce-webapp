@@ -37,9 +37,18 @@ namespace ECommerce.Application.Repositories
             return await _DbContext.Set<T>().AnyAsync(expression);
         }
         // Single Obj
-        public virtual async Task<T> FindAsyncWhere(Expression<Func<T, bool>> expression)
+        public virtual async Task<T> GetAsyncWhere(Expression<Func<T, bool>> expression, string includes = "")
         {
-            return await _DbContext.Set<T>().Where(expression).FirstOrDefaultAsync();
+            var query = _DbContext.Set<T>().Where(expression);
+            if (!string.IsNullOrEmpty(includes))
+            {
+                var includeArray = includes.Split(',').Select(i => i.Trim()).ToArray();
+                foreach (var include in includeArray)
+                {
+                    query = query.Include(include);
+                }
+            }
+            return await query.FirstOrDefaultAsync();
         }
         public virtual async Task<T> FindLastAsyncWhere(Expression<Func<T, bool>> expression)
         {
@@ -86,7 +95,7 @@ namespace ECommerce.Application.Repositories
         // Remove
         public virtual async Task RemoveAsyncWhere(Expression<Func<T, bool>> expression)
         {
-            var entity = await FindAsyncWhere(expression);
+            var entity = await GetAsyncWhere(expression);
             if(entity != null)
                 Remove(entity);
         }

@@ -114,7 +114,7 @@ namespace ECommerce.Application.Services.Comment
                 // Add comment
                 string idsToDelete = null;
                 var all = await _commentRepo.ToListAsync();
-                var replied = await _commentRepo.FindAsyncWhere(i => i.RateId == request.repliedId);
+                var replied = await _commentRepo.GetAsyncWhere(i => i.RateId == request.repliedId);
                 if (replied != null)
                     idsToDelete = string.IsNullOrEmpty(replied.IdsToDelete) ? request.repliedId.ToString() : (replied.IdsToDelete + "," + replied.RateId);
                 var comment = new Data.Models.Rate()
@@ -166,7 +166,7 @@ namespace ECommerce.Application.Services.Comment
                 if (string.IsNullOrEmpty(request.content))
                     return new FailResponse<List<string>>("Nội dung không được để trống");
 
-                var comment = await _commentRepo.FindAsyncWhere(item => item.RateId == request.id);
+                var comment = await _commentRepo.GetAsyncWhere(item => item.RateId == request.id);
                 if (comment == null)
                     return new FailResponse<List<string>>("Không tìm thấy bình luận hoặc bình luận đã bị xóa");
 
@@ -212,7 +212,7 @@ namespace ECommerce.Application.Services.Comment
                 var result = await _interestRepo.LikeComment(request);
 
                 // Notification
-                var comment = await _commentRepo.FindAsyncWhere(item => item.RateId == request.rateId);
+                var comment = await _commentRepo.GetAsyncWhere(item => item.RateId == request.rateId);
                 await _notificationRepo.CreateLikeDislikeNotiAsync(comment);
 
                 return new SuccessResponse<LikeAndDislike>("Đánh giá thành công", result);

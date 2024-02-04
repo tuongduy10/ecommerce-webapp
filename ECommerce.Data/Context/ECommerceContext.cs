@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using ECommerce.Data.Models;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using ECommerce.Data.Models.Common;
 
 #nullable disable
 
@@ -60,6 +61,9 @@ namespace ECommerce.Data.Context
         public virtual DbSet<SubCategoryOption> SubCategoryOptions { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
+        public virtual DbSet<Province> Provinces { get; set; }
+        public virtual DbSet<District> Districts { get; set; }
+        public virtual DbSet<Ward> Wards { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

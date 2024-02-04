@@ -1,6 +1,8 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Constants;
 using ECommerce.Application.Services.Comment;
+using ECommerce.Application.Services.Common;
+using ECommerce.Application.Services.Common.DTOs.Requests;
 using ECommerce.Application.Services.Product;
 using ECommerce.WebApp.Dtos.Common;
 using ECommerce.WebApp.Utils;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -27,10 +30,14 @@ namespace ECommerce.WebApp.Controllers
         private string PRODUCT_FILE_PATH = FilePathConstant.PRODUCT_FILEPATH;
         private string PRODUCT_FILE_PREFIX = FilePathConstant.PRODUCT_FILEPREFIX;
         private IProductService _productService;
-        public CommonController(IWebHostEnvironment webHostEnvironment, IProductService productService)
+        private ICommonService _commonService;
+        public CommonController(IWebHostEnvironment webHostEnvironment,
+            IProductService productService,
+            ICommonService commonService)
         {
             _manageFiles = new ManageFiles(webHostEnvironment);
             _productService = productService;
+            _commonService = commonService;
         }
         [AllowAnonymous]
         [HttpPost("upload")]
@@ -156,6 +163,33 @@ namespace ECommerce.WebApp.Controllers
             {
                 return BadRequest(new FailResponse<string>(error.Message));
             }
+        }
+        [AllowAnonymous]
+        [HttpGet("provinces")]
+        public async Task<IActionResult> getProvinces()
+        {
+            var result = await _commonService.getProvinces();
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
+        [AllowAnonymous]
+        [HttpPost("districts")]
+        public async Task<IActionResult> getDistricts(DistrictGetRequest request)
+        {
+            var result = await _commonService.getDistricts(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
+        [AllowAnonymous]
+        [HttpPost("wards")]
+        public async Task<IActionResult> getWards(WardGetRequest request)
+        {
+            var result = await _commonService.getWards(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
         }
     }
 }

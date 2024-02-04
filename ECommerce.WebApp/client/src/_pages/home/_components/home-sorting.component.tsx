@@ -1,7 +1,7 @@
 import { ClickAwayListener } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { selectAlphabet, selectCategory } from "src/_cores/_reducers";
+import { selectAlphabet, selectCategory } from "src/_cores/_reducers/home.reducer";
 import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
 import MuiIcon from "src/_shares/_components/mui-icon/mui-icon.component";
 

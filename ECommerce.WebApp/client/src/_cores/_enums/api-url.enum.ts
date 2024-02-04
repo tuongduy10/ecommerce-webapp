@@ -3,6 +3,9 @@ export const COMMON_API_URL = {
     GET_DATA: '/posts',
     UPLOAD_FILES: '/common/upload',
     REMOVE_FILES: '/common/remove-files',
+    PROVINCES: '/common/provinces',
+    DISTRICTS: '/common/districts',
+    WARDS: '/common/wards',
 }
 
 export const BLOG_API_URL = {

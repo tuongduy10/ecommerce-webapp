@@ -1,4 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
+import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { ENV } from "src/_configs/enviroment.config";
@@ -15,6 +16,7 @@ const ProductDetailInfo = () => {
   const productDetail = productStore.productDetail;
 
   const [quanity, setQuanity] = useState(1);
+  const [options, setOptions] = useState<{ id: any, value: any }[]>([]);
   const [isShowCodeDis, setShowCodeDis] = useState(false);
   const [openBrandDes, setOpenBrandDes] = useState(false);
 
@@ -24,6 +26,32 @@ const ProductDetailInfo = () => {
 
   const getFormatedPrice = (price: number) => {
     return ProductHelper.getFormatedPrice(price);
+  }
+
+  const onChangeOption = (event: SelectChangeEvent, option: any) => {
+    const id = event.target.value;
+    const idx = options.findIndex((_: any) => _.id === option.id);
+    if (idx > -1) {
+      setOptions(prevOptions => {
+        const updatedOptions = [...prevOptions];
+        updatedOptions[idx].value = id;
+        return updatedOptions;
+      });
+    } else {
+      const newOption = {
+        id: option.id,
+        value: id
+      };
+      setOptions(prevOptions => [...prevOptions, newOption]);
+    }
+  }
+
+  const addToCart = () => {
+    const _p = {
+      qty: quanity,
+      options: options
+    }
+    console.log(_p)
   }
 
   const renderPrice = (type: string, price: number, discount?: number) => {
@@ -55,16 +83,42 @@ const ProductDetailInfo = () => {
         <div key={`option-${option.id}`} className="option-size flex mb-2 items-center">
           <div className="option-title">{option.name}</div>
           <div className="options-wrapper">
-            <select className="options form-select w-full pro-options md:h-[30px]">
+            {/* <select className="options form-select w-full pro-options md:h-[30px]" onChange={e => onChangeOption(e.target)}>
               <option disabled>- Chọn -</option>
               {option.values && option.values.map((value) => (
-                <option key={`option-value-${value.id}`} value="value">{value.name}</option>
+                <option key={`option-value-${value.id}`} value={value.id}>{value.name}</option>
               ))}
-            </select>
-            <MuiIcon
+            </select> */}
+            <Select
+              displayEmpty
+              className="options form-select w-full pro-options md:h-[30px]"
+              inputProps={{ 'aria-label': 'Without label' }}
+              sx={{
+                boxShadow: "none",
+                ".MuiOutlinedInput-notchedOutline": { border: 0 },
+                "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                {
+                  border: 0,
+                },
+                "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  border: 0,
+                },
+              }}
+              value={options.find(_ => _.id === option.id)?.value || -1}
+              onChange={e => onChangeOption(e, option)}
+            >
+              <MenuItem value={-1} disabled>
+                <em>- Chọn -</em>
+              </MenuItem>
+              {option.values && option.values.map((value) => (
+                <MenuItem key={`option-value-${value.id}`} value={value.id}>{value.name}</MenuItem>
+              ))}
+            </Select>
+            {/* <MuiIcon
               name="CHEVRON_DOWN"
               className="feather feather-chevron-down"
-            />
+            /> */}
           </div>
         </div>
       ))
@@ -184,8 +238,7 @@ const ProductDetailInfo = () => {
           </div>
           <hr />
           <div className="product__detail-bottom mt-4">
-            {/* t options */}
-
+            {/* options */}
             <div className="product__detail-options">
               <div className="option-quality flex mb-2 items-center">
                 <div className="option-title">Chọn số lượng</div>
@@ -268,7 +321,7 @@ const ProductDetailInfo = () => {
                     */}
 
               <div className="product__detail-buttons flex justify-between w-full mt-4">
-                <button className="btn-addtocart btn-black w-[49%] bg-[#333] text-[#fff]">
+                <button className="btn-addtocart btn-black w-[49%] bg-[#333] text-[#fff]" onClick={addToCart}>
                   Thêm vào giỏ
                 </button>
                 <button className="btn-buynow btn-black w-[49%] bg-[#333] text-[#fff]">

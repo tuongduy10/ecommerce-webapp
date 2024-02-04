@@ -1,9 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
-import exampleReducer from "../_reducers/example.reducer";
-import homeReducer from "../_reducers/home.reducer";
-import authReducer from "../_reducers/auth.reducer";
-import productReducer from "../_reducers/product.reducer";
+import { authReducer, exampleReducer, homeReducer, productReducer, userReducer } from "../_reducers";
 
 export const store = configureStore({
   reducer: { 
@@ -11,6 +8,7 @@ export const store = configureStore({
     home: homeReducer,
     auth: authReducer,
     product: productReducer,
+    user: userReducer
   }
 });
 
@@ -18,6 +16,7 @@ export const useExampleStore = () => useSelector((state: RootState) => state.exa
 export const useHomeStore = () => useSelector((state: RootState) => state.home);
 export const useAuthStore = () => useSelector((state: RootState) => state.auth);
 export const useProductStore = () => useSelector((state: RootState) => state.product);
+export const useUserStore = () => useSelector((state: RootState) => state.user);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

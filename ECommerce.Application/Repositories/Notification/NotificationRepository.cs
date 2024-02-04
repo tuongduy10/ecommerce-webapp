@@ -23,7 +23,7 @@ namespace ECommerce.Application.Repositories.Notification
             if (comment.RepliedId == null)
                 return null;
 
-            var notification = await FindAsyncWhere(item => item.InfoId == comment.RateId);
+            var notification = await GetAsyncWhere(item => item.InfoId == comment.RateId);
             if (notification == null)
             {
                 // create new
@@ -56,7 +56,7 @@ namespace ECommerce.Application.Repositories.Notification
         }
         public async Task<Data.Models.Notification> CreateLikeDislikeNotiAsync(Rate comment)
         {
-            var notification = await FindAsyncWhere(item => item.InfoId == comment.RateId && item.TypeId == (int)Enums.NotificationType.Like);
+            var notification = await GetAsyncWhere(item => item.InfoId == comment.RateId && item.TypeId == (int)Enums.NotificationType.Like);
             var userNames = await _DbContext.Interests
                         .Where(item => item.RateId == comment.RateId && item.Liked == true)
                         .Select(item => item.User.UserFullName)
@@ -148,7 +148,7 @@ namespace ECommerce.Application.Repositories.Notification
         }
         public async Task<bool> RemoveByIdAsync(int id = 0)
         {
-            var entity = await FindAsyncWhere(item => item.Id == id);
+            var entity = await GetAsyncWhere(item => item.Id == id);
             Remove(entity);
             return true;
         }

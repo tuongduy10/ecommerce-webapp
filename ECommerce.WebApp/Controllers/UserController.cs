@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using ECommerce.WebApp.Utils;
 using ECommerce.Application.Services.User.Dtos;
+using UserUpdateRequest = ECommerce.Application.Services.User.Dtos.UserUpdateRequest;
 
 namespace ECommerce.WebApp.Controllers
 {
@@ -39,9 +40,16 @@ namespace ECommerce.WebApp.Controllers
             _userService = userService;
             _appSetting = optionsMonitor.CurrentValue;
         }
-
-        [AllowAnonymous]
+        [HttpPost("user-list")]
+        public async Task<IActionResult> getUserPagingList(UserGetRequest request)
+        {
+            var result = await _userService.getUserPagingList(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(SignInRequest request)
         {
             var result = await _userService.ValidateUser(request);
@@ -58,9 +66,8 @@ namespace ECommerce.WebApp.Controllers
                 Data = GenerateToken(result.Data)
             });
         }
-        [AllowAnonymous]
         [HttpPost("info")]
-        public IActionResult UserInfo()
+        public async Task<IActionResult> UserInfo()
         {
             try
             {
@@ -69,20 +76,17 @@ namespace ECommerce.WebApp.Controllers
                     return Unauthorized();
 
                 var userClaims = this.DecodeToken(token).Claims;
-                var user = new UserModel()
-                {
-                    id = Int32.Parse(userClaims.FirstOrDefault(claim => claim.Type == "id").Value),
-                    fullName = userClaims.FirstOrDefault(claim => claim.Type == "fullName").Value,
-                    phone = userClaims.FirstOrDefault(claim => claim.Type == "phone").Value
-                };
-                return Ok(new SuccessResponse<UserModel>("success", user));
+                int id = Int32.Parse(userClaims.FirstOrDefault(claim => claim.Type == "id").Value);
+                var result = await _userService.GetUser(id);
+                if (!result.isSucceed)
+                    return BadRequest(result);
+                return Ok((UserModel)result.Data);
             }
             catch (Exception error)
             {
                 return BadRequest(error.Message);
             }
         }
-        [AllowAnonymous]
         [HttpGet("shops")]
         public async Task<IActionResult> GetShops()
         {
@@ -91,7 +95,31 @@ namespace ECommerce.WebApp.Controllers
                 return BadRequest(res);
             return Ok(res);
         }
-
+        [HttpPost("update-user")]
+        public async Task<IActionResult> UpdateUser(UserShopModel request)
+        {
+            var result = await _userService.UpdateUser(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
+        [HttpGet("get-user/{id}")]
+        public async Task<IActionResult> GetUser(int id)
+        {
+            var result = await _userService.GetUser(id);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
+        [HttpPost("update-status")]
+        public async Task<IActionResult> UpdateStatus(UserUpdateRequest request)
+        {
+            var result = await _userService.UpdateUserStatus(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
+        
         private string GenerateToken(UserModel user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();

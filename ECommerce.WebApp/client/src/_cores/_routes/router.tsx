@@ -7,6 +7,7 @@ import {
   BlogPage,
   ExamplePage,
   ProductListPage,
+  PaymentPage,
 } from "src/_pages";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import DefaultLayout from "src/_shares/_layouts/default-layout/default-layout.component";
@@ -16,7 +17,8 @@ import {
   Dashboard,
   ProductList,
   UserList,
-  ProductDetail
+  ProductDetail,
+  UserDetail
 } from "src/_pages/admin/components";
 import { PrivateRoute } from "./private-route";
 import { ADMIN_ROUTE_NAME, ROUTE_NAME } from "../_enums/route-config.enum";
@@ -31,8 +33,9 @@ const Router = () => {
         { path: ROUTE_NAME.HOME, element: <HomePage /> },
         { path: ROUTE_NAME.EXAMPLE, element: <ExamplePage /> },
         { path: ROUTE_NAME.LOGIN, element: <LoginPage /> },
-        { path: ROUTE_NAME.USER_PROFILE, element: <UserProfilePage /> },
+        { path: ROUTE_NAME.USER_PROFILE, element: <PrivateRoute><UserProfilePage /></PrivateRoute> },
         { path: ROUTE_NAME.CART, element: <CartPage /> },
+        { path: ROUTE_NAME.PAYMENT, element: <PaymentPage /> },
         { path: ROUTE_NAME.BLOG, element: <BlogPage /> },
         { path: ROUTE_NAME.PRODUCT_LIST, element: <ProductListPage /> },
         { path: ROUTE_NAME.PRODUCT_DETAIL, element: <ProductDetailPage /> },
@@ -40,52 +43,17 @@ const Router = () => {
     },
     { path: ADMIN_ROUTE_NAME.LOGIN, element: <Login /> },
     {
+      path: '',
       element: <AdminLayout />,
       children: [
-        { 
-          path: ADMIN_ROUTE_NAME.DASHBOARD, 
-          element: 
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-        },
-        { 
-          path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT, 
-          element: 
-            <PrivateRoute>
-              <ProductList />
-            </PrivateRoute>
-        },
-        { 
-          path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT_ADD, 
-          element: 
-            <PrivateRoute>
-              <ProductDetail />
-            </PrivateRoute>
-        },
-        { 
-          path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT_DETAIL, 
-          element: 
-            <PrivateRoute>
-              <ProductDetail />
-            </PrivateRoute>
-        },
-        { 
-          path: ADMIN_ROUTE_NAME.MANAGE_USER, 
-          element: 
-            <PrivateRoute>
-              <UserList />
-            </PrivateRoute>
-        },
-        { 
-          path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT, 
-          element: 
-            <PrivateRoute>
-              <ProductList />
-            </PrivateRoute>
-        }
+        { path: ADMIN_ROUTE_NAME.DASHBOARD, element: <PrivateRoute><Dashboard /></PrivateRoute> },
+        { path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT, element: <PrivateRoute><ProductList /></PrivateRoute> },
+        { path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT_ADD, element: <PrivateRoute><ProductDetail /></PrivateRoute> },
+        { path: ADMIN_ROUTE_NAME.MANAGE_PRODUCT_DETAIL, element: <PrivateRoute><ProductDetail /></PrivateRoute> },
+        { path: ADMIN_ROUTE_NAME.MANAGE_USER, element: <PrivateRoute><UserList /></PrivateRoute> },
+        { path: ADMIN_ROUTE_NAME.MANAGE_USER_DETAIL, element: <PrivateRoute><UserDetail /></PrivateRoute> },
       ],
-    }
+    },
   ]);
 
   return <RouterProvider router={browserRoutes} />;

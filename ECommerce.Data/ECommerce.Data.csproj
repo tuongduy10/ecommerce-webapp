@@ -1,8 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20231223103656_Update_User_Address.cs" />
+    <Compile Remove="Migrations\20231223103656_Update_User_Address.Designer.cs" />
+    <Compile Remove="Migrations\20231223103854_InitialCreate.cs" />
+    <Compile Remove="Migrations\20231223103854_InitialCreate.Designer.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.0">
