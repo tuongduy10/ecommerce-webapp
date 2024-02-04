@@ -19,6 +19,7 @@ using ECommerce.Application.BaseServices.Shop.Dtos;
 using ECommerce.Application.Services.Product.Dtos;
 using ECommerce.Data.Models.Common;
 using ECommerce.Application.Enums;
+using UserUpdateRequest = ECommerce.Application.Services.User.Dtos.UserUpdateRequest;
 
 namespace ECommerce.Application.Services.User
 {
@@ -165,6 +166,23 @@ namespace ECommerce.Application.Services.User
             catch (Exception error)
             {
                 return new ApiFailResponse(error.ToString());
+            }
+        }
+        public async Task<Response<Data.Models.User>> UpdateUserStatus(UserUpdateRequest request)
+        {
+            try
+            {
+                var user = await _userRepo.GetAsyncWhere(_ => _.UserId == request.id);
+                if (user == null)
+                    return new FailResponse<Data.Models.User>("Không tìm thấy người dùng");
+                user.Status = request.status;
+                _userRepo.Update(user);
+                await _userRepo.SaveChangesAsync();
+                return new SuccessResponse<Data.Models.User>(user);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<Data.Models.User>(error.Message);
             }
         }
         public async Task<Response<UserGetModel>> UpdateOnlineStatus(int _userId, bool _isOnline)
@@ -315,7 +333,7 @@ namespace ECommerce.Application.Services.User
                 return new FailResponse<List<ShopModel>>(error.Message);
             }
         }
-        public async Task<Response<UserShopModel>> SaveSeller(UserShopModel request)
+        public async Task<Response<UserShopModel>> UpdateUser(UserShopModel request)
         {
             try
             {
@@ -359,10 +377,11 @@ namespace ECommerce.Application.Services.User
                 seller.UserFullName = request.fullName.Trim();
                 seller.UserAddress = request.address.Trim();
                 seller.UserPhone = phonenumber;
-                seller.Password = request.password.Trim();
                 seller.IsOnline = false;
                 seller.LastOnline = DateTime.Now;
                 seller.IsSystemAccount = true;
+                if (!string.IsNullOrEmpty(request.password) && !string.IsNullOrEmpty(request.rePassword))
+                    seller.Password = request.password.Trim();
 
                 if (request.id == -1) // Add
                     _userRepo.AddAsync(seller).Wait();

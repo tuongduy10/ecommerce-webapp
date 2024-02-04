@@ -55,13 +55,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\rates\" />
-    <Folder Include="wwwroot\lib\bootstrap\" />
-    <Folder Include="wwwroot\lib\bootstrap\dist\js\" />
-    <Folder Include="wwwroot\lib\jquery-validation-unobtrusive\" />
-    <Folder Include="wwwroot\lib\jquery-validation\" />
-    <Folder Include="wwwroot\lib\jquery-validation\dist\" />
-    <Folder Include="wwwroot\lib\jquery\" />
-    <Folder Include="wwwroot\lib\jquery\dist\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -97,7 +90,6 @@
     <None Include="wwwroot\images\icon\smartphone.svg" />
     <None Include="wwwroot\images\icon\user.svg" />
     <None Include="wwwroot\images\icon\x.svg" />
-    <None Include="wwwroot\js\main\main.js" />
   </ItemGroup>
 
 </Project>

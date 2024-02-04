@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using ECommerce.WebApp.Utils;
 using ECommerce.Application.Services.User.Dtos;
+using UserUpdateRequest = ECommerce.Application.Services.User.Dtos.UserUpdateRequest;
 
 namespace ECommerce.WebApp.Controllers
 {
@@ -94,10 +95,10 @@ namespace ECommerce.WebApp.Controllers
                 return BadRequest(res);
             return Ok(res);
         }
-        [HttpPost("save-seller")]
-        public async Task<IActionResult> SaveSeller(UserShopModel request)
+        [HttpPost("update-user")]
+        public async Task<IActionResult> UpdateUser(UserShopModel request)
         {
-            var result = await _userService.SaveSeller(request);
+            var result = await _userService.UpdateUser(request);
             if (!result.isSucceed)
                 return BadRequest(result);
             return Ok(result);
@@ -110,6 +111,15 @@ namespace ECommerce.WebApp.Controllers
                 return BadRequest(result);
             return Ok(result);
         }
+        [HttpPost("update-status")]
+        public async Task<IActionResult> UpdateStatus(UserUpdateRequest request)
+        {
+            var result = await _userService.UpdateUserStatus(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
+        
         private string GenerateToken(UserModel user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();

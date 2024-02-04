@@ -44,6 +44,11 @@ import { ReactComponent as ThumbsDownIcon } from "src/_shares/_assets/_icons/thu
 import { ReactComponent as PhoneIcon } from "src/_shares/_assets/_icons/phone.svg";
 import { ReactComponent as StarIcon } from "src/_shares/_assets/_icons/star.svg";
 import { ReactComponent as StarFilledIcon } from "src/_shares/_assets/_icons/star-filled.svg";
+import { ReactComponent as BellIcon } from "src/_shares/_assets/_icons/bell.svg";
+import { ReactComponent as InfoIcon } from "src/_shares/_assets/_icons/info.svg";
+import { ReactComponent as ListIcon } from "src/_shares/_assets/_icons/list.svg";
+import { ReactComponent as Edit3Icon } from "src/_shares/_assets/_icons/edit-3.svg";
+import { ReactComponent as LogOutIcon } from "src/_shares/_assets/_icons/log-out.svg";
 
 const MuiIcon = (props: any) => {
   const { name } = props;
@@ -141,7 +146,16 @@ const MuiIcon = (props: any) => {
       return <StarIcon {...props} />;
     case ICON_NAME.FEATHER.STAR_FILLED:
       return <StarFilledIcon {...props} />;
-
+    case ICON_NAME.FEATHER.BELL:
+      return <BellIcon {...props} />
+    case ICON_NAME.FEATHER.INFO:
+      return <InfoIcon {...props} />
+    case ICON_NAME.FEATHER.LIST:
+      return <ListIcon {...props} />
+    case ICON_NAME.FEATHER.EDIT_3:
+      return <Edit3Icon {...props} />
+    case ICON_NAME.FEATHER.LOG_OUT:
+      return <LogOutIcon {...props} />
     default:
       return <></>;
   }

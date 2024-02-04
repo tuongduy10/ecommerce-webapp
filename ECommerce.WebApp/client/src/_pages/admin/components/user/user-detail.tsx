@@ -75,12 +75,14 @@ export default function UserDetail() {
     const onChangeCity = (province: ICity | null) => {
         const provinceCode = province?.code ?? null;
         let _dataDetail = dataDetail;
-        _dataDetail['cityCode'] = provinceCode;
+        _dataDetail['userCityCode'] = provinceCode;
         setDataDetail(_dataDetail);
         if (!provinceCode) {
-            _dataDetail['districtCode'] = "";
+            _dataDetail['userDistrictCode'] = "";
+            _dataDetail['userWardCode'] = "";
             setDataDetail(_dataDetail);
             setDistricts([]);
+            setWards([]);
         } else {
             getDistricts(provinceCode);
         }
@@ -97,10 +99,10 @@ export default function UserDetail() {
     const onChangeDistrict = (district: IDistrict | null) => {
         const districtCode = district?.code ?? "";
         let _dataDetail = dataDetail;
-        _dataDetail['districtCode'] = districtCode;
+        _dataDetail['userDistrictCode'] = districtCode;
         setDataDetail({ ...dataDetail, userDistrictCode: districtCode });
         if (!districtCode) {
-            _dataDetail["wardCode"] = ""
+            _dataDetail["userWardCode"] = ""
             setDataDetail(_dataDetail);
             setWards([]);
             return;
@@ -118,7 +120,7 @@ export default function UserDetail() {
 
     const onChangeWard = (ward: IWard | null) => {
         const wardCode = ward?.code ?? "";
-        setDataDetail({ ...dataDetail, wardCode: wardCode });
+        setDataDetail({ ...dataDetail, userWardCode: wardCode });
     }
 
     const onChangeFieldValue = (field: string, value: any) => {
@@ -148,7 +150,7 @@ export default function UserDetail() {
             rePassword: form.get('rePassword'),
             shopIds: dataDetail.shopIds ?? [],
         }
-        UserService.saveSeller(_param).then(res => {
+        UserService.updateUser(_param).then(res => {
             backToList();
         }).catch(error => {
             console.log(error);

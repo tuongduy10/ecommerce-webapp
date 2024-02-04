@@ -31,7 +31,8 @@ namespace ECommerce.Application.Services.User.Dtos
                 fullName = data.UserFullName,
                 cityCode = data.UserCityCode,
                 districtCode = data.UserDistrictCode,
-                phone = data.UserDistrictCode,
+                wardCode = data.UserWardCode,
+                phone = data.UserPhone,
                 address = data.UserAddress,
                 mail = data.UserMail,
                 shops = data.Shops

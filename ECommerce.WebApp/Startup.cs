@@ -63,6 +63,9 @@ namespace ECommerce.WebApp
             var secretKey = Configuration["AppSettings:SecretKey"];
             var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
 
+            string connSecretKey = Configuration["AppSettings:ConnectionSecretKey"];
+            string connStr = Configuration.GetConnectionString("ECommerceDB");
+
             services.AddDbContext<ECommerceContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("ECommerceDB")));
             services.AddControllersWithViews();
@@ -168,18 +171,18 @@ namespace ECommerce.WebApp
             app.UseMiddleware<NoCacheMiddleware>();
             app.UseCors(myCorsPolicy); ;
 
-            app.UseEndpoints(routes =>
-            {
-                routes.MapHub<ChatHub>("/chatHub");
-                routes.MapHub<ClientHub>("/client-hub");
-                routes.MapHub<CommonHub>("/common-hub");
-            });
+            //app.UseEndpoints(routes =>
+            //{
+            //    routes.MapHub<ChatHub>("/chatHub");
+            //    routes.MapHub<ClientHub>("/client-hub");
+            //    routes.MapHub<CommonHub>("/common-hub");
+            //});
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller}/{action=Index}/{id?}");
             });
             app.UseSpa(spa =>
             {

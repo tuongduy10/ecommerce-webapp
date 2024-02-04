@@ -3,23 +3,65 @@ import { useDispatch } from "react-redux";
 import { ROUTE_NAME } from "src/_cores/_enums/route-config.enum";
 import { ICity, IDistrict, IWard } from "src/_cores/_interfaces";
 import CommonService from "src/_cores/_services/common.service";
+import UserService from "src/_cores/_services/user.service";
 import { useUserStore } from "src/_cores/_store/root-store";
 import { MuiIcon, WebDirectional } from "src/_shares/_components";
 import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
 
+const PROFILE_MENU_ITEMS = [
+    {
+        code: 'notifications',
+        name: 'Thông báo',
+        icon: ICON_NAME.FEATHER.BELL
+    },
+    {
+        code: 'userInfo',
+        name: 'Thông tin cá nhân',
+        icon: ICON_NAME.FEATHER.INFO
+    },
+    {
+        code: 'orderHistory',
+        name: 'Lịch sử đơn hàng',
+        icon: ICON_NAME.FEATHER.LIST
+    },
+    {
+        code: 'changePassword',
+        name: 'Đổi mật khẩu',
+        icon: ICON_NAME.FEATHER.EDIT_3
+    },
+    {
+        code: 'logout',
+        name: 'Đăng xuất',
+        icon: ICON_NAME.FEATHER.LOG_OUT
+    },
+]
+
 const UserProfilePage = () => {
+    const [selectedMenu, setSelectedMenu] = useState('userInfo');
     const [cities, setCitites] = useState<ICity[]>([]);
     const [districts, setDistricts] = useState<IDistrict[]>([]);
     const [wards, setWards] = useState<IWard[]>([]);
-    const [dataDetail, setDataDetail] = useState<{ [key: string]: any }>();
+    const [dataDetail, setDataDetail] = useState<{ [key: string]: any }>({});
     const userStore = useUserStore();
     const dispatch = useDispatch();
 
     useEffect(() => {
         getCities();
-        setDataDetail(userStore.userApp);
-        console.log(userStore.userApp)
+        getUserInfo();
     }, []);
+
+    const getUserInfo = async () => {
+        const result = await UserService.getUserInfo() as any;
+        if (result) {
+            setDataDetail(result);
+            if (result.cityCode) {
+                getDistricts(result.cityCode);
+            }
+            if (result.wardCode) {
+                getWards(result.districtCode);
+            }
+        }
+    }
 
     const getCities = () => {
         CommonService.getCities().then(res => {
@@ -30,6 +72,13 @@ const UserProfilePage = () => {
     }
 
     const onChangeCity = (code: string) => {
+        const _dataDetail = {
+            ...dataDetail,
+            cityCode: code,
+            districtCode: '',
+            wardCode: ''
+        }
+        setDataDetail(_dataDetail);
         getDistricts(code);
     }
 
@@ -42,6 +91,12 @@ const UserProfilePage = () => {
     }
 
     const onChangeDistrict = (code: string) => {
+        const _dataDetail = {
+            ...dataDetail,
+            districtCode: code,
+            wardCode: ''
+        }
+        setDataDetail(_dataDetail);
         getWards(code);
     }
 
@@ -54,7 +109,22 @@ const UserProfilePage = () => {
     }
 
     const onChangeWard = (code: string) => {
+        onChangeFieldValue('wardCode', code);
+    }
 
+    const onChangeFieldValue = (field: string, value: any) => {
+        setDataDetail({ ...dataDetail, [field]: value });
+    }
+
+    const update = async () => {
+        const _param = {
+            ...dataDetail,
+            email: dataDetail['mail']
+        }
+        const res = await UserService.updateUser(_param) as any;
+        if (res.isSucceed) {
+            alert("cập nhật thành công");
+        }
     }
 
     return (
@@ -69,95 +139,29 @@ const UserProfilePage = () => {
                             <div className="tabs-control">
                                 <div className="control-selectlist">
                                     <select name="" id="" className="w-full">
-                                        <option value="" selected>Thông báo</option>
-                                        <option value="" selected>Thông tin cá nhân</option>
-                                        <option value="" selected>Lịch sử đơn hàng</option>
-                                        <option value="" selected>Đổi mật khẩu</option>
-                                        <option value="" hidden>Đăng ký bán hàng</option>
-                                        <option value="">Đăng xuất</option>
+                                        {PROFILE_MENU_ITEMS.map(_ => (
+                                            <option key={_.code} value="">{_.name}</option>
+                                        ))}
                                     </select>
                                     <span className="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
-                                            stroke-linecap="round" stroke-linejoin="round"
-                                            className="feather feather-chevron-down">
-                                            <polyline points="6 9 12 15 18 9"></polyline>
-                                        </svg>
+                                        <MuiIcon name={ICON_NAME.FEATHER.CHEVRON_DOWN} />
                                     </span>
                                 </div>
                                 <ul className="control-list">
-                                    <li className="mb-2">
-                                        <a className="flex items-center active" href="/"
-                                            style={{ whiteSpace: 'nowrap' }}>
-                                            <span className="mr-2" style={{ height: '24px' }}>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" className="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                                                <span className="point-red-quantity" style={{ top: '12px', left: '30px' }}>1</span>
-                                            </span>
-                                            Thông báo
-                                        </a>
-                                    </li>
-                                    <li className="mb-2">
-                                        <a className="flex items-center"
-                                            href="/"
-                                            style={{ whiteSpace: 'nowrap' }}>
-                                            <span className="mr-2" style={{ height: '24px' }}>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    className="feather feather-info">
-                                                    <circle cx="12" cy="12" r="10"></circle>
-                                                    <line x1="12" y1="16" x2="12" y2="12"></line>
-                                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                                                </svg>
-                                            </span>
-                                            Thông tin cá nhân
-                                        </a>
-                                    </li>
-                                    <li className="mb-2">
-                                        <a className="flex items-center" href="/"
-                                            style={{ whiteSpace: 'nowrap' }}>
-                                            <span className="mr-2" style={{ height: '24px' }}>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    className="feather feather-list">
-                                                    <line x1="8" y1="6" x2="21" y2="6"></line>
-                                                    <line x1="8" y1="12" x2="21" y2="12"></line>
-                                                    <line x1="8" y1="18" x2="21" y2="18"></line>
-                                                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                                                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                                                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                                                </svg>
-                                            </span>
-                                            Lịch sử đơn hàng
-                                        </a>
-                                    </li>
-                                    <li className="mb-2">
-                                        <a className="flex items-center"
-                                            href="/"
-                                            style={{ whiteSpace: 'nowrap' }}>
-                                            <span className="mr-2 mb-0" style={{ height: '24px' }}>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                                    className="feather feather-edit-3">
-                                                    <path d="M12 20h9"></path>
-                                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z">
-                                                    </path>
-                                                </svg>
-                                            </span>
-                                            Đổi mật khẩu
-                                        </a>
-                                    </li>
-                                    <li className="mb-2">
-                                        <a className="flex items-center" href="/"
-                                            style={{ whiteSpace: 'nowrap' }}>
-                                            <span className="mr-2 mb-0" style={{ height: '24px' }}>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" className="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                                            </span>
-                                            Đăng xuất
-                                        </a>
-                                    </li>
+                                    {PROFILE_MENU_ITEMS.map(_ => (
+                                        <li key={_.code} className="mb-2">
+                                            <a className={`flex items-center ${_.code === selectedMenu && 'active'}`} href="/"
+                                                style={{ whiteSpace: 'nowrap' }}>
+                                                <span className="mr-2 relative" style={{ height: '24px' }}>
+                                                    <MuiIcon name={_.icon} />
+                                                    {_.code === 'notifications' && (
+                                                        <span className="point-red-quantity" style={{ top: '12px', left: '20px' }}>1</span>
+                                                    )}
+                                                </span>
+                                                {_.name}
+                                            </a>
+                                        </li>
+                                    ))}
                                     <hr />
                                 </ul>
                             </div>
@@ -171,29 +175,29 @@ const UserProfilePage = () => {
                                     <div className="user__info-form mx-auto">
                                         <div className="form-basic">
                                             <label>Họ tên</label>
-                                            <input type="text" className="w-full" value={dataDetail ? dataDetail['fullName'] : ""} />
+                                            <input type="text" className="w-full" value={dataDetail ? dataDetail['fullName'] : ""} onChange={(e) => onChangeFieldValue('fullName', e.target.value)} />
                                         </div>
                                         <div className="form-basic">
                                             <label>Số điện thoại</label>
                                             <div className="flex items-center">
-                                                <input type="tel" className="mr-2 w-full" value="0397974403" disabled />
+                                                <input type="tel" className="mr-2 w-full" value={dataDetail ? dataDetail['phone'] : ""} disabled />
                                                 <a href="/" className="" style={{ whiteSpace: 'nowrap', cursor: 'pointer' }}><u>Thay đổi</u></a>
                                             </div>
                                         </div>
                                         <div className="form-basic">
                                             <label>Email</label>
-                                            <input type="text" className="w-full" />
+                                            <input type="text" className="w-full" value={dataDetail ? dataDetail['mail'] : ""} onChange={(e) => onChangeFieldValue('mail', e.target.value)} />
                                         </div>
                                         <div className="form-basic">
                                             <label>Địa chỉ</label>
-                                            <input type="text" className="w-full mb-2" value="" />
+                                            <input type="text" className="w-full mb-2" value={dataDetail ? dataDetail['address'] : ""} />
                                             <div className="flex flex-wrap">
                                                 <div className="select-form w-full mb-2">
                                                     <select className="w-full" onChange={e => onChangeCity(e.target.value)}>
-                                                        <option value="" disabled selected>Tỉnh/Thành...</option>
+                                                        <option value="" disabled selected={!dataDetail || !dataDetail['cityCode']}>Tỉnh/Thành...</option>
                                                         {cities.length > 0 && (
                                                             cities.map((city) => (
-                                                                <option key={city.code} value={city.code}>{city.name}</option>
+                                                                <option key={city.code} value={city.code} selected={city.code === (dataDetail ? dataDetail['cityCode'] : "")}>{city.name}</option>
                                                             ))
                                                         )}
                                                     </select>
@@ -203,10 +207,10 @@ const UserProfilePage = () => {
                                                 </div>
                                                 <div className="select-form w-full mb-2">
                                                     <select className="user-district w-full" onChange={e => onChangeDistrict(e.target.value)}>
-                                                        <option value="" disabled selected>Quận/Huyện...</option>
+                                                        <option value="" disabled selected={!dataDetail || !dataDetail['districtCode']}>Quận/Huyện...</option>
                                                         {districts.length > 0 && (
                                                             districts.map((item) => (
-                                                                <option key={item.code} value={item.code}>{item.name}</option>
+                                                                <option key={item.code} value={item.code} selected={item.code === (dataDetail ? dataDetail['districtCode'] : "")}>{item.name}</option>
                                                             ))
                                                         )}
                                                     </select>
@@ -216,10 +220,10 @@ const UserProfilePage = () => {
                                                 </div>
                                                 <div className="select-form w-full mb-2">
                                                     <select className="user-ward w-full" onChange={e => onChangeWard(e.target.value)}>
-                                                        <option value="" disabled selected>Phường/Xã...</option>
+                                                        <option value="" disabled selected={!dataDetail || !dataDetail['wardCode']}>Phường/Xã...</option>
                                                         {wards.length > 0 && (
                                                             wards.map((item) => (
-                                                                <option key={item.code} value={item.code}>{item.name}</option>
+                                                                <option key={item.code} value={item.code} selected={item.code === (dataDetail ? dataDetail['wardCode'] : "")}>{item.name}</option>
                                                             ))
                                                         )}
                                                     </select>
@@ -230,7 +234,7 @@ const UserProfilePage = () => {
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <button className="update-userprofile btn-black">Cập nhật</button>
+                                            <button className="update-userprofile btn-black" onClick={update}>Cập nhật</button>
                                         </div>
                                     </div>
                                 </div>

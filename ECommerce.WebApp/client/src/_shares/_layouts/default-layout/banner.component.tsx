@@ -22,9 +22,9 @@ const Banner = () => {
 
   useEffect(() => {
     const hiddenPath = [
-      '/v2/product-detail',
-      '/v2/cart',
-      '/v2/login',
+      '/product-detail',
+      '/cart',
+      '/login',
     ];
     if (hiddenPath.includes(location.pathname)) {
       setHideBanner(true);

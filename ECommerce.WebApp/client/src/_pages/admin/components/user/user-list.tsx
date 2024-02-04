@@ -17,8 +17,13 @@ import { useNavigate } from "react-router-dom";
 import { ADMIN_ROUTE_NAME } from "src/_cores/_enums/route-config.enum";
 import { ITableHeader } from "src/_shares/_components/data-table/data-table";
 
-function Row(props: any) {
-    const { rowData } = props;
+type TableRowProps = {
+    rowData: any,
+    onUpdateStatus: (id: number, status: boolean) => void,
+}
+
+function Row(props: TableRowProps) {
+    const { rowData, onUpdateStatus } = props;
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [delAnchorEl, setDelAnchorEl] = useState<null | HTMLElement>(null);
@@ -33,10 +38,6 @@ function Row(props: any) {
     };
 
     const getUserStatus = (status: boolean) => UserHelper.getUserStatus(status);
-
-    const updateStatus = (id: number, status: boolean) => {
-
-    }
 
     const deleteUser = (id: number) => {
 
@@ -82,14 +83,14 @@ function Row(props: any) {
             </TableCell>
             <TableCell align="center">
                 <Button
-                    onClick={() => updateStatus(rowData.id, true)}
+                    onClick={() => onUpdateStatus(rowData.userId, true)}
                     variant="outlined"
                     color="success"
                 >
                     Hiện
                 </Button>
                 <Button
-                    onClick={() => updateStatus(rowData.id, false)}
+                    onClick={() => onUpdateStatus(rowData.userId, false)}
                 >
                     Ẩn
                 </Button>
@@ -123,16 +124,16 @@ export default function UserList() {
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
+        getData();
+    }, []);
+
+    const getData = () => {
         const param: IUserGetParam = {
             keyword: "",
             userId: -1,
             pageIndex: 1,
             pageSize: 50,
         }
-        getData(param);
-    }, []);
-
-    const getData = (param: IUserGetParam) => {
         UserService.getUserList(param).then((res: any) => {
             if (res.isSucceed) {
                 setUsers(res.data.items);
@@ -140,6 +141,17 @@ export default function UserList() {
         }).catch(error => {
             console.log(error);
         })
+    }
+
+    const updateStatus = async (id: number, status: boolean) => {
+        const params = {
+            id: id,
+            status: status
+        }
+        const res = await UserService.updateUserStatus(params);
+        if (res) {
+            getData();
+        }
     }
 
     const header: ITableHeader[] = [
@@ -169,6 +181,7 @@ export default function UserList() {
                         <Row
                             key={`row-${item.userId}`}
                             rowData={item}
+                            onUpdateStatus={(id, status) => updateStatus(id, status)}
                         />
                     ))}
                 </TableBody>

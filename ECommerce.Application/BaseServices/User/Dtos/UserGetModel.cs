@@ -10,7 +10,7 @@ namespace ECommerce.Application.BaseServices.User.Dtos
         public int UserId { get; set; }
         public string UserMail { get; set; }
         public string UserFullName { get; set; }
-        public DateTime UserJoinDate { get; set; } = new DateTime();
+        public DateTime? UserJoinDate { get; set; }
         public string UserAddress { get; set; }
         public string UserWardCode { get; set; }
         public string UserDistrictCode { get; set; }
@@ -34,7 +34,7 @@ namespace ECommerce.Application.BaseServices.User.Dtos
                 UserMail = data.UserMail,
                 UserFullName = data.UserFullName,
                 UserPhone = data.UserPhone,
-                UserJoinDate = (DateTime)data.UserJoinDate,
+                UserJoinDate = data.UserJoinDate != null ? data.UserJoinDate : null,
                 UserAddress = data.UserAddress,
                 UserDistrictCode = data.UserDistrictCode,
                 UserWardCode = data.UserWardCode,
@@ -42,9 +42,9 @@ namespace ECommerce.Application.BaseServices.User.Dtos
                 UserCityName = data.UserCityName,
                 UserDistrictName = data.UserDistrictName,
                 UserWardName = data.UserWardName,
-                IsOnline = (bool)data.IsOnline,
-                isSystemAccount = (bool)data.IsSystemAccount,
-                Status = (bool)data.Status,
+                IsOnline = data.IsOnline != null ? (bool)data.IsOnline : false,
+                isSystemAccount = data.IsSystemAccount != null ? (bool)data.IsSystemAccount : false,
+                Status = data.Status != null ? (bool)data.Status : false,
                 Shops = data.Shops.Select(_ => new Data.Models.Shop
                 {
                     ShopId = _.ShopId,

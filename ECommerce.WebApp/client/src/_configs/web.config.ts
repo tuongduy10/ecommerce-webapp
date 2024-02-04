@@ -1,7 +1,7 @@
 import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum"
 
 export const HEADER_MENU = [
-    { path: '/home', name: 'Trang chủ' },
+    { path: '/', name: 'Trang chủ' },
     { path: '/hot-sale', name: 'Hot sale' },
     { path: '/new-products', name: 'Sản phẩm mới' },
     { path: '/brands', name: 'Thương hiệu' },

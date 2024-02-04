@@ -48,5 +48,10 @@ export const ICON_NAME = {
     THUMBS_UP: 'THUMBS_UP',
     THUMBS_DOWN: 'THUMBS_DOWN',
     PHONE_PRODUCT_DETAIL: 'PHONE_PRODUCT_DETAIL',
+    BELL: 'BELL',
+    INFO: 'INFO',
+    LIST: 'LIST',
+    EDIT_3: 'EDIT_3',
+    LOG_OUT: 'LOG_OUT',
   },
 };

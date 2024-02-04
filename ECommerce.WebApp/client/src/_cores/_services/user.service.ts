@@ -39,7 +39,11 @@ export default class UserService {
     return api.post(`/user/save`, param);
   }
 
-  public static saveSeller(param: any) {
-    return api.post(`/user/save-seller`, param);
+  public static updateUser(param: any) {
+    return api.post(`/user/update-user`, param);
+  }
+
+  public static updateUserStatus(param: any) {
+    return api.post(`/user/update-status`, param);
   }
 }

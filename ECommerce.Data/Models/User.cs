@@ -31,6 +31,7 @@ namespace ECommerce.Data.Models
         public string UserDistrictName { get; set; }
         public string UserCityName { get; set; }
         public string UserPhone { get; set; }
+        // public string UserName { get; set; }
         public string Password { get; set; }
         public bool? Status { get; set; }
         public bool? IsSystemAccount { get; set; }
