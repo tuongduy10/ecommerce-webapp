@@ -1,5 +1,5 @@
-// const APP_URL = 'https://hihichi.com';
-const APP_URL = 'https://localhost:44330';
+const APP_URL = 'https://hihichi.com';
+// const APP_URL = 'https://localhost:44330';
 
 export const ENV = {
     CD_START: `cd ECommerce.WebApp/client && npm start`,
