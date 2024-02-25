@@ -1,20 +1,28 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { cloneDeep } from "lodash";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { ENV } from "src/_configs/enviroment.config";
-import { useProductStore } from "src/_cores/_store/root-store";
+import { INewProductInCart } from "src/_cores/_interfaces/product.interface";
+import { addToCart } from "src/_cores/_reducers/cart.reducer";
+import { useCartStore, useProductStore } from "src/_cores/_store/root-store";
 import { MuiIcon } from "src/_shares/_components";
 import FullScreenDialog from "src/_shares/_components/dialog/fullscreen-dialog";
 import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
 import { ProductHelper } from "src/_shares/_helpers/product-helper";
 
-/* eslint-disable jsx-a11y/anchor-is-valid */
+const PRICE_TYPE = {
+  'available': 'Có sẵn',
+  'preOrder': 'Đặt trước',
+}
 const ProductDetailInfo = () => {
   const dispatch = useDispatch();
   const productStore = useProductStore();
+  const cartStore = useCartStore();
   const productDetail = productStore.productDetail;
 
+  const [selectedPriceType, setSelectedPriceType] = useState('');
   const [quanity, setQuanity] = useState(1);
   const [options, setOptions] = useState<{ id: any, value: any }[]>([]);
   const [isShowCodeDis, setShowCodeDis] = useState(false);
@@ -33,9 +41,8 @@ const ProductDetailInfo = () => {
     const idx = options.findIndex((_: any) => _.id === option.id);
     if (idx > -1) {
       setOptions(prevOptions => {
-        const updatedOptions = [...prevOptions];
-        updatedOptions[idx].value = id;
-        return updatedOptions;
+        [...prevOptions][idx].value = id;
+        return [...prevOptions];
       });
     } else {
       const newOption = {
@@ -46,21 +53,57 @@ const ProductDetailInfo = () => {
     }
   }
 
-  const addToCart = () => {
-    const _p = {
-      qty: quanity,
-      options: options
-    }
-    console.log(_p)
+  const handleOnChangePriceType = (event: any) => {
+    setSelectedPriceType(event.target.value);
   }
 
-  const renderPrice = (type: string, price: number, discount?: number) => {
+  const handleAddToCart = () => {
+    if (productDetail) {
+      const { id, name, priceAvailable, pricePreOrder, discountAvailable, discountPreOrder, imagePaths, shop } = productDetail;
+
+      let price = null;
+      let discount = null;
+      if (selectedPriceType === 'available') {
+        price = priceAvailable;
+        discount = discountAvailable;
+      } else if (selectedPriceType === 'preOrder') {
+        price = pricePreOrder;
+        discount = discountPreOrder;
+      }
+
+      const _options = cloneDeep(options).map((_: any) => {
+        const idx = productDetail.options.findIndex(o => o.id === _.id);
+        if (idx > -1) {
+          const valueIdx = productDetail.options[idx].values.findIndex(v => v.id === _.value);
+          if (valueIdx > -1) {
+            _.valueName = productDetail.options[idx].values[valueIdx].name;
+          }
+        }
+        return _;
+      });
+
+      const newProductInCart = {
+        id: id,
+        name: name,
+        shopName: shop?.name ?? '',
+        qty: quanity,
+        image: imagePaths[0],
+        price: price,
+        discount: discount,
+        priceType: selectedPriceType,
+        options: _options,
+      } as INewProductInCart;
+      dispatch(addToCart(newProductInCart));
+    }
+  };
+
+  const renderPrice = (type: 'available' | 'preOrder', price: number, discount?: number) => {
     return (
       <div className="option-price w-full flex mt-2 ">
         <div className="option-title">
-          <input className="form-check-input" type="radio" />
+          <input className="form-check-input" type="radio" value={type} onChange={handleOnChangePriceType} checked={selectedPriceType === type} />
           <label className="form-check-label">
-            {type}
+            {PRICE_TYPE[type]}
           </label>
         </div>
         <label className="form-check-label flex items-center">
@@ -255,16 +298,16 @@ const ProductDetailInfo = () => {
               {renderOptions()}
             </div>
             <div className="product__detail-price">
-              {productDetail.discountPercent && (
+              {productDetail.discountPercent > 0 && (
                 <span className="sales-value">Giảm {productDetail.discountPercent}%</span>
               )}
 
-              {productDetail.priceAvailable && (
-                renderPrice('Đặt trước', productDetail.priceAvailable, productDetail.discountAvailable)
+              {productDetail.priceAvailable > 0 && (
+                renderPrice('available', productDetail.priceAvailable, productDetail.discountAvailable)
               )}
 
-              {productDetail.pricePreOrder && (
-                renderPrice('Đặt trước', productDetail.priceAvailable, productDetail.discountAvailable)
+              {productDetail.pricePreOrder > 0 && (
+                renderPrice('preOrder', productDetail.pricePreOrder, productDetail.discountPreOrder)
               )}
 
               {/* Discount */}
@@ -321,7 +364,7 @@ const ProductDetailInfo = () => {
                     */}
 
               <div className="product__detail-buttons flex justify-between w-full mt-4">
-                <button className="btn-addtocart btn-black w-[49%] bg-[#333] text-[#fff]" onClick={addToCart}>
+                <button className="btn-addtocart btn-black w-[49%] bg-[#333] text-[#fff]" onClick={handleAddToCart}>
                   Thêm vào giỏ
                 </button>
                 <button className="btn-buynow btn-black w-[49%] bg-[#333] text-[#fff]">

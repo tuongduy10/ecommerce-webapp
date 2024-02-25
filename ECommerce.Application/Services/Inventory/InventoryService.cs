@@ -5,6 +5,7 @@ using ECommerce.Application.Services.Inventory.Dtos;
 using ECommerce.Application.Services.User.Dtos;
 using ECommerce.Data.Context;
 using ECommerce.Data.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ namespace ECommerce.Application.Services.Inventory
         private readonly IRepositoryBase<Data.Models.Option> _optionRepo;
         private readonly IRepositoryBase<Data.Models.OptionValue> _optionValueRepo;
         private readonly IRepositoryBase<Brand> _brandRepo;
+        private readonly IRepositoryBase<Category> _categoryRepo;
         private readonly IRepositoryBase<BrandCategory> _brandCategoryRepo;
         private readonly IRepositoryBase<ShopBrand> _shopBrandRepo;
         private readonly IRepositoryBase<SubCategory> _subCategoryRepo;
@@ -36,6 +38,8 @@ namespace ECommerce.Application.Services.Inventory
                 _productRepo = new RepositoryBase<Data.Models.Product>(_DbContext);
             if (_brandRepo == null)
                 _brandRepo = new RepositoryBase<Brand>(_DbContext);
+            if (_categoryRepo == null)
+                _categoryRepo = new RepositoryBase<Category>(_DbContext);
             if (_brandCategoryRepo == null)
                 _brandCategoryRepo = new RepositoryBase<BrandCategory>(_DbContext);
             if (_shopBrandRepo == null)
@@ -90,12 +94,11 @@ namespace ECommerce.Application.Services.Inventory
             try
             {
                 var shopId = request.shopId;
+                var categoryId = request.categoryId;
 
-                var query = shopId > -1
-                    ? _shopBrandRepo.Entity().Where(i => i.ShopId == request.shopId).Select(i => i.Brand)
-                    : _brandRepo.Entity();
-
-                var result = await query
+                var result = await _brandRepo.Queryable(_ =>
+                    (shopId == -1 || _.ShopBrands.Any(i => i.ShopId == shopId)) &&
+                    (categoryId == -1 || _.BrandCategories.Any(i => i.CategoryId == categoryId)),"")
                     .Select(i => new BrandModel
                     {
                         id = i.BrandId,
@@ -116,6 +119,20 @@ namespace ECommerce.Application.Services.Inventory
             catch (Exception error)
             {
                 return new FailResponse<List<BrandModel>>(error.Message);
+            }
+        }
+        public async Task<Response<List<CategoryModel>>> getCategories()
+        {
+            try
+            {
+                var res = (await _categoryRepo.ToListAsync())
+                    .Select(_ => (CategoryModel)_)
+                    .ToList();
+                return new SuccessResponse<List<CategoryModel>>(res);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<List<CategoryModel>>(error.Message);
             }
         }
         public async Task<Response<List<SubCategoryModel>>> getSubCategories(InventoryRequest request)

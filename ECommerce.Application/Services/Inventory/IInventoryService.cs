@@ -13,6 +13,7 @@ namespace ECommerce.Application.Services.Inventory
     {
         Task<Response<BrandModel>> getBrand(int brandId);
         Task<Response<List<BrandModel>>> getBrands(BrandGetRequest request);
+        Task<Response<List<CategoryModel>>> getCategories();
         Task<Response<List<SubCategoryModel>>> getSubCategories(InventoryRequest request);
         Task<Response<List<OptionModel>>> getProductOptions(InventoryRequest request);
         Task<Response<List<AttributeModel>>> getProductAttributes(InventoryRequest request);

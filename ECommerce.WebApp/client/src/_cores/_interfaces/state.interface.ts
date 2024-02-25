@@ -1,5 +1,5 @@
 import { IBrand, ICategory, ISubCategory } from "./inventory.interface";
-import { IProduct } from "./product.interface";
+import { IProduct, IProductInCart } from "./product.interface";
 
 export interface IAction {
   type: string;
@@ -53,4 +53,10 @@ export interface IProductInitState {
   },
   subCategories: ISubCategory[];
   [key: string]: any;
+}
+
+export interface ICartInitState {
+  productsInCart: IProductInCart[];
+  totalQty: number;
+  totalPrice: number;
 }

@@ -1,6 +1,6 @@
 export const ROUTE_PREFIX = '';
 export const ROUTE_NAME = {
-    HOME: ROUTE_PREFIX + '',
+    HOME: ROUTE_PREFIX + '/',
     LOGIN: ROUTE_PREFIX + '/login',
     PRODUCT_LIST: ROUTE_PREFIX + '/product-list',
     PRODUCT_DETAIL: ROUTE_PREFIX + '/product-detail',

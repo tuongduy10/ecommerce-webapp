@@ -2,6 +2,7 @@ import axios from "axios";
 import { ENV } from "src/_configs/enviroment.config";
 import SessionService from "../_services/session.service";
 import { ADMIN_ROUTE_NAME } from "../_enums/route-config.enum";
+import { useAuthStore } from "../_store/root-store";
 
 const api = axios.create({
   baseURL: ENV.API_URL,
@@ -45,7 +46,7 @@ api.interceptors.response.use(
     } else {
       console.error("Error:", error.message);
     }
-    return Promise.reject(error);
+    // return Promise.reject(error);
   }
 );
 

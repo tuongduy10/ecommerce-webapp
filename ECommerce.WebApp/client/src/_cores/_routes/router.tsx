@@ -28,7 +28,6 @@ const Router = () => {
     {
       path: "/",
       element: <DefaultLayout />,
-      errorElement: <NotFoundLayout />,
       children: [
         { path: ROUTE_NAME.HOME, element: <HomePage /> },
         { path: ROUTE_NAME.EXAMPLE, element: <ExamplePage /> },
