@@ -60,11 +60,10 @@ namespace ECommerce.WebApp
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            var secretKey = Configuration["AppSettings:SecretKey"];
-            var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
+        { 
+            string secretKey = Configuration["AppSettings:SecretKey"];
+            byte[] secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
 
-            string connSecretKey = Configuration["AppSettings:ConnectionSecretKey"];
             string connStr = EncryptHelper.DecryptString(Configuration.GetConnectionString("ECommerceDB"));
 
             services.AddDbContext<ECommerceContext>(options => options.UseSqlServer(connStr));

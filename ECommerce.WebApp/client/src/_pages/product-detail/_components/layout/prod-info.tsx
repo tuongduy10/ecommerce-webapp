@@ -1,10 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import { cloneDeep } from "lodash";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { ENV } from "src/_configs/enviroment.config";
 import { INewProductInCart } from "src/_cores/_interfaces/product.interface";
+import { showError, showSuccess, showWarning } from "src/_cores/_reducers/alert.reducer";
 import { addToCart } from "src/_cores/_reducers/cart.reducer";
 import { useCartStore, useProductStore } from "src/_cores/_store/root-store";
 import { MuiIcon } from "src/_shares/_components";
@@ -22,11 +23,25 @@ const ProductDetailInfo = () => {
   const cartStore = useCartStore();
   const productDetail = productStore.productDetail;
 
-  const [selectedPriceType, setSelectedPriceType] = useState('');
+  const [selectedPriceType, setSelectedPriceType] = useState<string>('');
   const [quanity, setQuanity] = useState(1);
   const [options, setOptions] = useState<{ id: any, value: any }[]>([]);
   const [isShowCodeDis, setShowCodeDis] = useState(false);
   const [openBrandDes, setOpenBrandDes] = useState(false);
+
+  useEffect(() => {
+    if (productDetail) {
+      const prices = [productDetail.priceAvailable, productDetail.pricePreOrder];
+      if (prices.some(_ => !_)) {
+        if (productDetail.priceAvailable) {
+          setSelectedPriceType('available');
+        }
+        if (productDetail.pricePreOrder) {
+          setSelectedPriceType('preOrder');
+        }
+      }
+    }
+  }, [productDetail]);
 
   const handleShowCodeDis = () => {
     setShowCodeDis(!isShowCodeDis);
@@ -82,6 +97,26 @@ const ProductDetailInfo = () => {
         return _;
       });
 
+      // Check options selection
+      if (productDetail.options.length > 0) {
+        const optionNames:string[] = [];
+        productDetail.options.forEach(_ => {
+          const idx = cloneDeep(options).findIndex(o => o.id === _.id);
+          if (idx === -1) {
+            optionNames.push(_.name);
+          }
+        });
+        if (optionNames.length > 0) {
+          dispatch(showError(`Vui lòng chọn: ${optionNames.join(',')}`));
+          return;
+        }
+      }
+      // check prices selection
+      if (!selectedPriceType) {
+        dispatch(showError(`Vui lòng chọn giá`));
+        return;
+      }
+
       const newProductInCart = {
         id: id,
         name: name,
@@ -94,6 +129,7 @@ const ProductDetailInfo = () => {
         options: _options,
       } as INewProductInCart;
       dispatch(addToCart(newProductInCart));
+      dispatch(showSuccess('Thêm vào giỏ hàng thành công'));
     }
   };
 
@@ -221,7 +257,7 @@ const ProductDetailInfo = () => {
                   src={ENV.IMAGE_URL + "/brand/" + productDetail.brand.imagePath}
                 />
               </div>
-              <a
+              <span
                 className="hover-tag-a text-[#707070]"
                 style={{
                   textDecoration: "underline",
@@ -231,7 +267,7 @@ const ProductDetailInfo = () => {
                 onClick={() => setOpenBrandDes(true)}
               >
                 {productDetail.brand?.descriptionTitle ?? ''}
-              </a>
+              </span>
               <FullScreenDialog content={productDetail.brand?.description} isOpen={openBrandDes} onClose={() => setOpenBrandDes(false)} />
               {/* <span
                       style={{
@@ -302,16 +338,15 @@ const ProductDetailInfo = () => {
                 <span className="sales-value">Giảm {productDetail.discountPercent}%</span>
               )}
 
-              {productDetail.priceAvailable > 0 && (
-                renderPrice('available', productDetail.priceAvailable, productDetail.discountAvailable)
-              )}
-
               {productDetail.pricePreOrder > 0 && (
                 renderPrice('preOrder', productDetail.pricePreOrder, productDetail.discountPreOrder)
               )}
 
-              {/* Discount */}
+              {productDetail.priceAvailable > 0 && (
+                renderPrice('available', productDetail.priceAvailable, productDetail.discountAvailable)
+              )}
 
+              {/* Discount */}
               {/*
                 <div className="mt-2">
                   <div

@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
 import {
+  alertReducer,
   authReducer,
   cartReducer,
   exampleReducer,
@@ -18,6 +19,7 @@ const reducers = combineReducers({
   product: productReducer,
   user: userReducer,
   cart: cartReducer,
+  alert: alertReducer,
 });
 
 const persistConfig = {
@@ -43,6 +45,7 @@ export const useAuthStore = () => useSelector((state: RootState) => state.auth);
 export const useProductStore = () => useSelector((state: RootState) => state.product);
 export const useUserStore = () => useSelector((state: RootState) => state.user);
 export const useCartStore = () => useSelector((state: RootState) => state.cart);
+export const useAlertStore = () => useSelector((state: RootState) => state.alert);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

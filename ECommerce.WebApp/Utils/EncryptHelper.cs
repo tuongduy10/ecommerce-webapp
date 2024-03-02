@@ -7,7 +7,7 @@ namespace ECommerce.WebApp.Utils
     public class EncryptHelper
     {
         private static readonly string secretKey = "0ABE981C-F5BF-434F-A55A-30695C33FA79";
-        public static string EncryptString(string str)
+        public static string EncryptString(string str, string key = null)
         {
             using (Aes aesAlg = Aes.Create())
             {
@@ -21,7 +21,7 @@ namespace ECommerce.WebApp.Utils
                 return Convert.ToBase64String(encryptedData);
             }
         }
-        public static string DecryptString(string str)
+        public static string DecryptString(string str, string key = null)
         {
             using (Aes aesAlg = Aes.Create())
             {

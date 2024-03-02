@@ -1325,7 +1325,7 @@ hr {
 }
 
 .option-price label {
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
 .product__detail-price .form-check-input {

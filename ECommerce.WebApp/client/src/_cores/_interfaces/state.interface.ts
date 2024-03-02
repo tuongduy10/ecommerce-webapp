@@ -14,6 +14,14 @@ export interface IUserInitState {
   userApp: any
 }
 
+export interface IAlertInitState {
+  message: string;
+  open: boolean;
+  type: 'info' | 'success' | 'error' | 'warning';
+  duration: number;
+  autoHide: boolean;
+}
+
 export interface IAuthInitState { 
   loading?: boolean,
   accessToken: string;

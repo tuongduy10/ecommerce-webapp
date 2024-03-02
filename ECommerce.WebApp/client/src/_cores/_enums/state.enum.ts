@@ -5,4 +5,5 @@ export const SLICE_NAME = {
     PRODUCT: 'product',
     USER: 'user',
     CART: 'cart',
+    ALERT: 'alert',
 }
