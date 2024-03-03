@@ -3,8 +3,12 @@ import { ICON_NAME } from "../mui-icon/_enums/mui-icon.enum";
 import MuiIcon from "../mui-icon/mui-icon.component";
 import SearchForm from "../search-form/search-form.component";
 import { Fragment, useEffect, useRef, useState } from "react";
+import { ROUTE_NAME } from "src/_cores/_enums/route-config.enum";
+import { Link } from "react-router-dom";
+import { useCartStore } from "src/_cores/_store/root-store";
 
 const HeaderNavMobile = () => {
+  const cartStore = useCartStore();
   const [isOpenedNav, setIsOpenedNav] = useState(false);
   const [isOpenedSearch, setIsOpenedSearch] = useState(false);
   const wrapperListRef = useRef<any>(null);
@@ -127,20 +131,20 @@ const HeaderNavMobile = () => {
             />
           </button>
 
-          <a href="/" className="profile-mobile">
-            <span className="quantity">12</span>
+          <Link to={ROUTE_NAME.USER_PROFILE} className="profile-mobile">
+            {/* <span className="quantity"></span> */}
             <MuiIcon name={ICON_NAME.FEATHER.USER} />
-          </a>
+          </Link>
 
           <a href="/" className="favorite-mobile">
             <span className="quantity">1</span>
             <MuiIcon name={ICON_NAME.FEATHER.HEART} />
           </a>
 
-          <a className="cart-mobile minicart" href="/">
-            <span className="quantity">1</span>
+          <Link to={ROUTE_NAME.CART} className="cart-mobile minicart">
+            <span className="quantity">{cartStore.totalQty}</span>
             <MuiIcon name={ICON_NAME.FEATHER.SHOPPING_BAG} />
-          </a>
+          </Link>
         </div>
         {isOpenedSearch ? <SearchForm /> : null}
       </nav >

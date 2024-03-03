@@ -13,6 +13,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import MenuIcon from '@mui/icons-material/Menu';
+import StorefrontIcon from '@mui/icons-material/Storefront';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Accordion, AccordionDetails, AccordionSummary, Collapse, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
@@ -24,6 +25,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import CategoryIcon from '@mui/icons-material/Category';
+import StorageIcon from '@mui/icons-material/Storage';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { Outlet, useNavigate } from 'react-router-dom';
 import SessionService from 'src/_cores/_services/session.service';
@@ -34,7 +36,7 @@ const mainListItems = [
     { name: "dashboard", icon: <HomeRoundedIcon />, label: "Trang chủ", path: "/" },
     {
         name: "product",
-        icon: <InventoryIcon />,
+        icon: <StorageIcon />,
         label: "Sản phẩm",
         path: "",
         childs: [
@@ -57,13 +59,26 @@ const mainListItems = [
         path: "",
         childs: [
             {
-                name: 'brand',
-                label: 'Thương hiệu',
+                name: 'category',
+                label: 'Danh mục',
+                path: ADMIN_ROUTE_NAME.MANAGE_INVENTORY_CATEGORY,
+            },
+        ]
+    },
+    {
+        name: "store",
+        icon: <StorefrontIcon />,
+        label: "Bán hàng",
+        path: "",
+        childs: [
+            {
+                name: 'shops',
+                label: 'Cửa hàng',
                 path: '',
             },
             {
-                name: 'category',
-                label: 'Danh mục',
+                name: 'brands',
+                label: 'Thương hiệu',
                 path: '',
             },
         ]

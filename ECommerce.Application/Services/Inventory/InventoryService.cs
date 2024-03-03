@@ -22,6 +22,7 @@ namespace ECommerce.Application.Services.Inventory
         private readonly IRepositoryBase<Data.Entities.Option> _optionRepo;
         private readonly IRepositoryBase<Data.Entities.OptionValue> _optionValueRepo;
         private readonly IRepositoryBase<Brand> _brandRepo;
+        private readonly IRepositoryBase<Category> _categoryRepo;
         private readonly IRepositoryBase<BrandCategory> _brandCategoryRepo;
         private readonly IRepositoryBase<ShopBrand> _shopBrandRepo;
         private readonly IRepositoryBase<SubCategory> _subCategoryRepo;
@@ -37,6 +38,8 @@ namespace ECommerce.Application.Services.Inventory
                 _productRepo = new RepositoryBase<Data.Entities.Product>(_DbContext);
             if (_brandRepo == null)
                 _brandRepo = new RepositoryBase<Brand>(_DbContext);
+            if (_categoryRepo == null)
+                _categoryRepo = new RepositoryBase<Category>(_DbContext);
             if (_brandCategoryRepo == null)
                 _brandCategoryRepo = new RepositoryBase<BrandCategory>(_DbContext);
             if (_shopBrandRepo == null)
@@ -91,12 +94,11 @@ namespace ECommerce.Application.Services.Inventory
             try
             {
                 var shopId = request.shopId;
+                var categoryId = request.categoryId;
 
-                var query = shopId > -1
-                    ? _shopBrandRepo.Entity().Where(i => i.ShopId == request.shopId).Select(i => i.Brand)
-                    : _brandRepo.Entity();
-
-                var result = await query
+                var result = await _brandRepo.Queryable(_ =>
+                    (shopId == -1 || _.ShopBrands.Any(i => i.ShopId == shopId)) &&
+                    (categoryId == -1 || _.BrandCategories.Any(i => i.CategoryId == categoryId)),"")
                     .Select(i => new BrandModel
                     {
                         id = i.BrandId,
@@ -119,6 +121,76 @@ namespace ECommerce.Application.Services.Inventory
                 return new FailResponse<List<BrandModel>>(error.Message);
             }
         }
+        public async Task<Response<List<CategoryModel>>> getCategories()
+        {
+            try
+            {
+                var res = await _categoryRepo.Queryable(_ => _.CategoryId > -1, "SubCategories")
+                    .Select(_ => (CategoryModel)_)
+                    .ToListAsync();
+                return new SuccessResponse<List<CategoryModel>>(res);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<List<CategoryModel>>(error.Message);
+            }
+        }
+        public async Task<Response<CategoryModel>> getCategory(int id)
+        {
+            try
+            {
+                var res = await _categoryRepo.Queryable(_ => _.CategoryId == id, "SubCategories")
+                    .Select(_ => (CategoryModel)_)
+                    .FirstOrDefaultAsync();
+                return new SuccessResponse<CategoryModel>(res);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<CategoryModel>(error.Message);
+            }
+        }
+        public async Task<Response<Category>> updateCategory(CategoryModelRequest req)
+        {
+            try
+            {
+                var entity = await _categoryRepo.Queryable(_ => _.CategoryId == req.id, "")
+                    .FirstOrDefaultAsync();
+                if (entity != null)
+                {
+                    if (!string.IsNullOrEmpty(req.name))
+                        entity.CategoryName = req.name;
+                    _categoryRepo.Update(entity);
+                    await _categoryRepo.SaveChangesAsync();
+                }
+                return new SuccessResponse<Category>(entity);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<Category>(error.Message);
+            }
+        }
+        public async Task<Response<Category>> addCategory(CategoryModelRequest req)
+        {
+            try
+            {
+                var entity = await _categoryRepo.Queryable(_ => _.CategoryId == req.id, "")
+                    .FirstOrDefaultAsync();
+                if (entity == null)
+                {
+                    var newEntity = new Category();
+                    if (!string.IsNullOrEmpty(req.name))
+                        newEntity.CategoryName = req.name;
+                    await _categoryRepo.AddAsync(newEntity);
+                    await _categoryRepo.SaveChangesAsync();
+                    return new SuccessResponse<Category>(newEntity);
+                }
+                return new SuccessResponse<Category>();
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<Category>(error.Message);
+            }
+        }
         public async Task<Response<List<SubCategoryModel>>> getSubCategories(InventoryRequest request)
         {
             try
@@ -126,18 +198,11 @@ namespace ECommerce.Application.Services.Inventory
                 var subCategoryId = request.subCategoryId;
                 var brandId = request.brandId;
 
-                var query = _subCategoryRepo.Query();
-                if (brandId > -1 || subCategoryId > -1)
-                {
-                    query = query
-                        .Where(subc =>
-                            subc.SubCategoryId == subCategoryId ||
-                            _brandCategoryRepo
-                                .Entity()
-                                .Any(brand => subc.CategoryId == brand.CategoryId && brand.BrandId == brandId));
-                }
-
-                var list = await query
+                var list = await _subCategoryRepo.Queryable(_ =>
+                    (subCategoryId == -1 || _.SubCategoryId == subCategoryId) &&
+                    (brandId == -1 || _brandCategoryRepo
+                        .Entity()
+                        .Any(brand => _.CategoryId == brand.CategoryId && brand.BrandId == brandId)), "")
                     .Select(subc => new SubCategoryModel
                     {
                         id = subc.SubCategoryId,

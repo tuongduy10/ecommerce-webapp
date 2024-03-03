@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { setParam, setProductList, setSubCategories } from "src/_cores/_reducers/product.reducer";
 import InventoryService from "src/_cores/_services/inventory.service";
 import { IOption, IOptionValue, ISubCategory } from "src/_cores/_interfaces/inventory.interface";
+import { setSelectedBrand } from "src/_cores/_reducers/home.reducer";
 
 const ProductListPage = () => {
   const searchParams = new URLSearchParams(window.location.search);
@@ -30,6 +31,15 @@ const ProductListPage = () => {
       optionValueIds: _optionValueIds ? _optionValueIds.split(',').map(id => Number(id)) : [],
     }
     getData(params);
+    if (!homeStore.selectedBrand) {
+      async function getBrand() {
+        const res = await InventoryService.getBrand(_brandId) as any;
+        if (res.isSucceed) {
+          dispatch(setSelectedBrand(res.data));
+        }
+      }
+      getBrand();
+    }
   }, [_pageIndex, _orderBy, _subCategoryId, _optionValueIds]);
 
   useEffect(() => {

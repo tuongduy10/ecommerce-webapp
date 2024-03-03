@@ -41,7 +41,7 @@ namespace ECommerce.WebApp.Controllers
         }
         [AllowAnonymous]
         [HttpPost("upload")]
-        public IActionResult upload([FromForm]UploadRequest request)
+        public IActionResult upload([FromForm] UploadRequest request)
         {
             try
             {
@@ -54,23 +54,23 @@ namespace ECommerce.WebApp.Controllers
                 switch (request.uploadType)
                 {
                     case UploadTypeConstant.PRODUCT:
-                    {
-                        prefix = PRODUCT_FILE_PREFIX;
-                        path = PRODUCT_FILE_PATH;
-                        break;
-                    }
+                        {
+                            prefix = PRODUCT_FILE_PREFIX;
+                            path = PRODUCT_FILE_PATH;
+                            break;
+                        }
                     case UploadTypeConstant.BRAND:
-                    {
-                        prefix = BRAND_FILE_PREFIX;
-                        path = BRAND_FILE_PATH;
-                        break;
-                    }
+                        {
+                            prefix = BRAND_FILE_PREFIX;
+                            path = BRAND_FILE_PATH;
+                            break;
+                        }
                     case UploadTypeConstant.RATING:
-                    {
-                        prefix = RATING_FILE_PREFIX;
-                        path = RATING_FILE_PATH;
-                        break;
-                    }
+                        {
+                            prefix = RATING_FILE_PREFIX;
+                            path = RATING_FILE_PATH;
+                            break;
+                        }
                 }
                 if (!String.IsNullOrEmpty(path))
                 {
@@ -95,22 +95,22 @@ namespace ECommerce.WebApp.Controllers
                 switch (request.uploadType)
                 {
                     case UploadTypeConstant.PRODUCT:
-                    {
-                        path = PRODUCT_FILE_PATH;
-                        await _productService.removeUserImages(request.fileNames);
-                        await _productService.removeSystemImages(request.fileNames);
+                        {
+                            path = PRODUCT_FILE_PATH;
+                            await _productService.removeUserImages(request.fileNames);
+                            await _productService.removeSystemImages(request.fileNames);
                             break;
-                    }
+                        }
                     case UploadTypeConstant.BRAND:
-                    {
-                        path = BRAND_FILE_PATH;
-                        break;
-                    }
+                        {
+                            path = BRAND_FILE_PATH;
+                            break;
+                        }
                     case UploadTypeConstant.RATING:
-                    {
-                        path = RATING_FILE_PATH;
-                        break;
-                    }
+                        {
+                            path = RATING_FILE_PATH;
+                            break;
+                        }
                 }
                 if (!String.IsNullOrEmpty(path) && request.fileNames.Count > 0)
                 {
@@ -190,6 +190,21 @@ namespace ECommerce.WebApp.Controllers
             if (!result.isSucceed)
                 return BadRequest(result);
             return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("encrypt-conn")]
+        public IActionResult EncryptConnString(EncryptRequest request)
+        {
+            string encryptedConn = EncryptHelper.EncryptString(request.connectionString);
+            return Ok(encryptedConn);
+        }
+        [AllowAnonymous]
+        [HttpPost("decrypt-conn")]
+        public IActionResult DecryptConnString(EncryptRequest request)
+        {
+            string decryptedConn = EncryptHelper.DecryptString(request.connectionString);
+            return Ok(decryptedConn);
         }
     }
 }

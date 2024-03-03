@@ -7,9 +7,14 @@ import { FAIL_MESSAGE } from "src/_cores/_enums/message.enum";
 import SessionService from "src/_cores/_services/session.service";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_NAME } from "src/_cores/_enums/route-config.enum";
+import { useAuthStore } from "src/_cores/_store/root-store";
+import { useDispatch } from "react-redux";
+import { setAccessToken } from "src/_cores/_reducers/auth.reducer";
 
 const LoginPage = () => {
   const [loading, setLoading] = useState(false);
+  const authStore = useAuthStore();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const userNameRef = useRef<any>(null);
   const passwordRef = useRef<any>(null);
@@ -17,27 +22,20 @@ const LoginPage = () => {
   useEffect(() => {
     const token = SessionService.getAccessToken();
     if (token) {
-      navigate(ROUTE_NAME.HOME)
+      navigate(ROUTE_NAME.HOME);
     }
   }, []);
 
-  const login = () => {
+  const submit = async () => {
     const param = {
       userPhone: userNameRef.current.value,
       password: passwordRef.current.value,
     }
-    setLoading(true);
-    UserService.login(param).then(res => {
-      if (res.data) {
-        SessionService.setAccessToken(res.data);
-        navigate(ROUTE_NAME.HOME);
-      }
-      setLoading(false);
-    }).catch(error => {
-      alert(FAIL_MESSAGE.LOGIN_FAIL);
-      console.log(error);
-      setLoading(false);
-    })
+    const response = await UserService.login(param) as any;
+    if (response.isSucceed) {
+      dispatch(setAccessToken(response.data));
+      navigate(ROUTE_NAME.HOME)
+    }
   }
 
   return (
@@ -91,7 +89,7 @@ const LoginPage = () => {
                   </div>
 
                   <div className="login text-center text-lg-start mt-4 pt-2">
-                    <button disabled={loading} className="signin btn-black" onClick={login}>Đăng nhập</button>
+                    <button disabled={loading} className="signin btn-black" onClick={submit}>Đăng nhập</button>
                   </div>
                 </div>
               </div>

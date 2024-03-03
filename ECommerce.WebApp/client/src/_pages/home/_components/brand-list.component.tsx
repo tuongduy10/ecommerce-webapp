@@ -16,9 +16,10 @@ const BrandList = () => {
     }, [homeStore.categorySelected]);
 
     const getBrands = (categoryId: number) => {
-        const req = categoryId
-            ? InventoryService.getBrandsInCategory(categoryId)
-            : InventoryService.getBrands({});
+        const _param = {
+            categoryId: categoryId || -1
+        }
+        const req = InventoryService.getBrands(_param);
         req.then(res => {
             if (res?.data) {
                 dispatch(setBrands(res.data));

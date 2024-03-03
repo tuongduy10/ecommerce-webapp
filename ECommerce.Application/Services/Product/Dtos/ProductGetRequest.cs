@@ -7,7 +7,8 @@ namespace ECommerce.Application.Services.Product.Dtos
 {
     public class ProductGetRequest : PageRequest
     {
-        public int? id { get; set; }
+        public int id { get; set; }
+        public List<int> ids { get; set; }
         public string keyword { get; set; }
         public int? shopId { get; set; }
         public int brandId { get; set; }    
@@ -21,10 +22,12 @@ namespace ECommerce.Application.Services.Product.Dtos
         {
             keyword = "";
             id = -1;
+            ids = new List<int>();
             brandId = -1;
             subCategoryId = -1;
             categoryId = -1;
             shopId = -1;
+            orderBy = "";
         }
     }
 }

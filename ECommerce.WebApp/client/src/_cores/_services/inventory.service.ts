@@ -11,7 +11,7 @@ export default class InventoryService {
   }
 
   public static getBrand(id: number) {
-    return api.get(BRAND_API_URL.GET_BRAND + `/${id}`);
+    return api.get(INVENTORY_API_URL.GET_BRAND + `/${id}`);
   }
 
   public static getBrandsInCategory(id: number) {
@@ -19,7 +19,19 @@ export default class InventoryService {
   }
 
   public static getCategories() {
-    return api.get(CATEGORY_API_URL.GET_ALL);
+    return api.post(INVENTORY_API_URL.CATEGORIES);
+  }
+
+  public static getCategory(id: number) {
+    return api.get(INVENTORY_API_URL.CATEGORY + `/${id}`);
+  }
+
+  public static updateCategory(param: { id: number, name: string }) {
+    return api.post(INVENTORY_API_URL.UPDATE_CATEGORY, param);
+  }
+
+  public static addCategory(param: { name: string }) {
+    return api.post(INVENTORY_API_URL.ADD_CATEGORY, param);
   }
 
   public static getSubCategories(params?: { brandId: number }) {

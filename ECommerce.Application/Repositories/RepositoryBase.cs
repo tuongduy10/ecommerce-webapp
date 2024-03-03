@@ -23,6 +23,23 @@ namespace ECommerce.Application.Repositories
                 return _DbContext.Set<T>().Where(expression).AsNoTracking();
             return _DbContext.Set<T>().AsNoTracking();
         }
+        public virtual IQueryable<T> Queryable(Expression<Func<T, bool>> expression = null, string includes = "")
+        {
+            IQueryable<T> query = _DbContext.Set<T>().AsQueryable();
+            if (!string.IsNullOrEmpty(includes))
+            {
+                var includeArray = includes.Split(',').Select(i => i.Trim()).ToArray();
+                foreach (var include in includeArray)
+                {
+                    query = query.Include(include);
+                }
+            }
+            if (expression != null)
+            {
+                query = query.Where(expression);
+            }
+            return query;
+        }
         public virtual DbSet<T> Entity()
         {
             return _DbContext.Set<T>();

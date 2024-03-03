@@ -1,11 +1,17 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ENV } from "src/_configs/enviroment.config";
 import { ICity, IDistrict, IWard } from "src/_cores/_interfaces";
 import CommonService from "src/_cores/_services/common.service";
+import { useCartStore } from "src/_cores/_store/root-store";
 import { MuiIcon, WebDirectional } from "src/_shares/_components";
 import { ICON_NAME } from "src/_shares/_components/mui-icon/_enums/mui-icon.enum";
+import { ProductHelper } from "src/_shares/_helpers/product-helper";
 
 const PaymentPage = () => {
+    const navigate = useNavigate();
+    const cartStore = useCartStore();
     const [open, setOpen] = useState(false);
     const [cities, setCitites] = useState<ICity[]>([]);
     const [districts, setDistricts] = useState<IDistrict[]>([]);
@@ -76,6 +82,10 @@ const PaymentPage = () => {
         }
     }
 
+    const getFormatedPrice = (price: number) => {
+        return ProductHelper.getFormatedPrice(price);
+      }
+
     return (
         <div className="custom-container">
             <div className="content__inner">
@@ -85,197 +95,176 @@ const PaymentPage = () => {
                 ]} />
                 <div className="billing-summary">
                     <div className="cart-title text-center">HÓA ĐƠN CỦA BẠN</div>
-                    <div className="flex flex-wrap mb-5">
-                        <div className="primary-cartcontent">
-                            <div className="cart-head">
-                                <span>
-                                    <strong>Sản phẩm</strong>
-                                </span>
-                                <span className="">
-                                    <strong>Số lượng</strong>
-                                </span>
-                                <span className="text-right">
-                                    <strong>Thành tiền</strong>
-                                </span>
+                    {cartStore.productsInCart.length === 0 ? (
+                        <div className="cart-body flex flex-wrap">
+                            <div className="primary-cartcontent">
+                                <div className="cart-bottom flex justify-center lg:justify-start">
+                                    <button
+                                        className="py-2 px-4 sm:w-full lg:w-48 bg-[#4D4D4D] text-white
+                                        border border-solid border-black inline-block text-center
+                                        hover:bg-[#fff] hover:text-gray-700  transition duration-500"
+                                        onClick={() => navigate(-1)}
+                                    >
+                                        <strong>Quay lại</strong>
+                                    </button>
+                                </div>
+                                <div className="text-center text-gray-500 mt-4">
+                                    Chưa có sản phẩm
+                                </div>
                             </div>
-                            <div className="cart-products">
-                                <div className="cart-product flex flex-wrap w-full">
-                                    <div className="cart-product__image">
-                                        <img src="assets/images/banner/snidel.jpg" alt="" />
-                                    </div>
-                                    <div className="cart-product__info">
-                                        <div className="cart-product--auto">
-                                            <div><strong>Samsung Galaxy S22 Ultra 5G</strong></div>
-                                            <div>Shop Demo 01</div>
-                                            <div>(Đỏ, L)</div>
-                                            <div className="price">
-                                                <span className="value">100000000</span>
-                                                <span>₫</span>
+                        </div>
+                    ) : (<>
+                        <div className="flex flex-wrap mb-5">
+                            <div className="primary-cartcontent">
+                                <div className="cart-head">
+                                    <span>
+                                        <strong>Sản phẩm</strong>
+                                    </span>
+                                    <span className="">
+                                        <strong>Số lượng</strong>
+                                    </span>
+                                    <span className="text-right">
+                                        <strong>Thành tiền</strong>
+                                    </span>
+                                </div>
+                                <div className="cart-products">
+                                    {cartStore.productsInCart.map(_ => (
+                                        <div key={_.uniqId} className="cart-product flex flex-wrap w-full">
+                                            <div className="cart-product__image">
+                                                <img src={`${ENV.IMAGE_URL}/products/${_.image}`} alt="" />
+                                            </div>
+                                            <div className="cart-product__info">
+                                                <div className="cart-product--auto">
+                                                    <div><strong>{_.name}</strong></div>
+                                                    <div>{_.shopName}</div>
+                                                    {_.options.length > 0 && (
+                                                        <div>({_.options.map((o: any) => o.valueName).join(', ')})</div>
+                                                    )}
+                                                    <div className="price">
+                                                        <span className="value">{_.discount ? getFormatedPrice(_.discount) : getFormatedPrice(_.price)}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="cart-product--col">
+                                                    x{_.qty}
+                                                </div>
+                                                <div className="cart-product--col totalprice text-right">
+                                                    <span className="total-value">{_.discount ? getFormatedPrice(_.discount*_.qty) : getFormatedPrice(_.price*_.qty)}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="cart-product--col">
-                                            x2
+                                    ))}
+                                    <div className="cart-bottom billing-total">
+                                        <div className="attr mb-2 flex justify-between ml-auto mr-0">
+                                            <span>Số lượng:</span>
+                                            <span className="">{cartStore.totalQty}</span>
                                         </div>
-                                        <div className="cart-product--col totalprice text-right">
-                                            <span className="total-value">200000000 ₫</span>
+                                        <div className="attr mb-2 flex justify-between ml-auto mr-0">
+                                            <span>Tạm tính:</span>
+                                            <span className="">{getFormatedPrice(cartStore.totalPrice)}</span>
                                         </div>
-                                    </div>
-                                </div>
-                                <div className="cart-product flex flex-wrap w-full">
-                                    <div className="cart-product__image">
-                                        <img src="assets/images/products/pro1.png" alt="" />
-                                    </div>
-                                    <div className="cart-product__info">
-                                        <div className="cart-product--auto">
-                                            <div><strong>Samsung Galaxy S22 Ultra 5G</strong></div>
-                                            <div>Shop Demo 02</div>
-                                            <div>(Đỏ, L)</div>
-                                            <div className="price">
-                                                <span className="value">100000000</span>
-                                                <span>₫</span>
-                                            </div>
+                                        <div className="attr mb-2 flex justify-between ml-auto mr-0">
+                                            <span>Giảm (-0%):</span>
+                                            <span className="">0 ₫</span>
                                         </div>
-                                        <div className="cart-product--col">
-                                            x2
+                                        <div className="attr mb-2 flex justify-between ml-auto mr-0">
+                                            <span className="text">
+                                                TỔNG CỘNG:
+                                            </span>
+                                            <span className="value">
+                                                <strong>{getFormatedPrice(cartStore.totalPrice)}</strong>
+                                            </span>
                                         </div>
-                                        <div className="cart-product--col totalprice text-right">
-                                            <span className="total-value">200000000 ₫</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="cart-product flex flex-wrap w-full">
-                                    <div className="cart-product__image">
-                                        <img src="assets/images/products/jacket1.jpg" alt="" />
-                                    </div>
-                                    <div className="cart-product__info">
-                                        <div className="cart-product--auto">
-                                            <div><strong>Samsung Galaxy S22 Ultra 5G</strong></div>
-                                            <div>Shop Demo 02</div>
-                                            <div>(Đỏ, L)</div>
-                                            <div className="price">
-                                                <span className="value">100000000</span>
-                                                <span>₫</span>
-                                            </div>
-                                        </div>
-                                        <div className="cart-product--col">
-                                            x2
-                                        </div>
-                                        <div className="cart-product--col totalprice text-right">
-                                            <span className="total-value">200000000 ₫</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="cart-bottom billing-total">
-                                    <div className="attr mb-2 flex justify-between ml-auto mr-0">
-                                        <span>Số lượng:</span>
-                                        <span className="">2</span>
-                                    </div>
-                                    <div className="attr mb-2 flex justify-between ml-auto mr-0">
-                                        <span>Tạm tính:</span>
-                                        <span className="">100.000.000 ₫</span>
-                                    </div>
-                                    <div className="attr mb-2 flex justify-between ml-auto mr-0">
-                                        <span>Giảm (-10%):</span>
-                                        <span className="">10.000.000 ₫</span>
-                                    </div>
-                                    <div className="attr mb-2 flex justify-between ml-auto mr-0">
-                                        <span className="text">
-                                            TỔNG CỘNG:
-                                        </span>
-                                        <span className="value">
-                                            <strong>90.000.000 ₫</strong>
-                                        </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <Grid container spacing={3}>
-                        <Grid className="user-info" item xs={7}>
-                            <div className="title">
-                                <strong>THÔNG TIN GIAO HÀNG</strong>
-                            </div>
-                            <div className="payment-info__line w-full flex items-center relative">
-                                <span style={{ color: 'red', position: 'absolute', left: '8px', top: '3px' }}>*</span>
-                                <input className="w-full" type="text" placeholder="Họ tên" />
-                            </div>
-                            <div className="payment-info__line w-full flex items-center relative">
-                                <span style={{ color: 'red', position: 'absolute', left: '8px', top: '3px' }}>*</span>
-                                <input className="w-full" type="text" placeholder="Số điện thoại" />
-                            </div>
-                            <div
-                                className="payment-info__line payment-bank w-full flex items-center justify-between flex-wrap">
-                                <div className="location">
-                                    <span style={{ color: 'red', position: 'absolute', left: '8px', top: '3px' }}>*</span>
-                                    <select name="" id="" className="city-select w-full" onChange={e => onChangeCity(e.target.value)}>
-                                        <option value="" disabled selected={!dataDetail || !dataDetail['cityCode']}>Tỉnh/Thành...</option>
-                                        {cities.length > 0 && (
-                                            cities.map((item) => (
-                                                <option key={item.code} value={item.code} selected={item.code === (dataDetail['cityCode'] ?? "")}>{item.name}</option>
-                                            ))
-                                        )}
-                                    </select>
+                        <Grid container spacing={3}>
+                            <Grid className="user-info" item xs={7}>
+                                <div className="title">
+                                    <strong>THÔNG TIN GIAO HÀNG</strong>
                                 </div>
-                                <div className="location">
+                                <div className="payment-info__line w-full flex items-center relative">
                                     <span style={{ color: 'red', position: 'absolute', left: '8px', top: '3px' }}>*</span>
-                                    <select name="" id="" className="district-select w-full" onChange={e => onChangeDistrict(e.target.value)}>
-                                        <option value="" disabled selected={!dataDetail || !dataDetail['districtCode']}>Quận/Huyện...</option>
-                                        {districts.length > 0 && (
-                                            districts.map((item) => (
-                                                <option key={item.code} value={item.code} selected={item.code === (dataDetail['districtCode'] ?? "")}>{item.name}</option>
-                                            ))
-                                        )}
-                                    </select>
+                                    <input className="w-full" type="text" placeholder="Họ tên" />
                                 </div>
-                                <div className="location">
+                                <div className="payment-info__line w-full flex items-center relative">
                                     <span style={{ color: 'red', position: 'absolute', left: '8px', top: '3px' }}>*</span>
-                                    <select name="" id="" className="ward-select w-full" onChange={e => onChangeWard(e.target.value)}>
-                                        <option value="" disabled selected={!dataDetail || !dataDetail['wardCode']}>Phường/Xã...</option>
-                                        {wards.length > 0 && (
-                                            wards.map((item) => (
-                                                <option key={item.code} value={item.code} selected={item.code === (dataDetail['wardCode'] ?? "")}>{item.name}</option>
-                                            ))
-                                        )}
-                                    </select>
+                                    <input className="w-full" type="text" placeholder="Số điện thoại" />
                                 </div>
-                            </div>
-                            <div className="payment-info__line w-full flex items-center relative">
-                                <span style={{ color: 'red', position: 'absolute', left: '8px', top: '3px' }}>*</span>
-                                <input className="w-full" type="text" placeholder="Địa chỉ" />
-                            </div>
-                            <div className="payment-info__line w-full flex items-center relative">
-                                <input className="w-full" type="text" placeholder="Email" />
-                            </div>
-                            <div className="payment-info__line w-full flex items-center relative">
-                                <input className="w-full" type="text" placeholder="Ghi chú" />
-                            </div>
+                                <div
+                                    className="payment-info__line payment-bank w-full flex items-center justify-between flex-wrap">
+                                    <div className="location">
+                                        <span style={{ color: 'red', position: 'absolute', left: '8px', top: '3px' }}>*</span>
+                                        <select name="" id="" className="city-select w-full" onChange={e => onChangeCity(e.target.value)}>
+                                            <option value="" disabled selected={!dataDetail || !dataDetail['cityCode']}>Tỉnh/Thành...</option>
+                                            {cities.length > 0 && (
+                                                cities.map((item) => (
+                                                    <option key={item.code} value={item.code} selected={item.code === (dataDetail['cityCode'] ?? "")}>{item.name}</option>
+                                                ))
+                                            )}
+                                        </select>
+                                    </div>
+                                    <div className="location">
+                                        <span style={{ color: 'red', position: 'absolute', left: '8px', top: '3px' }}>*</span>
+                                        <select name="" id="" className="district-select w-full" onChange={e => onChangeDistrict(e.target.value)}>
+                                            <option value="" disabled selected={!dataDetail || !dataDetail['districtCode']}>Quận/Huyện...</option>
+                                            {districts.length > 0 && (
+                                                districts.map((item) => (
+                                                    <option key={item.code} value={item.code} selected={item.code === (dataDetail['districtCode'] ?? "")}>{item.name}</option>
+                                                ))
+                                            )}
+                                        </select>
+                                    </div>
+                                    <div className="location">
+                                        <span style={{ color: 'red', position: 'absolute', left: '8px', top: '3px' }}>*</span>
+                                        <select name="" id="" className="ward-select w-full" onChange={e => onChangeWard(e.target.value)}>
+                                            <option value="" disabled selected={!dataDetail || !dataDetail['wardCode']}>Phường/Xã...</option>
+                                            {wards.length > 0 && (
+                                                wards.map((item) => (
+                                                    <option key={item.code} value={item.code} selected={item.code === (dataDetail['wardCode'] ?? "")}>{item.name}</option>
+                                                ))
+                                            )}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="payment-info__line w-full flex items-center relative">
+                                    <span style={{ color: 'red', position: 'absolute', left: '8px', top: '3px' }}>*</span>
+                                    <input className="w-full" type="text" placeholder="Địa chỉ" />
+                                </div>
+                                <div className="payment-info__line w-full flex items-center relative">
+                                    <input className="w-full" type="text" placeholder="Email" />
+                                </div>
+                                <div className="payment-info__line w-full flex items-center relative">
+                                    <input className="w-full" type="text" placeholder="Ghi chú" />
+                                </div>
+                            </Grid>
+                            <Grid className="payment-method" item xs={5}>
+                                <div className="title">
+                                    <strong>PHƯƠNG THỨC THANH TOÁN</strong>
+                                </div>
+                                <div className="payment-info__line w-full items-center flex">
+                                    <input name="payment-method" type="radio" style={{ height: 'calc(48px + (57 - 48) * ((100vw - 375px)/ (1920 - 375)))' }} />
+                                    <label className="ml-2 mb-0 cursor-pointer">Thanh toán khi nhận hàng</label>
+                                </div>
+                                <div className="payment-info__line w-full items-center flex">
+                                    <input name="payment-method" type="radio"
+                                        style={{ height: 'calc(48px + (57 - 48) * ((100vw - 375px)/ (1920 - 375)))' }} />
+                                    <label className="ml-2 mb-0 cursor-pointer">Chuyển khoản</label>
+                                </div>
+                                <div className="payment-checkout text-center block">
+                                    <button className="inline-block btn-black" data-toggle="modal" data-target="#exampleModal" style={{ border: '1px solid #333' }}
+                                        onClick={handleClickOpen}
+                                    >
+                                        Đặt hàng
+                                    </button>
+                                    <PaymentDialog
+                                        open={open}
+                                        onClose={handleClose}
+                                    />
+                                </div>
+                            </Grid>
                         </Grid>
-                        <Grid className="payment-method" item xs={5}>
-                            <div className="title">
-                                <strong>PHƯƠNG THỨC THANH TOÁN</strong>
-                            </div>
-                            <div className="payment-info__line w-full items-center flex">
-                                <input name="payment-method" type="radio" style={{ height: 'calc(48px + (57 - 48) * ((100vw - 375px)/ (1920 - 375)))' }} />
-                                <label className="ml-2 mb-0 cursor-pointer">Thanh toán khi nhận hàng</label>
-                            </div>
-                            <div className="payment-info__line w-full items-center flex">
-                                <input name="payment-method" type="radio"
-                                    style={{ height: 'calc(48px + (57 - 48) * ((100vw - 375px)/ (1920 - 375)))' }} />
-                                <label className="ml-2 mb-0 cursor-pointer">Chuyển khoản</label>
-                            </div>
-                            <div className="payment-checkout text-center block">
-                                <button className="inline-block btn-black" data-toggle="modal" data-target="#exampleModal" style={{ border: '1px solid #333' }}
-                                    onClick={handleClickOpen}
-                                >
-                                    Đặt hàng
-                                </button>
-                                <PaymentDialog
-                                    open={open}
-                                    onClose={handleClose}
-                                />
-                            </div>
-                        </Grid>
-                    </Grid>
+                    </>)}
                 </div>
             </div>
         </div>

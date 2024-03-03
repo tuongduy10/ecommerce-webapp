@@ -52,7 +52,7 @@ export interface IProduct {
     value: string;
     name: string;
   }[];
-  createdDate: string,
+  createdDate: string;
   importDate: Date;
   // price
   discountPercent: number;
@@ -75,4 +75,20 @@ export interface IProduct {
     rates: IComment[];
   };
   status: number;
+}
+
+export interface INewProductInCart {
+  id: number;
+  name: string;
+  shopName: string;
+  qty: number;
+  image: string;
+  options: { id: number; value: number, valueName: string }[];
+  price: number;
+  discount: number;
+  priceType: 'AVAILABLE' | 'PREORDER';
+}
+
+export interface IProductInCart extends INewProductInCart {
+  uniqId: string;
 }

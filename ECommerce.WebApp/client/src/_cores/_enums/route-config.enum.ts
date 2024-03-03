@@ -1,6 +1,6 @@
 export const ROUTE_PREFIX = '';
 export const ROUTE_NAME = {
-    HOME: ROUTE_PREFIX + '',
+    HOME: ROUTE_PREFIX + '/',
     LOGIN: ROUTE_PREFIX + '/login',
     PRODUCT_LIST: ROUTE_PREFIX + '/product-list',
     PRODUCT_DETAIL: ROUTE_PREFIX + '/product-detail',
@@ -22,6 +22,7 @@ export const ADMIN_ROUTE_NAME = {
     MANAGE_USER_ADD: ADMIN_ROUTE_PREFIX + '/manage-user/add',
     MANAGE_USER_DETAIL: ADMIN_ROUTE_PREFIX + '/manage-user/detail',
     MANAGE_INVENTORY: ADMIN_ROUTE_PREFIX + '/manage-inventory',
+    MANAGE_INVENTORY_CATEGORY: ADMIN_ROUTE_PREFIX + '/manage-inventory/category',
     MANAGE_ORDERS: ADMIN_ROUTE_PREFIX + '/manage-orders',
     MANAGE_ORDERS_PENDING: ADMIN_ROUTE_PREFIX + '/manage-orders/pending',
     MANAGE_USERS: ADMIN_ROUTE_PREFIX + '/manage-users',

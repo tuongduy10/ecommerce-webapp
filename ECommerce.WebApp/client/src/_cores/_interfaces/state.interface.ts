@@ -1,5 +1,5 @@
 import { IBrand, ICategory, ISubCategory } from "./inventory.interface";
-import { IProduct } from "./product.interface";
+import { IProduct, IProductInCart } from "./product.interface";
 
 export interface IAction {
   type: string;
@@ -12,6 +12,14 @@ export interface ICommonInitState {
 
 export interface IUserInitState {
   userApp: any
+}
+
+export interface IAlertInitState {
+  message: string;
+  open: boolean;
+  type: 'info' | 'success' | 'error' | 'warning';
+  duration: number;
+  autoHide: boolean;
 }
 
 export interface IAuthInitState { 
@@ -53,4 +61,10 @@ export interface IProductInitState {
   },
   subCategories: ISubCategory[];
   [key: string]: any;
+}
+
+export interface ICartInitState {
+  productsInCart: IProductInCart[];
+  totalQty: number;
+  totalPrice: number;
 }

@@ -14,6 +14,7 @@ namespace ECommerce.Application.Repositories
         DbSet<T> Entity();
         // Custom
         IQueryable<T> Query(Expression<Func<T, bool>> expression = null);
+        IQueryable<T> Queryable(Expression<Func<T, bool>> expression = null, string includes = "");
         bool Any(Expression<Func<T, bool>> expression);
         Task<bool> AnyAsyncWhere(Expression<Func<T, bool>> expression);
         // Single obj
