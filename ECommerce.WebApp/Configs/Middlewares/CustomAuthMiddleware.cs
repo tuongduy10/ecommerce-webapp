@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using ECommerce.Data.Models;
+using ECommerce.Data.Entities;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;

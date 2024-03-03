@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Repositories.Attribute
 {
-    public class AttributeRepository : RepositoryBase<Data.Models.Attribute>, IAttributeRepository
+    public class AttributeRepository : RepositoryBase<Data.Entities.Attribute>, IAttributeRepository
     {
         public AttributeRepository(ECommerceContext DbContext) : base(DbContext)
         {

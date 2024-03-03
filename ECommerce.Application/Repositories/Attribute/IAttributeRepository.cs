@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Repositories.Attribute
 {
-    public interface IAttributeRepository : IRepositoryBase<Data.Models.Attribute>
+    public interface IAttributeRepository : IRepositoryBase<Data.Entities.Attribute>
     {
 
     }

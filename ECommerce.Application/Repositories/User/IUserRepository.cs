@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Repositories.User
 {
-    public interface IUserRepository : IRepositoryBase<Data.Models.User>
+    public interface IUserRepository : IRepositoryBase<Data.Entities.User>
     {
         Task<UserGetModel> GetUserInfo(int userId);
         bool IsAdmin(int userId);

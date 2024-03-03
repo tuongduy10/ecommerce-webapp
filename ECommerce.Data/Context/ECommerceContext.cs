@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using ECommerce.Data.Models;
+using ECommerce.Data.Entities;
 using Microsoft.Extensions.Configuration;
 using System.IO;
-using ECommerce.Data.Models.Common;
+using ECommerce.Data.Entities.Common;
 
 #nullable disable
 
@@ -21,7 +21,7 @@ namespace ECommerce.Data.Context
         {
         }
 
-        public virtual DbSet<Models.Attribute> Attributes { get; set; }
+        public virtual DbSet<Entities.Attribute> Attributes { get; set; }
         public virtual DbSet<Bank> Banks { get; set; }
         public virtual DbSet<Banner> Banners { get; set; }
         public virtual DbSet<Blog> Blogs { get; set; }
@@ -79,7 +79,7 @@ namespace ECommerce.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Models.Attribute>(entity =>
+            modelBuilder.Entity<Entities.Attribute>(entity =>
             {
                 entity.ToTable("Attribute");
 

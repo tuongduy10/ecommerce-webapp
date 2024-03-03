@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Repositories.Brand
 {
-    public interface IBrandRepository : IRepositoryBase<Data.Models.Brand>
+    public interface IBrandRepository : IRepositoryBase<Data.Entities.Brand>
     {
     }
 }

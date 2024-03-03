@@ -1,7 +1,7 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Repositories.Message.Dtos;
 using ECommerce.Application.Services.Chat.Dtos;
-using ECommerce.Data.Models;
+using ECommerce.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;

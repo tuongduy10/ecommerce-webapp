@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Repositories.Brand
 {
-    public class BrandRepository : RepositoryBase<Data.Models.Brand>, IBrandRepository
+    public class BrandRepository : RepositoryBase<Data.Entities.Brand>, IBrandRepository
     {
         public BrandRepository(ECommerceContext DbContext) : base(DbContext)
         {
