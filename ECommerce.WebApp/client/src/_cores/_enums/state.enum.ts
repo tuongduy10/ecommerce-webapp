@@ -4,4 +4,6 @@ export const SLICE_NAME = {
     LOGIN: 'login',
     PRODUCT: 'product',
     USER: 'user',
+    CART: 'cart',
+    ALERT: 'alert',
 }

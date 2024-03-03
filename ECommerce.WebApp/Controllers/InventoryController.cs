@@ -18,7 +18,7 @@ using ECommerce.Application.Services.Inventory.Dtos;
 
 namespace ECommerce.WebApp.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     [ApiController]
     [Route("api/inventory")]
     public class InventoryController : ControllerBase
@@ -28,7 +28,6 @@ namespace ECommerce.WebApp.Controllers
         {
             _inventoryService = inventoryService;
         }
-        [AllowAnonymous]
         [HttpPost("sub-categories")]
         public async Task<IActionResult> getSubCategories(InventoryRequest request)
         {
@@ -37,7 +36,6 @@ namespace ECommerce.WebApp.Controllers
                 return BadRequest(res);
             return Ok(res);
         }
-        [AllowAnonymous]
         [HttpPost("get-brands")]
         public async Task<IActionResult> getBrands(BrandGetRequest request)
         {
@@ -46,7 +44,14 @@ namespace ECommerce.WebApp.Controllers
                 return BadRequest(res);
             return Ok(res);
         }
-        [AllowAnonymous]
+        [HttpPost("get-categories")]
+        public async Task<IActionResult> getCategories()
+        {
+            var res = await _inventoryService.getCategories();
+            if (!res.isSucceed)
+                return BadRequest(res);
+            return Ok(res);
+        }
         [HttpGet("get-brand/{id}")]
         public async Task<IActionResult> getBrand(int id)
         {
@@ -55,7 +60,6 @@ namespace ECommerce.WebApp.Controllers
                 return BadRequest(res);
             return Ok(res);
         }
-        [AllowAnonymous]
         [HttpPost("product-options")]
         public async Task<IActionResult> getProductOptions(InventoryRequest request)
         {
@@ -64,7 +68,6 @@ namespace ECommerce.WebApp.Controllers
                 return BadRequest(result);
             return Ok(result);
         }
-        [AllowAnonymous]
         [HttpPost("product-attributes")]
         public async Task<IActionResult> getProductAttributes(InventoryRequest request)
         {

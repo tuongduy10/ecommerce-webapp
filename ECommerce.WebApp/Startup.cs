@@ -44,6 +44,7 @@ using Microsoft.IdentityModel.Tokens;
 using ECommerce.WebApp.Configs.AppSettings;
 using ECommerce.Application.Services.Inventory;
 using ECommerce.Application.Services.Common;
+using ECommerce.WebApp.Utils;
 
 namespace ECommerce.WebApp
 {
@@ -59,15 +60,13 @@ namespace ECommerce.WebApp
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            var secretKey = Configuration["AppSettings:SecretKey"];
-            var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
+        { 
+            string secretKey = Configuration["AppSettings:SecretKey"];
+            byte[] secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
 
-            string connSecretKey = Configuration["AppSettings:ConnectionSecretKey"];
-            string connStr = Configuration.GetConnectionString("ECommerceDB");
+            string connStr = EncryptHelper.DecryptString(Configuration.GetConnectionString("ECommerceDB"));
 
-            services.AddDbContext<ECommerceContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ECommerceDB")));
+            services.AddDbContext<ECommerceContext>(options => options.UseSqlServer(connStr));
             services.AddControllersWithViews();
 
             services

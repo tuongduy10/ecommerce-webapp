@@ -10,6 +10,7 @@ import { useProductStore } from "src/_cores/_store/root-store";
 import { useDispatch } from "react-redux";
 import ProductService from "src/_cores/_services/product.service";
 import { setProductDetail } from "src/_cores/_reducers/product.reducer";
+import { ROUTE_NAME } from "src/_cores/_enums/route-config.enum";
 
 const ProductDetailPage = () => {
   const searchParams = new URLSearchParams(window.location.search);
@@ -40,7 +41,10 @@ const ProductDetailPage = () => {
         <div className="content__inner w-full pb-0">
           <WebDirectional
             items={[
-              { name: productStore.productDetail?.brand?.name ?? '', path: `?pageIndex=${1}&brandId=${productStore.productDetail?.brand?.id}` },
+              { 
+                name: productStore.productDetail?.brand?.name ?? '', 
+                path: `${ROUTE_NAME.PRODUCT_LIST}?pageIndex=${1}&brandId=${productStore.productDetail?.brand?.id}` 
+              },
               { name: productStore.productDetail?.name ?? '', path: `?id=${_id}` },
             ]}
           />

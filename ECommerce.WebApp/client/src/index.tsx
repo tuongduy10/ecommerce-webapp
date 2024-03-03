@@ -8,7 +8,9 @@ import 'src/_shares/_assets/_styles/main/footer.css';
 import "src/_shares/_assets/_styles/main/product-detail.css";
 import 'src/_shares/_assets/_styles/main/main.css';
 import { Provider } from 'react-redux';
-import { store } from './_cores/_store/root-store';
+import { persistedStore, store } from './_cores/_store/root-store';
+import { PersistGate } from 'redux-persist/integration/react';
+import { MyAlert } from './_shares/_components';
 
 
 const root = ReactDOM.createRoot(
@@ -16,7 +18,10 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <Provider store={store}>
-    <App />
+    <PersistGate persistor={persistedStore}>
+      <MyAlert />
+      <App />
+    </PersistGate>
   </Provider>
 );
 

@@ -226,12 +226,14 @@ namespace ECommerce.Application.Services.Product
             try
             {
                 //Request parameters
-                int id = request.id ?? -1;
                 int brandId = request.brandId;
                 int subCategoryId = request.subCategoryId;
                 int pageindex = request.PageIndex;
                 int pagesize = request.PageSize;
                 string orderBy = request.orderBy;
+                if (request.id > -1)
+                    request.ids.Add(request.id);
+                List<int> ids = request.ids;
                 List<int> listOptionValueId = request.optionValueIds;
 
                 var proIdsByOption = _productOptionValueRepo.Entity()
@@ -240,73 +242,59 @@ namespace ECommerce.Application.Services.Product
                     .Distinct()
                     .ToList();
 
-                var query = _productRepo.Entity()
-                    .Join(_brandRepo.Entity(),
-                        product => product.BrandId,
-                        brand => brand.BrandId,
-                        (product, brand) => new { product, brand })
-                    .Join(_shopRepo.Entity(),
-                        combined => combined.product.ShopId,
-                        shop => shop.ShopId,
-                        (combined, shop) => new { combined.product, combined.brand, shop })
-                    .Where(combined => 
-                        combined.product.BrandId == brandId &&
-                        combined.product.Status == (int)ProductStatusEnum.Available)
-                    .Select(combined => new { combined.product, combined.brand, combined.shop })
-                    .Where(q =>
-                        (proIdsByOption != null && proIdsByOption.Contains(q.product.ProductId)) ||
-                        (brandId > -1 && q.product.BrandId == brandId) ||
-                        (subCategoryId > -1 && q.product.SubCategoryId == subCategoryId) ||
-                        (orderBy == "newest" ? q.product.New == true : q.product.New == false) ||
-                        (orderBy == "discount" ? q.product.DiscountPercent > 0 : q.product.DiscountPercent > -1))
-                    .OrderBy(combined => combined.product.SubCategoryId);
-
-                var list = query
-                    .Select(i => new ProductModel()
-                    {
-                        id = i.product.ProductId,
-                        name = i.product.ProductName,
-                        discountPercent = i.product.DiscountPercent,
-                        status = i.product.Status,
-                        isHighlight = i.product.Highlights,
-                        isNew = i.product.New,
-                        createdDate = i.product.ProductAddedDate,
-                        importDate = i.product.ProductImportDate,
-                        subCategoryId = i.product.SubCategoryId,
-
-                        priceAvailable = i.product.PriceAvailable,
-                        pricePreOrder = i.product.PricePreOrder,
-                        discountAvailable = i.product.DiscountAvailable,
-                        discountPreOrder = i.product.DiscountPreOrder,
-
-                        imagePaths = _productImageRepo.Entity()
-                            .Where(img => img.ProductId == i.product.ProductId)
-                            .Select(i => i.ProductImagePath)
-                            .ToList(),
-                        brand = new BrandModel
-                        {
-                            id = i.product.BrandId,
-                            name = i.product.Brand.BrandName,
-                            description = i.product.Brand.Description,
-                            descriptionTitle = i.product.Brand.DescriptionTitle,
-                            imagePath = i.product.Brand.BrandImagePath,
-                        },
-                    });
+                var extQuery = _productRepo.Queryable(_ =>
+                    (ids.Count == 0 || ids.Contains(_.ProductId)) &&
+                    (proIdsByOption.Count == 0 || proIdsByOption.Contains(_.ProductId)) &&
+                    (brandId == -1 || _.BrandId == brandId) &&
+                    (subCategoryId == -1 || _.SubCategoryId == subCategoryId) &&
+                    (orderBy == "newest" ? _.New == true : _.New != null) &&
+                    (orderBy == "discount" ? _.DiscountPercent != null : (_.DiscountPercent > (byte)0 || _.DiscountPercent == null)), "Brand");
 
                 if (orderBy == "asc")
                 {
-                    list = list.OrderBy(i => i.discountPreOrder ?? i.discountAvailable ?? i.pricePreOrder ?? i.priceAvailable);
+                    extQuery = extQuery.OrderBy(i => i.DiscountPreOrder ?? i.DiscountAvailable ?? i.PricePreOrder ?? i.PriceAvailable);
                 }
                 else if (orderBy == "desc")
                 {
-                    list = list.OrderByDescending(i => i.discountPreOrder ?? i.discountAvailable ?? i.pricePreOrder ?? i.priceAvailable);
+                    extQuery = extQuery.OrderByDescending(i => i.DiscountPreOrder ?? i.DiscountAvailable ?? i.PricePreOrder ?? i.PriceAvailable);
                 } 
                 else
                 {
-                    list = list.OrderByDescending(i => i.createdDate);
+                    extQuery = extQuery.OrderByDescending(i => i.ProductAddedDate);
                 }
 
-                var record = await list.CountAsync();
+                var list = extQuery.Select(i => new ProductModel()
+                {
+                    id = i.ProductId,
+                    name = i.ProductName,
+                    discountPercent = i.DiscountPercent,
+                    status = i.Status,
+                    isHighlight = i.Highlights,
+                    isNew = i.New,
+                    createdDate = i.ProductAddedDate,
+                    importDate = i.ProductImportDate,
+                    subCategoryId = i.SubCategoryId,
+
+                    priceAvailable = i.PriceAvailable,
+                    pricePreOrder = i.PricePreOrder,
+                    discountAvailable = i.DiscountAvailable,
+                    discountPreOrder = i.DiscountPreOrder,
+
+                    imagePaths = _productImageRepo.Entity()
+                            .Where(img => img.ProductId == i.ProductId)
+                            .Select(i => i.ProductImagePath)
+                            .ToList(),
+                    brand = new BrandModel
+                    {
+                        id = i.BrandId,
+                        name = i.Brand.BrandName,
+                        // description = i.Brand.Description,
+                        descriptionTitle = i.Brand.DescriptionTitle,
+                        imagePath = i.Brand.BrandImagePath,
+                    },
+                });
+
+                var record = await extQuery.CountAsync();
                 var data = await PaginatedList<ProductModel>.CreateAsync(list, pageindex, pagesize);
                 var result = new PageResult<ProductModel>()
                 {
@@ -409,28 +397,29 @@ namespace ECommerce.Application.Services.Product
         }
         public async Task<Response<bool>> save(ProductSaveRequest request) // add or update
         {
+            if (string.IsNullOrEmpty(request.name))
+                return new FailResponse<bool>("Vui lòng nhập tên sản phẩm");
+            if (request.shopId == -1)
+                return new FailResponse<bool>("Vui lòng chọn cửa hàng");
+            if (request.brandId == -1)
+                return new FailResponse<bool>("Vui lòng chọn thương hiệu");
+            if (request.subCategoryId == -1)
+                return new FailResponse<bool>("Vui lòng chọn loại sản phẩm");
+            // price
+            if (request.priceAvailable == null && request.discountAvailable == null && request.pricePreOrder == null && request.discountPreOrder == null)
+                return new FailResponse<bool>("Vui lòng nhập giá sản phẩm");
+            if (request.priceAvailable == null && request.discountAvailable != null)
+                return new FailResponse<bool>("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
+            if (request.priceAvailable < request.discountAvailable)
+                return new FailResponse<bool>("Giá giảm không thể lớn hơn giá gốc !");
+            if (request.pricePreOrder == null && request.discountPreOrder != null)
+                return new FailResponse<bool>("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
+            if (request.pricePreOrder < request.discountPreOrder)
+                return new FailResponse<bool>("Giá giảm không thể lớn hơn giá gốc !");
+
+            using var transaction = await _DbContext.Database.BeginTransactionAsync();
             try
             {
-                if (string.IsNullOrEmpty(request.name))
-                    return new FailResponse<bool>("Vui lòng nhập tên sản phẩm");
-                if (request.shopId == -1)
-                    return new FailResponse<bool>("Vui lòng chọn cửa hàng");
-                if (request.brandId == -1)
-                    return new FailResponse<bool>("Vui lòng chọn thương hiệu");
-                if (request.subCategoryId == -1)
-                    return new FailResponse<bool>("Vui lòng chọn loại sản phẩm");
-                // price
-                if (request.priceAvailable == null && request.discountAvailable == null && request.pricePreOrder == null && request.discountPreOrder == null)
-                    return new FailResponse<bool>("Vui lòng nhập giá sản phẩm");
-                if (request.priceAvailable == null && request.discountAvailable != null)
-                    return new FailResponse<bool>("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
-                if (request.priceAvailable < request.discountAvailable)
-                    return new FailResponse<bool>("Giá giảm không thể lớn hơn giá gốc !");
-                if (request.pricePreOrder == null && request.discountPreOrder != null)
-                    return new FailResponse<bool>("Vui lòng nhập giá gốc trước khi nhập giảm giá !");
-                if (request.pricePreOrder < request.discountPreOrder)
-                    return new FailResponse<bool>("Giá giảm không thể lớn hơn giá gốc !");
-                
                 var hasCode = await _productRepo.Entity()
                     .Where(i => request.code != null && i.ProductCode == request.code.Trim())
                     .AnyAsync();
@@ -619,23 +608,26 @@ namespace ECommerce.Application.Services.Product
                     await _productUserImageRepo.AddRangeAsync(userImgAddReq);
                     await _productUserImageRepo.SaveChangesAsync();
                 }
-
+                await transaction.CommitAsync();
                 return new SuccessResponse<bool>();
             }
             catch (Exception error)
             {
+                await transaction.RollbackAsync();
                 return new FailResponse<bool>(error.Message);
             }
         }
         public async Task<Response<ProductDeleteResponse>> delete(ProductDeleteRequest request)
         {
+            
+            var ids = request.ids;
+            // Check null product
+            var products = await _DbContext.Products.Where(i => ids.Contains(i.ProductId)).ToListAsync();
+            if (products == null || products.Count == 0) return new FailResponse<ProductDeleteResponse>("Sản phẩm không tồn tại");
+
+            using var transaction = await _DbContext.Database.BeginTransactionAsync();
             try
             {
-                var ids = request.ids;
-                // Check null product
-                var products = await _DbContext.Products.Where(i => ids.Contains(i.ProductId)).ToListAsync();
-                if (products == null || products.Count == 0) return new FailResponse<ProductDeleteResponse>("Sản phẩm không tồn tại");
-
                 // System's iamges
                 var sysImages = await _DbContext.ProductImages.Where(i => ids.Contains(i.ProductId)).ToListAsync();
                 if (sysImages.Count > 0) _DbContext.ProductImages.RemoveRange(sysImages);
@@ -666,10 +658,13 @@ namespace ECommerce.Application.Services.Product
                 // Remove product and save changes
                 _productRepo.Entity().RemoveRange(products);
                 _productRepo.SaveChangesAsync().Wait();
+
+                await transaction.CommitAsync();
                 return new SuccessResponse<ProductDeleteResponse>(data);
             }
             catch (Exception error)
             {
+                await transaction.RollbackAsync();
                 return new FailResponse<ProductDeleteResponse>(error.Message);
             }
         }
