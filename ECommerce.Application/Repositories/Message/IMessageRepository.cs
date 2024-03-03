@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Repositories.Message
 {
-    public interface IMessageRepository : IRepositoryBase<Data.Models.MessageHistory>
+    public interface IMessageRepository : IRepositoryBase<Data.Entities.MessageHistory>
     {
         
     }

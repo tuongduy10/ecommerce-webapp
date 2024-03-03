@@ -21,7 +21,7 @@ namespace ECommerce.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("ECommerce.Data.Models.Attribute", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Attribute", b =>
                 {
                     b.Property<int>("AttributeId")
                         .ValueGeneratedOnAdd()
@@ -37,7 +37,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Attribute");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Bank", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Bank", b =>
                 {
                     b.Property<int>("BankId")
                         .ValueGeneratedOnAdd()
@@ -69,7 +69,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Bank");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Banner", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Banner", b =>
                 {
                     b.Property<int>("BannerId")
                         .ValueGeneratedOnAdd()
@@ -89,7 +89,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Banner");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Blog", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Blog", b =>
                 {
                     b.Property<int>("BlogId")
                         .ValueGeneratedOnAdd()
@@ -114,7 +114,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Blog");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Brand", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Brand", b =>
                 {
                     b.Property<int>("BrandId")
                         .ValueGeneratedOnAdd()
@@ -161,7 +161,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Brand");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.BrandCategory", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.BrandCategory", b =>
                 {
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
@@ -176,7 +176,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("BrandCategory");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Category", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Category", b =>
                 {
                     b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
@@ -193,7 +193,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Category");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Common.District", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Common.District", b =>
                 {
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(450)");
@@ -224,7 +224,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Districts");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Common.Province", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Common.Province", b =>
                 {
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(450)");
@@ -255,7 +255,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Provinces");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Common.Ward", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Common.Ward", b =>
                 {
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(450)");
@@ -286,7 +286,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Wards");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Configuration", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Configuration", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -346,7 +346,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Configurations");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Discount", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Discount", b =>
                 {
                     b.Property<int>("DiscountId")
                         .ValueGeneratedOnAdd()
@@ -394,7 +394,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Discount");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Header", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Header", b =>
                 {
                     b.Property<int>("HeaderId")
                         .ValueGeneratedOnAdd()
@@ -421,7 +421,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Header");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Interest", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Interest", b =>
                 {
                     b.Property<int>("RateId")
                         .HasColumnType("int");
@@ -439,7 +439,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Interest");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.MessageHistory", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.MessageHistory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -487,7 +487,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("MessageHistory");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Notification", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Notification", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -529,7 +529,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Notification");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.NotificationType", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.NotificationType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -550,7 +550,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("NotificationType");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.OnlineHistory", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.OnlineHistory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -571,7 +571,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("OnlineHistory");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Option", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Option", b =>
                 {
                     b.Property<int>("OptionId")
                         .ValueGeneratedOnAdd()
@@ -588,7 +588,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Option");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.OptionValue", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.OptionValue", b =>
                 {
                     b.Property<int>("OptionValueId")
                         .ValueGeneratedOnAdd()
@@ -613,7 +613,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("OptionValue");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Order", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Order", b =>
                 {
                     b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd()
@@ -675,7 +675,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Order");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.OrderDetail", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.OrderDetail", b =>
                 {
                     b.Property<int>("OrderDetailId")
                         .ValueGeneratedOnAdd()
@@ -739,7 +739,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("OrderDetail");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.PaymentMethod", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.PaymentMethod", b =>
                 {
                     b.Property<int>("PaymentMethodId")
                         .ValueGeneratedOnAdd()
@@ -756,7 +756,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("PaymentMethod");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Product", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Product", b =>
                 {
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
@@ -878,7 +878,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Product");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.ProductAttribute", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.ProductAttribute", b =>
                 {
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -897,7 +897,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("ProductAttribute");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.ProductImage", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.ProductImage", b =>
                 {
                     b.Property<int>("ProductImageId")
                         .ValueGeneratedOnAdd()
@@ -920,7 +920,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("ProductImage");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.ProductOptionValue", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.ProductOptionValue", b =>
                 {
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -935,7 +935,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("ProductOptionValue");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.ProductPrice", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.ProductPrice", b =>
                 {
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -956,7 +956,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("ProductPrice");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.ProductType", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.ProductType", b =>
                 {
                     b.Property<int>("ProductTypeId")
                         .ValueGeneratedOnAdd()
@@ -972,7 +972,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("ProductType");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.ProductUserImage", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.ProductUserImage", b =>
                 {
                     b.Property<int>("ProductUserImageId")
                         .ValueGeneratedOnAdd()
@@ -994,7 +994,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("ProductUserImage");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Rate", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Rate", b =>
                 {
                     b.Property<int>("RateId")
                         .ValueGeneratedOnAdd()
@@ -1046,7 +1046,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Rate");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.RatingImage", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.RatingImage", b =>
                 {
                     b.Property<int>("RatingImageId")
                         .ValueGeneratedOnAdd()
@@ -1068,7 +1068,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("RatingImage");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Role", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Role", b =>
                 {
                     b.Property<int>("RoleId")
                         .ValueGeneratedOnAdd()
@@ -1086,7 +1086,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Role");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Shop", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Shop", b =>
                 {
                     b.Property<int>("ShopId")
                         .ValueGeneratedOnAdd()
@@ -1152,7 +1152,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Shop");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.ShopBank", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.ShopBank", b =>
                 {
                     b.Property<int>("ShopBankId")
                         .ValueGeneratedOnAdd()
@@ -1185,7 +1185,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("ShopBank");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.ShopBrand", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.ShopBrand", b =>
                 {
                     b.Property<int>("ShopId")
                         .HasColumnType("int");
@@ -1200,7 +1200,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("ShopBrand");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.SizeGuide", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.SizeGuide", b =>
                 {
                     b.Property<int>("SizeGuideId")
                         .ValueGeneratedOnAdd()
@@ -1219,7 +1219,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("SizeGuide");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Social", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Social", b =>
                 {
                     b.Property<int>("SocialId")
                         .ValueGeneratedOnAdd()
@@ -1251,7 +1251,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("Social");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.SubCategory", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.SubCategory", b =>
                 {
                     b.Property<int>("SubCategoryId")
                         .ValueGeneratedOnAdd()
@@ -1278,7 +1278,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("SubCategory");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.SubCategoryAttribute", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.SubCategoryAttribute", b =>
                 {
                     b.Property<int>("AttributeId")
                         .HasColumnType("int");
@@ -1293,7 +1293,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("SubCategoryAttribute");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.SubCategoryOption", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.SubCategoryOption", b =>
                 {
                     b.Property<int>("SubCategoryId")
                         .HasColumnType("int");
@@ -1308,7 +1308,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("SubCategoryOption");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.User", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
@@ -1384,7 +1384,7 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.UserRole", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.UserRole", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -1399,292 +1399,292 @@ namespace ECommerce.Data.Migrations
                     b.ToTable("UserRole");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Brand", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Brand", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Discount", "Discount")
+                    b.HasOne("ECommerce.Data.Entities.Discount", "Discount")
                         .WithMany("Brands")
                         .HasForeignKey("DiscountId")
                         .HasConstraintName("FK_Brand_Discount");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.BrandCategory", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.BrandCategory", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Brand", "Brand")
+                    b.HasOne("ECommerce.Data.Entities.Brand", "Brand")
                         .WithMany("BrandCategories")
                         .HasForeignKey("BrandId")
                         .HasConstraintName("FK_BrandCategory_Brand")
                         .IsRequired();
 
-                    b.HasOne("ECommerce.Data.Models.Category", "Category")
+                    b.HasOne("ECommerce.Data.Entities.Category", "Category")
                         .WithMany("BrandCategories")
                         .HasForeignKey("CategoryId")
                         .HasConstraintName("FK_BrandCategory_Category")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Interest", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Interest", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Rate", "Rate")
+                    b.HasOne("ECommerce.Data.Entities.Rate", "Rate")
                         .WithMany("Interests")
                         .HasForeignKey("RateId")
                         .HasConstraintName("FK_Interest_Rate")
                         .IsRequired();
 
-                    b.HasOne("ECommerce.Data.Models.User", "User")
+                    b.HasOne("ECommerce.Data.Entities.User", "User")
                         .WithMany("Interests")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_Interest_User")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Notification", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Notification", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.User", "Receiver")
+                    b.HasOne("ECommerce.Data.Entities.User", "Receiver")
                         .WithMany("NotificationReceivers")
                         .HasForeignKey("ReceiverId")
                         .HasConstraintName("FK_Notification_User");
 
-                    b.HasOne("ECommerce.Data.Models.User", "Sender")
+                    b.HasOne("ECommerce.Data.Entities.User", "Sender")
                         .WithMany("NotificationSenders")
                         .HasForeignKey("SenderId")
                         .HasConstraintName("FK_Notification_User1");
 
-                    b.HasOne("ECommerce.Data.Models.NotificationType", "Type")
+                    b.HasOne("ECommerce.Data.Entities.NotificationType", "Type")
                         .WithMany("Notifications")
                         .HasForeignKey("TypeId")
                         .HasConstraintName("FK_Notification_NotificationType");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.OptionValue", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.OptionValue", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Option", "Option")
+                    b.HasOne("ECommerce.Data.Entities.Option", "Option")
                         .WithMany("OptionValues")
                         .HasForeignKey("OptionId")
                         .HasConstraintName("FK_OptionValue_Option")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Order", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Order", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.PaymentMethod", "PaymentMethod")
+                    b.HasOne("ECommerce.Data.Entities.PaymentMethod", "PaymentMethod")
                         .WithMany("Orders")
                         .HasForeignKey("PaymentMethodId")
                         .HasConstraintName("FK_Order_PaymentMethod");
 
-                    b.HasOne("ECommerce.Data.Models.User", "User")
+                    b.HasOne("ECommerce.Data.Entities.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_Order_User");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.OrderDetail", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.OrderDetail", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Order", "Order")
+                    b.HasOne("ECommerce.Data.Entities.Order", "Order")
                         .WithMany("OrderDetails")
                         .HasForeignKey("OrderId")
                         .HasConstraintName("FK_OrderDetail_Order")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Product", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Product", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Brand", "Brand")
+                    b.HasOne("ECommerce.Data.Entities.Brand", "Brand")
                         .WithMany("Products")
                         .HasForeignKey("BrandId")
                         .HasConstraintName("FK_Product_Brand")
                         .IsRequired();
 
-                    b.HasOne("ECommerce.Data.Models.Shop", "Shop")
+                    b.HasOne("ECommerce.Data.Entities.Shop", "Shop")
                         .WithMany("Products")
                         .HasForeignKey("ShopId")
                         .HasConstraintName("FK_Product_Shop")
                         .IsRequired();
 
-                    b.HasOne("ECommerce.Data.Models.SubCategory", "SubCategory")
+                    b.HasOne("ECommerce.Data.Entities.SubCategory", "SubCategory")
                         .WithMany("Products")
                         .HasForeignKey("SubCategoryId")
                         .HasConstraintName("FK_Product_SubCategory")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.ProductAttribute", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.ProductAttribute", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Attribute", "Attribute")
+                    b.HasOne("ECommerce.Data.Entities.Attribute", "Attribute")
                         .WithMany("ProductAttributes")
                         .HasForeignKey("AttributeId")
                         .HasConstraintName("FK_ProductAttribute_Attribute")
                         .IsRequired();
 
-                    b.HasOne("ECommerce.Data.Models.Product", "Product")
+                    b.HasOne("ECommerce.Data.Entities.Product", "Product")
                         .WithMany("ProductAttributes")
                         .HasForeignKey("ProductId")
                         .HasConstraintName("FK_ProductAttribute_Product")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.ProductImage", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.ProductImage", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Product", "Product")
+                    b.HasOne("ECommerce.Data.Entities.Product", "Product")
                         .WithMany("ProductImages")
                         .HasForeignKey("ProductId")
                         .HasConstraintName("FK_ProductImage_Product")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.ProductOptionValue", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.ProductOptionValue", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.OptionValue", "OptionValue")
+                    b.HasOne("ECommerce.Data.Entities.OptionValue", "OptionValue")
                         .WithMany("ProductOptionValues")
                         .HasForeignKey("OptionValueId")
                         .HasConstraintName("FK_ProductOptionValue_OptionValue")
                         .IsRequired();
 
-                    b.HasOne("ECommerce.Data.Models.Product", "Product")
+                    b.HasOne("ECommerce.Data.Entities.Product", "Product")
                         .WithMany("ProductOptionValues")
                         .HasForeignKey("ProductId")
                         .HasConstraintName("FK_ProductOptionValue_Product")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.ProductPrice", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.ProductPrice", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Product", "Product")
+                    b.HasOne("ECommerce.Data.Entities.Product", "Product")
                         .WithMany("ProductPrices")
                         .HasForeignKey("ProductId")
                         .HasConstraintName("FK_ProductPrice_Product")
                         .IsRequired();
 
-                    b.HasOne("ECommerce.Data.Models.ProductType", "ProductType")
+                    b.HasOne("ECommerce.Data.Entities.ProductType", "ProductType")
                         .WithMany("ProductPrices")
                         .HasForeignKey("ProductTypeId")
                         .HasConstraintName("FK_ProductPrice_ProductType")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.ProductUserImage", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.ProductUserImage", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Product", "Product")
+                    b.HasOne("ECommerce.Data.Entities.Product", "Product")
                         .WithMany("ProductUserImages")
                         .HasForeignKey("ProductId")
                         .HasConstraintName("FK_ProductUserImage_Product");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Rate", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Rate", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Product", "Product")
+                    b.HasOne("ECommerce.Data.Entities.Product", "Product")
                         .WithMany("Rates")
                         .HasForeignKey("ProductId")
                         .HasConstraintName("FK_Rate_Product");
 
-                    b.HasOne("ECommerce.Data.Models.User", "User")
+                    b.HasOne("ECommerce.Data.Entities.User", "User")
                         .WithMany("RateUsers")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_Rate_User");
 
-                    b.HasOne("ECommerce.Data.Models.User", "UserReplied")
+                    b.HasOne("ECommerce.Data.Entities.User", "UserReplied")
                         .WithMany("RateUserReplieds")
                         .HasForeignKey("UserRepliedId")
                         .HasConstraintName("FK_Rate_UserReplied");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.RatingImage", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.RatingImage", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Rate", "Rate")
+                    b.HasOne("ECommerce.Data.Entities.Rate", "Rate")
                         .WithMany("RatingImages")
                         .HasForeignKey("RateId")
                         .HasConstraintName("FK_RatingImage_Rate");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.Shop", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.Shop", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Discount", "Discount")
+                    b.HasOne("ECommerce.Data.Entities.Discount", "Discount")
                         .WithMany("Shops")
                         .HasForeignKey("DiscountId")
                         .HasConstraintName("FK_Shop_Discount");
 
-                    b.HasOne("ECommerce.Data.Models.User", "User")
+                    b.HasOne("ECommerce.Data.Entities.User", "User")
                         .WithMany("Shops")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_Shop_User");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.ShopBank", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.ShopBank", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Shop", "Shop")
+                    b.HasOne("ECommerce.Data.Entities.Shop", "Shop")
                         .WithMany("ShopBanks")
                         .HasForeignKey("ShopId")
                         .HasConstraintName("FK_ShopBank_Shop")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.ShopBrand", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.ShopBrand", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Brand", "Brand")
+                    b.HasOne("ECommerce.Data.Entities.Brand", "Brand")
                         .WithMany("ShopBrands")
                         .HasForeignKey("BrandId")
                         .HasConstraintName("FK_ShopBrand_Brand")
                         .IsRequired();
 
-                    b.HasOne("ECommerce.Data.Models.Shop", "Shop")
+                    b.HasOne("ECommerce.Data.Entities.Shop", "Shop")
                         .WithMany("ShopBrands")
                         .HasForeignKey("ShopId")
                         .HasConstraintName("FK_ShopBrand_Shop")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.SubCategory", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.SubCategory", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Category", "Category")
+                    b.HasOne("ECommerce.Data.Entities.Category", "Category")
                         .WithMany("SubCategories")
                         .HasForeignKey("CategoryId")
                         .HasConstraintName("FK_SubCategory_Category")
                         .IsRequired();
 
-                    b.HasOne("ECommerce.Data.Models.SizeGuide", "SizeGuide")
+                    b.HasOne("ECommerce.Data.Entities.SizeGuide", "SizeGuide")
                         .WithMany("SubCategories")
                         .HasForeignKey("SizeGuideId")
                         .HasConstraintName("FK_SubCategory_SizeGuide");
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.SubCategoryAttribute", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.SubCategoryAttribute", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Attribute", "Attribute")
+                    b.HasOne("ECommerce.Data.Entities.Attribute", "Attribute")
                         .WithMany("SubCategoryAttributes")
                         .HasForeignKey("AttributeId")
                         .HasConstraintName("FK_SubCategoryAttribute_Attribute")
                         .IsRequired();
 
-                    b.HasOne("ECommerce.Data.Models.SubCategory", "SubCategory")
+                    b.HasOne("ECommerce.Data.Entities.SubCategory", "SubCategory")
                         .WithMany("SubCategoryAttributes")
                         .HasForeignKey("SubCategoryId")
                         .HasConstraintName("FK_SubCategoryAttribute_SubCategory")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.SubCategoryOption", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.SubCategoryOption", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Option", "Option")
+                    b.HasOne("ECommerce.Data.Entities.Option", "Option")
                         .WithMany("SubCategoryOptions")
                         .HasForeignKey("OptionId")
                         .HasConstraintName("FK_SubCategoryOption_Option")
                         .IsRequired();
 
-                    b.HasOne("ECommerce.Data.Models.SubCategory", "SubCategory")
+                    b.HasOne("ECommerce.Data.Entities.SubCategory", "SubCategory")
                         .WithMany("SubCategoryOptions")
                         .HasForeignKey("SubCategoryId")
                         .HasConstraintName("FK_SubCategoryOption_SubCategory")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ECommerce.Data.Models.UserRole", b =>
+            modelBuilder.Entity("ECommerce.Data.Entities.UserRole", b =>
                 {
-                    b.HasOne("ECommerce.Data.Models.Role", "Role")
+                    b.HasOne("ECommerce.Data.Entities.Role", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .HasConstraintName("FK_UserRole_Role")
                         .IsRequired();
 
-                    b.HasOne("ECommerce.Data.Models.User", "User")
+                    b.HasOne("ECommerce.Data.Entities.User", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_UserRole_User")

@@ -299,7 +299,7 @@ namespace ECommerce.Application.BaseServices.Rate
                 }
 
                 // Add comment content
-                var comment = new Data.Models.Rate()
+                var comment = new Data.Entities.Rate()
                 {
                     Comment = request.comment,
                     ProductId = request.productId,
@@ -319,7 +319,7 @@ namespace ECommerce.Application.BaseServices.Rate
                 {
                     foreach (var filename in request.fileNames)
                     {
-                        var image = new Data.Models.RatingImage()
+                        var image = new Data.Entities.RatingImage()
                         {
                             RateId = comment.RateId,
                             RatingImagePath = filename,
@@ -330,7 +330,7 @@ namespace ECommerce.Application.BaseServices.Rate
                 }
 
                 // Notification
-                var notification = new Data.Models.Notification()
+                var notification = new Data.Entities.Notification()
                 {
                     TextContent = comment.Comment,
                     IsRead = false,
@@ -361,7 +361,7 @@ namespace ECommerce.Application.BaseServices.Rate
                 int rateId = 0;
                 if (currObj == null)
                 {
-                    var _obj = new Data.Models.Interest
+                    var _obj = new Data.Entities.Interest
                     {
                         RateId = request.rateId,
                         UserId = request.userId,
@@ -434,7 +434,7 @@ namespace ECommerce.Application.BaseServices.Rate
                 if (isOwner) return new ApiFailResponse("Bạn không thể đánh giá sản phẩm của mình");
 
                 // Add comment content
-                var comment = new Data.Models.Rate()
+                var comment = new Data.Entities.Rate()
                 {
                     Comment = request.comment,
                     RateValue = request.value,
@@ -450,7 +450,7 @@ namespace ECommerce.Application.BaseServices.Rate
                 {
                     foreach (var filename in request.fileNames)
                     {
-                        var image = new Data.Models.RatingImage()
+                        var image = new Data.Entities.RatingImage()
                         {
                             RateId = comment.RateId,
                             RatingImagePath = filename,
@@ -488,7 +488,7 @@ namespace ECommerce.Application.BaseServices.Rate
                 {
                     foreach (var filename in request.fileNames)
                     {
-                        var image = new Data.Models.RatingImage()
+                        var image = new Data.Entities.RatingImage()
                         {
                             RateId = comment.RateId,
                             RatingImagePath = filename,

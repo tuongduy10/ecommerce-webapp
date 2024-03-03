@@ -1,7 +1,7 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.BaseServices.Configurations.Dtos.Header;
 using ECommerce.Data.Context;
-using ECommerce.Data.Models;
+using ECommerce.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;

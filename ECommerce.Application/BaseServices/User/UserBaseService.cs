@@ -143,7 +143,7 @@ namespace ECommerce.Application.BaseServices.User
                 var checkPhone = await _DbContext.Users.Where(i => i.UserPhone == request.UserPhone).FirstOrDefaultAsync();
                 if (checkPhone != null) return new ApiFailResponse("Số điện thoại đã tồn tại");
 
-                Data.Models.User user = new Data.Models.User();
+                Data.Entities.User user = new Data.Entities.User();
                 user.UserMail = !string.IsNullOrEmpty(request.UserMail) ? request.UserMail.Trim() : null;
                 user.UserJoinDate = DateTime.Now;
                 user.UserFullName = !string.IsNullOrEmpty(request.UserFullName) ? request.UserFullName.Trim() : null;
@@ -158,7 +158,7 @@ namespace ECommerce.Application.BaseServices.User
                 await _DbContext.Users.AddAsync(user);
                 await _DbContext.SaveChangesAsync();
 
-                Data.Models.UserRole role = new Data.Models.UserRole();
+                Data.Entities.UserRole role = new Data.Entities.UserRole();
                 role.RoleId = request.RoleId != 0 ? request.RoleId : (int)enumRole.Buyer;
                 role.UserId = user.UserId;
                 await _DbContext.UserRoles.AddAsync(role);
@@ -205,7 +205,7 @@ namespace ECommerce.Application.BaseServices.User
                 if (checkPhone != null) 
                     return new ApiFailResponse("Số điện thoại đã tồn tại");
 
-                Data.Models.User user = new Data.Models.User();
+                Data.Entities.User user = new Data.Entities.User();
                 user.UserMail = request.UserMail != null ? request.UserMail.Trim() : null;
                 user.UserJoinDate = DateTime.Now;
                 user.UserFullName = request.UserFullName != null ? request.UserFullName.Trim() : null;
@@ -223,7 +223,7 @@ namespace ECommerce.Application.BaseServices.User
                 await _DbContext.SaveChangesAsync();
 
                 // Role
-                Data.Models.UserRole role = new Data.Models.UserRole();
+                Data.Entities.UserRole role = new Data.Entities.UserRole();
                 role.RoleId = (int)enumRole.Seller;
                 role.UserId = user.UserId;
                 await _DbContext.UserRoles.AddAsync(role);

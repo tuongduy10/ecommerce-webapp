@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Repositories.Category
 {
-    public class CategoryRepository : RepositoryBase<Data.Models.Category>, ICategoryRepository
+    public class CategoryRepository : RepositoryBase<Data.Entities.Category>, ICategoryRepository
     {
         public CategoryRepository(ECommerceContext DbContext) : base(DbContext)
         {

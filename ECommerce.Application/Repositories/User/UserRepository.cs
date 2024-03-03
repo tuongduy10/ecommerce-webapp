@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Repositories.User
 {
-    public class UserRepository : RepositoryBase<Data.Models.User>,IUserRepository
+    public class UserRepository : RepositoryBase<Data.Entities.User>,IUserRepository
     {
         public UserRepository(ECommerceContext DbContext) : base(DbContext)
         {

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Repositories.Interest
 {
-    public class InterestRepository : RepositoryBase<Data.Models.Interest>, IInterestRepository
+    public class InterestRepository : RepositoryBase<Data.Entities.Interest>, IInterestRepository
     {
         public InterestRepository(ECommerceContext DbContext): base(DbContext) { }
 
@@ -30,7 +30,7 @@ namespace ECommerce.Application.Repositories.Interest
             int rateId = 0;
             if (currObj == null)
             {
-                var _obj = new Data.Models.Interest
+                var _obj = new Data.Entities.Interest
                 {
                     RateId = request.rateId,
                     UserId = request.userId,

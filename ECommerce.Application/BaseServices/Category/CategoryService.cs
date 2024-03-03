@@ -26,7 +26,7 @@ namespace ECommerce.Application.BaseServices.Category
                 var check = await _DbContext.Categories.Where(i => i.CategoryName == request.CategoryName.Trim()).ToListAsync();
                 if (check.Count > 0) return new ApiFailResponse("Danh mục này đã tồn tại");
 
-                var category = new Data.Models.Category()
+                var category = new Data.Entities.Category()
                 {
                     CategoryName = request.CategoryName.Trim()
                 };

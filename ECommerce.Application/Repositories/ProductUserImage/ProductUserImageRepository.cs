@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Repositories.ProductUserImage
 {
-    public class ProductUserImageRepository : RepositoryBase<Data.Models.ProductUserImage>, IProductUserImageRepository
+    public class ProductUserImageRepository : RepositoryBase<Data.Entities.ProductUserImage>, IProductUserImageRepository
     {
         public ProductUserImageRepository(ECommerceContext DbContext) : base(DbContext)
         {

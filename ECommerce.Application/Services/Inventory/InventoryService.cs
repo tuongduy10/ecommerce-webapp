@@ -4,7 +4,8 @@ using ECommerce.Application.Repositories;
 using ECommerce.Application.Services.Inventory.Dtos;
 using ECommerce.Application.Services.User.Dtos;
 using ECommerce.Data.Context;
-using ECommerce.Data.Models;
+using ECommerce.Data.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,9 +18,9 @@ namespace ECommerce.Application.Services.Inventory
     public class InventoryService : IInventoryService
     {
         private readonly ECommerceContext _DbContext;
-        private readonly IRepositoryBase<Data.Models.Product> _productRepo;
-        private readonly IRepositoryBase<Data.Models.Option> _optionRepo;
-        private readonly IRepositoryBase<Data.Models.OptionValue> _optionValueRepo;
+        private readonly IRepositoryBase<Data.Entities.Product> _productRepo;
+        private readonly IRepositoryBase<Data.Entities.Option> _optionRepo;
+        private readonly IRepositoryBase<Data.Entities.OptionValue> _optionValueRepo;
         private readonly IRepositoryBase<Brand> _brandRepo;
         private readonly IRepositoryBase<BrandCategory> _brandCategoryRepo;
         private readonly IRepositoryBase<ShopBrand> _shopBrandRepo;
@@ -33,7 +34,7 @@ namespace ECommerce.Application.Services.Inventory
         {
             _DbContext = DbContext;
             if (_productRepo == null)
-                _productRepo = new RepositoryBase<Data.Models.Product>(_DbContext);
+                _productRepo = new RepositoryBase<Data.Entities.Product>(_DbContext);
             if (_brandRepo == null)
                 _brandRepo = new RepositoryBase<Brand>(_DbContext);
             if (_brandCategoryRepo == null)
@@ -43,9 +44,9 @@ namespace ECommerce.Application.Services.Inventory
             if (_subCategoryRepo == null)
                 _subCategoryRepo = new RepositoryBase<SubCategory>(_DbContext);
             if (_optionRepo == null)
-                _optionRepo = new RepositoryBase<Data.Models.Option>(_DbContext);
+                _optionRepo = new RepositoryBase<Data.Entities.Option>(_DbContext);
             if (_optionValueRepo == null)
-                _optionValueRepo = new RepositoryBase<Data.Models.OptionValue>(_DbContext);
+                _optionValueRepo = new RepositoryBase<Data.Entities.OptionValue>(_DbContext);
             if (_subCategoryOptionRepo == null)
                 _subCategoryOptionRepo = new RepositoryBase<SubCategoryOption>(_DbContext);
             if (_subCategoryAttributeRepo == null)
