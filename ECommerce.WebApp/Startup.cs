@@ -35,7 +35,7 @@ using Microsoft.AspNetCore.SignalR;
 using ECommerce.Application.Services.Product;
 using ECommerce.Application.Services.User;
 using Microsoft.Extensions.Logging;
-using ECommerce.Data.Models;
+using ECommerce.Data.Entities;
 using ECommerce.Application.Services.Chat;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using System.Text;

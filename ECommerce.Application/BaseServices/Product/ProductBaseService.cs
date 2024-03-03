@@ -9,7 +9,7 @@ using ECommerce.Application.BaseServices.Rate;
 using ECommerce.Application.BaseServices.SubCategory.Dtos;
 using ECommerce.Application.BaseServices.User;
 using ECommerce.Data.Context;
-using ECommerce.Data.Models;
+using ECommerce.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
@@ -562,7 +562,7 @@ namespace ECommerce.Application.BaseServices.Product
                 /*
                  * None relationship data
                  */
-                var product = new Data.Models.Product
+                var product = new Data.Entities.Product
                 {
                     ProductCode = request.code.Trim(),
                     ProductName = request.name.Trim(), // required
@@ -679,7 +679,7 @@ namespace ECommerce.Application.BaseServices.Product
                     {
                         if (!string.IsNullOrEmpty(attr.value))
                         {
-                            var attribute = new Data.Models.ProductAttribute
+                            var attribute = new Data.Entities.ProductAttribute
                             {
                                 ProductId = product.ProductId,
                                 AttributeId = attr.id,
@@ -696,7 +696,7 @@ namespace ECommerce.Application.BaseServices.Product
                 {
                     foreach (var file in request.systemFileName)
                     {
-                        var systemImage = new Data.Models.ProductImage
+                        var systemImage = new Data.Entities.ProductImage
                         {
                             ProductId = product.ProductId,
                             ProductImagePath = file
@@ -709,7 +709,7 @@ namespace ECommerce.Application.BaseServices.Product
                 {
                     foreach (var file in request.userFileName)
                     {
-                        var userImage = new Data.Models.ProductUserImage
+                        var userImage = new Data.Entities.ProductUserImage
                         {
                             ProductId = product.ProductId,
                             ProductUserImagePath = file
@@ -832,7 +832,7 @@ namespace ECommerce.Application.BaseServices.Product
                                 .FirstOrDefaultAsync();
                         if (attribute == null) // Add new if not existed
                         {
-                            var newAttribute = new Data.Models.ProductAttribute
+                            var newAttribute = new Data.Entities.ProductAttribute
                             {
                                 ProductId = product.ProductId,
                                 AttributeId = attr.id,
@@ -916,7 +916,7 @@ namespace ECommerce.Application.BaseServices.Product
                 {
                     foreach (var file in request.systemFileName)
                     {
-                        var systemImage = new Data.Models.ProductImage
+                        var systemImage = new Data.Entities.ProductImage
                         {
                             ProductId = product.ProductId,
                             ProductImagePath = file
@@ -929,7 +929,7 @@ namespace ECommerce.Application.BaseServices.Product
                 {
                     foreach (var file in request.userFileName)
                     {
-                        var userImage = new Data.Models.ProductUserImage
+                        var userImage = new Data.Entities.ProductUserImage
                         {
                             ProductId = product.ProductId,
                             ProductUserImagePath = file

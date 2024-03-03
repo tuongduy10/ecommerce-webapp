@@ -1,4 +1,4 @@
-﻿using ECommerce.Data.Models;
+﻿using ECommerce.Data.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;

@@ -23,6 +23,6 @@ namespace ECommerce.Application.Services.User
         Task<Response<UserModel>> ValidateUser(SignInRequest request);
         Task<Response<List<ShopModel>>> GetShops();
         Task<Response<UserShopModel>> UpdateUser(UserShopModel request);
-        Task<Response<Data.Models.User>> UpdateUserStatus(UserUpdateRequest request);
+        Task<Response<Data.Entities.User>> UpdateUserStatus(UserUpdateRequest request);
     }
 }

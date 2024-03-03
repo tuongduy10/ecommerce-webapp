@@ -7,7 +7,7 @@ using ECommerce.Application.Repositories.User;
 using ECommerce.Application.Services.Comment.Request;
 using ECommerce.Application.BaseServices.Rate.Dtos;
 using ECommerce.Application.BaseServices.Rate.Models;
-using ECommerce.Data.Models;
+using ECommerce.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

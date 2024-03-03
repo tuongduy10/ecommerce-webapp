@@ -8,7 +8,7 @@ namespace ECommerce.WebApp.Models.SizeGuide
 {
     public class SizeGuideDetailViewModel
     {
-        public Data.Models.SizeGuide SizeGuide { get; set; }
+        public Data.Entities.SizeGuide SizeGuide { get; set; }
         public List<SubCategoryModel> SubCategories { get; set; }
     }
 }

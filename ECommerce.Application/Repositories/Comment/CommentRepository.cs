@@ -1,5 +1,5 @@
 ﻿using ECommerce.Data.Context;
-using ECommerce.Data.Models;
+using ECommerce.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

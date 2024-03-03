@@ -31,7 +31,7 @@ namespace ECommerce.Application.BaseServices.SubCategory
                     return new ApiFailResponse("Đã tồn tại");
                 }
 
-                var subcate = new Data.Models.SubCategory
+                var subcate = new Data.Entities.SubCategory
                 {
                     SubCategoryName = request.SubCategoryName.Trim(),
                     CategoryId = request.CategoryId
@@ -107,7 +107,7 @@ namespace ECommerce.Application.BaseServices.SubCategory
                     // Add new or re-add
                     foreach (var id in request.optIds)
                     {
-                        var newOpt = new Data.Models.SubCategoryOption
+                        var newOpt = new Data.Entities.SubCategoryOption
                         {
                             SubCategoryId = request.id,
                             OptionId = id
@@ -131,7 +131,7 @@ namespace ECommerce.Application.BaseServices.SubCategory
                     // Add new or re-add
                     foreach (var attr in request.attrIds)
                     {
-                        var newAttr = new Data.Models.SubCategoryAttribute
+                        var newAttr = new Data.Entities.SubCategoryAttribute
                         {
                             SubCategoryId = request.id,
                             AttributeId = attr
@@ -340,7 +340,7 @@ namespace ECommerce.Application.BaseServices.SubCategory
                 if (option == null) // Create new option and update option in subcategory
                 {
                     // Create new
-                    var newOption = new Data.Models.Option
+                    var newOption = new Data.Entities.Option
                     {
                         OptionName = request.name.Trim()
                     };
@@ -349,7 +349,7 @@ namespace ECommerce.Application.BaseServices.SubCategory
 
                     // update option in subcategory
                     var newSubOpts = request.ids
-                        .Select(id => new Data.Models.SubCategoryOption
+                        .Select(id => new Data.Entities.SubCategoryOption
                         {
                             SubCategoryId = id,
                             OptionId = newOption.OptionId
@@ -360,7 +360,7 @@ namespace ECommerce.Application.BaseServices.SubCategory
                 else // Update option in subcategory
                 {
                     var newSubOpt = request.ids
-                        .Select(id => new Data.Models.SubCategoryOption
+                        .Select(id => new Data.Entities.SubCategoryOption
                         {
                             SubCategoryId = id,
                             OptionId = option.OptionId
@@ -386,7 +386,7 @@ namespace ECommerce.Application.BaseServices.SubCategory
                 if (attribute == null) // Create new attribute and update attribute in subcategory
                 {
                     // Create new
-                    var newAttribute = new Data.Models.Attribute
+                    var newAttribute = new Data.Entities.Attribute
                     {
                         AttributeName = request.name.Trim()
                     };
@@ -401,7 +401,7 @@ namespace ECommerce.Application.BaseServices.SubCategory
                             .FirstOrDefaultAsync();
                         if (attrs == null)
                         {
-                            var attr = new Data.Models.SubCategoryAttribute
+                            var attr = new Data.Entities.SubCategoryAttribute
                             {
                                 SubCategoryId = id,
                                 AttributeId = newAttribute.AttributeId
@@ -420,7 +420,7 @@ namespace ECommerce.Application.BaseServices.SubCategory
                             .FirstOrDefaultAsync() == null;
                         if (attrIsNotExist)
                         {
-                            var attr = new Data.Models.SubCategoryAttribute
+                            var attr = new Data.Entities.SubCategoryAttribute
                             {
                                 SubCategoryId = id,
                                 AttributeId = attribute.AttributeId
@@ -470,7 +470,7 @@ namespace ECommerce.Application.BaseServices.SubCategory
                     if (value == null)
                     {
                         // Add new option value
-                        var newValue = new Data.Models.OptionValue
+                        var newValue = new Data.Entities.OptionValue
                         {
                             OptionValueName = request.value,
                             OptionId = id,
@@ -494,7 +494,7 @@ namespace ECommerce.Application.BaseServices.SubCategory
                                 #region using for to remove option values from option values and product option
                                 //foreach (var pro in pros)
                                 //{
-                                //    var newProductOptionValue = new Data.Models.ProductOptionValue
+                                //    var newProductOptionValue = new Data.Entities.ProductOptionValue
                                 //    {
                                 //        ProductId = pro.ProductId,
                                 //        OptionValueId = newValue.OptionValueId
@@ -504,7 +504,7 @@ namespace ECommerce.Application.BaseServices.SubCategory
                                 //}
                                 #endregion
                                 
-                                var newProOptVals = pros.Select(pro => new Data.Models.ProductOptionValue
+                                var newProOptVals = pros.Select(pro => new Data.Entities.ProductOptionValue
                                 {
                                     ProductId = pro.ProductId,
                                     OptionValueId = newValue.OptionValueId

@@ -27,9 +27,9 @@ namespace ECommerce.Application.BaseServices.Product
         Task<List<SizeGuideModel>> SizeGuideList();
         Task<ApiResponse> AddSizeGuide(SizeGuideAddRequest request);
         Task<ApiResponse> UpdateSizeGuide(SizeGuideAddRequest request);
-        Task<Response<Data.Models.SizeGuide>> SizeGuideDetail(int id);
+        Task<Response<Data.Entities.SizeGuide>> SizeGuideDetail(int id);
         Task<ApiResponse> DeleteSizeGuide(int id);
-        Task<Response<Data.Models.SizeGuide>> GetSizeGuideBySub(int id);
+        Task<Response<Data.Entities.SizeGuide>> GetSizeGuideBySub(int id);
         Task<Response<string>> DeleteProductImage(int id);
         Task<Response<string>> DeleteProductUserImage(int id);
     }

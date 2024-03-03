@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Repositories.Category
 {
-    public interface ICategoryRepository : IRepositoryBase<Data.Models.Category>
+    public interface ICategoryRepository : IRepositoryBase<Data.Entities.Category>
     {
 
     }

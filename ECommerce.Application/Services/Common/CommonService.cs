@@ -3,7 +3,7 @@ using ECommerce.Application.Repositories;
 using ECommerce.Application.Services.Common.DTOs;
 using ECommerce.Application.Services.Common.DTOs.Requests;
 using ECommerce.Data.Context;
-using ECommerce.Data.Models.Common;
+using ECommerce.Data.Entities.Common;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System;

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ECommerce.Application.Repositories.OnlineHistory
 {
-    public class OnlineHistoryRepository : RepositoryBase<Data.Models.OnlineHistory> ,IOnlineHistoryRepository
+    public class OnlineHistoryRepository : RepositoryBase<Data.Entities.OnlineHistory> ,IOnlineHistoryRepository
     {
         public OnlineHistoryRepository(ECommerceContext DbContext) : base(DbContext)
         {

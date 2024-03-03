@@ -1,4 +1,4 @@
-﻿using ECommerce.Data.Models.Common;
+﻿using ECommerce.Data.Entities.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;

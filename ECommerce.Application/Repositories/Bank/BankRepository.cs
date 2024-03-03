@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Repositories.Bank
 {
-    public class BankRepository : RepositoryBase<Data.Models.Bank>, IBankRepository
+    public class BankRepository : RepositoryBase<Data.Entities.Bank>, IBankRepository
     {
         public BankRepository(ECommerceContext DbContext) : base(DbContext)
         {

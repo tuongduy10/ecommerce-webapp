@@ -1,6 +1,6 @@
 ﻿using ECommerce.Application.BaseServices.Shop.Dtos;
 using ECommerce.Application.Services.Inventory.Dtos;
-using ECommerce.Data.Models;
+using ECommerce.Data.Entities;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;

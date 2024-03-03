@@ -1,7 +1,7 @@
 ﻿using ECommerce.Application.Constants;
 using ECommerce.Application.Services.Chat;
 using ECommerce.Application.Services.Chat.Dtos;
-using ECommerce.Data.Models;
+using ECommerce.Data.Entities;
 using ECommerce.WebApp.Hubs.Dtos;
 using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.SignalR;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Repositories.Bank
 {
-    public interface IBankRepository : IRepositoryBase<Data.Models.Bank>
+    public interface IBankRepository : IRepositoryBase<Data.Entities.Bank>
     {
     }
 }

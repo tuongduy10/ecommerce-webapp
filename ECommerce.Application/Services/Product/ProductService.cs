@@ -5,7 +5,7 @@ using ECommerce.Application.Repositories;
 using ECommerce.Application.Services.Inventory;
 using ECommerce.Application.Services.Inventory.Dtos;
 using ECommerce.Data.Context;
-using ECommerce.Data.Models;
+using ECommerce.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
@@ -25,7 +25,7 @@ namespace ECommerce.Application.Services.Product
     public class ProductService : IProductService
     {
         private readonly ECommerceContext _DbContext;
-        private readonly IRepositoryBase<Data.Models.Product> _productRepo;
+        private readonly IRepositoryBase<Data.Entities.Product> _productRepo;
         private readonly IRepositoryBase<Option> _optionRepo;
         private readonly IRepositoryBase<OptionValue> _optionValueRepo;
         private readonly IRepositoryBase<Brand> _brandRepo;
@@ -55,7 +55,7 @@ namespace ECommerce.Application.Services.Product
             _commonService = commonService;
             _webHostEnvironment = webHostEnvironment;
             if (_productRepo == null)
-                _productRepo = new RepositoryBase<Data.Models.Product>(_DbContext);
+                _productRepo = new RepositoryBase<Data.Entities.Product>(_DbContext);
             if (_brandCategoryRepo == null)
                 _brandCategoryRepo = new RepositoryBase<BrandCategory>(_DbContext);
             if (_subCategoryRepo == null)
@@ -432,7 +432,7 @@ namespace ECommerce.Application.Services.Product
                  */
                 var product = await _productRepo.GetAsyncWhere(_ => _.ProductId == request.id);
                 if (product == null)
-                    product = new Data.Models.Product();
+                    product = new Data.Entities.Product();
                 product.ProductCode = request.code.Trim();
                 product.ProductName = request.name.Trim(); // required
                 product.Ppc = await getNewPPC();
