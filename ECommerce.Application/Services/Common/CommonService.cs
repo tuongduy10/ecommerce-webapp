@@ -41,7 +41,7 @@ namespace ECommerce.Application.Services.Common
                     string filePath = Path.Combine(uploadsFolder, filesName[i]);
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
-                        files[i].CopyTo(fileStream);
+                        files[i].CopyTo(fileStream); // test
                     }
                 }
             }
