@@ -1,0 +1,59 @@
+name: create-release
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  build:
+    name: create-release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+                
+      - name: Setup Git Client
+        run: |
+          ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+          git config --global user.email "github-actions@doesnotmatter.dev"
+          git config --global user.name "GitHub Actions"
+          
+      - name: Checkout
+        uses: actions/checkout@v4
+          
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3.0.3
+        with:
+          dotnet-version: 7.0.400
+          # Authenticates packages to push to GPR
+          source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+        env:
+          NUGET_AUTH_TOKEN: '%NUGET_AUTH_TOKEN%'
+
+      - name: Install dependencies
+        run: dotnet restore
+        env:
+          NUGET_AUTH_TOKEN: ${{ github.token }}
+                  
+      - name: Build
+        run: dotnet publish --configuration Release
+                
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+
+      - name: Deploy
+        run: |
+          git clone --depth 1 --single-branch -b deploy/prod git@github.com:${{ github.repository }}.git deploy
+          mv deploy/.git deploy-.git
+          rm -rf deploy
+          mkdir deploy
+          mv deploy-.git deploy/.git
+          cd deploy
+          cp -R ../bin/Release/net7.0/publish .
+          git add .
+          git diff --staged --quiet || git commit -m "Update Artifacts"
+          git push
