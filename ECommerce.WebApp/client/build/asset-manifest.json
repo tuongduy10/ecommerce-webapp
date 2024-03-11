@@ -1,0 +1,37 @@
+{
+  "files": {
+    "main.css": "/static/css/main.0eaa938d.css",
+    "main.js": "/static/js/main.61be1e99.js",
+    "static/js/787.d494d409.chunk.js": "/static/js/787.d494d409.chunk.js",
+    "static/media/messenger.svg": "/static/media/messenger.b805c24ba2a7f3515649b822262d76a9.svg",
+    "static/media/phone.svg": "/static/media/phone.062e51db25d09dcc39da963a8ec87be5.svg",
+    "static/media/list.svg": "/static/media/list.cd526778e7f1a9360b2f0ef1348e451d.svg",
+    "index.html": "/index.html",
+    "static/media/thumbs-down.svg": "/static/media/thumbs-down.29ba6d434c19a08da9ba3ee389b8fa86.svg",
+    "static/media/log-out.svg": "/static/media/log-out.7ac1bd3bb904329b894d5e54e1f88f89.svg",
+    "static/media/thumbs-up.svg": "/static/media/thumbs-up.a61cf8c57e9a5453e94579c141ca0236.svg",
+    "static/media/info.svg": "/static/media/info.e7a3d8195050af2b7a255f3a8cfeef31.svg",
+    "static/media/shopping-bag.svg": "/static/media/shopping-bag.e54de39807bcc7041120e41fc06d8df5.svg",
+    "static/media/heart.svg": "/static/media/heart.8f7eabedbe11805c2ca732549d038cc7.svg",
+    "static/media/help-circle.svg": "/static/media/help-circle.3c1ce12d3523d829ce9db107f0ebf3e0.svg",
+    "static/media/edit-3.svg": "/static/media/edit-3.b6113eee823b2a4a35632b33a2e08e30.svg",
+    "static/media/bell.svg": "/static/media/bell.c343301357896696476c3f782dbb0ffd.svg",
+    "static/media/menu.svg": "/static/media/menu.5d22e62959e21d19b7e6afc0308d8d3b.svg",
+    "static/media/star-filled.svg": "/static/media/star-filled.91cecba36228ef6d2d4656231d00e526.svg",
+    "static/media/star.svg": "/static/media/star.028fadb9b1eccfbcc7d0b8c548d60b1a.svg",
+    "static/media/smartphone.svg": "/static/media/smartphone.a2a11994ea0874467a51c85213a3c115.svg",
+    "static/media/user.svg": "/static/media/user.cb38b318694b3aae963759567cf1fc42.svg",
+    "static/media/search.svg": "/static/media/search.e283e703e15f02526660b149ca287eeb.svg",
+    "static/media/x.svg": "/static/media/x.61cdcd18557d38f91041c652acc9ca81.svg",
+    "static/media/chevron-down.svg": "/static/media/chevron-down.d8d25077983d2da6b2df31a8a5748f6f.svg",
+    "static/media/chevron-left.svg": "/static/media/chevron-left.f7d1e2909bf18074c87abaa529aa99e9.svg",
+    "static/media/chevron-right.svg": "/static/media/chevron-right.1a0640e642bf51c66cf8a0d92642b58b.svg",
+    "main.0eaa938d.css.map": "/static/css/main.0eaa938d.css.map",
+    "main.61be1e99.js.map": "/static/js/main.61be1e99.js.map",
+    "787.d494d409.chunk.js.map": "/static/js/787.d494d409.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0eaa938d.css",
+    "static/js/main.61be1e99.js"
+  ]
+}

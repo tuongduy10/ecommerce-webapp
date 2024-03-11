@@ -125,7 +125,7 @@ namespace ECommerce.WebApp
             //services.AddScoped<IAuthorizationHandler, CustomAuthorizationHandler>();
             //services.Configure<SecurityStampValidatorOptions>(option => option.ValidationInterval = TimeSpan.FromSeconds(10));
             //services.AddHttpContextAccessor();
-            //services.AddScoped<IUserService>();
+            //services.AddScoped<IUserService>(); //
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
