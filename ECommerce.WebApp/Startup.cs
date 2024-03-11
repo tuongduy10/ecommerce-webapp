@@ -16,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using ECommerce.WebApp.Configs.AppSettings;
 using ECommerce.WebApp.Utils;
 using ECommerce.Application.Extensions;
+using Microsoft.AspNetCore.Http;
 
 namespace ECommerce.WebApp
 {
@@ -69,12 +70,14 @@ namespace ECommerce.WebApp
                     });
             });
             services.AddControllers();
+            services.AddHttpClient();
             services.AddSignalR();
             services.AddHttpContextAccessor();
 
             services.Configure<AppSetting>(Configuration.GetSection("AppSettings"));
 
             // Services
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransientServices();
             services.AddScopedServices();
 

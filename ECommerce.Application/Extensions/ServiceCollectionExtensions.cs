@@ -13,6 +13,7 @@ using ECommerce.Application.BaseServices.User;
 using ECommerce.Application.Services.Chat;
 using ECommerce.Application.Services.Comment;
 using ECommerce.Application.Services.Common;
+using ECommerce.Application.Services.HttpClient;
 using ECommerce.Application.Services.Inventory;
 using ECommerce.Application.Services.Notification;
 using ECommerce.Application.Services.Product;
@@ -28,6 +29,7 @@ namespace ECommerce.Application.Extensions
     {
         public static void AddTransientServices(this IServiceCollection services)
         {
+            services.AddTransient<IHttpClientService, HttpClientService>();
             services.AddTransient<IConfigurationService, ConfigurationService>();
             services.AddTransient<IHeaderService, HeaderService>();
             services.AddTransient<IFooterService, FooterService>();

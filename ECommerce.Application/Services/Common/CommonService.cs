@@ -2,14 +2,18 @@
 using ECommerce.Application.Repositories;
 using ECommerce.Application.Services.Common.DTOs;
 using ECommerce.Application.Services.Common.DTOs.Requests;
+using ECommerce.Application.Services.HttpClient;
 using ECommerce.Data.Context;
 using ECommerce.Data.Entities.Common;
+using ECommerce.Dtos.Common;
+using ECommerce.Utilities.Helpers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,9 +25,12 @@ namespace ECommerce.Application.Services.Common
         private readonly IRepositoryBase<Province> _provinceRepo;
         private readonly IRepositoryBase<District> _districtRepo;
         private readonly IRepositoryBase<Ward> _wardRepo;
-        public CommonService(ECommerceContext DbContext)
+        private readonly IHttpClientService _httpClientService;
+        public CommonService(ECommerceContext DbContext,
+            IHttpClientService httpClientService)
         {
             _DbContext = DbContext;
+            _httpClientService = httpClientService;
             if (_provinceRepo == null)
                 _provinceRepo = new RepositoryBase<Province>(_DbContext);
             if (_districtRepo == null)
@@ -31,7 +38,7 @@ namespace ECommerce.Application.Services.Common
             if (_wardRepo == null)
                 _wardRepo = new RepositoryBase<Ward>(_DbContext);
         }
-        public void AddFiles(IWebHostEnvironment webHostEnviroment, List<IFormFile> files, List<string> filesName, string path)
+        public async void AddFiles(IWebHostEnvironment webHostEnviroment, List<IFormFile> files, List<string> filesName, string path)
         {
             if (files != null && filesName != null && !String.IsNullOrEmpty(path))
             {
@@ -44,6 +51,33 @@ namespace ECommerce.Application.Services.Common
                         files[i].CopyTo(fileStream);
                     }
                 }
+            }
+        }
+        public async Task<Response<List<string>>> UploadAsync(UploadRequest request)
+        {
+            try
+            {
+                var formData = new MultipartFormDataContent();
+                if (request.files != null && request.files.Count > 0)
+                {
+                    foreach (var file in request.files)
+                    {
+                        byte[] data;
+                        using (var br = new BinaryReader(file.OpenReadStream()))
+                        {
+                            data = br.ReadBytes((int)file.OpenReadStream().Length);
+                        }
+                        ByteArrayContent bytes = new ByteArrayContent(data);
+                        formData.Add(bytes, "files", file.FileName);
+                    }
+                }
+                formData.Add(new StringContent(request.uploadType), "uploadType");
+
+                return await _httpClientService.PostFormDataAsync<Response<List<string>>>("/common/upload", formData);
+            }
+            catch (Exception ex)
+            {
+                return new FailResponse<List<string>>(ex.Message);
             }
         }
         public void DeleteFiles(IWebHostEnvironment webHostEnviroment, List<string> fileNames, string path)
@@ -63,6 +97,17 @@ namespace ECommerce.Application.Services.Common
                         }
                     }
                 }
+            }
+        }
+        public async Task<Response<string>> DeleteFilesAsync(RemoveFilesRequest request)
+        {
+            try
+            {
+                return await _httpClientService.PostAsync<RemoveFilesRequest, Response<string>>("/common/remove-files", request);
+            }
+            catch (Exception ex)
+            {
+                return new FailResponse<string>(ex.Message);
             }
         }
         public async Task<Response<List<ProvinceResponse>>> getProvinces()
@@ -106,6 +151,14 @@ namespace ECommerce.Application.Services.Common
             {
                 return new FailResponse<List<WardResponse>>(error.Message);
             }
+        }
+        public string EncryptString(HashRequest request)
+        {
+            return HashHelper.Encrypt(request.text, request.key);
+        }
+        public string DecryptString(HashRequest request)
+        {
+            return HashHelper.Decrypt(request.text, request.key);
         }
     }
 }
