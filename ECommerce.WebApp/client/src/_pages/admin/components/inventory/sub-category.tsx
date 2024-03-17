@@ -1,6 +1,6 @@
-import { Autocomplete, Box, Button, Checkbox, Collapse, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, ListItemText, Menu, MenuItem, OutlinedInput, Paper, Popper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, Checkbox, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, ListItemText, Menu, MenuItem, OutlinedInput, Paper, Popper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import { FormEvent, Fragment, useEffect, useState } from "react";
-import { ICategory } from "src/_cores/_interfaces/inventory.interface";
+import { ICategory, ISubCategory } from "src/_cores/_interfaces/inventory.interface";
 import { ITableHeader } from "src/_shares/_components/data-table/data-table";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -13,12 +13,13 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 const header: ITableHeader[] = [
-    { field: 'name', fieldName: 'Tên danh mục', align: 'left' },
+    { field: 'name', fieldName: 'Tên loại sản phẩm', align: 'left' },
+    { field: 'category', fieldName: 'Danh mục', align: 'left' },
     { field: 'action', fieldName: '', align: 'center' }
 ];
 
 type TableRowProps = {
-    rowData: ICategory,
+    rowData: ISubCategory,
     isSelected: boolean,
     onUpdateStatus: (id: number, status: number) => void,
     onDelete: (id: number) => void,
@@ -60,7 +61,7 @@ function Row(props: TableRowProps) {
                 <TableCell>
                     <Checkbox
                         checked={isSelected}
-                        onChange={() => onSelected(rowData.categoryId)}
+                        onChange={() => onSelected(rowData.id)}
                         sx={{ display: 'none' }}
                     />
                     <IconButton
@@ -73,12 +74,13 @@ function Row(props: TableRowProps) {
                     </IconButton>
                     <IconButton
                         size="small"
-                        onClick={() => viewDetail(rowData.categoryId)}
+                        onClick={() => viewDetail(rowData.id)}
                     >
                         <ModeEditIcon />
                     </IconButton>
                 </TableCell>
-                <TableCell align="left">{rowData.categoryName}</TableCell>
+                <TableCell align="left">{rowData.name}</TableCell>
+                <TableCell align="left">{rowData.category?.categoryName ?? ''}</TableCell>
                 <TableCell align="center">
                     <Button
                         variant="outlined"
@@ -98,7 +100,7 @@ function Row(props: TableRowProps) {
                             'aria-labelledby': 'basic-button',
                         }}
                     >
-                        <MenuItem onClick={() => deleteProduct(rowData.categoryId)}>Xác nhận xóa</MenuItem>
+                        <MenuItem onClick={() => deleteProduct(rowData.id)}>Xác nhận xóa</MenuItem>
                         <MenuItem onClick={handleCloseDel}>Hủy</MenuItem>
                     </Menu>
                 </TableCell>
@@ -114,22 +116,27 @@ function Row(props: TableRowProps) {
     );
 }
 
-export default function Category() {
+export default function SubCategory() {
     const [open, setOpen] = useState(false);
-    const [categories, setCategories] = useState<any[]>([]);
     const [subCategories, setSubCategories] = useState<any[]>([]);
-    const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+    const [categories, setCategories] = useState<ICategory[]>([]);
+    const [attributes, setAttributes] = useState<any[]>([]);
+    const [options, setOptions] = useState<any[]>([]);
+    const [selectedSubCategories, setSelectedSubCategories] = useState<number[]>([]);
     const [formData, setFormData] = useState({
+        id: -1,
+        name: '',
         categoryId: -1,
-        categoryName: '',
+        attributeIds: [] as any,
+        optionIds: [] as any
     });
 
     useEffect(() => {
         search();
     }, []);
 
-    const isIndeterminate = (): boolean => selectedCategories.length > 0 && selectedCategories.length < categories.length;
-    const isSelectedAll = (): boolean => selectedCategories.length > 0 && selectedCategories.length === categories.length;
+    const isIndeterminate = (): boolean => selectedSubCategories.length > 0 && selectedSubCategories.length < subCategories.length;
+    const isSelectedAll = (): boolean => selectedSubCategories.length > 0 && selectedSubCategories.length === subCategories.length;
 
     const handleChange = (e: any) => {
         const { name, value } = e.target;
@@ -147,21 +154,34 @@ export default function Category() {
         setOpen(false);
         setFormData({
             ...formData,
+            id: -1,
+            name: '',
             categoryId: -1,
-            categoryName: ''
+            attributeIds: [],
+            optionIds: []
         });
     };
 
     const search = async (_params?: any) => {
-        const response = await InventoryService.getCategories() as any;
-        if (response?.isSucceed) {
-            setCategories(response.data);
-        }
         const subResponse = await InventoryService.getSubCategories() as any;
         if (subResponse?.isSucceed) {
             setSubCategories(subResponse.data);
         }
-        setSelectedCategories([]);
+        const response = await InventoryService.getCategories() as any;
+        if (response?.isSucceed) {
+            setCategories(response.data);
+        }
+
+        const attrRes = await InventoryService.getAttributes() as any;
+        if (attrRes?.isSucceed) {
+            setAttributes(attrRes.data);
+        }
+
+        const optRes = await InventoryService.getOptions() as any;
+        if (optRes?.isSucceed) {
+            setOptions(optRes.data);
+        }
+        setSelectedSubCategories([]);
     }
 
     const onSearch = (event: FormEvent<HTMLFormElement>) => {
@@ -170,50 +190,74 @@ export default function Category() {
 
     const selectAll = () => {
         if (isIndeterminate() || isSelectedAll()) {
-            setSelectedCategories([]);
+            setSelectedSubCategories([]);
             return;
         }
-        const ids = [...categories].map(_ => _.id);
-        setSelectedCategories(ids);
+        const ids = [...subCategories].map(_ => _.id);
+        setSelectedSubCategories(ids);
     }
 
     const updateStatus = (id: number, status: number) => {
         const _params = {
-            ids: selectedCategories.length > 0 ? selectedCategories : [id],
+            ids: selectedSubCategories.length > 0 ? selectedSubCategories : [id],
             status: status,
         }
     }
 
-    const deleteCategory = (id?: number) => {
+    const deleteSubCategory = (id?: number) => {
         const _params = {
-            ids: selectedCategories.length > 0 ? selectedCategories : [id ?? -1]
+            ids: selectedSubCategories.length > 0 ? selectedSubCategories : [id ?? -1]
         }
 
     }
 
-    const selectCategory = (id: number) => {
-        if (!selectedCategories.includes(id)) {
-            const addNewSelected = selectedCategories.concat(id);
-            setSelectedCategories(addNewSelected);
+    const selectSubCategory = (id: number) => {
+        if (!selectedSubCategories.includes(id)) {
+            const addNewSelected = selectedSubCategories.concat(id);
+            setSelectedSubCategories(addNewSelected);
         } else {
-            const removeSelected = selectedCategories.filter(_ => _ !== id);
-            setSelectedCategories(removeSelected);
+            const removeSelected = selectedSubCategories.filter(_ => _ !== id);
+            setSelectedSubCategories(removeSelected);
         }
     }
 
     const viewDetail = async (id: number) => {
-        const response = await InventoryService.getCategory(id) as any;
+        const response = await InventoryService.getSubCategories({ subCategoryId: id }) as any;
         if (response?.isSucceed) {
-            const category = response?.data;
+            const _data = response?.data[0];
             const _value = {
                 ...formData,
-                categoryId: category.categoryId,
-                categoryName: category.categoryName,
+                id: _data.id,
+                name: _data.name,
+                categoryId: _data.category?.categoryId ?? -1,
+                attributeIds: _data.attributes.map((_: any) => _.id),
+                optionIds: _data.optionList.map((_: any) => _.id)
             }
             setFormData(_value);
             if (response.data)
                 handleClickOpen();
         }
+    }
+
+    const onChangeCategory = (value: ICategory) => {
+        setFormData({
+            ...formData,
+            categoryId: value?.categoryId ?? -1
+        });
+    }
+
+    const onChangeAttributes = (values: any) => {
+        setFormData({
+            ...formData,
+            attributeIds: values.map((_: any) => _.id) ?? []
+        });
+    }
+
+    const onChangeOptions = (values: any) => {
+        setFormData({
+            ...formData,
+            optionIds: values.map((_: any) => _.id) ?? []
+        });
     }
 
     const handleSubmit = async (e: any) => {
@@ -222,17 +266,18 @@ export default function Category() {
             await search();
             handleClose();
         }
-        const param = {
-            id: formData.categoryId,
-            name: formData.categoryName
+        const _params = {
+            ...formData,
+            attributes: formData.attributeIds.map((_: any) => ({ id: _})),
+            optionList: formData.optionIds.map((_: any) => ({ id: _})),
         }
-        if (formData.categoryId > -1) {
-            const reqUpdate = await InventoryService.updateCategory(param) as any;
+        if (formData.id > -1) {
+            const reqUpdate = await InventoryService.updateSubCategory(_params) as any;
             if (reqUpdate?.isSucceed) {
                 await returnToList();
             }
         } else {
-            const reqAdd = await InventoryService.addCategory({ name: formData.categoryName }) as any;
+            const reqAdd = await InventoryService.addSubCategory(_params) as any;
             if (reqAdd?.isSucceed) {
                 await returnToList();
             }
@@ -266,14 +311,14 @@ export default function Category() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {categories.length > 0 && categories.map((item, idx) => (
+                        {subCategories.length > 0 && subCategories.map((item, idx) => (
                             <Row
-                                key={`row-${item.categoryId}`}
+                                key={`row-${item.id}`}
                                 rowData={item}
-                                isSelected={selectedCategories.includes(item.categoryId)}
+                                isSelected={selectedSubCategories.includes(item.id)}
                                 onUpdateStatus={(id, status) => updateStatus(id, status)}
-                                onDelete={(id) => deleteCategory(id)}
-                                onSelected={(id) => selectCategory(id)}
+                                onDelete={(id) => deleteSubCategory(id)}
+                                onSelected={(id) => selectSubCategory(id)}
                                 onViewDetail={(id) => viewDetail(id)}
                             />
                         ))}
@@ -290,29 +335,41 @@ export default function Category() {
                 }}
             >
                 <Box component={'form'} onSubmit={handleSubmit}>
-                    <DialogTitle>Danh mục</DialogTitle>
+                    <DialogTitle>Loại sản phẩm</DialogTitle>
                     <DialogContent>
                         <TextField
                             autoFocus
                             required
                             margin="dense"
-                            name="categoryName"
-                            label="Tên danh mục"
+                            name="name"
+                            label="Tên loại sản phẩm"
                             type="text"
                             fullWidth
                             variant="standard"
                             sx={{ marginBottom: 2 }}
-                            value={formData.categoryName || ''}
+                            value={formData.name || ''}
                             onChange={handleChange}
+                        />
+                        <Autocomplete
+                            size="small"
+                            disablePortal
+                            sx={{ marginBottom: 2 }}
+                            options={categories}
+                            value={categories.find(_ => _.categoryId === formData.categoryId) ?? null}
+                            onChange={(event, value) => value && onChangeCategory(value)}
+                            getOptionLabel={(option) => `${option.categoryName}`}
+                            renderOption={(props, option) => <li {...props}>{option.categoryName}</li>}
+                            renderInput={(params) => <TextField {...params} label="Danh mục" />}
                         />
                         <Autocomplete
                             multiple
                             size="small"
                             disablePortal
-                            options={subCategories}
+                            options={attributes}
+                            sx={{ marginBottom: 2 }}
                             getOptionLabel={(_) => _.name}
-                            value={subCategories.length > 0 ? subCategories.filter(_ => _.categoryId === formData.categoryId) : []}
-                            renderInput={(params) => <TextField {...params} name="subCategory" label="Loại sản phẩm" />}
+                            value={attributes.length > 0 ? attributes.filter((_: any) => formData.attributeIds.includes(_.id)) : []}
+                            renderInput={(params) => <TextField {...params} name="attribute" label="Thông tin chi tiết" />}
                             renderOption={(props, _, { selected }) => (
                                 <li {...props}>
                                     <Checkbox
@@ -325,7 +382,30 @@ export default function Category() {
                                     {_.name}
                                 </li>
                             )}
-                        // onChange={(event, value) => onChangeShop(value)}
+                            onChange={(event, values) => onChangeAttributes(values)}
+                        />
+                        <Autocomplete
+                            multiple
+                            size="small"
+                            disablePortal
+                            options={options}
+                            sx={{ marginBottom: 2 }}
+                            getOptionLabel={(_) => _.name}
+                            value={options.length > 0 ? options.filter((_: any) => formData.optionIds.includes(_.id)) : []}
+                            renderInput={(params) => <TextField {...params} name="option" label="Thông tin tùy chọn" />}
+                            renderOption={(props, _, { selected }) => (
+                                <li {...props}>
+                                    <Checkbox
+                                        icon={icon}
+                                        checkedIcon={checkedIcon}
+                                        style={{ marginRight: 8 }}
+                                        checked={selected}
+                                        size="small"
+                                    />
+                                    {_.name} ({_.values.filter((_: any) => _.isBase).map((_: any) => _.name).join(", ")})
+                                </li>
+                            )}
+                            onChange={(event, values) => onChangeOptions(values)}
                         />
                     </DialogContent>
                     <DialogActions>

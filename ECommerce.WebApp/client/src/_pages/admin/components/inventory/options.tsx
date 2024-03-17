@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, Checkbox, Collapse, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, ListItemText, Menu, MenuItem, OutlinedInput, Paper, Popper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, Checkbox, Chip, Collapse, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, ListItemText, Menu, MenuItem, OutlinedInput, Paper, Popper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 import { ICategory } from "src/_cores/_interfaces/inventory.interface";
 import { ITableHeader } from "src/_shares/_components/data-table/data-table";
@@ -13,12 +13,12 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 const header: ITableHeader[] = [
-    { field: 'name', fieldName: 'Tên danh mục', align: 'left' },
+    { field: 'name', fieldName: 'Tên tùy chọn', align: 'left' },
     { field: 'action', fieldName: '', align: 'center' }
 ];
 
 type TableRowProps = {
-    rowData: ICategory,
+    rowData: any,
     isSelected: boolean,
     onUpdateStatus: (id: number, status: number) => void,
     onDelete: (id: number) => void,
@@ -60,8 +60,7 @@ function Row(props: TableRowProps) {
                 <TableCell>
                     <Checkbox
                         checked={isSelected}
-                        onChange={() => onSelected(rowData.categoryId)}
-                        sx={{ display: 'none' }}
+                        onChange={() => onSelected(rowData.id)}
                     />
                     <IconButton
                         aria-label="expand row"
@@ -73,12 +72,12 @@ function Row(props: TableRowProps) {
                     </IconButton>
                     <IconButton
                         size="small"
-                        onClick={() => viewDetail(rowData.categoryId)}
+                        onClick={() => viewDetail(rowData.id)}
                     >
                         <ModeEditIcon />
                     </IconButton>
                 </TableCell>
-                <TableCell align="left">{rowData.categoryName}</TableCell>
+                <TableCell align="left">{rowData.name}</TableCell>
                 <TableCell align="center">
                     <Button
                         variant="outlined"
@@ -98,7 +97,7 @@ function Row(props: TableRowProps) {
                             'aria-labelledby': 'basic-button',
                         }}
                     >
-                        <MenuItem onClick={() => deleteProduct(rowData.categoryId)}>Xác nhận xóa</MenuItem>
+                        <MenuItem onClick={() => deleteProduct(rowData.id)}>Xác nhận xóa</MenuItem>
                         <MenuItem onClick={handleCloseDel}>Hủy</MenuItem>
                     </Menu>
                 </TableCell>
@@ -114,22 +113,24 @@ function Row(props: TableRowProps) {
     );
 }
 
-export default function Category() {
+export default function Options() {
     const [open, setOpen] = useState(false);
-    const [categories, setCategories] = useState<any[]>([]);
-    const [subCategories, setSubCategories] = useState<any[]>([]);
-    const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+    const [options, setOptions] = useState<any[]>([]);
+    const [selectedItems, setSelectedItems] = useState<number[]>([]);
+    const [tempValues, setTempValues] = useState<number[]>([]);
+    const [newValue, setNewValue] = useState<string>("");
     const [formData, setFormData] = useState({
-        categoryId: -1,
-        categoryName: '',
+        id: -1,
+        name: '',
+        values: [] as any[]
     });
 
     useEffect(() => {
         search();
     }, []);
 
-    const isIndeterminate = (): boolean => selectedCategories.length > 0 && selectedCategories.length < categories.length;
-    const isSelectedAll = (): boolean => selectedCategories.length > 0 && selectedCategories.length === categories.length;
+    const isIndeterminate = (): boolean => selectedItems.length > 0 && selectedItems.length < options.length;
+    const isSelectedAll = (): boolean => selectedItems.length > 0 && selectedItems.length === options.length;
 
     const handleChange = (e: any) => {
         const { name, value } = e.target;
@@ -139,29 +140,32 @@ export default function Category() {
         });
     };
 
+    const handleChangeNewValue = (e: any) => {
+        const { name, value } = e.target;
+        setNewValue(value);
+    };
+
     const handleClickOpen = () => {
         setOpen(true);
     };
 
     const handleClose = () => {
-        setOpen(false);
         setFormData({
             ...formData,
-            categoryId: -1,
-            categoryName: ''
+            id: -1,
+            name: '',
+            values: []
         });
+        setTempValues([]);
+        setOpen(false);
     };
 
     const search = async (_params?: any) => {
-        const response = await InventoryService.getCategories() as any;
+        const response = await InventoryService.getOptions() as any;
         if (response?.isSucceed) {
-            setCategories(response.data);
+            setOptions(response.data);
         }
-        const subResponse = await InventoryService.getSubCategories() as any;
-        if (subResponse?.isSucceed) {
-            setSubCategories(subResponse.data);
-        }
-        setSelectedCategories([]);
+        setSelectedItems([]);
     }
 
     const onSearch = (event: FormEvent<HTMLFormElement>) => {
@@ -170,48 +174,55 @@ export default function Category() {
 
     const selectAll = () => {
         if (isIndeterminate() || isSelectedAll()) {
-            setSelectedCategories([]);
+            setSelectedItems([]);
             return;
         }
-        const ids = [...categories].map(_ => _.id);
-        setSelectedCategories(ids);
+        const ids = [...options].map(_ => _.id);
+        setSelectedItems(ids);
+    }
+
+    const onChangeValues = (values: any) => {
+
     }
 
     const updateStatus = (id: number, status: number) => {
         const _params = {
-            ids: selectedCategories.length > 0 ? selectedCategories : [id],
+            ids: selectedItems.length > 0 ? selectedItems : [id],
             status: status,
         }
     }
 
-    const deleteCategory = (id?: number) => {
+    const deleteValue = (id?: number) => {
         const _params = {
-            ids: selectedCategories.length > 0 ? selectedCategories : [id ?? -1]
+            ids: selectedItems.length > 0 ? selectedItems : [id ?? -1]
         }
 
     }
 
     const selectCategory = (id: number) => {
-        if (!selectedCategories.includes(id)) {
-            const addNewSelected = selectedCategories.concat(id);
-            setSelectedCategories(addNewSelected);
+        if (!selectedItems.includes(id)) {
+            const addNewSelected = selectedItems.concat(id);
+            setSelectedItems(addNewSelected);
         } else {
-            const removeSelected = selectedCategories.filter(_ => _ !== id);
-            setSelectedCategories(removeSelected);
+            const removeSelected = selectedItems.filter(_ => _ !== id);
+            setSelectedItems(removeSelected);
         }
     }
 
     const viewDetail = async (id: number) => {
-        const response = await InventoryService.getCategory(id) as any;
+        const response = await InventoryService.getOptions({ id: id }) as any;
         if (response?.isSucceed) {
-            const category = response?.data;
+            const _data = response?.data[0];
+            const _values = _data.values.filter((_: any) => _.isBase);
             const _value = {
                 ...formData,
-                categoryId: category.categoryId,
-                categoryName: category.categoryName,
+                id: _data.id,
+                name: _data.name,
+                values: _data.values.filter((_: any) => _.isBase)
             }
+            setTempValues(_values);
             setFormData(_value);
-            if (response.data)
+            if (_data)
                 handleClickOpen();
         }
     }
@@ -223,20 +234,14 @@ export default function Category() {
             handleClose();
         }
         const param = {
-            id: formData.categoryId,
-            name: formData.categoryName
+            id: formData.id,
+            name: formData.name
         }
-        if (formData.categoryId > -1) {
-            const reqUpdate = await InventoryService.updateCategory(param) as any;
-            if (reqUpdate?.isSucceed) {
-                await returnToList();
-            }
-        } else {
-            const reqAdd = await InventoryService.addCategory({ name: formData.categoryName }) as any;
-            if (reqAdd?.isSucceed) {
-                await returnToList();
-            }
+        const res = await InventoryService.saveOptions(param) as any;
+        if (res?.isSucceed) {
+            await returnToList();
         }
+
     };
 
     return (
@@ -257,7 +262,6 @@ export default function Category() {
                                     indeterminate={isIndeterminate()}
                                     checked={isSelectedAll()}
                                     onChange={selectAll}
-                                    sx={{ display: 'none' }}
                                 />
                             </TableCell>
                             {header.map((field) => (
@@ -266,13 +270,13 @@ export default function Category() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {categories.length > 0 && categories.map((item, idx) => (
+                        {options.length > 0 && options.map((item, idx) => (
                             <Row
-                                key={`row-${item.categoryId}`}
+                                key={`row-${item.id}`}
                                 rowData={item}
-                                isSelected={selectedCategories.includes(item.categoryId)}
+                                isSelected={selectedItems.includes(item.id)}
                                 onUpdateStatus={(id, status) => updateStatus(id, status)}
-                                onDelete={(id) => deleteCategory(id)}
+                                onDelete={(id) => { }}
                                 onSelected={(id) => selectCategory(id)}
                                 onViewDetail={(id) => viewDetail(id)}
                             />
@@ -290,43 +294,48 @@ export default function Category() {
                 }}
             >
                 <Box component={'form'} onSubmit={handleSubmit}>
-                    <DialogTitle>Danh mục</DialogTitle>
+                    <DialogTitle>Chi tiết</DialogTitle>
                     <DialogContent>
                         <TextField
                             autoFocus
                             required
                             margin="dense"
-                            name="categoryName"
-                            label="Tên danh mục"
+                            name="name"
+                            label="Tên tùy chọn"
                             type="text"
                             fullWidth
                             variant="standard"
                             sx={{ marginBottom: 2 }}
-                            value={formData.categoryName || ''}
+                            value={formData.name || ''}
                             onChange={handleChange}
                         />
-                        <Autocomplete
-                            multiple
-                            size="small"
-                            disablePortal
-                            options={subCategories}
-                            getOptionLabel={(_) => _.name}
-                            value={subCategories.length > 0 ? subCategories.filter(_ => _.categoryId === formData.categoryId) : []}
-                            renderInput={(params) => <TextField {...params} name="subCategory" label="Loại sản phẩm" />}
-                            renderOption={(props, _, { selected }) => (
-                                <li {...props}>
-                                    <Checkbox
-                                        icon={icon}
-                                        checkedIcon={checkedIcon}
-                                        style={{ marginRight: 8 }}
-                                        checked={selected}
-                                        size="small"
-                                    />
-                                    {_.name}
-                                </li>
-                            )}
-                        // onChange={(event, value) => onChangeShop(value)}
-                        />
+                        {formData.values.length > 0 && formData.values.map((_: any) => (
+                            <Chip
+                                key={`value-${_.id}`}
+                                label={_.name}
+                                sx={{ marginRight: 1, marginBottom: 1 }}
+                                onDelete={() => deleteValue(_.id)}
+                            />
+                        ))}
+                        <Grid container spacing={2} sx={{ marginBottom: 2 }}>
+                            <Grid item xs={12} sm={10}>
+                                <TextField
+                                    autoFocus
+                                    required
+                                    margin="dense"
+                                    name="name"
+                                    label="Giá trị"
+                                    type="text"
+                                    fullWidth
+                                    variant="standard"
+                                    value={newValue || ''}
+                                    onChange={handleChangeNewValue}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={2}>
+                                <Button variant="contained" onClick={() => { }}>Thêm</Button>
+                            </Grid>
+                        </Grid>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose}>Đóng</Button>

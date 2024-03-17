@@ -25,6 +25,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import CategoryIcon from '@mui/icons-material/Category';
+import StorageIcon from '@mui/icons-material/Storage';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { Outlet, useNavigate } from 'react-router-dom';
 import SessionService from 'src/_cores/_services/session.service';
@@ -35,7 +36,7 @@ const mainListItems = [
     { name: "dashboard", icon: <HomeRoundedIcon />, label: "Trang chủ", path: "/" },
     {
         name: "product",
-        icon: <InventoryIcon />,
+        icon: <StorageIcon />,
         label: "Sản phẩm",
         path: "",
         childs: [
@@ -61,6 +62,21 @@ const mainListItems = [
                 name: 'category',
                 label: 'Danh mục',
                 path: ADMIN_ROUTE_NAME.MANAGE_INVENTORY_CATEGORY,
+            },
+            {
+                name: 'subCategory',
+                label: 'Loại sản phẩm',
+                path: ADMIN_ROUTE_NAME.MANAGE_INVENTORY_SUB_CATEGORY,
+            },
+            {
+                name: 'options',
+                label: 'Thông tin tùy chọn',
+                path: ADMIN_ROUTE_NAME.MANAGE_INVENTORY_OPTIONS,
+            },
+            {
+                name: 'attributes',
+                label: 'Thông tin chi tiết',
+                path: ADMIN_ROUTE_NAME.MANAGE_INVENTORY_ATTRIBUTES,
             },
         ]
     },

@@ -62,6 +62,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ECommerce.Data\ECommerce.Data.csproj" />
+    <ProjectReference Include="..\ECommerce.Dtos\ECommerce.Dtos.csproj" />
+    <ProjectReference Include="..\ECommerce.Utilities\ECommerce.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

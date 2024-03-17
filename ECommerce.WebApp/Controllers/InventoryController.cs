@@ -52,6 +52,47 @@ namespace ECommerce.WebApp.Controllers
                 return BadRequest(res);
             return Ok(res);
         }
+        [HttpGet("get-category/{id}")]
+        public async Task<IActionResult> getCategories(int id)
+        {
+            var res = await _inventoryService.getCategory(id);
+            if (!res.isSucceed)
+                return BadRequest(res);
+            return Ok(res);
+        }
+        [HttpPost("update-category")]
+        public async Task<IActionResult> updateCategory(CategoryModelRequest req)
+        {
+            var res = await _inventoryService.updateCategory(req);
+            if (!res.isSucceed)
+                return BadRequest(res);
+            return Ok(res);
+        }
+        [HttpPost("add-category")]
+        public async Task<IActionResult> addCategory(CategoryModelRequest req)
+        {
+            var res = await _inventoryService.addCategory(req);
+            if (!res.isSucceed)
+                return BadRequest(res);
+            return Ok(res);
+        }
+        [HttpPost("add-sub-category")]
+        public async Task<IActionResult> addSubCategory(SubCategoryModel request)
+        {
+            var res = await _inventoryService.addSubCategory(request);
+            if (!res.isSucceed)
+                return BadRequest(res);
+            return Ok(res);
+        }
+        [HttpPost("update-sub-category")]
+        public async Task<IActionResult> updateSubCategory(SubCategoryModel request)
+        {
+            var res = await _inventoryService.updateSubCategory(request);
+            if (!res.isSucceed)
+                return BadRequest(res);
+            return Ok(res);
+        }
+
         [HttpGet("get-brand/{id}")]
         public async Task<IActionResult> getBrand(int id)
         {
@@ -59,6 +100,14 @@ namespace ECommerce.WebApp.Controllers
             if (!res.isSucceed)
                 return BadRequest(res);
             return Ok(res);
+        }
+        [HttpPost("options")]
+        public async Task<IActionResult> getOptions(InventoryRequest request)
+        {
+            var result = await _inventoryService.getOptions(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
         }
         [HttpPost("product-options")]
         public async Task<IActionResult> getProductOptions(InventoryRequest request)
@@ -72,6 +121,22 @@ namespace ECommerce.WebApp.Controllers
         public async Task<IActionResult> getProductAttributes(InventoryRequest request)
         {
             var result = await _inventoryService.getProductAttributes(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
+        [HttpPost("attributes")]
+        public async Task<IActionResult> getAttributes(InventoryRequest request)
+        {
+            var result = await _inventoryService.getAttributes(request);
+            if (!result.isSucceed)
+                return BadRequest(result);
+            return Ok(result);
+        }
+        [HttpPost("save-attributes")]
+        public async Task<IActionResult> saveAttributes(InventoryRequest request)
+        {
+            var result = await _inventoryService.saveAttributes(request);
             if (!result.isSucceed)
                 return BadRequest(result);
             return Ok(result);

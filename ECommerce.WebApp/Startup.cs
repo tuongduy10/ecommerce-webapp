@@ -1,9 +1,3 @@
-using ECommerce.Application.BaseServices.Brand;
-using ECommerce.Application.BaseServices.SubCategory;
-using ECommerce.Application.BaseServices.Category;
-using ECommerce.Application.BaseServices.Configurations;
-using ECommerce.Application.BaseServices.Product;
-using ECommerce.Application.BaseServices.Discount;
 using ECommerce.Data.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,39 +6,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using ECommerce.Application.BaseServices.FilterProduct;
-using ECommerce.Application.BaseServices.User;
-using ECommerce.Application.BaseServices.Bank;
-using ECommerce.Application.BaseServices.Shop;
-using ECommerce.Application.BaseServices.Rate;
-using ECommerce.Application.BaseServices.Role;
-using Microsoft.AspNetCore.Http;
 using ECommerce.WebApp.Middlewares;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
-using ECommerce.WebApp.Configs.ActionFilters;
 using ECommerce.WebApp.Configs.Middlewares;
-using ECommerce.Application.Services.Notification;
-using ECommerce.WebApp.Configs.ActionFilters.HttpResponse;
-using Microsoft.AspNetCore.Mvc;
-using System.Net.Mime;
-using ECommerce.Application.Repositories;
-using ECommerce.Application.Services.Comment;
-using ECommerce.WebApp.Hubs;
-using Microsoft.AspNetCore.SignalR;
-using ECommerce.Application.Services.Product;
-using ECommerce.Application.Services.User;
 using Microsoft.Extensions.Logging;
-using ECommerce.Data.Entities;
-using ECommerce.Application.Services.Chat;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using ECommerce.WebApp.Configs.AppSettings;
-using ECommerce.Application.Services.Inventory;
-using ECommerce.Application.Services.Common;
 using ECommerce.WebApp.Utils;
+using ECommerce.Application.Extensions;
+using Microsoft.AspNetCore.Http;
 
 namespace ECommerce.WebApp
 {
@@ -98,38 +70,16 @@ namespace ECommerce.WebApp
                     });
             });
             services.AddControllers();
-            services.AddSignalR();
+            services.AddHttpClient();
+            //services.AddSignalR();
             services.AddHttpContextAccessor();
 
             services.Configure<AppSetting>(Configuration.GetSection("AppSettings"));
 
-            /*
-             * Business Services
-             */
-            // Base Services
-            services.AddTransient<IConfigurationService, ConfigurationService>();
-            services.AddTransient<IHeaderService, HeaderService>();
-            services.AddTransient<IFooterService, FooterService>();
-            services.AddTransient<IProductBaseService, ProductBaseService>();
-            services.AddTransient<ISubCategoryService, SubCategoryService>();
-            services.AddTransient<ICategoryService, CategoryService>();
-            services.AddTransient<IBrandService, BrandService>();
-            services.AddTransient<IFilterProductService, FilterProductService>();
-            services.AddTransient<IBankService, BankService>();
-            services.AddTransient<IRateService, RateService>();
-            services.AddTransient<IDiscountService, DiscountService>();
-            services.AddTransient<IUserBaseService, UserBaseService>();
-            services.AddTransient<IRoleService, RoleService>();
-            services.AddTransient<IShopService, ShopService>();
-
             // Services
-            services.AddScoped<ICommonService, CommonService>();
-            services.AddScoped<INotificationService, NotificationService>();
-            services.AddScoped<ICommentService, CommentService>();
-            services.AddScoped<IInventoryService, InventoryService>();
-            services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IChatService, ChatService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransientServices();
+            services.AddScopedServices();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

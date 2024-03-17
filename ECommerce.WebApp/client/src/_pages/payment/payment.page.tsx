@@ -45,6 +45,8 @@ const PaymentPage = () => {
             wardCode: ''
         }
         setDataDetail(_dataDetail);
+        setDistricts([]);
+        setWards([]);
         await getDistricts(code);
     }
 
@@ -62,6 +64,7 @@ const PaymentPage = () => {
             wardCode: ''
         }
         setDataDetail(_dataDetail);
+        setWards([]);
         await getWards(code);
     }
 

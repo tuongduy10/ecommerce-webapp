@@ -33,7 +33,16 @@ export const PRODUCT_API_URL = {
 }
 
 export const INVENTORY_API_URL = {
+    OPTIONS: '/inventory/options',
+    ATTRIBUTES: '/inventory/attributes',
+    SAVE_ATTRIBUTES: '/inventory/save-attributes',
+    SAVE_OPTIONS: '/inventory/save-options',
     GET_BRAND: '/inventory/get-brand',
     CATEGORIES: '/inventory/get-categories',
+    CATEGORY: '/inventory/get-category',
+    UPDATE_CATEGORY: '/inventory/update-category',
+    ADD_CATEGORY: '/inventory/add-category',
+    UPDATE_SUB_CATEGORY: '/inventory/update-sub-category',
+    ADD_SUB_CATEGORY: '/inventory/add-sub-category',
     SUB_CATEGORIES: '/inventory/sub-categories',
 }

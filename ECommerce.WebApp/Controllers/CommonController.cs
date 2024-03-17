@@ -4,6 +4,7 @@ using ECommerce.Application.Services.Comment;
 using ECommerce.Application.Services.Common;
 using ECommerce.Application.Services.Common.DTOs.Requests;
 using ECommerce.Application.Services.Product;
+using ECommerce.Dtos.Common;
 using ECommerce.WebApp.Dtos.Common;
 using ECommerce.WebApp.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -84,6 +85,24 @@ namespace ECommerce.WebApp.Controllers
             {
                 return BadRequest(new FailResponse<string>(error.Message));
             }
+        }
+        [AllowAnonymous]
+        [HttpPost("upload-test")]
+        public async Task<IActionResult> uploadTest([FromForm] UploadRequest request)
+        {
+            var res = await _commonService.UploadAsync(request);
+            if (res.isSucceed)
+                return Ok(res);
+            return BadRequest(res);
+        }
+        [AllowAnonymous]
+        [HttpPost("remove-files-test")]
+        public async Task<IActionResult> removeUploadTest(RemoveFilesRequest request)
+        {
+            var res = await _commonService.DeleteFilesAsync(request);
+            if (res.isSucceed)
+                return Ok(res);
+            return BadRequest(res);
         }
         [AllowAnonymous]
         [HttpPost("remove-files")]
@@ -204,6 +223,20 @@ namespace ECommerce.WebApp.Controllers
         public IActionResult DecryptConnString(EncryptRequest request)
         {
             string decryptedConn = EncryptHelper.DecryptString(request.connectionString);
+            return Ok(decryptedConn);
+        }
+        [AllowAnonymous]
+        [HttpPost("encrypt")]
+        public IActionResult EncryptString(HashRequest request)
+        {
+            string encryptedConn = _commonService.EncryptString(request);
+            return Ok(encryptedConn);
+        }
+        [AllowAnonymous]
+        [HttpPost("decrypt")]
+        public IActionResult DecryptString(HashRequest request)
+        {
+            string decryptedConn = _commonService.DecryptString(request);
             return Ok(decryptedConn);
         }
     }

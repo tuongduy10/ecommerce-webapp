@@ -31,35 +31,38 @@ namespace ECommerce.Application.Services.Inventory
         private readonly IRepositoryBase<ProductOptionValue> _productOptionValuesRepo;
         private readonly IRepositoryBase<ProductAttribute> _productAttributeRepo;
         private readonly IRepositoryBase<SizeGuide> _sizeGuideRepo;
-        public InventoryService(ECommerceContext DbContext)
+        private readonly IRepositoryBase<Data.Entities.Attribute> _attributeRepo;
+        public InventoryService(ECommerceContext DbContext,
+            IRepositoryBase<Data.Entities.Product> productRepo,
+            IRepositoryBase<Data.Entities.Option> optionRepo,
+            IRepositoryBase<Data.Entities.OptionValue> optionValueRepo,
+            IRepositoryBase<Brand> brandRepo,
+            IRepositoryBase<Category> categoryRepo,
+            IRepositoryBase<BrandCategory> brandCategoryRepo,
+            IRepositoryBase<ShopBrand> shopBrandRepo,
+            IRepositoryBase<SubCategory> subCategoryRepo,
+            IRepositoryBase<SubCategoryOption> subCategoryOptionRepo,
+            IRepositoryBase<SubCategoryAttribute> subCategoryAttributeRepo,
+            IRepositoryBase<ProductOptionValue> productOptionValuesRepo,
+            IRepositoryBase<ProductAttribute> productAttributeRepo,
+            IRepositoryBase<SizeGuide> sizeGuideRepo,
+            IRepositoryBase<Data.Entities.Attribute> attributeRepo)
         {
             _DbContext = DbContext;
-            if (_productRepo == null)
-                _productRepo = new RepositoryBase<Data.Entities.Product>(_DbContext);
-            if (_brandRepo == null)
-                _brandRepo = new RepositoryBase<Brand>(_DbContext);
-            if (_categoryRepo == null)
-                _categoryRepo = new RepositoryBase<Category>(_DbContext);
-            if (_brandCategoryRepo == null)
-                _brandCategoryRepo = new RepositoryBase<BrandCategory>(_DbContext);
-            if (_shopBrandRepo == null)
-                _shopBrandRepo = new RepositoryBase<ShopBrand>(_DbContext);
-            if (_subCategoryRepo == null)
-                _subCategoryRepo = new RepositoryBase<SubCategory>(_DbContext);
-            if (_optionRepo == null)
-                _optionRepo = new RepositoryBase<Data.Entities.Option>(_DbContext);
-            if (_optionValueRepo == null)
-                _optionValueRepo = new RepositoryBase<Data.Entities.OptionValue>(_DbContext);
-            if (_subCategoryOptionRepo == null)
-                _subCategoryOptionRepo = new RepositoryBase<SubCategoryOption>(_DbContext);
-            if (_subCategoryAttributeRepo == null)
-                _subCategoryAttributeRepo = new RepositoryBase<SubCategoryAttribute>(_DbContext);
-            if (_productOptionValuesRepo == null)
-                _productOptionValuesRepo = new RepositoryBase<ProductOptionValue>(_DbContext);
-            if (_productAttributeRepo == null)
-                _productAttributeRepo = new RepositoryBase<ProductAttribute>(_DbContext);
-            if (_sizeGuideRepo == null)
-                _sizeGuideRepo = new RepositoryBase<SizeGuide>(_DbContext);
+            _productRepo = productRepo;
+            _optionRepo = optionRepo;
+            _optionValueRepo = optionValueRepo;
+            _brandRepo = brandRepo;
+            _categoryRepo = categoryRepo;
+            _brandCategoryRepo = brandCategoryRepo;
+            _shopBrandRepo = shopBrandRepo;
+            _subCategoryRepo = subCategoryRepo;
+            _subCategoryOptionRepo = subCategoryOptionRepo;
+            _subCategoryAttributeRepo = subCategoryAttributeRepo;
+            _productOptionValuesRepo = productOptionValuesRepo;
+            _productAttributeRepo = productAttributeRepo;
+            _sizeGuideRepo = sizeGuideRepo;
+            _attributeRepo = attributeRepo;
         }
         public async Task<Response<BrandModel>> getBrand(int brandId = 0) 
         {
@@ -125,14 +128,70 @@ namespace ECommerce.Application.Services.Inventory
         {
             try
             {
-                var res = (await _categoryRepo.ToListAsync())
+                var res = await _categoryRepo.Queryable(_ => _.CategoryId > -1, "SubCategories")
                     .Select(_ => (CategoryModel)_)
-                    .ToList();
+                    .ToListAsync();
                 return new SuccessResponse<List<CategoryModel>>(res);
             }
             catch (Exception error)
             {
                 return new FailResponse<List<CategoryModel>>(error.Message);
+            }
+        }
+        public async Task<Response<CategoryModel>> getCategory(int id)
+        {
+            try
+            {
+                var res = await _categoryRepo.Queryable(_ => _.CategoryId == id, "SubCategories")
+                    .Select(_ => (CategoryModel)_)
+                    .FirstOrDefaultAsync();
+                return new SuccessResponse<CategoryModel>(res);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<CategoryModel>(error.Message);
+            }
+        }
+        public async Task<Response<Category>> updateCategory(CategoryModelRequest req)
+        {
+            try
+            {
+                var entity = await _categoryRepo.Queryable(_ => _.CategoryId == req.id, "")
+                    .FirstOrDefaultAsync();
+                if (entity != null)
+                {
+                    if (!string.IsNullOrEmpty(req.name))
+                        entity.CategoryName = req.name;
+                    _categoryRepo.Update(entity);
+                    await _categoryRepo.SaveChangesAsync();
+                }
+                return new SuccessResponse<Category>(entity);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<Category>(error.Message);
+            }
+        }
+        public async Task<Response<Category>> addCategory(CategoryModelRequest req)
+        {
+            try
+            {
+                var entity = await _categoryRepo.Queryable(_ => _.CategoryId == req.id, "")
+                    .FirstOrDefaultAsync();
+                if (entity == null)
+                {
+                    var newEntity = new Category();
+                    if (!string.IsNullOrEmpty(req.name))
+                        newEntity.CategoryName = req.name;
+                    await _categoryRepo.AddAsync(newEntity);
+                    await _categoryRepo.SaveChangesAsync();
+                    return new SuccessResponse<Category>(newEntity);
+                }
+                return new SuccessResponse<Category>();
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<Category>(error.Message);
             }
         }
         public async Task<Response<List<SubCategoryModel>>> getSubCategories(InventoryRequest request)
@@ -142,23 +201,17 @@ namespace ECommerce.Application.Services.Inventory
                 var subCategoryId = request.subCategoryId;
                 var brandId = request.brandId;
 
-                var query = _subCategoryRepo.Query();
-                if (brandId > -1 || subCategoryId > -1)
-                {
-                    query = query
-                        .Where(subc =>
-                            subc.SubCategoryId == subCategoryId ||
-                            _brandCategoryRepo
-                                .Entity()
-                                .Any(brand => subc.CategoryId == brand.CategoryId && brand.BrandId == brandId));
-                }
-
-                var list = await query
+                var list = await _subCategoryRepo.Queryable(_ =>
+                    (subCategoryId == -1 || _.SubCategoryId == subCategoryId) &&
+                    (brandId == -1 || _brandCategoryRepo
+                        .Entity()
+                        .Any(brand => _.CategoryId == brand.CategoryId && brand.BrandId == brandId)), "")
                     .Select(subc => new SubCategoryModel
                     {
                         id = subc.SubCategoryId,
                         name = subc.SubCategoryName,
                         categoryId = subc.CategoryId,
+                        category = (CategoryModel)subc.Category,
                         optionList = _subCategoryOptionRepo
                             .Entity()
                             .Where(subcopt => subcopt.SubCategoryId == subc.SubCategoryId)
@@ -207,6 +260,151 @@ namespace ECommerce.Application.Services.Inventory
             catch(Exception error)
             {
                 return new FailResponse<List<SubCategoryModel>>(error.Message);
+            }
+        }
+        public async Task<Response<SubCategory>> addSubCategory(SubCategoryModel request)
+        {
+            if (string.IsNullOrEmpty(request.name))
+                return new FailResponse<SubCategory>("Nhập tên loại");
+            var check = await _subCategoryRepo.AnyAsyncWhere(_ => _.SubCategoryName == request.name.Trim());
+            if (check)
+                return new FailResponse<SubCategory>("Loại đã tồn tại");
+
+            var transaction = await _DbContext.Database.BeginTransactionAsync();
+            try
+            {
+                var entity = new SubCategory();
+                entity.SubCategoryName = request.name.Trim();
+                entity.CategoryId = request.categoryId;
+                await _subCategoryRepo.AddAsync(entity);
+                await _subCategoryRepo.SaveChangesAsync();
+
+                // attributes
+                if (request.attributes.Count > 0)
+                {
+                    var attrs = request.attributes
+                        .Select(_ => new SubCategoryAttribute
+                        {
+                            SubCategoryId = entity.SubCategoryId,
+                            AttributeId = _.id,
+                        })
+                        .ToList();
+                    await _subCategoryAttributeRepo.AddRangeAsync(attrs);
+                    await _subCategoryAttributeRepo.SaveChangesAsync();
+                }
+                // options
+                if (request.optionList.Count > 0)
+                {
+                    var opts = request.optionList
+                        .Select(_ => new SubCategoryOption
+                        {
+                            SubCategoryId = entity.SubCategoryId,
+                            OptionId = _.id
+                        })
+                        .ToList();
+                    await _subCategoryOptionRepo.AddRangeAsync(opts);
+                    await _subCategoryOptionRepo.SaveChangesAsync();
+                }
+                await transaction.CommitAsync();
+                return new SuccessResponse<SubCategory>();
+            }
+            catch (Exception error)
+            {
+                await transaction.RollbackAsync();
+                return new FailResponse<SubCategory>(error.Message);
+            }
+        }
+        public async Task<Response<SubCategory>> updateSubCategory(SubCategoryModel request)
+        {
+            if (request.id == -1)
+                return new FailResponse<SubCategory>("Not found");
+            if (string.IsNullOrEmpty(request.name))
+                return new FailResponse<SubCategory>("Nhập tên loại");
+            var entity = await _subCategoryRepo.GetAsyncWhere(_ => _.SubCategoryId == request.id);
+            if (entity == null)
+                return new FailResponse<SubCategory>("Not exist");
+
+            var transaction = await _DbContext.Database.BeginTransactionAsync();
+            try
+            {
+                entity.SubCategoryName = request.name.Trim();
+                entity.CategoryId = request.categoryId;
+                _subCategoryRepo.Update(entity);
+                await _subCategoryRepo.SaveChangesAsync();
+
+                // attributes
+                await _subCategoryAttributeRepo.RemoveRangeAsyncWhere(_ => _.SubCategoryId == entity.SubCategoryId);
+                await _subCategoryAttributeRepo.SaveChangesAsync();
+                if (request.attributes.Count > 0)
+                {
+                    var attrs = request.attributes
+                        .Select(_ => new SubCategoryAttribute
+                        {
+                            SubCategoryId = entity.SubCategoryId,
+                            AttributeId = _.id,
+                        })
+                        .ToList();
+                    await _subCategoryAttributeRepo.AddRangeAsync(attrs);
+                    await _subCategoryAttributeRepo.SaveChangesAsync();
+                }
+
+                // options
+                await _subCategoryOptionRepo.RemoveRangeAsyncWhere(_ => _.SubCategoryId == entity.SubCategoryId);
+                await _subCategoryOptionRepo.SaveChangesAsync();
+                if (request.optionList.Count > 0)
+                {
+                    var opts = request.optionList
+                        .Select(_ => new SubCategoryOption
+                        {
+                            SubCategoryId = entity.SubCategoryId,
+                            OptionId = _.id
+                        })
+                        .ToList();
+                    await _subCategoryOptionRepo.AddRangeAsync(opts);
+                    await _subCategoryOptionRepo.SaveChangesAsync();
+                }
+                await transaction.CommitAsync();
+                return new SuccessResponse<SubCategory>();
+            }
+            catch (Exception error)
+            {
+                await transaction.RollbackAsync();
+                return new FailResponse<SubCategory>(error.Message);
+            }
+        }
+        public async Task<Response<bool>> deleteSubCategories(List<int> ids)
+        {
+            try
+            {
+                if (ids.Count > 0)
+                {
+                    
+                }
+                return new SuccessResponse<bool>();
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<bool>();
+            }
+        }
+        public async Task<Response<List<OptionModel>>> getOptions(InventoryRequest request)
+        {
+            try
+            {
+                var opts = await _optionRepo
+                    .Queryable()
+                    .Select(opt => new OptionModel
+                    {
+                        id = opt.OptionId,
+                        name = opt.OptionName,
+                        values = opt.OptionValues.Select(_ => (OptionValueModel)_).ToList()
+                    })
+                    .ToListAsync();
+                return new SuccessResponse<List<OptionModel>>(opts);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<List<OptionModel>>(error.Message);
             }
         }
         public async Task<Response<List<OptionModel>>> getProductOptions(InventoryRequest request)
@@ -266,7 +464,7 @@ namespace ECommerce.Application.Services.Inventory
                                             .Count(),
                                     isBase = (bool)pov.IsBaseValue
                                 })
-                                .Where(pov => !isBase || (isBase && pov.isBase))
+                                .Where(pov => !isBase || (isBase == true && pov.isBase))
                                 .ToList()
                         })
                         .ToListAsync();
@@ -277,6 +475,54 @@ namespace ECommerce.Application.Services.Inventory
             catch (Exception error)
             {
                 return new FailResponse<List<OptionModel>>(error.Message);
+            }
+        }
+        public async Task<Response<List<AttributeModel>>> getAttributes(InventoryRequest request)
+        {
+            try
+            {
+                var subCategoryAttrs = await _attributeRepo
+                    .Queryable(_ => 
+                        request.id == -1 || _.AttributeId == request.id
+                    )
+                    .Select(_ => (AttributeModel)_)
+                    .ToListAsync();
+                return new SuccessResponse<List<AttributeModel>>(subCategoryAttrs);
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<List<AttributeModel>>(error.Message);
+            }
+        }
+        public async Task<Response<bool>> saveAttributes(InventoryRequest request)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.name))
+                    return new FailResponse<bool>("Nhập tên");
+
+                string name = request.name.Trim();
+
+                var entity = await _attributeRepo.GetAsyncWhere(_ => _.AttributeId == request.id);
+                if (entity != null)
+                {
+                    entity.AttributeName = name;
+                    _attributeRepo.Update(entity);
+                }
+                else
+                {
+                    var newEntity = new Data.Entities.Attribute
+                    {
+                        AttributeName = name
+                    };
+                    await _attributeRepo.AddAsync(newEntity);
+                }
+                await _attributeRepo.SaveChangesAsync();
+                return new SuccessResponse<bool>();
+            }
+            catch (Exception error)
+            {
+                return new FailResponse<bool>(error.Message);
             }
         }
         public async Task<Response<List<AttributeModel>>> getProductAttributes(InventoryRequest request)
