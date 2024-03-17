@@ -10,6 +10,7 @@ using ECommerce.Application.BaseServices.Role;
 using ECommerce.Application.BaseServices.Shop;
 using ECommerce.Application.BaseServices.SubCategory;
 using ECommerce.Application.BaseServices.User;
+using ECommerce.Application.Repositories;
 using ECommerce.Application.Services.Chat;
 using ECommerce.Application.Services.Comment;
 using ECommerce.Application.Services.Common;
@@ -29,12 +30,13 @@ namespace ECommerce.Application.Extensions
     {
         public static void AddTransientServices(this IServiceCollection services)
         {
+            services.AddTransient(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
             services.AddTransient<IHttpClientService, HttpClientService>();
             services.AddTransient<IConfigurationService, ConfigurationService>();
             services.AddTransient<IHeaderService, HeaderService>();
             services.AddTransient<IFooterService, FooterService>();
             services.AddTransient<IProductBaseService, ProductBaseService>();
-            services.AddTransient<ISubCategoryService, SubCategoryService>();
+            services.AddTransient<ISubCategoryService, SubCategoryService>();   
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IBrandService, BrandService>();
             services.AddTransient<IFilterProductService, FilterProductService>();

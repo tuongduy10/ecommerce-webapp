@@ -71,7 +71,7 @@ namespace ECommerce.WebApp
             });
             services.AddControllers();
             services.AddHttpClient();
-            services.AddSignalR();
+            //services.AddSignalR();
             services.AddHttpContextAccessor();
 
             services.Configure<AppSetting>(Configuration.GetSection("AppSettings"));

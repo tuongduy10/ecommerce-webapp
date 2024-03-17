@@ -63,6 +63,21 @@ const mainListItems = [
                 label: 'Danh mục',
                 path: ADMIN_ROUTE_NAME.MANAGE_INVENTORY_CATEGORY,
             },
+            {
+                name: 'subCategory',
+                label: 'Loại sản phẩm',
+                path: ADMIN_ROUTE_NAME.MANAGE_INVENTORY_SUB_CATEGORY,
+            },
+            {
+                name: 'options',
+                label: 'Thông tin tùy chọn',
+                path: ADMIN_ROUTE_NAME.MANAGE_INVENTORY_OPTIONS,
+            },
+            {
+                name: 'attributes',
+                label: 'Thông tin chi tiết',
+                path: ADMIN_ROUTE_NAME.MANAGE_INVENTORY_ATTRIBUTES,
+            },
         ]
     },
     {
